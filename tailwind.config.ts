@@ -19,8 +19,11 @@ const config: Config = {
     extend: {
       fontFamily: {
         "sans-manrope": ["var(--font-manrope)"],
-        "sans-ibm-plex": ["var(--font-ibm-plex-sans)"]
-      }
+        "sans-ibm-plex": ["var(--font-ibm-plex-sans)"],
+      },
+      colors: {
+        "primary-gray": "#16191F",
+      },
     },
   },
   plugins: [],
