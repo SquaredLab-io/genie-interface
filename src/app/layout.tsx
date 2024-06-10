@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
+import { manrope, ibm_plex_sans } from "@utils/fonts";
+import clsx from "clsx";
 
 export const metadata: Metadata = {
   title: "Genie | SquaredLabs",
-  description: "Genie is an entire derivatives ecosystem without liquidation! Powered by Potentia Protocol.",
+  description:
+    "Genie is an entire derivatives ecosystem without liquidation! Powered by Potentia Protocol.",
 };
 
 export default function RootLayout({
@@ -15,8 +15,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className={clsx(manrope.variable, ibm_plex_sans.variable)}>
+      <body className="font-sans-ibm-plex">{children}</body>
     </html>
   );
 }
