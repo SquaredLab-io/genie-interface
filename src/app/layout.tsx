@@ -1,9 +1,9 @@
 import clsx from "clsx";
 import "./globals.css";
-import { manrope, ibm_plex_sans } from "@utils/fonts";
+import { manrope, ibm_plex_sans } from "@lib/fonts";
 import Header from "@components/common/Header";
 import { Metadata } from "next";
-import { meta } from "@utils/constants";
+import { meta } from "@lib/constants";
 
 const { APP_NAME, DESCRIPTION, KEYWORDS, URL, IMAGE, SITE_NAME, USERNAME } = meta;
 
@@ -68,7 +68,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={clsx(manrope.variable, ibm_plex_sans.variable)}>
-      <body className="font-sans-ibm-plex">
+      <body className="w-full font-sans-ibm-plex">
         <Header />
         {children}
       </body>

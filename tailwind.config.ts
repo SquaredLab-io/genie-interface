@@ -24,6 +24,9 @@ const config = {
         "sans-manrope": ["var(--font-manrope)"],
         "sans-ibm-plex": ["var(--font-ibm-plex-sans)"]
       },
+      fontSize: {
+        "2xs": "8px"
+      },
       colors: {
         "primary-gray": "#16191F"
       },

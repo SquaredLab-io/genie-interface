@@ -3,8 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    @apply box-border p-0 m-0 scroll-smooth;
+  }
+
   body {
-    @apply text-white bg-black;
+    @apply text-white bg-black min-h-screen;
   }
 }
 
@@ -12,4 +16,32 @@
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Scroll bar */
+::-webkit-scrollbar-track {
+  border-radius: 6px;
+  cursor: pointer;
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #7339fd;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 8px;
+  border-radius: 100px;
+}
+
+/* Input element */
+/* For chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+/* For firefox */
+input[type=number]{
+  -moz-appearance: textfield;
 }
