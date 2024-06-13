@@ -8,9 +8,13 @@ import {
 import { selected_token } from "../helper";
 import { useState } from "react";
 
+// Dummy tokens list
+const tokens = ["usdt", "btc", "eth", "sol"];
+
 const ShortTrade = () => {
   const [quantity, setQuantity] = useState("");
-  const [selectedToken, setSelectedToken] = useState("btc");
+  const [selectedToken, setSelectedToken] = useState(tokens[0]);
+
   return (
     <div className="flex flex-col font-medium text-xs leading-4">
       <div className="flex flex-col gap-2 pt-[14px] pb-2 pl-2 pr-3 border-b border-[#303030]">
@@ -50,10 +54,11 @@ const ShortTrade = () => {
                 <SelectValue placeholder={<span>Select Token</span>} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="usdt">USDT</SelectItem>
-                <SelectItem value="btc">BTC</SelectItem>
-                <SelectItem value="eth">ETH</SelectItem>
-                <SelectItem value="sol">SOL</SelectItem>
+                {tokens.map((token) => (
+                  <SelectItem key={token} value={token}>
+                    {token.toUpperCase()}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -61,7 +66,7 @@ const ShortTrade = () => {
       </div>
       <div className="flex flex-col gap-2 pt-[14px] pb-6 pl-2 pr-3">
         <button className="bg-[#202832] hover:bg-[#232c38] rounded-[3px] font-sans-manrope font-bold text-[14px] leading-6 text-[#3D85C6] text-center py-[14px] transition-colors duration-200">
-          Close Position
+          Short
         </button>
         <div className="flex flex-col gap-2">
           <p className="inline-flex items-center justify-between w-full">
