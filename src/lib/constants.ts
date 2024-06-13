@@ -12,13 +12,13 @@ export const meta = {
     "Perpetuals",
     "DeFi",
     "Power Perpetuals",
-    "Leveraged Trading",
+    "Leveraged Trading"
   ],
   URL: "https://genie.squaredlabs.io",
   DOMAIN: "https://squaredlabs.io",
   IMAGE: "https://frontend-web-resources.s3.amazonaws.com/og-large.png",
   SITE_NAME: "genie.squaredlabs.io",
-  USERNAME: "@squaredlabs_",
+  USERNAME: "@squaredlabs_"
 };
 
 //
@@ -28,5 +28,5 @@ export const navigation = [
   { name: "Portfolio", href: "/" },
   { name: "Pools", href: "/pools" },
   { name: "Blog & Research", href: "/blog" },
-  { name: "Feedback & Support", href: "/feedback" },
+  { name: "Feedback & Support", href: "/feedback" }
 ];

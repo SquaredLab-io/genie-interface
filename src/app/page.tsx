@@ -1,6 +1,6 @@
 "use client";
 
-import Trade from "@components/Trade";
+import Trade from "@components/Portfolio";
 
 export default function Home() {
   return (
