@@ -18,14 +18,14 @@ export const columns: ColumnDef<OpenPosition>[] = [
   {
     accessorKey: "assets",
     header: () => (
-      <div className="pl-10 w-full max-w-[280px]">
+      <div className="pl-10 pr-8 w-full border-r border-[#303030]">
         <span>Assets</span>
       </div>
     ),
     cell: ({ row }) => {
       const { assets, power, protocol } = row.original;
       return (
-        <div className="whitespace-nowrap py-3 flex flex-row gap-2 text-left font-medium pl-10">
+        <div className="whitespace-nowrap py-3 flex flex-row gap-2 text-left font-medium pl-10 pr-8 border-r border-[#303030]">
           <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-1">
             {assets.map((asset: Token) => (
               <div
@@ -123,10 +123,10 @@ export const columns: ColumnDef<OpenPosition>[] = [
 
 const TradeData = () => {
   return (
-    <div className="flex flex-col font-medium text-xs leading-4 bg-primary-gray font-sans-manrope">
+    <div className="font-medium text-xs leading-4 bg-primary-gray font-sans-manrope">
       {/* Tab Row */}
       <Tabs defaultValue={Tab.position}>
-        <TabsList className="flex flex-row justify-start gap-8 pt-[3px] pb-2 px-10 rounded-none border-b border-[#303030] font-normal text-xs leading-9">
+        <TabsList className="flex flex-row justify-start gap-8 py-2 px-10 rounded-none border-b border-[#303030] font-normal text-xs leading-9">
           <TabsTrigger
             value={Tab.position}
             className="data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-[#0099FF] data-[state=active]:to-[#00CCFF]"
@@ -140,6 +140,7 @@ const TradeData = () => {
             Trade History
           </TabsTrigger>
         </TabsList>
+        {/* Tab Content */}
         <TabsContent value={Tab.position}>
           <OpenPositionsTable columns={columns} data={openPositions} />
         </TabsContent>
