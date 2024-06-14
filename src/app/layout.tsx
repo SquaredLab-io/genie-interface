@@ -68,7 +68,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={clsx(manrope.variable, ibm_plex_sans.variable)}>
-      <body className="w-full font-sans-ibm-plex">
+      <body>
         <Header />
         {children}
       </body>

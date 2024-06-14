@@ -16,19 +16,19 @@ const Trade = () => {
           <TabsTrigger
             value={TradeOptions.long}
             className={cn(
-              "w-1/2 py-[18px] text-center rounded-r-[3px]",
-              "data-[state=active]:border border-[#0099FF] data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-[#0099FF] data-[state=active]:to-[#00CCFF]"
+              "w-1/2 py-[17px] text-center rounded-r-[3px]",
+              "data-[state=active]:border border-pure-blue data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-blue data-[state=active]:to-pure-cyan"
             )}
           >
-            <span className="bg-gradient-to-r text-transparent bg-clip-text from-[#0099FF] to-[#00CCFF]">
+            <span className="bg-gradient-to-r text-transparent bg-clip-text from-pure-blue to-pure-cyan">
               Long
             </span>
           </TabsTrigger>
           <TabsTrigger
             value={TradeOptions.short}
             className={cn(
-              "w-1/2 py-[18px] text-center rounded-l-[3px]",
-              "data-[state=active]:border border-[#0099FF] data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-[#0099FF] data-[state=active]:to-[#00CCFF]"
+              "w-1/2 py-[17px] text-center rounded-l-[3px]",
+              "data-[state=active]:border border-pure-blue data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-blue data-[state=active]:to-pure-cyan"
             )}
           >
             Short

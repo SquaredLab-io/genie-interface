@@ -112,7 +112,7 @@ export const columns: ColumnDef<OpenPosition>[] = [
     cell: ({ row }) => {
       return (
         <Button type="button" variant="ghost">
-          <span className="bg-gradient-to-r text-transparent bg-clip-text from-[#0099FF] to-[#00CCFF]">
+          <span className="bg-gradient-to-r text-transparent bg-clip-text from-pure-blue to-pure-cyan">
             Close Position
           </span>
         </Button>
@@ -129,13 +129,13 @@ const TradeData = () => {
         <TabsList className="flex flex-row justify-start gap-8 py-2 px-10 rounded-none border-b border-[#303030] font-normal text-xs leading-9">
           <TabsTrigger
             value={Tab.position}
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-[#0099FF] data-[state=active]:to-[#00CCFF]"
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-blue data-[state=active]:to-pure-cyan"
           >
             Open Positions
           </TabsTrigger>
           <TabsTrigger
             value={Tab.history}
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-[#0099FF] data-[state=active]:to-[#00CCFF]"
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-blue data-[state=active]:to-pure-cyan"
           >
             Trade History
           </TabsTrigger>

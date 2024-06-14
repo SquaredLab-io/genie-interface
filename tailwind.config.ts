@@ -1,4 +1,7 @@
 import type { Config } from "tailwindcss";
+import defaultTheme from "tailwindcss/defaultTheme";
+
+defaultTheme.fontFamily;
 
 const config = {
   content: [
@@ -28,7 +31,13 @@ const config = {
         "2xs": "8px"
       },
       colors: {
-        "primary-gray": "#16191F"
+        "primary-gray": "#16191F",
+        "dark-gray": "#71757A",
+        "light-gray": "#ADB1B8",
+        "negative-red": "#EF454A",
+        "positive-green": "#20B26C",
+        "pure-blue": "#0099FF",
+        "pure-cyan": "#00CCFF"
       },
       keyframes: {
         "accordion-down": {

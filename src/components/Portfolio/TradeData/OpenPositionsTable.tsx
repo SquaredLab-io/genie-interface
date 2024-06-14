@@ -37,7 +37,7 @@ const OpenPositionsTable = <TData, TValue>({
               return (
                 <TableHead
                   key={header.id}
-                  className="font-normal text-[11px] leading-[34px] text-[#F6FEFD]"
+                  className="font-normal text-2xs/[34px] text-[#F6FEFD]"
                 >
                   {header.isPlaceholder
                     ? null
