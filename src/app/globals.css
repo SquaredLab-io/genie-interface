@@ -13,8 +13,11 @@
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .bg-gradient-blue {
+    @apply bg-gradient-to-r from-[#0099FF] to-[#00CCFF];
+  }
+  .bg-gradient-white {
+    @apply bg-gradient-to-r from-white to-[#C9C9C9];
   }
 }
 
@@ -38,10 +41,10 @@
 /* For chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 /* For firefox */
-input[type=number]{
+input[type="number"] {
   -moz-appearance: textfield;
 }

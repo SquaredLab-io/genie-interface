@@ -3,7 +3,7 @@ export type Token = {
   imgSrc: string;
 };
 
-export type OpenPosition = {
+export type OpenPositionType = {
   assets: Token[];
   power: number;
   protocol: string;
@@ -16,7 +16,7 @@ export type OpenPosition = {
 };
 
 // dummy List of user's open positions
-export const openPositions: OpenPosition[] = [
+export const openPositionsData: OpenPositionType[] = [
   {
     assets: [
       {

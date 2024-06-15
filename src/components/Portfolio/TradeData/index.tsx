@@ -5,7 +5,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { Button } from "@components/ui/button";
 import toDollarUnits from "@lib/utils";
-import { OpenPosition, openPositions, Token } from "./helper";
+import { OpenPositionType, openPositionsData, Token } from "./helper";
 import OpenPositionsTable from "./OpenPositionsTable";
 import TransactionsHistoryTable from "./TransactionsHistoryTable";
 
@@ -14,7 +14,7 @@ enum Tab {
   history = "history"
 }
 
-export const columns: ColumnDef<OpenPosition>[] = [
+export const positionColumns: ColumnDef<OpenPositionType>[] = [
   {
     accessorKey: "assets",
     header: () => (
@@ -64,10 +64,10 @@ export const columns: ColumnDef<OpenPosition>[] = [
     cell: ({ row }) => {
       const { time, date } = row.original;
       return (
-        <p className="flex flex-col text-left whitespace-nowrap pl-[76px]">
+        <div className="flex flex-col text-left whitespace-nowrap pl-[76px]">
           <span>{date}</span>
           <span className="text-[#6D6D6D]">{time}</span>
-        </p>
+        </div>
       );
     }
   },
@@ -142,10 +142,10 @@ const TradeData = () => {
         </TabsList>
         {/* Tab Content */}
         <TabsContent value={Tab.position}>
-          <OpenPositionsTable columns={columns} data={openPositions} />
+          <OpenPositionsTable columns={positionColumns} data={openPositionsData} />
         </TabsContent>
         <TabsContent value={Tab.history}>
-          <TransactionsHistoryTable columns={columns} data={openPositions} />
+          <TransactionsHistoryTable columns={positionColumns} data={openPositionsData} />
         </TabsContent>
       </Tabs>
     </div>

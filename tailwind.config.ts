@@ -30,6 +30,9 @@ const config = {
       fontSize: {
         "2xs": "8px"
       },
+      borderRadius: {
+        base: "4px"
+      },
       colors: {
         "primary-gray": "#16191F",
         "dark-gray": "#71757A",
@@ -37,7 +40,8 @@ const config = {
         "negative-red": "#EF454A",
         "positive-green": "#20B26C",
         "pure-blue": "#0099FF",
-        "pure-cyan": "#00CCFF"
+        "pure-cyan": "#00CCFF",
+        "off-white": "#C9C9C9"
       },
       keyframes: {
         "accordion-down": {

@@ -11,7 +11,7 @@ const AssetsStatsBar = () => {
         <div className="flex flex-col gap-y-1 ml-1 mr-4">
           <p className="inline-flex items-center gap-1">
             <span className="text-base/4 font-semibold">{selected_token.symbol}</span>
-            <span className="font-medium text-2xs rounded-sm/[14px] py-px px-[4.5px] text-white bg-text-grad">
+            <span className="font-medium text-2xs/[14px] rounded-sm py-px px-[4.5px] text-white bg-text-grad bg-gradient-blue">
               p = {selected_token.power}
             </span>
           </p>

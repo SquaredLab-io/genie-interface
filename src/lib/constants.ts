@@ -24,9 +24,17 @@ export const meta = {
 //
 // Header navigation links
 //
-export const navigation = [
-  { name: "Portfolio", href: "/" },
-  { name: "Pools", href: "/pools" },
-  { name: "Blog & Research", href: "/blog" },
-  { name: "Feedback & Support", href: "/feedback" }
+export const navigation: {
+  name: string;
+  href: string;
+  target: string;
+}[] = [
+  { name: "Portfolio", href: "/", target: "" },
+  { name: "Pools", href: "/pools", target: "" },
+  {
+    name: "Blog & Research",
+    href: "https://squaredlabs-io.gitbook.io/squaredlabs.io",
+    target: "_blank"
+  },
+  { name: "Feedback & Support", href: "/feedback", target: "" }
 ];

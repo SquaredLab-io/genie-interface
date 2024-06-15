@@ -7,7 +7,7 @@ import TradeTable from "./TradeData";
 const Portfolio = () => {
   return (
     <>
-      <div className="flex flex-row gap-1 mb-1">
+      <div className="flex flex-row gap-1 my-1">
         {/* Left Side */}
         <div className="flex-1 flex flex-col gap-1">
           <AssetsStatsBar />

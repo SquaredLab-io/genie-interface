@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import Image from "next/image";
 import { navigation } from "@lib/constants";
 import { usePathname } from "next/navigation";
@@ -12,7 +13,7 @@ const Header = () => {
   return (
     <header>
       <nav
-        className="mx-auto flex bg-primary-gray mb-1 items-center gap-x-12 py-3 px-4"
+        className="mx-auto flex bg-primary-gray items-center gap-x-12 py-3 px-4"
         aria-label="Global"
       >
         <div className="flex lg:flex-1 max-w-fit">
@@ -32,6 +33,7 @@ const Header = () => {
             <a
               key={item.name}
               href={item.href}
+              target={item.target}
               className={clsx(
                 "px-[10px]",
                 pathname !== item.href && "opacity-35 hover:opacity-70 transition-opacity"
@@ -46,4 +48,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default memo(Header);
