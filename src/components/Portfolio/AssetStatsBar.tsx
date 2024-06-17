@@ -61,9 +61,7 @@ const AssetsStatsBar = () => {
         </div>
         <div className="flex flex-col items-start justify-between gap-[4.5px]">
           <span className="font-normal text-xs text-dark-gray">Funding Rate</span>
-          <div>
-            <TextGradient className="from-pure-blue to-pure-cyan">0.0105%</TextGradient>
-          </div>
+          <span className="text-gradient-blue">0.0105%</span>
         </div>
       </div>
     </div>

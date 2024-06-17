@@ -7,7 +7,7 @@ const Hero = () => {
       <div className="flex flex-col gap-4 text-center md:text-left max-w-[523px] font-sans-manrope">
         <h1 className="font-normal text-4xl/10 md:text-5xl/[52.8px]">
           Shape the future with <span className="text-gradient-blue">powerful</span>{" "}
-          derivatives
+          derivatives.
         </h1>
         <p className="font-extralight text-xl text-[#B5B5B5]">
           Become a market maker and get rewarded! Contribute to the pool&apos;s activity

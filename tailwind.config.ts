@@ -36,6 +36,7 @@ const config = {
       colors: {
         "primary-gray": "#16191F",
         "dark-gray": "#71757A",
+        "base-gray": "#6D6D6D",
         "light-gray": "#ADB1B8",
         "negative-red": "#EF454A",
         "positive-green": "#20B26C",

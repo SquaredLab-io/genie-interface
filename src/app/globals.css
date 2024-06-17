@@ -14,13 +14,19 @@
 
 @layer utilities {
   .bg-gradient-blue {
-    @apply bg-gradient-to-r from-pure-blue to-pure-cyan;
+    @apply bg-gradient-to-r from-pure-cyan to-pure-blue;
   }
+
   .bg-gradient-white {
     @apply bg-gradient-to-r from-white to-off-white;
   }
+
   .text-gradient-blue {
-    @apply bg-gradient-to-r text-transparent bg-clip-text from-pure-blue to-pure-cyan;
+    @apply bg-gradient-to-r text-transparent bg-clip-text from-pure-cyan to-pure-blue;
+  }
+
+  .page-center {
+    @apply flex flex-col justify-center items-center h-[calc(100vh-62px)];
   }
 }
 

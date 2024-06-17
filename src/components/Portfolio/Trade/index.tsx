@@ -9,25 +9,21 @@ enum TradeOptions {
 }
 
 const Trade = () => {
+  const tabsStyle =
+    "w-1/2 py-[17px] text-center px-3 text-sm font-medium data-[state=active]:border border-pure-blue data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-cyan data-[state=active]:to-pure-blue";
   return (
     <div className="flex flex-col bg-primary-gray">
       <Tabs defaultValue={TradeOptions.long} className="w-full">
         <TabsList className="w-full flex flex-row items-center font-sans-manrope font-semibold text-base border-b-[0.5px] border-[#303030]">
           <TabsTrigger
             value={TradeOptions.long}
-            className={cn(
-              "w-1/2 py-[17px] text-center rounded-r-[3px]",
-              "data-[state=active]:border border-pure-blue data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-blue data-[state=active]:to-pure-cyan"
-            )}
+            className={cn("rounded-r-[3px]", tabsStyle)}
           >
             Long
           </TabsTrigger>
           <TabsTrigger
             value={TradeOptions.short}
-            className={cn(
-              "w-1/2 py-[17px] text-center rounded-l-[3px]",
-              "data-[state=active]:border border-pure-blue data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-blue data-[state=active]:to-pure-cyan"
-            )}
+            className={cn("rounded-l-[3px]", tabsStyle)}
           >
             Short
           </TabsTrigger>

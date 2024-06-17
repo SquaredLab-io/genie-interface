@@ -1,5 +1,6 @@
 "use client"; // Error components must be Client Components
 
+import { Button } from "@components/ui/button";
 import { NextPage } from "next";
 import { useEffect } from "react";
 
@@ -15,16 +16,17 @@ const Error: NextPage<PropsType> = ({ error, reset }) => {
   }, [error]);
 
   return (
-    <div>
-      <h2>Something went wrong!</h2>
-      <button
+    <div className="page-center">
+      <h2 className="font-sans-manrope text-4xl tracking-wide">Something went wrong!</h2>
+      <Button
         onClick={
           // Attempt to recover by trying to re-render the segment
           () => reset()
         }
+        variant={"secondary"}
       >
         Try again
-      </button>
+      </Button>
     </div>
   );
 };
