@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { Button } from "@components/ui/button";
-import toDollarUnits from "@lib/utils";
+import { toDollarUnits } from "@lib/utils";
 import { OpenPositionType, openPositionsData, Token } from "./helper";
 import OpenPositionsTable from "./OpenPositionsTable";
 import TransactionsHistoryTable from "./TransactionsHistoryTable";
@@ -111,7 +111,7 @@ export const positionColumns: ColumnDef<OpenPositionType>[] = [
     header: () => <span className="pl-4">Action</span>,
     cell: ({ row }) => {
       return (
-        <Button type="button" variant="ghost">
+        <Button variant="ghost" size="sm">
           <span className="bg-gradient-to-r text-transparent bg-clip-text from-pure-blue to-pure-cyan">
             Close Position
           </span>

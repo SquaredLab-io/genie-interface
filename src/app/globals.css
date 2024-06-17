@@ -14,10 +14,13 @@
 
 @layer utilities {
   .bg-gradient-blue {
-    @apply bg-gradient-to-r from-[#0099FF] to-[#00CCFF];
+    @apply bg-gradient-to-r from-pure-blue to-pure-cyan;
   }
   .bg-gradient-white {
-    @apply bg-gradient-to-r from-white to-[#C9C9C9];
+    @apply bg-gradient-to-r from-white to-off-white;
+  }
+  .text-gradient-blue {
+    @apply bg-gradient-to-r text-transparent bg-clip-text from-pure-blue to-pure-cyan;
   }
 }
 

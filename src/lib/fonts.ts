@@ -4,7 +4,7 @@ export const manrope = Manrope({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-manrope",
-  weight: ["400", "500", "600", "700", "800"]
+  weight: ["200", "300", "400", "500", "600", "700", "800"]
 });
 
 export const ibm_plex_sans = IBM_Plex_Sans({
