@@ -20,9 +20,7 @@ const Trade = () => {
               "data-[state=active]:border border-pure-blue data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-blue data-[state=active]:to-pure-cyan"
             )}
           >
-            <span className="bg-gradient-to-r text-transparent bg-clip-text from-pure-blue to-pure-cyan">
-              Long
-            </span>
+            Long
           </TabsTrigger>
           <TabsTrigger
             value={TradeOptions.short}

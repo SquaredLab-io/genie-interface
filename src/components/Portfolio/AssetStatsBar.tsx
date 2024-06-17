@@ -6,9 +6,9 @@ import TextGradient from "@components/common/TextGradient";
 const AssetsStatsBar = () => {
   return (
     <div className="flex flex-row items-center gap-4 w-full bg-primary-gray px-[11px] py-2">
-      <div className="inline-flex justify-start items-center min-w-fit">
+      <button className="group flex flex-row text-left gap-1 justify-start items-center min-w-fit p-2 -m-2">
         <Image src="/images/bitcoin.svg" width={36} height={36} alt="icon" />
-        <div className="flex flex-col gap-y-1 ml-1 mr-4">
+        <div className="flex flex-col gap-y-1 mr-4">
           <p className="inline-flex items-center gap-1">
             <span className="text-base/4 font-semibold">{selected_token.symbol}</span>
             <span className="font-medium text-2xs/[14px] rounded-sm py-px px-[4.5px] text-white bg-text-grad bg-gradient-blue">
@@ -17,10 +17,14 @@ const AssetsStatsBar = () => {
           </p>
           <span className="text-xs/4 text-light-gray">USDT Perpetual</span>
         </div>
-        <button>
-          <Image src="/icons/MenuDropIcon.svg" width={20} height={20} alt="menu-icon" />
-        </button>
-      </div>
+        <Image
+          src="/icons/MenuDropIcon.svg"
+          className="opacity-80 group-hover:opacity-100 transition-opacity"
+          width={20}
+          height={20}
+          alt="menu-icon"
+        />
+      </button>
       <span className="py-5 border-l border-[#25282C]" />
       <div className="flex flex-row items-center gap-10 xl:gap-20 w-full px-[11px] font-medium text-xs/[14px] overflow-visible z-50">
         <div className="flex flex-col items-start justify-between">

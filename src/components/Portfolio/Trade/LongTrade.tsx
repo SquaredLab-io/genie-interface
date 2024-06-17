@@ -5,15 +5,25 @@ import {
   SelectTrigger,
   SelectValue
 } from "@components/ui/select";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { selected_token } from "../helper";
 import { Slider } from "@components/ui/slider";
-import { cn } from "@lib/utils";
+import { cn, isValidPositive } from "@lib/utils";
 
 const LongTrade = () => {
   const [quantity, setQuantity] = useState<string>("");
   const [selectedToken, setSelectedToken] = useState<string>("btc");
   const [sliderValue, setSliderValue] = useState<number[]>([25]);
+
+  const handleSliderInput = (event: ChangeEvent<HTMLInputElement>): void => {
+    const input = event.target.value;
+    // When value is a positive integer and not an invalid number
+    const isValid = (isValidPositive(input) && !isNaN(parseFloat(input))) || input === "";
+    // Only set the value when it's valid
+    if (isValid) {
+      setSliderValue([parseFloat(input)]);
+    }
+  };
 
   return (
     <div className="flex flex-col font-medium text-xs leading-4">
@@ -75,13 +85,18 @@ const LongTrade = () => {
               type="number"
               value={sliderValue[0]}
               placeholder={"0"}
-              onChange={(event) => {
-                setSliderValue([parseFloat(event.target.value)]);
-              }}
+              onChange={handleSliderInput}
               id="quantity"
-              className="py-0 pl-5 pr-7 w-full rounded-base bg-[#242427] placeholder:text-[#6D6D6D] text-white font-sans-manrope font-normal text-xs leading-[31px] focus:outline-none ring-1 ring-[#2F2F2F]"
+              className="py-0 pl-5 pr-6 w-full text-right rounded-base bg-[#242427] placeholder:text-[#6D6D6D] text-white font-sans-manrope font-normal text-xs leading-[31px] focus:outline-none ring-1 ring-[#2F2F2F]"
             />
-            <span className={cn("absolute", sliderValue[0] > 0 && "")}>%</span>
+            <span
+              className={cn(
+                "absolute my-auto top-0 bottom-0 h-fit right-2",
+                sliderValue[0] > 0 && ""
+              )}
+            >
+              %
+            </span>
           </div>
         </div>
       </div>
