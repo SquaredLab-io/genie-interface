@@ -32,3 +32,8 @@ export function isValidPositive(num: string): boolean {
   const reg = /^(100|[1-9]?\d)$/;
   return reg.test(num);
 }
+
+export function shortenHash(hash: string): string {
+  if (!hash) return "N/A";
+  return hash.slice(0, 4) + "..." + hash.slice(-2);
+}

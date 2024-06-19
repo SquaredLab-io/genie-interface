@@ -2,6 +2,9 @@ import { IconType } from "react-icons";
 import { FaTelegramPlane } from "react-icons/fa";
 import { FaDiscord, FaTelegram, FaXTwitter } from "react-icons/fa6";
 
+// App State
+export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION === "production";
+
 //
 // App's Metadata all at one place
 //
