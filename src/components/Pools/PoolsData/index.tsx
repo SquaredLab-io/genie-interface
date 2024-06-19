@@ -6,16 +6,140 @@ import { Token } from "@components/Portfolio/TradeData/helper";
 import { Button } from "@components/ui/button";
 import { Tabs, TabsContent, TabsTrigger } from "@components/ui/tabs";
 import AllPoolsTable from "./AllPoolsTable";
-import { allPoolsData, Amount, PoolType } from "./helper";
+import {
+  allPoolsData,
+  Amount,
+  PoolType,
+  TableOptions,
+  userPoolsData,
+  UserPoolType
+} from "./helper";
 import { cn, toDollarUnits } from "@lib/utils";
-
-enum TableOptions {
-  all = "all",
-  my = "my",
-  trxn = "trxn"
-}
+import UserPoolsTable from "./UserPoolsTable";
+import TrxnPoolsTable from "./TxnPoolsTable";
 
 export const poolsColumns: ColumnDef<PoolType>[] = [
+  {
+    id: "assets",
+    accessorKey: "assets",
+    header: () => (
+      <div className="pl-10 py-7">
+        <span>Name</span>
+      </div>
+    ),
+    cell: ({ row }) => {
+      const { assets, power, protocol, network } = row.original;
+      return (
+        <div className="whitespace-nowrap flex flex-row gap-2 text-left font-medium pl-9 py-5">
+          <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-2">
+            {assets.map((asset: Token) => (
+              <div
+                key={asset.symbol}
+                className="z-0 flex overflow-hidden ring-1 ring-white rounded-full bg-neutral-800"
+              >
+                <Image src={asset.imgSrc} alt={asset.symbol} width={26} height={26} />
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-col gap-1 text-left">
+            <div className="inline-flex gap-2">
+              <p className="font-extrabold text-sm leading-5">
+                {assets.map((asset: Token, index) => (
+                  <>
+                    <span key={index}>{asset.symbol}</span>
+                    {assets.length !== index + 1 && (
+                      <span className="text-[#9299AA] mx-1">/</span>
+                    )}
+                  </>
+                ))}
+              </p>
+              <p className="font-medium text-xs leading-3 bg-[#1A3B00] py-[4.5px] px-[9px] rounded-md">
+                p = {power}
+              </p>
+            </div>
+            <div className="font-normal text-xs leading-5 text-[#6D6D6D]">
+              <p>
+                {protocol} • {network}
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  },
+  {
+    id: "age",
+    accessorKey: "age",
+    header: () => <span className="pl-10">Age</span>,
+    cell: ({ row }) => {
+      return <span className="pl-10">{row.original.age}</span>;
+    }
+  },
+  {
+    id: "tvl",
+    accessorKey: "tvl",
+    header: () => <span className="pl-10">TVL</span>,
+    cell: ({ row }) => {
+      const tvl = parseFloat(row.getValue("tvl"));
+      return <span className="pl-10">{toDollarUnits(tvl, 2)}</span>;
+    }
+  },
+  {
+    id: "volume",
+    accessorKey: "volume",
+    header: () => <span className="pl-10">Volume (30d)</span>,
+    cell: ({ row }) => {
+      const vol: Amount = row.getValue("volume");
+      const value = parseFloat(vol.value);
+      const growth = parseFloat(vol.growth);
+      return (
+        <div className="pl-10 inline-flex gap-1">
+          <span>{toDollarUnits(value, 2)}</span>
+          <span className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}>
+            {growth}%
+          </span>
+        </div>
+      );
+    }
+  },
+  {
+    id: "fee",
+    accessorKey: "fee",
+    header: () => <span className="pl-10">Fee (30d)</span>,
+    cell: ({ row }) => {
+      const fee: Amount = row.getValue("fee");
+      const value = parseFloat(fee.value);
+      const growth = parseFloat(fee.growth);
+      return (
+        <div className="pl-10 inline-flex gap-1">
+          <span>{toDollarUnits(value, 2)}</span>
+          <span className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}>
+            {growth}%
+          </span>
+        </div>
+      );
+    }
+  },
+  {
+    id: "action",
+    accessorKey: "action",
+    header: () => <span className="pl-10">Action</span>,
+    cell: ({ row }) => {
+      return (
+        <Button
+          onClick={() => {}}
+          className="py-auto px-2 ml-11"
+          size="lg"
+          variant="ghost"
+        >
+          <HiEllipsisHorizontal size={32} color="#6D6D6D" />
+        </Button>
+      );
+    }
+  }
+];
+
+export const userPoolsColumns: ColumnDef<UserPoolType>[] = [
   {
     accessorKey: "assets",
     header: () => (
@@ -64,47 +188,22 @@ export const poolsColumns: ColumnDef<PoolType>[] = [
     }
   },
   {
-    accessorKey: "age",
-    header: () => <span className="pl-10">Age</span>,
+    accessorKey: "historical_fees",
+    header: () => <span className="pl-10">Historical Pool Fees</span>,
     cell: ({ row }) => {
-      return <span className="pl-10">{row.original.age}</span>;
+      return <span className="pl-10 opacity-50">Chart here</span>;
     }
   },
   {
-    accessorKey: "tvl",
-    header: () => <span className="pl-10">TVL</span>,
+    accessorKey: "totalAmount",
+    header: () => <span className="pl-10">Total Amount</span>,
     cell: ({ row }) => {
-      const tvl = parseFloat(row.getValue("tvl"));
-      return <span className="pl-10">{toDollarUnits(tvl, 2)}</span>;
-    }
-  },
-  {
-    accessorKey: "volume",
-    header: () => <span className="pl-10">Volume (30d)</span>,
-    cell: ({ row }) => {
-      const vol: Amount = row.getValue("volume");
-      const value = parseFloat(vol.value);
-      const growth = parseFloat(vol.growth);
+      const total: Amount = row.getValue("totalAmount");
+      const amount = parseFloat(total.value);
+      const growth = parseFloat(total.growth);
       return (
         <div className="pl-10 inline-flex gap-1">
-          <span>{toDollarUnits(value, 2)}</span>
-          <span className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}>
-            {growth}%
-          </span>
-        </div>
-      );
-    }
-  },
-  {
-    accessorKey: "fee",
-    header: () => <span className="pl-10">Fee (30d)</span>,
-    cell: ({ row }) => {
-      const fee: Amount = row.getValue("fee");
-      const value = parseFloat(fee.value);
-      const growth = parseFloat(fee.growth);
-      return (
-        <div className="pl-10 inline-flex gap-1">
-          <span>{toDollarUnits(value, 2)}</span>
+          <span>{toDollarUnits(amount, 2)}</span>
           <span className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}>
             {growth}%
           </span>
@@ -114,17 +213,27 @@ export const poolsColumns: ColumnDef<PoolType>[] = [
   },
   {
     accessorKey: "action",
-    header: () => <span className="pl-10">Action</span>,
+    header: () => <span className="sr-only">Action</span>,
     cell: ({ row }) => {
       return (
-        <Button
-          onClick={() => {}}
-          className="py-auto px-2 ml-11"
-          size="lg"
-          variant="ghost"
-        >
-          <HiEllipsisHorizontal size={32} color="#6D6D6D" />
-        </Button>
+        <div className="inline-flex gap-8">
+          <Button
+            onClick={() => {}}
+            className="py-auto px-2 ml-11 border"
+            size="lg"
+            variant="default-outline"
+          >
+            Deposit
+          </Button>
+          <Button
+            onClick={() => {}}
+            className="py-auto px-2 ml-11 border"
+            size="lg"
+            variant="outline"
+          >
+            Withdraw
+          </Button>
+        </div>
       );
     }
   }
@@ -152,6 +261,12 @@ const PoolsData = () => {
         </TabsList>
         <TabsContent value={TableOptions.all}>
           <AllPoolsTable columns={poolsColumns} data={allPoolsData} />
+        </TabsContent>
+        <TabsContent value={TableOptions.my}>
+          <UserPoolsTable columns={userPoolsColumns} data={userPoolsData} />
+        </TabsContent>
+        <TabsContent value={TableOptions.trxn}>
+          <TrxnPoolsTable columns={poolsColumns} data={allPoolsData} />
         </TabsContent>
       </Tabs>
     </div>
