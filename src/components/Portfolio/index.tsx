@@ -1,17 +1,35 @@
+// Library Imports
+import { Dispatch, SetStateAction, useState } from "react";
+import dynamic from "next/dynamic";
+import Script from "next/script";
+// Component, Util Imports
 import AssetsStatsBar from "./AssetStatsBar";
-import TradeChart from "./TradeChart";
 import MarketData from "./MarketData";
 import Trade from "./Trade";
 import TradeTable from "./TradeData";
+import { defaultWidgetProps } from "./helper";
+
+// Trading Chart Container imported dynamically
+const TradeChart = dynamic(() => import("./TradeChart").then((mod) => mod.default));
 
 const Portfolio = () => {
+  const [isScriptReady, setIsScriptReady] = useState(false);
+  const [isChartReady, setIsChartReady] = useState(false);
+
   return (
     <>
+      <Script
+        src="/static/datafeeds/udf/dist/bundle.js"
+        strategy="lazyOnload"
+        onReady={() => {
+          setIsScriptReady(true);
+        }}
+      />
       <div className="flex flex-row gap-1 my-1">
         {/* Left Side */}
         <div className="flex-1 flex flex-col gap-1">
           <AssetsStatsBar />
-          <TradeChart />
+          {isScriptReady && <TradeChart {...defaultWidgetProps} />}
         </div>
         {/* Right Side */}
         <div className="flex-1 max-w-64 xl:max-w-[400px] w-full">
