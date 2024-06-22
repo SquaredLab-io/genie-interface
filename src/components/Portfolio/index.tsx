@@ -8,6 +8,7 @@ import MarketData from "./MarketData";
 import Trade from "./Trade";
 import TradeTable from "./TradeData";
 import { defaultWidgetProps } from "./helper";
+import Image from "next/image";
 
 // Trading Chart Container imported dynamically
 const TradeChart = dynamic(() => import("./TradeChart").then((mod) => mod.default));
@@ -29,7 +30,20 @@ const Portfolio = () => {
         {/* Left Side */}
         <div className="flex-1 flex flex-col gap-1">
           <AssetsStatsBar />
-          {isScriptReady && <TradeChart {...defaultWidgetProps} />}
+          {isScriptReady ? (
+            <TradeChart {...defaultWidgetProps} />
+          ) : (
+            <div className="flex flex-col items-center h-full max-h-max justify-center bg-primary-gray">
+              <Image
+                src="/images/logo.svg"
+                height={44}
+                width={44}
+                alt="logo loading"
+                className="animate-bounce"
+              />
+              <span className="opacity-30 mt-2">preparing chart...</span>
+            </div>
+          )}
         </div>
         {/* Right Side */}
         <div className="flex-1 max-w-64 xl:max-w-[400px] w-full">

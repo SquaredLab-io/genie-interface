@@ -1,14 +1,9 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@components/ui/select";
 import { ChangeEvent, useState } from "react";
 import { selected_token } from "../helper";
 import { Slider } from "@components/ui/slider";
 import { cn, isValidPositive } from "@lib/utils";
+import { BiSolidDownArrow } from "react-icons/bi";
+import { Button } from "@components/ui/button";
 
 const LongTrade = () => {
   const [quantity, setQuantity] = useState<string>("");
@@ -56,20 +51,13 @@ const LongTrade = () => {
               id="quantity"
               className="bg-transparent p-2 w-full placeholder:text-[#6D6D6D] text-white font-sans-manrope font-semibold text-base leading-6 focus:outline-none"
             />
-            <Select
-              onValueChange={(e) => console.log("value change", e)}
-              defaultValue={selectedToken}
+            <Button
+              variant="ghost"
+              className="hover:bg-transparent px-0 flex font-sans-manrope h-10 w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
             >
-              <SelectTrigger className="max-w-fit rounded-sm bg-transparent">
-                <SelectValue placeholder={<span>Select Token</span>} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="usdt">USDT</SelectItem>
-                <SelectItem value="btc">BTC</SelectItem>
-                <SelectItem value="eth">ETH</SelectItem>
-                <SelectItem value="sol">SOL</SelectItem>
-              </SelectContent>
-            </Select>
+              <span className="text-nowrap">{selectedToken ?? "Select Token"}</span>
+              <BiSolidDownArrow className="h-3 w-3 ml-4" color="#9D9D9D" />
+            </Button>
           </div>
         </form>
         <div className="mt-1 w-full inline-flex gap-4">
@@ -101,9 +89,10 @@ const LongTrade = () => {
         </div>
       </div>
       <div className="flex flex-col gap-2 pt-[14px] pb-6 pl-2 pr-3">
-        <button className="bg-[#202832] hover:bg-[#232c38] rounded-[3px] font-sans-manrope font-bold text-[14px] leading-6 text-[#3D85C6] text-center py-[14px] transition-colors duration-200">
+        <button className="bg-[#202832] hover:bg-[#475B72] rounded-[3px] font-sans-manrope font-bold text-[14px] leading-6 text-[#3D85C6] text-center py-[14px] transition-colors duration-200">
           Long
         </button>
+        {/* Iterate this data after calculating/fetching */}
         <div className="flex flex-col gap-2">
           <p className="inline-flex items-center justify-between w-full">
             <span className="text-[#6D6D6D]">Fee (0.555)</span>

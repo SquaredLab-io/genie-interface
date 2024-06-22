@@ -23,8 +23,10 @@ const Hero = () => {
         {pools_social.map((social, index) => (
           <a
             key={social.name}
-            className="group h-11 w-11 flex items-center justify-center rounded-full border border-off-white hover:border-white transition-all hover:-translate-y-1"
+            className="group h-11 w-11 flex items-center justify-center rounded-full border border-off-white hover:border-white transition-all hover:scale-105 active:scale-100"
             href={social.href}
+            target="_blank"
+            referrerPolicy="strict-origin"
           >
             <social.icon
               size={22}

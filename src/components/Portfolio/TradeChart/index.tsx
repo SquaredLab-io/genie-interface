@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Dispatch,
-  MutableRefObject,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState
-} from "react";
+import { MutableRefObject, useEffect, useRef, useState, memo } from "react";
 import {
   ChartingLibraryWidgetOptions,
   LanguageCode,
@@ -15,14 +8,8 @@ import {
   widget
 } from "../../../../public/static/charting_library";
 
-interface isReadyProps {
-  setIsChartReady: Dispatch<SetStateAction<boolean>>;
-}
-
 const TradeChart = (props: Partial<ChartingLibraryWidgetOptions>) => {
   const [isChartReady, setIsChartReady] = useState(false);
-
-  useEffect(() => console.log("IsChart Ready!", isChartReady), [isChartReady]);
 
   const chartContainerRef =
     useRef<HTMLDivElement>() as MutableRefObject<HTMLInputElement>;
@@ -56,7 +43,7 @@ const TradeChart = (props: Partial<ChartingLibraryWidgetOptions>) => {
       debug: false,
       symbol_search_request_delay: props.symbol_search_request_delay,
       auto_save_delay: props.auto_save_delay,
-      toolbar_bg: "#16191F",
+      toolbar_bg: props.toolbar_bg,
       time_frames: props.time_frames
     };
 
@@ -64,7 +51,6 @@ const TradeChart = (props: Partial<ChartingLibraryWidgetOptions>) => {
 
     tvWidget.onChartReady(() => {
       setIsChartReady(true);
-      // tvWidget.changeTheme("dark");
       tvWidget.headerReady().then(() => {});
     });
 
@@ -81,4 +67,4 @@ const TradeChart = (props: Partial<ChartingLibraryWidgetOptions>) => {
   );
 };
 
-export default TradeChart;
+export default memo(TradeChart);
