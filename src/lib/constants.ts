@@ -44,8 +44,7 @@ export const navigation: {
     name: "Blog & Research",
     href: meta.DOCS,
     target: "_blank"
-  },
-  { name: "Feedback & Support", href: "/feedback", target: "" }
+  }
 ];
 
 // Pools page header social links
