@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { TabsList } from "@radix-ui/react-tabs";
 import { ColumnDef } from "@tanstack/react-table";
@@ -17,6 +19,16 @@ import {
 import { cn, toDollarUnits } from "@lib/utils";
 import UserPoolsTable from "./UserPoolsTable";
 import TrxnPoolsTable from "./TxnPoolsTable";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@components/ui/dropdown-menu";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 export const poolsColumns: ColumnDef<PoolType>[] = [
   {
@@ -125,15 +137,68 @@ export const poolsColumns: ColumnDef<PoolType>[] = [
     accessorKey: "action",
     header: () => <span className="pl-10">Action</span>,
     cell: ({ row }) => {
+      const { assets, power } = row.original;
       return (
-        <Button
-          onClick={() => {}}
+        <div
           className="py-auto px-2 ml-11"
-          size="lg"
-          variant="ghost"
+          // size="lg"
+          // variant="ghost"
         >
-          <HiEllipsisHorizontal size={32} color="#6D6D6D" />
-        </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <HiEllipsisHorizontal size={32} color="#6D6D6D" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="min-w-48 text-white">
+              <DropdownMenuLabel>
+                <>
+                  {assets.map((asset: Token, index) => (
+                    <span key={index} className="font-bold text-sm/5">
+                      {asset.symbol}
+                      {assets.length !== index + 1 && <span className="mx-1">/</span>}
+                    </span>
+                  ))}
+                  <span className="font-bold text-xs/5 bg-[#22C9FF24] text-[#0091FF] px-2 rounded-lg">
+                    p = {power}
+                  </span>
+                </>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Link className="inline-flex gap-2 items-center w-full" href="/pool">
+                  <Image
+                    src="/icons/StatsIcon.svg"
+                    width={16}
+                    height={16}
+                    alt="stats icon"
+                  />
+                  <span>View Stats</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link className="inline-flex gap-2 items-center w-full" href="/pool">
+                  <Image
+                    src="/icons/PlusIcon.svg"
+                    width={16}
+                    height={16}
+                    alt="add icon"
+                  />
+                  <span>Add Liquidity</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link className="inline-flex gap-2 items-center w-full" href="/">
+                  <Image
+                    src="/icons/TradeIcon.svg"
+                    width={16}
+                    height={16}
+                    alt="trade icon"
+                  />
+                  <span>Trade</span>
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       );
     }
   }

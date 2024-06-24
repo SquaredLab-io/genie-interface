@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ChartOptions,
   ColorType,
@@ -6,44 +6,11 @@ import {
   DeepPartial,
   LineStyle
 } from "lightweight-charts";
-
-const generateRandomData = (
-  startDate: string,
-  days: number,
-  minValue: number,
-  maxValue: number
-) => {
-  const data = [];
-  let currentDate = new Date(startDate);
-
-  for (let i = 0; i < days; i++) {
-    const value = (Math.random() * (maxValue - minValue) + minValue).toFixed(2);
-    data.push({
-      time: currentDate.toISOString().split("T")[0],
-      value: parseFloat(value)
-    });
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
-
-  return data;
-};
+import { generateRandomData } from "./helper";
 
 const PoolChart = () => {
   const chartContainerRef = useRef(null);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const data = [
-    { time: "2018-12-22", value: 32.51 },
-    { time: "2018-12-23", value: 31.11 },
-    { time: "2018-12-24", value: 27.02 },
-    { time: "2018-12-25", value: 27.32 },
-    { time: "2018-12-26", value: 25.17 },
-    { time: "2018-12-27", value: 28.89 },
-    { time: "2018-12-28", value: 25.46 },
-    { time: "2018-12-29", value: 23.92 },
-    { time: "2018-12-30", value: 22.68 },
-    { time: "2018-12-31", value: 22.67 }
-  ];
+  const [isLoadingChart, setIsLoadingChart] = useState(false);
 
   // A useEffect that creates the chart based on configuration on load
   useEffect(() => {
@@ -61,7 +28,7 @@ const PoolChart = () => {
         background: { type: ColorType.Solid, color: colors.backgroundColor },
         textColor: colors.textColor
       },
-      width: chartContainerRef?.current.clientWidth,
+      width: chartContainerRef.current?.clientWidth,
       height: 417,
       autoSize: true,
       grid: {
@@ -75,9 +42,12 @@ const PoolChart = () => {
     };
 
     if (chartContainerRef.current !== null) {
+      // chart prep start
+      setIsLoadingChart(true);
+
       const handleResize = () => {
         chart.applyOptions({
-          width: chartContainerRef.current.clientWidth
+          width: chartContainerRef.current?.clientWidth
         });
       };
 
@@ -106,18 +76,28 @@ const PoolChart = () => {
 
       window.addEventListener("resize", handleResize);
 
+      setIsLoadingChart(false);
+
       return () => {
         window.removeEventListener("resize", handleResize);
         chart.remove();
       };
     }
-  }, [data]);
+  }, []);
+
+  useEffect(() => console.log("isloading", isLoadingChart), [isLoadingChart]);
 
   return (
-    <div
-      className="size-full border-dotted border-t border-[#2A2C30]"
-      ref={chartContainerRef}
-    />
+    <>
+      {isLoadingChart ? (
+        <p>preparing chart...</p>
+      ) : (
+        <div
+          className="size-full border-dotted border-t border-[#2A2C30]"
+          ref={chartContainerRef}
+        />
+      )}
+    </>
   );
 };
 

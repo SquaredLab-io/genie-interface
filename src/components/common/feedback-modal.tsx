@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import ModalWrapper from "@components/common/Modal";
 import { Textarea } from "@components/ui/textarea";
