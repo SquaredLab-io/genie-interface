@@ -1,9 +1,9 @@
 import { ChangeEvent, useState } from "react";
 import { selected_token } from "../helper";
-import { Slider } from "@components/ui/slider";
-import { cn, isValidPositive } from "@lib/utils";
+import { isValidPositive } from "@lib/utils";
 import { BiSolidDownArrow } from "react-icons/bi";
 import { Button } from "@components/ui/button";
+import TokenSlider from "./TokenSlider";
 
 const LongTrade = () => {
   const [quantity, setQuantity] = useState<string>("");
@@ -60,33 +60,12 @@ const LongTrade = () => {
             </Button>
           </div>
         </form>
-        <div className="mt-1 w-full inline-flex gap-4">
-          <Slider
-            defaultValue={sliderValue}
-            value={sliderValue[0] ? sliderValue : [0]}
-            max={100}
-            step={1}
-            onValueChange={(e) => setSliderValue(e)}
-          />
-          <div className="relative max-w-16">
-            <input
-              type="number"
-              value={sliderValue[0]}
-              placeholder={"0"}
-              onChange={handleSliderInput}
-              id="quantity"
-              className="py-0 pl-5 pr-6 w-full text-right rounded-base bg-[#242427] placeholder:text-[#6D6D6D] text-white font-sans-manrope font-normal text-xs leading-[31px] focus:outline-none ring-1 ring-[#2F2F2F]"
-            />
-            <span
-              className={cn(
-                "absolute my-auto top-0 bottom-0 h-fit right-2",
-                sliderValue[0] > 0 && ""
-              )}
-            >
-              %
-            </span>
-          </div>
-        </div>
+        {/* Slider Component */}
+        <TokenSlider
+          value={sliderValue}
+          setValue={setSliderValue}
+          handler={handleSliderInput}
+        />
       </div>
       <div className="flex flex-col gap-2 pt-[14px] pb-6 pl-2 pr-3">
         <button className="bg-[#202832] hover:bg-[#475B72] rounded-[3px] font-sans-manrope font-bold text-[14px] leading-6 text-[#3D85C6] text-center py-[14px] transition-colors duration-200">

@@ -6,7 +6,9 @@ import {
   SelectValue
 } from "@components/ui/select";
 import { selected_token } from "../helper";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
+import TokenSlider from "./TokenSlider";
+import { isValidPositive } from "@lib/utils";
 
 // Dummy tokens list
 const tokens = ["usdt", "btc", "eth", "sol"];
@@ -14,6 +16,17 @@ const tokens = ["usdt", "btc", "eth", "sol"];
 const ShortTrade = () => {
   const [quantity, setQuantity] = useState("");
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
+  const [sliderValue, setSliderValue] = useState<number[]>([25]);
+
+  const handleSliderInput = (event: ChangeEvent<HTMLInputElement>): void => {
+    const input = event.target.value;
+    // When value is a positive integer and not an invalid number
+    const isValid = (isValidPositive(input) && !isNaN(parseFloat(input))) || input === "";
+    // Only set the value when it's valid
+    if (isValid) {
+      setSliderValue([parseFloat(input)]);
+    }
+  };
 
   return (
     <div className="flex flex-col font-medium text-xs leading-4">
@@ -63,6 +76,12 @@ const ShortTrade = () => {
             </Select>
           </div>
         </form>
+        {/* Slider Component */}
+        <TokenSlider
+          value={sliderValue}
+          setValue={setSliderValue}
+          handler={handleSliderInput}
+        />
       </div>
       <div className="flex flex-col gap-2 pt-[14px] pb-6 pl-2 pr-3">
         <button className="bg-[#202832] hover:bg-[#232c38] rounded-[3px] font-sans-manrope font-bold text-[14px] leading-6 text-[#3D85C6] text-center py-[14px] transition-colors duration-200">

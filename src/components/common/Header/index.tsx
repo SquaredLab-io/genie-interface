@@ -14,11 +14,8 @@ const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   return (
-    <header>
-      <nav
-        className="mx-auto flex bg-primary-gray justify-start items-center gap-x-12 py-3 px-4"
-        aria-label="Global"
-      >
+    <header className="flex flex-row py-3 px-4 justify-between bg-primary-gray">
+      <nav className="flex justify-start items-center gap-x-12" aria-label="Global">
         <div className="flex lg:flex-1 max-w-fit">
           <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Genie | SquaredLabs</span>
@@ -55,8 +52,8 @@ const Header = () => {
             Feedback & Support
           </button>
         </div>
-        <ConnectWallet />
       </nav>
+      <ConnectWallet />
       <FeedbackModal open={isModalOpen} setOpen={setIsModalOpen} />
     </header>
   );

@@ -1,4 +1,4 @@
-type Props = React.SVGProps<SVGSVGElement>;
+import { Props } from "./type";
 
 export default function SpinnerIcon(props: Props) {
   return (
