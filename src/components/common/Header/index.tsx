@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import Link from "next/link";
 import ConnectWallet from "../ConnectWallet";
-import FeedbackModal from "../feedback-modal";
+import FeedbackModal from "./feedback-modal";
 
 const Header = () => {
   const pathname = usePathname();

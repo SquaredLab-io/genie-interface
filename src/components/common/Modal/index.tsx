@@ -13,7 +13,7 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   trigger?: React.ReactNode;
-  title?: string;
+  title?: string | React.ReactElement;
   description?: string;
   className?: string;
   footer?: React.ReactNode;
