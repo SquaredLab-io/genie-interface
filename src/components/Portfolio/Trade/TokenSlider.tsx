@@ -25,7 +25,7 @@ const TokenSlider = ({ value, setValue, handler }: SliderProps) => {
           placeholder={"0"}
           onChange={handler}
           id="quantity"
-          className="py-0 pl-5 pr-6 w-full text-right rounded-base bg-[#242427] placeholder:text-[#6D6D6D] text-white font-sans-manrope font-normal text-xs leading-[31px] focus:outline-none ring-1 ring-[#2F2F2F]"
+          className="py-0 pl-4 pr-6 w-full text-right rounded-base bg-[#242427] placeholder:text-[#6D6D6D] text-white font-sans-manrope font-normal text-xs leading-[31px] focus:outline-none ring-1 ring-[#2F2F2F]"
         />
         <span
           className={cn(
