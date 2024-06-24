@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import {
   ChartOptions,
   ColorType,
@@ -5,7 +6,27 @@ import {
   DeepPartial,
   LineStyle
 } from "lightweight-charts";
-import { useEffect, useMemo, useRef } from "react";
+
+const generateRandomData = (
+  startDate: string,
+  days: number,
+  minValue: number,
+  maxValue: number
+) => {
+  const data = [];
+  let currentDate = new Date(startDate);
+
+  for (let i = 0; i < days; i++) {
+    const value = (Math.random() * (maxValue - minValue) + minValue).toFixed(2);
+    data.push({
+      time: currentDate.toISOString().split("T")[0],
+      value: parseFloat(value)
+    });
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return data;
+};
 
 const PoolChart = () => {
   const chartContainerRef = useRef(null);
@@ -28,7 +49,8 @@ const PoolChart = () => {
   useEffect(() => {
     const colors = {
       backgroundColor: "#16191F",
-      lineColor: "#FF7300",
+      lineColorOne: "#FF7300",
+      lineColorTwo: "#0099FF",
       textColor: "white"
       // areaTopColor: "#2962FF",
       // areaBottomColor: "rgba(41, 98, 255, 0.28)"
@@ -62,12 +84,25 @@ const PoolChart = () => {
       const chart = createChart(chartContainerRef.current, chartOptions);
       chart.timeScale().fitContent();
 
-      const newSeries = chart.addLineSeries({
-        baseLineColor: colors.lineColor,
+      // Series 1
+      const newSeries1 = chart.addLineSeries({
+        color: colors.lineColorOne,
+        priceLineColor: colors.lineColorOne,
         baseLineStyle: LineStyle.Solid,
         baseLineWidth: 3
       });
-      newSeries.setData(data);
+      const newSeries1data = generateRandomData("2018-12-01", 31, 20, 40);
+      newSeries1.setData(newSeries1data);
+
+      // Series 2
+      const newSeries2 = chart.addLineSeries({
+        color: colors.lineColorTwo,
+        priceLineColor: colors.lineColorTwo,
+        baseLineStyle: LineStyle.Solid,
+        baseLineWidth: 3
+      });
+      const newSeries2data = generateRandomData("2018-12-01", 31, 10, 70);
+      newSeries2.setData(newSeries2data);
 
       window.addEventListener("resize", handleResize);
 
