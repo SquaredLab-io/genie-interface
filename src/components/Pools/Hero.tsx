@@ -1,5 +1,6 @@
 import { Button } from "@components/ui/button";
 import { pools_social } from "@lib/constants";
+import Link from "next/link";
 
 const Hero = () => {
   return (
@@ -16,7 +17,9 @@ const Hero = () => {
         </p>
         <div className="inline-flex justify-center md:justify-start items-center gap-4 mt-8">
           <Button>Create Pools</Button>
-          <Button variant="outline">Add Liquidity</Button>
+          <Link href="/pool">
+            <Button variant="outline">Add Liquidity</Button>
+          </Link>
         </div>
       </div>
       <div className="flex flex-row md:flex-col gap-7 max-w-fit h-full">
