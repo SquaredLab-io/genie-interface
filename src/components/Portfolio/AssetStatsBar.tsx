@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { cn } from "@lib/utils";
 import { price_day_update, selected_token, token_price } from "./helper";
-import TextGradient from "@components/common/TextGradient";
 
 const AssetsStatsBar = () => {
   return (

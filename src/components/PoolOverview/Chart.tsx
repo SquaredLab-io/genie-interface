@@ -28,7 +28,7 @@ const PoolChart = () => {
         background: { type: ColorType.Solid, color: colors.backgroundColor },
         textColor: colors.textColor
       },
-      width: chartContainerRef.current?.clientWidth,
+      width: (chartContainerRef.current as any)?.clientWidth,
       height: 417,
       autoSize: true,
       grid: {
@@ -47,7 +47,7 @@ const PoolChart = () => {
 
       const handleResize = () => {
         chart.applyOptions({
-          width: chartContainerRef.current?.clientWidth
+          width: (chartContainerRef.current as any)?.clientWidth
         });
       };
 

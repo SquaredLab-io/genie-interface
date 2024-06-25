@@ -10,9 +10,22 @@ export const config = createConfig(
     // NETWORKS INFO
     chains: [baseSepolia, base],
     connectors: [
-      metaMask(),
+      metaMask({
+        dappMetadata: {
+          name: meta.APP_NAME,
+          url: meta.URL
+          // iconUrl: "/icon.svg" // put a icon URL here that starts with https://
+        }
+      }),
       walletConnect({
-        projectId: WALLET_CONNECT_PROJECT_ID
+        projectId: WALLET_CONNECT_PROJECT_ID,
+        showQrModal: true,
+        metadata: {
+          name: meta.APP_NAME,
+          description: meta.DESCRIPTION,
+          url: meta.URL,
+          icons: ["/icon.svg"]
+        }
       }),
       coinbaseWallet()
     ],
