@@ -6,7 +6,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: "https://squaredlabs.io",
       lastModified: new Date(),
       changeFrequency: "always",
-      priority: 1,
-    },
+      priority: 1
+    }
   ];
 }
