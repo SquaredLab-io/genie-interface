@@ -5,14 +5,14 @@ import {
 
 // Chart widget props
 export const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
-  symbol: "AAPL",
+  symbol: "Bitfinex:BTC/USD",
   interval: "1D" as ResolutionString,
   library_path: "/static/charting_library/",
   timezone: "Etc/UTC",
   locale: "en",
   charts_storage_url: "https://saveload.tradingview.com",
   charts_storage_api_version: "1.1",
-  client_id: "tradingview.com",
+  client_id: "squaredlabs.io",
   user_id: "public_user_id",
   fullscreen: false,
   autosize: true,

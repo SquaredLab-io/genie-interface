@@ -19,7 +19,7 @@
 # misc
 .DS_Store
 *.pem
-/public/static
+/public/static/datafeeds
 
 # debug
 npm-debug.log*
