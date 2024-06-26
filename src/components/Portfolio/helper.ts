@@ -5,7 +5,7 @@ import {
 
 // Chart widget props
 export const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
-  symbol: "Bitfinex:BTC/USD",
+  symbol: "Kraken:USDC/USDT",
   interval: "1D" as ResolutionString,
   library_path: "/static/charting_library/",
   timezone: "Etc/UTC",

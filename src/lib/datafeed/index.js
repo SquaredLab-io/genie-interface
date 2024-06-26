@@ -10,11 +10,11 @@ const configurationData = {
 
   // The `exchanges` arguments are used for the `searchSymbols` method if a user selects the exchange
   exchanges: [
-    {
-      value: "Bitfinex",
-      name: "Bitfinex",
-      desc: "Bitfinex"
-    },
+    // {
+    //   value: "Bitfinex",
+    //   name: "Bitfinex",
+    //   desc: "Bitfinex"
+    // },
     {
       value: "Kraken",
       // Filter name
@@ -40,6 +40,15 @@ async function getAllSymbols() {
   for (const exchange of configurationData.exchanges) {
     const pairs = data.Data[exchange.value].pairs;
 
+    // {
+    //   description: "ZKSYNC/USDT";
+    //   exchange: "Bitfinex";
+    //   full_name: "Bitfinex:ZKSYNC/USDT";
+    //   symbol: "ZKSYNC/USDT";
+    //   type: "crypto";
+    // }
+    console.log("pairs", pairs);
+
     for (const leftPairPart of Object.keys(pairs)) {
       const symbols = pairs[leftPairPart].map((rightPairPart) => {
         const symbol = generateSymbol(exchange.value, leftPairPart, rightPairPart);
@@ -54,6 +63,7 @@ async function getAllSymbols() {
       allSymbols = [...allSymbols, ...symbols];
     }
   }
+  console.log("AllSymbols", allSymbols);
   return allSymbols;
 }
 

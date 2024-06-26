@@ -12,6 +12,7 @@ import {
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
+import { useEffect } from "react";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -61,8 +62,8 @@ const OpenPositionsTable = <TData, TValue>({
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={columns.length} className="h-24 text-center">
-              No results.
+            <TableCell colSpan={columns.length} className="h-96 text-center">
+              No Open Positions.
             </TableCell>
           </TableRow>
         )}

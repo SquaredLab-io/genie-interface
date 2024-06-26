@@ -4,7 +4,7 @@ import Trade from "@components/Portfolio";
 
 export default function Home() {
   return (
-    <main className="overflow-hidden">
+    <main className="page-center">
       <Trade />
     </main>
   );

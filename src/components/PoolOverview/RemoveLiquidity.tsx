@@ -12,7 +12,7 @@ import {
 import { HiChevronDown } from "react-icons/hi2";
 import { CONTRACT_ADDRESSES } from "@lib/constants";
 import { balanceOfAbi, PotentiaAbi } from "@lib/abis";
-import { Address } from "viem";
+import { Address, formatUnits } from "viem";
 
 const RemoveLiquidity = () => {
   const { PTOKEN_ADDR, POTENTIA_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
@@ -36,8 +36,8 @@ const RemoveLiquidity = () => {
   const {
     data: pTokenBalance,
     isLoading: isBalanceLoading,
-    isError,
-    error
+    isError: isBalanceError,
+    error: balanceError
   } = useReadContract({
     abi: balanceOfAbi,
     address: PTOKEN_ADDR,
@@ -102,21 +102,30 @@ const RemoveLiquidity = () => {
             <span className="font-normal text-base/5">$0</span>
           </div>
         </div>
-        {isBalanceLoading ? (
+        {/* {isBalanceLoading ? (
           <p>isloading...</p>
         ) : pTokenBalance ? (
-          <p>{pTokenBalance.toString()}</p>
+          <p>{formatUnits(pTokenBalance, 18)}</p>
         ) : isError ? (
           <p>{error.message}</p>
         ) : (
           <p>nothing</p>
-        )}
+        )} */}
         <div className="px-5 py-4 inline-flex items-center justify-between w-full">
           <div className="inline-flex items-center gap-3">
             <Image src="/icons/ethereum.svg" alt="Asset icon" height={42} width={42} />
             <p className="flex flex-col justify-between font-normal text-base/5 text-[#8F9BAA]">
-              <span>ETH</span>
-              <span className="text-xs/4">Balance: 0</span>
+              <span>pToken</span>
+              <span className="text-xs/4">
+                Balance:{" "}
+                {isLoading
+                  ? "Fetching..."
+                  : isBalanceError
+                    ? "Fetching falied!"
+                    : pTokenBalance
+                      ? parseFloat(formatUnits(pTokenBalance as any, 18)).toFixed(4)
+                      : ""}
+              </span>
             </p>
           </div>
           <button className="p-2 -m-2 rounded-full">
