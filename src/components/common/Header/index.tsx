@@ -22,7 +22,7 @@ const Header = () => {
             <Image
               width={32}
               height={32}
-              className="h-8 w-auto"
+              className="h-auto w-auto"
               src="/images/logo_text.svg"
               alt="squaredlabs logo"
             />

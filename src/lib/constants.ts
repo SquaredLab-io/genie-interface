@@ -1,6 +1,7 @@
 import { IconType } from "react-icons";
 import { FaTelegramPlane } from "react-icons/fa";
-import { FaDiscord, FaTelegram, FaXTwitter } from "react-icons/fa6";
+import { FaDiscord, FaXTwitter } from "react-icons/fa6";
+import { Address } from "viem";
 
 // App State
 export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION === "production";
@@ -73,3 +74,10 @@ export const pools_social: {
     target: "_blank"
   }
 ];
+
+export const CONTRACT_ADDRESSES = {
+  WETH_ADDR: "0x3e36708aa8b5c027cb3a77f36c4ebdfb689b3bd6" as Address,
+  POTENTIA_FACTORY_ADDR: "0xff5de5c7aa95ac5f36ec0ec16f376281f505c74c" as Address,
+  POTENTIA_POOL_ADDR: "0x762c9b8fa27546c0ddc3e49883fc14bb71723eeb" as Address,
+  PTOKEN_ADDR: "0x56169607c23501d4ad5ffd16a5a164d007de57f8" as Address
+};

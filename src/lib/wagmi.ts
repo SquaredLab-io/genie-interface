@@ -19,7 +19,7 @@ export const config = createConfig(
       }),
       walletConnect({
         projectId: WALLET_CONNECT_PROJECT_ID,
-        showQrModal: true,
+        showQrModal: false,
         metadata: {
           name: meta.APP_NAME,
           description: meta.DESCRIPTION,

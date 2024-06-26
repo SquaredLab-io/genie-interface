@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import DropDownIcon from "@components/icons/DropDownIcon";
@@ -44,9 +45,9 @@ const PoolOverview = () => {
       {/* Header */}
       <button className="whitespace-nowrap flex flex-row items-center gap-3 text-left font-medium rounded-full">
         <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-3">
-          {assets.map((asset: Token) => (
+          {assets.map((asset: Token, index) => (
             <div
-              key={asset.symbol}
+              key={index}
               className="z-0 flex overflow-hidden ring-1 ring-white rounded-full bg-neutral-800"
             >
               <Image src={asset.imgSrc} alt={asset.symbol} width={44} height={44} />
@@ -73,9 +74,9 @@ const PoolOverview = () => {
         <Label text="APR : 2.61%" />
         <Label text="Fee : 0.3%" />
         <Label text="Network : Ethereum" />
-        {assets.map((asset) => (
+        {assets.map((asset, index) => (
           <Label
-            key={asset.symbol}
+            key={index}
             text={asset.symbol}
             imgSrc={asset.imgSrc}
             link="0x12321..."
