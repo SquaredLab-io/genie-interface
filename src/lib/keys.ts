@@ -4,3 +4,5 @@ if (!WALLET_CONNECT_PROJECT_ID) {
 }
 
 export const API_KEY = process.env.NEXT_PUBLIC_API_KEY as string;
+
+export const ALCHEMY_KEY = process.env.NEXT_PUBLIC_ALCHEMY_KEY as string;

@@ -1,13 +1,9 @@
 "use client";
 
-import { ConnectKitButton } from "connectkit";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const ConnectWallet = () => {
-  return (
-    <>
-      <ConnectKitButton label="Connect" />
-    </>
-  );
+  return <ConnectButton label="Connect" showBalance={false} />;
 };
 
 export default ConnectWallet;

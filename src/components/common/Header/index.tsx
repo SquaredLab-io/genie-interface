@@ -2,12 +2,12 @@
 
 import { memo, useState } from "react";
 import Image from "next/image";
-import { navigation } from "@lib/constants";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
-import Link from "next/link";
-import ConnectWallet from "../ConnectWallet";
+import { navigation } from "@lib/constants";
 import FeedbackModal from "./feedback-modal";
+import ConnectWallet from "../ConnectWallet";
 
 const Header = () => {
   const pathname = usePathname();

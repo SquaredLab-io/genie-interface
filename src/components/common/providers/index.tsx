@@ -10,8 +10,10 @@ import {
 } from "@urql/next";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
-import { ConnectKitProvider } from "connectkit";
 import { config } from "@lib/wagmi";
+import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import "@rainbow-me/rainbowkit/styles.css";
+import { baseSepolia } from "viem/chains";
 
 const Providers: React.FC<PropsWithChildren> = ({ children }) => {
   // React Query client setup
@@ -35,41 +37,24 @@ const Providers: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <ConnectKitProvider
-          theme="midnight"
-          options={{
-            embedGoogleFonts: true,
-            disclaimer: connectDisclaimer
-          }}
+        <RainbowKitProvider
+          initialChain={baseSepolia}
+          modalSize="compact"
+          theme={darkTheme({
+            accentColor: "#0099FF",
+            accentColorForeground: "#FFFFFF",
+            borderRadius: "small",
+            overlayBlur: "small",
+            fontStack: "system"
+          })}
         >
           <UrqlProvider client={client} ssr={ssr}>
             {children}
           </UrqlProvider>
-        </ConnectKitProvider>
+        </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
 };
-
-const connectDisclaimer = (
-  <>
-    By continuing, you agree to the{" "}
-    <a
-      target="_blank"
-      rel="noopener noreferrer"
-      href="https://en.wikipedia.org/wiki/Terms_of_service"
-    >
-      Terms of Service
-    </a>{" "}
-    and{" "}
-    <a
-      target="_blank"
-      rel="noopener noreferrer"
-      href="https://en.wikipedia.org/wiki/Privacy_policy"
-    >
-      Privacy Policy
-    </a>
-  </>
-);
 
 export default Providers;
