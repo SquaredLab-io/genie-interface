@@ -16,7 +16,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
     "@rainbow-me/rainbowkit": "^2.1.2",
-    "@squaredlab-io/sdk": "npm:@SquaredLab-io/sdk@^1.0.6",
+    "@squaredlab-io/sdk": "npm:@SquaredLab-io/sdk@^1.0.8",
     "@tanstack/react-query": "^5.45.1",
     "@tanstack/react-table": "^8.17.3",
     "@urql/next": "^1.1.1",
@@ -39,7 +39,7 @@
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "urql": "^4.1.0",
-    "viem": "2.x",
+    "viem": "^2.16.2",
     "wagmi": "^2.10.4",
     "zustand": "^4.5.2"
   },

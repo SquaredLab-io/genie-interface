@@ -2,9 +2,13 @@ import { IconType } from "react-icons";
 import { FaTelegramPlane } from "react-icons/fa";
 import { FaDiscord, FaXTwitter } from "react-icons/fa6";
 import { Address } from "viem";
+import { ALCHEMY_KEY } from "./keys";
 
 // App State
 export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION === "production";
+
+// Base Sepolia RPC URL
+export const BASE_SEPOLIA_RPC = `https://base-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}`;
 
 //
 // App's Metadata all at one place

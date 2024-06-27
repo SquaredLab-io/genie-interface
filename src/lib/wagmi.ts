@@ -2,7 +2,7 @@ import { ALCHEMY_KEY, WALLET_CONNECT_PROJECT_ID } from "@lib/keys";
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { http } from "wagmi";
 import { baseSepolia } from "wagmi/chains";
-import { meta } from "./constants";
+import { BASE_SEPOLIA_RPC, meta } from "./constants";
 import {
   metaMaskWallet,
   coinbaseWallet,
@@ -14,7 +14,7 @@ coinbaseWallet.preference = "smartWalletOnly";
 export const config = getDefaultConfig({
   chains: [baseSepolia],
   transports: {
-    [baseSepolia.id]: http(`https://base-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}`)
+    [baseSepolia.id]: http(BASE_SEPOLIA_RPC)
   },
   wallets: [
     {
