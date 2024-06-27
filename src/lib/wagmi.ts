@@ -5,7 +5,6 @@ import { baseSepolia } from "wagmi/chains";
 import { meta } from "./constants";
 import {
   metaMaskWallet,
-  rainbowWallet,
   coinbaseWallet,
   walletConnectWallet
 } from "@rainbow-me/rainbowkit/wallets";
