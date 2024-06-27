@@ -10,6 +10,8 @@ import {
   walletConnectWallet
 } from "@rainbow-me/rainbowkit/wallets";
 
+coinbaseWallet.preference = "smartWalletOnly";
+
 export const config = getDefaultConfig({
   chains: [baseSepolia],
   transports: {
@@ -18,7 +20,7 @@ export const config = getDefaultConfig({
   wallets: [
     {
       groupName: "Suggested",
-      wallets: [metaMaskWallet, walletConnectWallet, coinbaseWallet, rainbowWallet]
+      wallets: [metaMaskWallet, walletConnectWallet, coinbaseWallet]
     }
   ],
   ssr: false, // deafult
@@ -29,5 +31,11 @@ export const config = getDefaultConfig({
   appName: meta.APP_NAME,
   appDescription: meta.DESCRIPTION,
   appUrl: meta.URL,
-  appIcon: "/images/logo.svg"
+  appIcon: meta.LOGO
 });
+
+declare module "wagmi" {
+  interface Register {
+    config: typeof config;
+  }
+}

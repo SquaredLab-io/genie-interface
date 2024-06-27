@@ -8,6 +8,7 @@ import clsx from "clsx";
 import { navigation } from "@lib/constants";
 import FeedbackModal from "./feedback-modal";
 import ConnectWallet from "../ConnectWallet";
+import { CoinbaseCreateWallet } from "../ConnectWallet/CoinbaseCreateWallet";
 
 const Header = () => {
   const pathname = usePathname();
@@ -53,7 +54,10 @@ const Header = () => {
           </button>
         </div>
       </nav>
-      <ConnectWallet />
+      <div className="inline-flex gap-6">
+        <CoinbaseCreateWallet />
+        <ConnectWallet />
+      </div>
       <FeedbackModal open={isModalOpen} setOpen={setIsModalOpen} />
     </header>
   );
