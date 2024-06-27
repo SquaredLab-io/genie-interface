@@ -17,6 +17,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "forceConsistentCasingInFileNames": true,
     "plugins": [
       {
         "name": "next"
@@ -33,7 +34,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "build/types/**/*.ts"
+    "build/types/**/*.ts",
+    "src/**/*"
   ],
   "exclude": [
     "/node_modules"
