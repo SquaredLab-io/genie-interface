@@ -44,7 +44,7 @@ export default function toUnits(num: number, decimals: number): string {
 }
 
 export function isValidPositive(num: string): boolean {
-  // Regex for hole Numbers. x => {x: [0, ]}
+  // Regex for Whole Numbers. x => {x: [0, ]}
   const reg = /^(100|[1-9]?\d)$/;
   return reg.test(num);
 }

@@ -1,45 +1,133 @@
+"use client";
+
+// Library Imports
+import { FC, useEffect, useState } from "react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@components/ui/select";
-import { selected_token } from "../helper";
-import { ChangeEvent, useState } from "react";
+  useAccount,
+  useBalance,
+  useWaitForTransactionReceipt,
+  useWriteContract
+} from "wagmi";
+import { BiSolidDownArrow } from "react-icons/bi";
+import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
+// Component, Util Imports
+import { selected_token, underlyingTokens } from "../helper";
 import TokenSlider from "./TokenSlider";
-import { isValidPositive } from "@lib/utils";
+import { getAccountBalance } from "@lib/utils/getAccountBalance";
+import { Button } from "@components/ui/button";
+import { CONTRACT_ADDRESSES } from "@lib/constants";
+import { WethABi } from "@lib/abis";
+import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
+import { PositionType } from "@lib/types/enums";
+import { sliderValueHandler } from "@lib/utils/sliderValueHandler";
 
-// Dummy tokens list
-const tokens = ["usdt", "btc", "eth", "sol"];
+interface PropsType {
+  potentia?: PotentiaSdk;
+}
 
-const ShortTrade = () => {
+const ShortTrade: FC<PropsType> = ({ potentia }) => {
+  const { POTENTIA_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
+
   const [quantity, setQuantity] = useState("");
-  const [selectedToken, setSelectedToken] = useState(tokens[0]);
   const [sliderValue, setSliderValue] = useState<number[]>([25]);
 
-  const handleSliderInput = (event: ChangeEvent<HTMLInputElement>): void => {
-    const input = event.target.value;
-    // When value is a positive integer and not an invalid number
-    const isValid = (isValidPositive(input) && !isNaN(parseFloat(input))) || input === "";
-    // Only set the value when it's valid
-    if (isValid) {
-      setSliderValue([parseFloat(input)]);
+  // Contract Hooks
+  const { address } = useAccount();
+  const { data: userBalance, isLoading: isBalLoading } = useBalance({
+    address,
+    token: WETH_ADDR
+  });
+
+  const { data: positionData, isFetching: isPositionFetching } = useCurrentPosition(
+    PositionType.short
+  );
+
+  // Write Hook => Token Approval
+  const {
+    data: approvalData,
+    writeContractAsync: writeApproveToken,
+    error: approveError,
+    isPending: isApprovePending
+  } = useWriteContract();
+
+  /**
+   * This handler method approves signers WETH_ADDR tokens to be spent on Potentia Protocol
+   */
+  const approveHandler = async () => {
+    const _amount = parseFloat(quantity) * 10 ** 18;
+    try {
+      await writeApproveToken({
+        abi: WethABi,
+        address: WETH_ADDR,
+        functionName: "approve",
+        args: [
+          POTENTIA_POOL_ADDR,
+          BigInt(_amount).toString() // Approving as much as input amount only
+        ]
+      });
+    } catch (error) {
+      console.log("error while approving", approveError);
     }
   };
+
+  // wait for approval transaction
+  const {
+    isSuccess: isTxnSuccess,
+    isLoading: isTxnLoading,
+    isError: isTxnError
+  } = useWaitForTransactionReceipt({
+    hash: approvalData
+  });
+
+  /**
+   * Handler for Opening Long Position
+   */
+  const openShortPositionHandler = async () => {
+    const _amount = parseFloat(quantity) * 10 ** 18;
+
+    try {
+      const txnHash = await potentia?.openPosition(
+        POTENTIA_POOL_ADDR, // poolAddress
+        BigInt(_amount).toString(), // amt
+        false // isLong
+      );
+      console.log("txnHash", txnHash);
+    } catch (error) {
+      console.log("// error in open_short", error);
+    } finally {
+      console.log("open_short_position amount", _amount);
+    }
+  };
+
+  useEffect(() => {
+    // Executes if Approve Successful
+    console.log("approve txn final status", isTxnSuccess);
+    if (isTxnSuccess) {
+      console.log("Token is approved for the selected amount!");
+      openShortPositionHandler();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isTxnSuccess]);
 
   return (
     <div className="flex flex-col font-medium text-xs leading-4">
       <div className="flex flex-col gap-2 pt-[14px] pb-2 pl-2 pr-3 border-b border-[#303030]">
         <p className="inline-flex items-center justify-between w-full">
           <span className="text-[#949E9C]">Balance</span>
-          <span className="font-normal">$0.00</span>
+          <span className="font-normal">
+            {getAccountBalance(userBalance, isBalLoading)}
+          </span>
         </p>
         <p className="inline-flex items-center justify-between w-full">
           <span className="text-[#949E9C]">Current Position</span>
-          <span className="font-normal">
-            125 BTC<sup>{selected_token.power}</sup>
-          </span>
+          {isPositionFetching ? (
+            <span>Fetching...</span>
+          ) : (
+            <span className="font-normal">
+              {positionData.formatted} {underlyingTokens[0]}
+              <sup>{selected_token.power}</sup>
+            </span>
+          )}
         </p>
         <form
           className="flex flex-col w-full gap-2 mt-3"
@@ -59,32 +147,29 @@ const ShortTrade = () => {
               id="quantity"
               className="bg-transparent p-2 w-full placeholder:text-[#6D6D6D] text-white font-sans-manrope font-semibold text-base leading-6 focus:outline-none"
             />
-            <Select
-              onValueChange={(e) => console.log("value change", e)}
-              defaultValue={selectedToken}
+            <Button
+              variant="ghost"
+              className="hover:bg-transparent px-0 flex font-sans-manrope h-10 w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
             >
-              <SelectTrigger className="max-w-fit rounded-sm bg-transparent">
-                <SelectValue placeholder={<span>Select Token</span>} />
-              </SelectTrigger>
-              <SelectContent>
-                {tokens.map((token) => (
-                  <SelectItem key={token} value={token}>
-                    {token.toUpperCase()}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              <span className="text-nowrap">{underlyingTokens[0]}</span>
+              <BiSolidDownArrow className="h-3 w-3 ml-4" color="#9D9D9D" />
+            </Button>
           </div>
         </form>
         {/* Slider Component */}
         <TokenSlider
           value={sliderValue}
           setValue={setSliderValue}
-          handler={handleSliderInput}
+          handler={(event) => sliderValueHandler(event, setSliderValue)}
         />
       </div>
       <div className="flex flex-col gap-2 pt-[14px] pb-6 pl-2 pr-3">
-        <button className="bg-[#202832] hover:bg-[#232c38] rounded-[3px] font-sans-manrope font-bold text-[14px] leading-6 text-[#3D85C6] text-center py-[14px] transition-colors duration-200">
+        <button
+          className="bg-[#202832] hover:bg-[#232c38] rounded-[3px] font-sans-manrope font-bold text-[14px] leading-6 text-[#3D85C6] text-center py-[14px] transition-colors duration-200"
+          onClick={() => {
+            approveHandler();
+          }}
+        >
           Short
         </button>
         <div className="flex flex-col gap-2">

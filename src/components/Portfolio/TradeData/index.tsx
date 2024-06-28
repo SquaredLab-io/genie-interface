@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { Button } from "@components/ui/button";
-import { toDollarUnits } from "@lib/utils";
+import { toDollarUnits } from "@lib/utils/formatting";
 import { OpenPositionType, openPositionsData, Token } from "./helper";
 import OpenPositionsTable from "./OpenPositionsTable";
 import TransactionsHistoryTable from "./TransactionsHistoryTable";

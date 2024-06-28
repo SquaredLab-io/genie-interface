@@ -1,16 +1,28 @@
+"use client";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { cn } from "@lib/utils";
 import LongTrade from "./LongTrade";
 import ShortTrade from "./ShortTrade";
+import { useAccount, useBalance } from "wagmi";
+import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 
 enum TradeOptions {
   long = "long",
   short = "short"
 }
 
+const tabsStyle =
+  "w-1/2 py-[17px] text-center px-3 text-sm font-medium data-[state=active]:border border-pure-blue data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-cyan data-[state=active]:to-pure-blue";
+
 const Trade = () => {
-  const tabsStyle =
-    "w-1/2 py-[17px] text-center px-3 text-sm font-medium data-[state=active]:border border-pure-blue data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-cyan data-[state=active]:to-pure-blue";
+  const { potentia } = usePotentiaSdk();
+
+  const { address } = useAccount();
+  const balance = useBalance({
+    address
+  });
+
   return (
     <div className="flex flex-col bg-primary-gray">
       <Tabs defaultValue={TradeOptions.long} className="w-full">
@@ -29,10 +41,10 @@ const Trade = () => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value={TradeOptions.long}>
-          <LongTrade />
+          <LongTrade potentia={potentia} />
         </TabsContent>
         <TabsContent value={TradeOptions.short}>
-          <ShortTrade />
+          <ShortTrade potentia={potentia} />
         </TabsContent>
       </Tabs>
     </div>

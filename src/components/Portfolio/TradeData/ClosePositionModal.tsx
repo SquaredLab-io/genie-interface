@@ -1,8 +1,8 @@
 import ModalWrapper from "@components/common/Modal";
 import { ChangeEvent, useState } from "react";
-import { BiSolidDownArrow } from "react-icons/bi";
+import { underlyingTokens } from "../helper";
 import TokenSlider from "../Trade/TokenSlider";
-import { isValidPositive } from "@lib/utils";
+import { isValidPositive } from "@lib/utils/formatting";
 import DropDownIcon from "@components/icons/DropDownIcon";
 
 const ClosePositionModal = ({
@@ -15,7 +15,7 @@ const ClosePositionModal = ({
   trigger?: React.ReactNode;
 }) => {
   const [quantity, setQuantity] = useState<string>("");
-  const selectedToken = "SLBTC";
+  const selectedToken = underlyingTokens[0];
   const [sliderValue, setSliderValue] = useState<number[]>([25]);
 
   const handleSliderInput = (event: ChangeEvent<HTMLInputElement>): void => {

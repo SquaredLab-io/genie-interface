@@ -1,34 +1,31 @@
-import { useEffect } from "react";
-import { useAccount, useClient, usePublicClient, useWalletClient } from "wagmi";
-import { PotentiaSdk } from "@squaredlab-io/sdk/src";
-// import { BASE_SEPOLIA_RPC, CONTRACT_ADDRESSES } from "@lib/constants";
-import { WalletClient, createPublicClient, http, type PublicClient } from "viem";
+import { useEffect, useState } from "react";
+import { useAccount, useWalletClient } from "wagmi";
+import { createPublicClient, http } from "viem";
 import { baseSepolia } from "viem/chains";
+import { PotentiaSdk } from "@squaredlab-io/sdk/src";
 
 export const usePotentiaSdk = () => {
-  let potentia: PotentiaSdk | undefined;
-  // const publicClient = usePublicClient();
-  const { data: walletClient, status } = useWalletClient();
+  const [potentia, setPotentia] = useState<PotentiaSdk | undefined>(undefined);
+
   const { address, chainId } = useAccount();
 
+  // Wallet Client
+  const { data: walletClient, status } = useWalletClient();
+  // Public Client
   const publicClient: any = createPublicClient({
     chain: baseSepolia,
     transport: http()
   });
 
-  function assignValue() {
+  async function userConnected() {
     if (address && chainId && status == "success") {
-      // console.log(publicClient);
-      potentia = new PotentiaSdk(publicClient, walletClient);
-      console.log("client", publicClient);
-      //   console.log("walletclient", walletClient);
-      //   console.log("potentia", potentia);
-      //   // potentia.addLiquidity(CONTRACT_ADDRESSES.POTENTIA_POOL_ADDR, "20");
+      const potentia = new PotentiaSdk(publicClient, walletClient);
+      setPotentia(potentia);
     }
   }
 
   useEffect(() => {
-    assignValue();
+    userConnected();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletClient, address]);
 

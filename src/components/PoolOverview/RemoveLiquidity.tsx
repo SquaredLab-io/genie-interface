@@ -1,87 +1,39 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import {
-  useReadContract,
-  useAccount,
-  useBalance,
-  useReadContracts,
-  useWriteContract
-} from "wagmi";
 import { HiChevronDown } from "react-icons/hi2";
 import { CONTRACT_ADDRESSES } from "@lib/constants";
-import { balanceOfAbi, PotentiaAbi } from "@lib/abis";
-import { Address, formatUnits } from "viem";
+import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
+import { PositionType } from "@lib/types/enums";
+import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 
 const RemoveLiquidity = () => {
-  const { PTOKEN_ADDR, POTENTIA_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
+  const { POTENTIA_POOL_ADDR } = CONTRACT_ADDRESSES;
+  // Amount to remove
   const [amount, setAmount] = useState("");
 
-  const { chainId, address } = useAccount();
+  const { potentia } = usePotentiaSdk();
 
-  // Balance of pToken
-  const { data: pToken, isLoading } = useReadContract({
-    abi: PotentiaAbi,
-    address: POTENTIA_POOL_ADDR,
-    functionName: "pTokens",
-    args: []
-  });
-
-  useEffect(() => {
-    console.log("pTokens", (pToken as any)?.data);
-  }, [pToken]);
-
-  // Balance of pToken
-  const {
-    data: pTokenBalance,
-    isLoading: isBalanceLoading,
-    isError: isBalanceError,
-    error: balanceError
-  } = useReadContract({
-    abi: balanceOfAbi,
-    address: PTOKEN_ADDR,
-    functionName: "balanceOf",
-    args: [address as Address, 0]
-  });
-
-  // Write Hook => Remove Liquidity
-  const {
-    data: removeLiqData,
-    error: errorRemoveLiq,
-    writeContractAsync: writeRemoveLiquidity,
-    isError: isRemoveLiqError,
-    isPending: isRemoveLiqPending,
-    isSuccess: isRemoveLiqSuccess,
-    variables
-  } = useWriteContract();
+  // pToken Balance
+  const { data: pTokenData, isFetching: isPTokeneFetching } = useCurrentPosition(
+    PositionType.lp
+  );
 
   /**
-   * Handler method for Adding liquidity in potentia pool
+   * Handler for RemoveLiquidity from SDK
    */
-  const removeLiquidityHandler = async () => {
-    const _amount = parseFloat(amount) * 10 ** 18;
-    console.log("Amount", _amount);
+  async function removeLiquidityHandlerSdk() {
+    const shares = parseFloat(amount) * 10 ** 18;
+    console.log("Amount", shares);
 
-    try {
-      await writeRemoveLiquidity({
-        abi: PotentiaAbi,
-        address: POTENTIA_POOL_ADDR,
-        functionName: "removeLiquidity",
-        args: [BigInt(_amount).toString()], // _shares (uint256)
-        chainId
-      });
-    } catch (e) {
-      console.log("error", error?.message);
-    } finally {
-      console.log("RemoveLiquidity Data", removeLiqData);
-      console.log("variables", variables);
-    }
-  };
-
-  useEffect(() => {
-    console.log("tokenbalance", pTokenBalance);
-  }, [pTokenBalance]);
+    const txnHash = await potentia?.removeLiquidity(
+      POTENTIA_POOL_ADDR,
+      BigInt(shares).toString()
+    );
+    console.log("removeliquidity hash", txnHash);
+    return txnHash;
+  }
 
   return (
     <>
@@ -92,25 +44,15 @@ const RemoveLiquidity = () => {
             <input
               className="text-7xl/[98px] font-medium w-fit max-w-[250px] bg-primary-gray outline-none text-center"
               placeholder="0"
-              disabled={pTokenBalance == undefined}
+              disabled={pTokenData == undefined}
               type="number"
               value={amount}
               onChange={(event) => {
                 setAmount(event.target.value);
               }}
             />
-            <span className="font-normal text-base/5">$0</span>
           </div>
         </div>
-        {/* {isBalanceLoading ? (
-          <p>isloading...</p>
-        ) : pTokenBalance ? (
-          <p>{formatUnits(pTokenBalance, 18)}</p>
-        ) : isError ? (
-          <p>{error.message}</p>
-        ) : (
-          <p>nothing</p>
-        )} */}
         <div className="px-5 py-4 inline-flex items-center justify-between w-full">
           <div className="inline-flex items-center gap-3">
             <Image src="/icons/ethereum.svg" alt="Asset icon" height={42} width={42} />
@@ -118,13 +60,11 @@ const RemoveLiquidity = () => {
               <span>pToken</span>
               <span className="text-xs/4">
                 Balance:{" "}
-                {isLoading
+                {isPTokeneFetching
                   ? "Fetching..."
-                  : isBalanceError
-                    ? "Fetching falied!"
-                    : pTokenBalance
-                      ? parseFloat(formatUnits(pTokenBalance as any, 18)).toFixed(4)
-                      : ""}
+                  : pTokenData.formatted
+                    ? pTokenData.formatted
+                    : ""}
               </span>
             </p>
           </div>
@@ -141,21 +81,12 @@ const RemoveLiquidity = () => {
         <button
           className="w-full bg-[#202832] hover:bg-[#475B72] rounded-[3px] font-bold text-[14px] leading-6 text-[#3D85C6] text-center py-[14px] transition-colors duration-200"
           onClick={() => {
-            removeLiquidityHandler();
+            removeLiquidityHandlerSdk();
           }}
         >
           Remove Liquidity
         </button>
       </div>
-      {/* <p>
-        {isRemoveLiqSuccess
-          ? "is success"
-          : isRemoveLiqPending
-            ? "is pending..."
-            : isRemoveLiqError
-              ? "is error"
-              : "nothing"}
-      </p> */}
     </>
   );
 };

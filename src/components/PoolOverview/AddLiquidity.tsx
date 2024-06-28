@@ -7,23 +7,24 @@ import {
   useBalance,
   useAccount,
   useWriteContract,
-  useSimulateContract,
   useWaitForTransactionReceipt
 } from "wagmi";
 import { CONTRACT_ADDRESSES } from "@lib/constants";
-import { WethABi, PotentiaAbi } from "@lib/abis";
+import { WethABi } from "@lib/abis";
 import { cn } from "@lib/utils";
+import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 
 const AddLiquidity = () => {
   const { POTENTIA_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
 
+  const { potentia } = usePotentiaSdk();
+
   const [amount, setAmount] = useState("");
 
   // Contract Hooks
-  const { address, chainId } = useAccount();
+  const { address } = useAccount();
   const { data: userBalance, isLoading: isBalLoading } = useBalance({
     address,
-    chainId,
     token: WETH_ADDR
   });
 
@@ -34,32 +35,6 @@ const AddLiquidity = () => {
     error: approveError,
     isPending: isApprovePending
   } = useWriteContract();
-
-  // Write Hook => Add Liquidity
-  const {
-    data: addLiqData,
-    error,
-    writeContractAsync: writeAddLiquidity,
-    isError,
-    isPending,
-    isSuccess,
-    variables
-  } = useWriteContract();
-
-  // // Simulate contract before executing
-  // const {
-  //   data: simData,
-  //   isLoading: isSimLoading,
-  //   isPending: isSimPending,
-  //   isError: isSimError,
-  //   error: simError
-  // } = useSimulateContract({
-  //   abi: PotentiaPoolAbi,
-  //   address: POTENTIA_POOL_ADDR,
-  //   functionName: "addLiquidity",
-  //   args: [BigInt(parseFloat("0.012") * 10 ** 18)],
-  //   chainId
-  // });
 
   /**
    * This handler method approves signers WETH_ADDR tokens to be spent on Potentia Protocol
@@ -74,8 +49,7 @@ const AddLiquidity = () => {
         args: [
           POTENTIA_POOL_ADDR,
           BigInt(_amount).toString() // Approving as much as input amount only
-        ],
-        chainId
+        ]
       });
     } catch (error) {
       console.log("error while approving", approveError);
@@ -83,36 +57,27 @@ const AddLiquidity = () => {
   };
 
   /**
-   * Handler method for Adding liquidity in potentia pool
+   * Handler for Addliquidity from SDK
    */
-  const addLiquidityHandler = async () => {
+  async function addLiquidityHandlerSdk() {
     const _amount = parseFloat(amount) * 10 ** 18;
-    console.log("Amount", _amount);
+    console.log("_amount", _amount);
 
-    try {
-      await writeAddLiquidity({
-        abi: PotentiaAbi,
-        address: POTENTIA_POOL_ADDR,
-        functionName: "addLiquidity",
-        args: [BigInt(_amount).toString()],
-        chainId
-      });
-    } catch (e) {
-      console.log("error", error);
-    } finally {
-      console.log("AddLiq Data", addLiqData);
-      console.log("variables", variables);
-    }
-  };
+    const txn = await potentia?.addLiquidity(
+      POTENTIA_POOL_ADDR,
+      BigInt(_amount).toString()
+    );
+    console.log("addliquiditytxn return", txn);
+    return txn;
+  }
 
   // wait for approval transaction
   const {
     isSuccess: isTxnSuccess,
-    isLoading: isTxnLoading,
-    isError: isTxnError
+    isLoading: isTxnLoading
+    // isError: isTxnError
   } = useWaitForTransactionReceipt({
-    hash: approvalData,
-    chainId
+    hash: approvalData
   });
 
   useEffect(() => {
@@ -120,7 +85,7 @@ const AddLiquidity = () => {
     console.log("approve txn final status", isTxnSuccess);
     if (isTxnSuccess) {
       console.log("Token is approved for the selected amount!");
-      addLiquidityHandler();
+      addLiquidityHandlerSdk();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTxnSuccess]);
@@ -178,7 +143,7 @@ const AddLiquidity = () => {
             console.log("amount", amount);
             approveHandler();
           }}
-          disabled={isTxnLoading || isApprovePending || isPending}
+          disabled={isTxnLoading || isApprovePending}
         >
           Add Liquidity
         </button>

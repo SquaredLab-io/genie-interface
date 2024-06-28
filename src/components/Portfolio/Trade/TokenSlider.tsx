@@ -1,14 +1,14 @@
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { Slider } from "@components/ui/slider";
 import { cn } from "@lib/utils";
 
-interface SliderProps {
+interface PropsType {
   value: number[];
   setValue: Dispatch<SetStateAction<number[]>>;
   handler: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const TokenSlider = ({ value, setValue, handler }: SliderProps) => {
+const TokenSlider = ({ value, setValue, handler }: PropsType) => {
   return (
     <div className="mt-1 w-full inline-flex gap-4">
       <Slider

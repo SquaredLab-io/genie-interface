@@ -1,37 +1,143 @@
-import { ChangeEvent, useState } from "react";
-import { selected_token } from "../helper";
-import { isValidPositive } from "@lib/utils";
+"use client";
+
+// Library Imports
+import { FC, useEffect, useState } from "react";
 import { BiSolidDownArrow } from "react-icons/bi";
+import {
+  useAccount,
+  useBalance,
+  useWaitForTransactionReceipt,
+  useWriteContract
+} from "wagmi";
+import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
+// Component, Util Imports
+import { selected_token, underlyingTokens } from "../helper";
 import { Button } from "@components/ui/button";
 import TokenSlider from "./TokenSlider";
+import { getAccountBalance } from "@lib/utils/getAccountBalance";
+import { WethABi } from "@lib/abis";
+import { CONTRACT_ADDRESSES } from "@lib/constants";
+import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
+import { PositionType } from "@lib/types/enums";
+import { sliderValueHandler } from "@lib/utils/sliderValueHandler";
 
-const LongTrade = () => {
+interface PropsType {
+  potentia?: PotentiaSdk;
+}
+
+const LongTrade: FC<PropsType> = ({ potentia }) => {
   const [quantity, setQuantity] = useState<string>("");
-  const [selectedToken, setSelectedToken] = useState<string>("btc");
+  const [selectedToken, setSelectedToken] = useState<string>(underlyingTokens[0]);
   const [sliderValue, setSliderValue] = useState<number[]>([25]);
 
-  const handleSliderInput = (event: ChangeEvent<HTMLInputElement>): void => {
-    const input = event.target.value;
-    // When value is a positive integer and not an invalid number
-    const isValid = (isValidPositive(input) && !isNaN(parseFloat(input))) || input === "";
-    // Only set the value when it's valid
-    if (isValid) {
-      setSliderValue([parseFloat(input)]);
+  const { POTENTIA_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
+
+  // Contract Hooks
+  const { address } = useAccount();
+
+  const { data: userBalance, isLoading: isBalLoading } = useBalance({
+    address,
+    token: WETH_ADDR
+  });
+
+  // Current Open Long Position
+  const { data: positionData, isFetching: isPositionFetching } = useCurrentPosition(
+    PositionType.long
+  );
+
+  // Write Hook => Token Approval
+  const {
+    data: approvalData,
+    writeContractAsync: writeApproveToken,
+    error: approveError,
+    isPending: isApprovePending
+  } = useWriteContract();
+
+  /**
+   * This handler method approves signers WETH_ADDR tokens to be spent on Potentia Protocol
+   */
+  const approveHandler = async () => {
+    const _amount = parseFloat(quantity) * 10 ** 18;
+    try {
+      await writeApproveToken({
+        abi: WethABi,
+        address: WETH_ADDR,
+        functionName: "approve",
+        args: [
+          POTENTIA_POOL_ADDR,
+          BigInt(_amount).toString() // Approving as much as input amount only
+        ]
+      });
+    } catch (error) {
+      console.log("error while approving", approveError);
     }
   };
 
+  // wait for approval transaction
+  const {
+    isSuccess: isTxnSuccess
+    // isLoading: isTxnLoading,
+    // isError: isTxnError
+  } = useWaitForTransactionReceipt({
+    hash: approvalData
+  });
+
+  /**
+   * Handler for Opening Long Position
+   */
+  const openLongPositionHandler = async () => {
+    const _amount = parseFloat(quantity) * 10 ** 18;
+    try {
+      const txnHash = await potentia?.openPosition(
+        POTENTIA_POOL_ADDR, // poolAddress
+        BigInt(_amount).toString(), // amt
+        true // isLong
+      );
+      console.log("txnHash", txnHash);
+    } catch (error) {
+      console.log("// error in open_long", error);
+    } finally {
+      console.log("open_long_position _amount", _amount);
+    }
+  };
+
+  useEffect(() => {
+    // Executes if Approve Successful
+    console.log("approve txn final status", isTxnSuccess);
+    if (isTxnSuccess) {
+      console.log("Token is approved for the selected amount!");
+      openLongPositionHandler();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isTxnSuccess]);
+
+  // Slider value updater
+  useEffect(() => {
+    if (userBalance?.value) {
+      const amount = (parseFloat(userBalance?.formatted) * sliderValue[0]) / 100;
+      setQuantity(amount.toString());
+    }
+  }, [userBalance, sliderValue]);
+
   return (
     <div className="flex flex-col font-medium text-xs leading-4">
-      <div className="flex flex-col gap-1 pt-[14px] pb-2 pl-2 pr-3 border-b border-[#303030]">
+      <div className="flex flex-col gap-2 pt-[14px] pb-2 pl-2 pr-3 border-b border-[#303030]">
         <p className="inline-flex items-center justify-between w-full">
           <span className="text-[#949E9C]">Balance</span>
-          <span className="font-normal">$0.00</span>
+          <span className="font-normal">
+            {getAccountBalance(userBalance, isBalLoading)}
+          </span>
         </p>
         <p className="inline-flex items-center justify-between w-full">
           <span className="text-[#949E9C]">Current Position</span>
-          <span className="font-normal">
-            125 BTC<sup>{selected_token.power}</sup>
-          </span>
+          {isPositionFetching ? (
+            <span>Fetching...</span>
+          ) : (
+            <span className="font-normal">
+              {positionData.formatted} {underlyingTokens[0]}
+              <sup>{selected_token.power}</sup>
+            </span>
+          )}
         </p>
         <form
           className="flex flex-col w-full gap-2 mt-3"
@@ -64,11 +170,15 @@ const LongTrade = () => {
         <TokenSlider
           value={sliderValue}
           setValue={setSliderValue}
-          handler={handleSliderInput}
+          handler={(event) => sliderValueHandler(event, setSliderValue)}
         />
       </div>
       <div className="flex flex-col gap-2 pt-[14px] pb-6 pl-2 pr-3">
-        <button className="bg-[#202832] hover:bg-[#475B72] rounded-[3px] font-sans-manrope font-bold text-[14px] leading-6 text-[#3D85C6] text-center py-[14px] transition-colors duration-200">
+        <button
+          className="bg-[#202832] hover:bg-[#475B72] rounded-[3px] font-sans-manrope font-bold text-[14px] leading-6 text-[#3D85C6] text-center py-[14px] transition-colors duration-200"
+          disabled={!userBalance} // conditions to Long Button
+          onClick={approveHandler}
+        >
           Long
         </button>
         {/* Iterate this data after calculating/fetching */}
