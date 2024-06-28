@@ -8,16 +8,18 @@ import {
   widget
 } from "../../../../public/static/charting_library";
 import Datafeed from "@lib/datafeed";
+import { useTradeStore } from "@store/tradeStore";
 
 const TradeChart = (props: Partial<ChartingLibraryWidgetOptions>) => {
   const [isChartReady, setIsChartReady] = useState(false);
+  const { selectedPool, setSelectedPool } = useTradeStore();
 
   const chartContainerRef =
     useRef<HTMLDivElement>() as MutableRefObject<HTMLInputElement>;
 
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
-      symbol: props.symbol,
+      symbol: `Kraken:${selectedPool}` ?? "Kraken:USDC/USDT",
       // BEWARE: no trailing slash is expected in feed URL
       datafeed: Datafeed,
       timezone: props.timezone,
@@ -51,7 +53,7 @@ const TradeChart = (props: Partial<ChartingLibraryWidgetOptions>) => {
     return () => {
       tvWidget.remove();
     };
-  }, [props]);
+  }, [props, selectedPool]);
 
   return (
     <div
