@@ -1,5 +1,7 @@
+import { CRYPRO_COMPARE_API } from "@lib/keys";
+
 // Get a CryptoCompare API key CryptoCompare https://www.cryptocompare.com/coins/guides/how-to-use-our-api/
-export const apiKey = process.env.NEXT_PUBLIC_CRYPRO_COMPARE_API;
+export const apiKey = CRYPRO_COMPARE_API;
 
 // Makes requests to CryptoCompare API
 export async function makeApiRequest(path) {

@@ -3,7 +3,7 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const ConnectWallet = () => {
-  return <ConnectButton label="Connect" showBalance={false} />;
+  return <ConnectButton label="Connect" showBalance={true} />;
 };
 
 export default ConnectWallet;

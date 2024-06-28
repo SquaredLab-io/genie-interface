@@ -1,5 +1,6 @@
 // Library Imports
-import { Dispatch, SetStateAction, useState } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import dynamic from "next/dynamic";
 import Script from "next/script";
 // Component, Util Imports
@@ -8,14 +9,15 @@ import MarketData from "./MarketData";
 import Trade from "./Trade";
 import TradeTable from "./TradeData";
 import { defaultWidgetProps } from "./helper";
-import Image from "next/image";
 
 // Trading Chart Container imported dynamically
 const TradeChart = dynamic(() => import("./TradeChart").then((mod) => mod.default));
 
 const Portfolio = () => {
   const [isScriptReady, setIsScriptReady] = useState(false);
-  const [isChartReady, setIsChartReady] = useState(false);
+
+  // TBR
+  useEffect(() => console.log("isScriptReady", isScriptReady), [isScriptReady]);
 
   return (
     <>
@@ -23,6 +25,7 @@ const Portfolio = () => {
         src="/static/datafeeds/udf/dist/bundle.js"
         strategy="lazyOnload"
         onReady={() => {
+          console.log("Chart script is ready!");
           setIsScriptReady(true);
         }}
       />

@@ -15,7 +15,7 @@ import {
   userPoolsData,
   UserPoolType
 } from "./helper";
-import { cn, toDollarUnits } from "@lib/utils";
+import { cn, toDollarUnits } from "@lib/utils/formatting";
 import UserPoolsTable from "./UserPoolsTable";
 import TrxnPoolsTable from "./TxnPoolsTable";
 import PoolMenu from "./PoolMenu";

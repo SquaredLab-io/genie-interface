@@ -14,6 +14,7 @@ import { config } from "@lib/wagmi";
 import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { baseSepolia } from "viem/chains";
+import { SUBGRAPH_URL } from "@lib/keys";
 
 const Providers: React.FC<PropsWithChildren> = ({ children }) => {
   // React Query client setup
@@ -26,7 +27,7 @@ const Providers: React.FC<PropsWithChildren> = ({ children }) => {
     });
 
     const client = createClient({
-      url: "https://trygql.formidable.dev/graphql/basic-pokedex",
+      url: SUBGRAPH_URL,
       exchanges: [cacheExchange, ssr, fetchExchange],
       suspense: true
     });

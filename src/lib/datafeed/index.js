@@ -47,7 +47,7 @@ async function getAllSymbols() {
     //   symbol: "ZKSYNC/USDT";
     //   type: "crypto";
     // }
-    console.log("pairs", pairs);
+    // console.log("pairs", pairs);
 
     for (const leftPairPart of Object.keys(pairs)) {
       const symbols = pairs[leftPairPart].map((rightPairPart) => {
@@ -63,7 +63,7 @@ async function getAllSymbols() {
       allSymbols = [...allSymbols, ...symbols];
     }
   }
-  console.log("AllSymbols", allSymbols);
+  // console.log("AllSymbols", allSymbols);
   return allSymbols;
 }
 

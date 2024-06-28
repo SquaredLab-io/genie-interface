@@ -3,9 +3,11 @@ import {
   ResolutionString
 } from "../../../public/static/charting_library/charting_library";
 
+export const underlyingTokens = ["WETH", "BTC", "USDT", "USDC"];
+
 // Chart widget props
 export const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
-  symbol: "Kraken:USDC/USDT",
+  // symbol: "Kraken:USDC/USDT",
   interval: "1D" as ResolutionString,
   library_path: "/static/charting_library/",
   timezone: "Etc/UTC",
