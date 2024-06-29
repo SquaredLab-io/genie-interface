@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { useAccount } from "wagmi";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import DropDownIcon from "@components/icons/DropDownIcon";
 import { allPoolsData, Token } from "@components/Pools/PoolsData/helper";
@@ -9,10 +10,13 @@ import AddLiquidity from "./AddLiquidity";
 import RemoveLiquidity from "./RemoveLiquidity";
 import { GraphOptions, TradeOptions } from "./helper";
 import PoolChart from "./Chart";
+import { CONTRACT_ADDRESSES } from "@lib/constants";
 
 const PoolOverview = () => {
   const pool = allPoolsData[0];
   const { assets, power, protocol, network } = pool;
+
+  const { chain } = useAccount();
 
   const graphTabStyle = cn(
     "py-[5px] px-3 rounded-base bg-[#232323]",
@@ -57,13 +61,13 @@ const PoolOverview = () => {
       <div className="inline-flex items-center mt-4 gap-1">
         <Label text="APR : 2.61%" />
         <Label text="Fee : 0.3%" />
-        <Label text="Network : Ethereum" />
+        {chain && <Label text={`Network : ${chain?.name}`} />}
         {assets.map((asset, index) => (
           <Label
             key={index}
             text={asset.symbol}
             imgSrc={asset.imgSrc}
-            link="0x12321..."
+            link={CONTRACT_ADDRESSES.WETH_ADDR}
           />
         ))}
       </div>

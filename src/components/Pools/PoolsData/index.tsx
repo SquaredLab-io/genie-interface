@@ -12,7 +12,7 @@ import {
   PoolType,
   TableOptions,
   Token,
-  userPoolsData,
+  // userPoolsData,
   UserPoolType
 } from "./helper";
 import { toDollarUnits } from "@lib/utils/formatting";
@@ -261,7 +261,7 @@ const PoolsData = () => {
           <AllPoolsTable columns={poolsColumns} data={allPoolsData} />
         </TabsContent>
         <TabsContent value={TableOptions.my}>
-          <UserPoolsTable columns={userPoolsColumns} data={userPoolsData} />
+          <UserPoolsTable columns={userPoolsColumns} data={[]} />
         </TabsContent>
         <TabsContent value={TableOptions.trxn}>
           <TrxnPoolsTable columns={poolsColumns} data={allPoolsData} />

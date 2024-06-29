@@ -1,10 +1,3 @@
-import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
 export const formatDollarUnits = (amount: number) => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -41,12 +34,6 @@ export default function toUnits(num: number, decimals: number): string {
     return Number((num / 1000).toFixed(decimals)).toLocaleString("en-US") + "K";
   }
   return Number(num.toFixed(decimals)).toLocaleString("en-US");
-}
-
-export function isValidPositive(num: string): boolean {
-  // Regex for Whole Numbers. x => {x: [0, ]}
-  const reg = /^(100|[1-9]?\d)$/;
-  return reg.test(num);
 }
 
 export function shortenHash(hash: string): string {

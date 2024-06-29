@@ -2,7 +2,7 @@ import ModalWrapper from "@components/common/Modal";
 import { ChangeEvent, useState } from "react";
 import { underlyingTokens } from "../helper";
 import TokenSlider from "../Trade/TokenSlider";
-import { isValidPositive } from "@lib/utils/formatting";
+import { isValidPositive } from "@lib/utils/checkVadility";
 import DropDownIcon from "@components/icons/DropDownIcon";
 
 const ClosePositionModal = ({

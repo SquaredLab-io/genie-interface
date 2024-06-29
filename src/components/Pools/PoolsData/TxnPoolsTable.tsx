@@ -1,3 +1,4 @@
+import ConnectWallet from "@components/common/ConnectWallet";
 import {
   Table,
   TableBody,
@@ -12,6 +13,7 @@ import {
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
+import { useAccount } from "wagmi";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -24,6 +26,8 @@ const TxnPoolsTable = <TData, TValue>({ columns, data }: PropsType<TData, TValue
     columns,
     getCoreRowModel: getCoreRowModel()
   });
+
+  const { isConnected } = useAccount();
 
   return (
     <Table className="bg-primary-gray rounded-xl">
@@ -43,7 +47,18 @@ const TxnPoolsTable = <TData, TValue>({ columns, data }: PropsType<TData, TValue
         ))}
       </TableHeader>
       <TableBody className="divide-y divide-[#292B31]">
-        {table.getRowModel().rows?.length ? (
+        {!isConnected ? (
+          <TableRow>
+            <TableCell colSpan={columns.length} className="h-72 text-center w-full">
+              <div className="flex flex-col items-center w-full text-center gap-5">
+                <span className="font-normal text-base/7 text-[#B5B5B5]">
+                  Connect Wallet to view your transactions.
+                </span>
+                <ConnectWallet />
+              </div>
+            </TableCell>
+          </TableRow>
+        ) : table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => (
             <TableRow key={row.id}>
               {row.getVisibleCells().map((cell) => (
@@ -55,7 +70,7 @@ const TxnPoolsTable = <TData, TValue>({ columns, data }: PropsType<TData, TValue
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={columns.length} className="h-24 text-center">
+            <TableCell colSpan={columns.length} className="h-72 text-center">
               No results.
             </TableCell>
           </TableRow>

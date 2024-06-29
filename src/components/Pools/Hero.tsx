@@ -23,9 +23,7 @@ const Hero = () => {
             <Button disabled={true}>Create Pools</Button>
           </TooltipX>
           <Link href="/pool">
-            <Button variant="outline" className="cursor-default">
-              Add Liquidity
-            </Button>
+            <Button variant="outline">Add Liquidity</Button>
           </Link>
         </div>
       </div>

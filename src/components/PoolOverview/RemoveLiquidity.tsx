@@ -7,13 +7,20 @@ import { CONTRACT_ADDRESSES } from "@lib/constants";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import { PositionType } from "@lib/types/enums";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
+import { useAccount } from "wagmi";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { isValidPositiveNumber } from "@lib/utils/checkVadility";
+import { cn } from "@lib/utils";
 
 const RemoveLiquidity = () => {
   const { POTENTIA_POOL_ADDR } = CONTRACT_ADDRESSES;
   // Amount to remove
   const [amount, setAmount] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const { potentia } = usePotentiaSdk();
+  const { isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
 
   // pToken Balance
   const { data: pTokenData, isFetching: isPTokeneFetching } = useCurrentPosition(
@@ -26,13 +33,19 @@ const RemoveLiquidity = () => {
   async function removeLiquidityHandlerSdk() {
     const shares = parseFloat(amount) * 10 ** 18;
     console.log("Amount", shares);
+    setIsLoading(true);
 
-    const txnHash = await potentia?.removeLiquidity(
-      POTENTIA_POOL_ADDR,
-      BigInt(shares).toString()
-    );
-    console.log("removeliquidity hash", txnHash);
-    return txnHash;
+    try {
+      const txnHash = await potentia?.removeLiquidity(
+        POTENTIA_POOL_ADDR,
+        BigInt(shares).toString()
+      );
+      console.log("removeliquidity hash", txnHash);
+    } catch (error) {
+      console.error("RemoveLiquidity Error", error);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -74,17 +87,31 @@ const RemoveLiquidity = () => {
         </div>
       </div>
       <div className="flex flex-col gap-2 rounded-base bg-primary-gray py-4 px-5 mt-1 font-normal text-base/5 text-[#8F9BAA]">
-        <span>LP Tokens</span>
+        <span>Underlying Tokens</span>
         <span className="text-xs/4">LP Tokens you will recieve: 0</span>
       </div>
       <div className="mt-1">
         <button
-          className="w-full bg-[#202832] hover:bg-[#475B72] rounded-[3px] font-bold text-[14px] leading-6 text-[#3D85C6] text-center py-[14px] transition-colors duration-200"
+          className={cn(
+            "w-full rounded-[3px] font-bold text-[14px] leading-6 text-center py-[14px]",
+            "bg-[#202832] hover:bg-[#475B72] text-[#3D85C6] transition-colors duration-200",
+            "disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-[#202832]"
+          )}
+          disabled={isConnected && (isLoading || !isValidPositiveNumber(amount))}
           onClick={() => {
-            removeLiquidityHandlerSdk();
+            if (isConnected) {
+              console.log("amount", amount);
+              removeLiquidityHandlerSdk();
+            } else {
+              openConnectModal?.();
+            }
           }}
         >
-          Remove Liquidity
+          {isConnected ? (
+            <span>{isLoading ? "processing..." : "Remove Liquidity"}</span>
+          ) : (
+            <span>Connect Wallet</span>
+          )}
         </button>
       </div>
     </>

@@ -1,5 +1,5 @@
 import { ChangeEvent, SetStateAction } from "react";
-import { isValidPositive } from "./formatting";
+import { isValidPositive } from "./checkVadility";
 
 /**
  *

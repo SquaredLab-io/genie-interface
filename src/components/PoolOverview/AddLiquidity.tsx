@@ -13,16 +13,20 @@ import { CONTRACT_ADDRESSES } from "@lib/constants";
 import { WethABi } from "@lib/abis";
 import { cn } from "@lib/utils";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
+import toUnits from "@lib/utils/formatting";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { isEmpty, isValidPositiveNumber } from "@lib/utils/checkVadility";
 
 const AddLiquidity = () => {
   const { POTENTIA_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
 
   const { potentia } = usePotentiaSdk();
+  const { openConnectModal } = useConnectModal();
 
   const [amount, setAmount] = useState("");
 
   // Contract Hooks
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { data: userBalance, isLoading: isBalLoading } = useBalance({
     address,
     token: WETH_ADDR
@@ -115,7 +119,10 @@ const AddLiquidity = () => {
             <p className="flex flex-col justify-between font-normal text-base/5 text-[#8F9BAA]">
               <span>ETH</span>
               <span className="text-xs/4">
-                Balance: {isBalLoading ? "loading balance..." : userBalance?.formatted}
+                Balance:{" "}
+                {isBalLoading
+                  ? "loading balance..."
+                  : toUnits(parseFloat(userBalance?.formatted ?? "0"), 3)}
               </span>
             </p>
           </div>
@@ -126,11 +133,7 @@ const AddLiquidity = () => {
       </div>
       <div className="flex flex-col gap-2 rounded-base bg-primary-gray py-4 px-5 mt-1 font-normal text-base/5 text-[#8F9BAA]">
         <span>LP Tokens</span>
-        <span className="text-xs/4">
-          LP Tokens you will recieve:{" "}
-          {parseInt(userBalance?.value.toString() ?? "0") /
-            10 ** (userBalance?.decimals ?? 1)}
-        </span>
+        <span className="text-xs/4">N/A</span>
       </div>
       <div className="mt-1">
         <button
@@ -140,12 +143,22 @@ const AddLiquidity = () => {
             "disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-[#202832]"
           )}
           onClick={() => {
-            console.log("amount", amount);
-            approveHandler();
+            if (isConnected) {
+              console.log("amount", amount);
+              approveHandler();
+            } else {
+              openConnectModal?.();
+            }
           }}
-          disabled={isTxnLoading || isApprovePending}
+          disabled={
+            isConnected &&
+            (isTxnLoading ||
+              isApprovePending ||
+              // isEmpty(amount) ||
+              !isValidPositiveNumber(amount))
+          }
         >
-          Add Liquidity
+          {isConnected ? <span>Add Liquidity</span> : <span>Connect Wallet</span>}
         </button>
       </div>
     </>

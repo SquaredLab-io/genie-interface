@@ -20,6 +20,7 @@ import { CONTRACT_ADDRESSES } from "@lib/constants";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { PositionType } from "@lib/types/enums";
 import { sliderValueHandler } from "@lib/utils/sliderValueHandler";
+import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -33,7 +34,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   const { POTENTIA_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
 
   // Contract Hooks
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
 
   const { data: userBalance, isLoading: isBalLoading } = useBalance({
     address,
@@ -75,8 +76,8 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
 
   // wait for approval transaction
   const {
-    isSuccess: isTxnSuccess
-    // isLoading: isTxnLoading,
+    isSuccess: isTxnSuccess,
+    isLoading: isTxnLoading
     // isError: isTxnError
   } = useWaitForTransactionReceipt({
     hash: approvalData
@@ -175,8 +176,13 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       </div>
       <div className="flex flex-col gap-2 pt-[14px] pb-6 pl-2 pr-3">
         <button
-          className="bg-[#202832] hover:bg-[#475B72] rounded-[3px] font-sans-manrope font-bold text-[14px] leading-6 text-[#3D85C6] text-center py-[14px] transition-colors duration-200"
-          disabled={!userBalance} // conditions to Long Button
+          className="bg-[#202832] hover:bg-[#475B72] rounded-[3px] font-sans-manrope font-bold text-[14px] leading-6 text-[#3D85C6] text-center py-[14px] transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-[#202832]"
+          disabled={
+            !isConnected ||
+            !userBalance ||
+            isTxnLoading ||
+            !isValidPositiveNumber(quantity)
+          } // conditions to Long Button
           onClick={approveHandler}
         >
           Long
