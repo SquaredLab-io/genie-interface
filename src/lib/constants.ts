@@ -35,7 +35,8 @@ export const meta = {
   DISCORD: "https://discord.gg/yMe2kkKP",
   TELEGRAM: "https://t.me/squaredlabs",
   DOCS: "https://squaredlabs-io.gitbook.io/squaredlabs.io",
-  LOGO: "/images/logo.svg"
+  LOGO: "/images/logo.svg",
+  SUPPORT_MAIL: "support@squaredlabs.io"
 };
 
 // Header navigation links

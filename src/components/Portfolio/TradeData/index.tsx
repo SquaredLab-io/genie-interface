@@ -23,7 +23,6 @@ enum Tab {
 
 const TradeData = () => {
   const { isPositionModalOpen, setIsPositionModalOpen } = useTradeStore((state) => state);
-
   const { data: txHistory } = useTxHistory();
 
   const openPositions = useMemo((): Tx[] => {

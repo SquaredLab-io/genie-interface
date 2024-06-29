@@ -2,29 +2,13 @@
 import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import DropDownIcon from "@components/icons/DropDownIcon";
-import { HiChevronDown } from "react-icons/hi2";
 import { allPoolsData, Token } from "@components/Pools/PoolsData/helper";
 import { cn } from "@lib/utils";
 import Label from "./Label";
 import AddLiquidity from "./AddLiquidity";
 import RemoveLiquidity from "./RemoveLiquidity";
 import { GraphOptions, TradeOptions } from "./helper";
-// import { Chart, LineSeries } from "lightweight-charts-react-wrapper";
 import PoolChart from "./Chart";
-
-// Dummy data for Candle Chart
-const data = [
-  { time: "2019-04-11", value: 80.01 },
-  { time: "2019-04-12", value: 96.63 },
-  { time: "2019-04-13", value: 76.64 },
-  { time: "2019-04-14", value: 81.89 },
-  { time: "2019-04-15", value: 74.43 },
-  { time: "2019-04-16", value: 80.01 },
-  { time: "2019-04-17", value: 96.63 },
-  { time: "2019-04-18", value: 76.64 },
-  { time: "2019-04-19", value: 81.89 },
-  { time: "2019-04-20", value: 74.43 }
-];
 
 const PoolOverview = () => {
   const pool = allPoolsData[0];

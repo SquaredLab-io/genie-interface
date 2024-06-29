@@ -3,6 +3,7 @@ import Image from "next/image";
 import ModalWrapper from "@components/common/Modal";
 import { Textarea } from "@components/ui/textarea";
 import { cn } from "@lib/utils";
+import { meta } from "@lib/constants";
 
 enum Feedback {
   que = "Question",
@@ -34,7 +35,15 @@ const FeedbackModal = ({
   setOpen: (value: boolean) => void;
   trigger?: React.ReactNode;
 }) => {
-  const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(null);
+  const [selectedFeedback, setSelectedFeedback] = useState<Feedback>(Feedback.que);
+  const [feedback, setFeedback] = useState("");
+
+  function mailToLink() {
+    const subject = encodeURIComponent(`Genie - ${selectedFeedback}`);
+    const body = encodeURIComponent(feedback);
+    return `mailto:${meta.SUPPORT_MAIL}?subject=${subject}&body=${body}`;
+  }
+
   return (
     <ModalWrapper
       open={open}
@@ -51,16 +60,20 @@ const FeedbackModal = ({
               href="mailto:support@squaredlabs.io"
               target="_blank"
             >
-              support@squaredlabs.io
+              {meta.SUPPORT_MAIL}
             </a>
           </p>
           <div className="font-medium text-xl/6">
             <button className="py-[10px] px-6 bg-transparent text-white border border-white rounded-2xl mr-6">
               Help Center
             </button>
-            <button className="py-[10px] px-6 bg-white text-black rounded-2xl">
+            <a
+              className="py-[10px] px-6 bg-white text-black rounded-2xl"
+              href={mailToLink()}
+              target="_blank"
+            >
               Send
-            </button>
+            </a>
           </div>
         </div>
       }
@@ -76,11 +89,18 @@ const FeedbackModal = ({
             onClick={() => setSelectedFeedback(option.title)}
           >
             <Image src={option.icon} width={26} height={26} alt={option.title} />
-            {Feedback.que}
+            {option.title}
           </button>
         ))}
       </div>
-      <Textarea placeholder="Enter text here" className="min-w-[954px] h-[228px]" />
+      <Textarea
+        placeholder="Enter text here"
+        onChange={(event) => {
+          setFeedback(event.target.value);
+        }}
+        value={feedback}
+        className="min-w-[954px] h-[228px]"
+      />
     </ModalWrapper>
   );
 };

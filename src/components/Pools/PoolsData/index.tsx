@@ -15,11 +15,11 @@ import {
   userPoolsData,
   UserPoolType
 } from "./helper";
-import { cn, toDollarUnits } from "@lib/utils/formatting";
+import { toDollarUnits } from "@lib/utils/formatting";
 import UserPoolsTable from "./UserPoolsTable";
 import TrxnPoolsTable from "./TxnPoolsTable";
 import PoolMenu from "./PoolMenu";
-import { useGlobalStore } from "@store/globalStore";
+import { cn } from "@lib/utils";
 
 export const poolsColumns: ColumnDef<PoolType>[] = [
   {

@@ -1,6 +1,9 @@
+"use client";
+
 import { Button } from "@components/ui/button";
 import { pools_social } from "@lib/constants";
 import Link from "next/link";
+import TooltipX from "@components/common/TooltipX";
 
 const Hero = () => {
   return (
@@ -16,9 +19,13 @@ const Hero = () => {
           are active!
         </p>
         <div className="inline-flex justify-center md:justify-start items-center gap-4 mt-8">
-          <Button>Create Pools</Button>
+          <TooltipX content="Coming Soon">
+            <Button disabled={true}>Create Pools</Button>
+          </TooltipX>
           <Link href="/pool">
-            <Button variant="outline">Add Liquidity</Button>
+            <Button variant="outline" className="cursor-default">
+              Add Liquidity
+            </Button>
           </Link>
         </div>
       </div>
