@@ -16,7 +16,7 @@ const Error: NextPage<PropsType> = ({ error, reset }) => {
   }, [error]);
 
   return (
-    <div className="page-center">
+    <div className="page-center items-center justify-center">
       <h2 className="font-sans-manrope text-4xl tracking-wide">Something went wrong!</h2>
       <Button
         onClick={

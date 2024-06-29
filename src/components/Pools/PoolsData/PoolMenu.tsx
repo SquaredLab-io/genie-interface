@@ -13,7 +13,7 @@ import {
 import { Token } from "@lib/types/portfolio";
 
 const PoolMenu = ({ pool }: { pool: PoolType }) => {
-  const { assets, power } = pool;
+  const { underlyingAssets, power } = pool;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -22,10 +22,10 @@ const PoolMenu = ({ pool }: { pool: PoolType }) => {
       <DropdownMenuContent className="min-w-48 text-white">
         <DropdownMenuLabel>
           <>
-            {assets.map((asset: Token, index) => (
+            {underlyingAssets.map((asset: Token, index) => (
               <span key={index} className="font-bold text-sm/5">
                 {asset.symbol}
-                {assets.length !== index + 1 && <span className="mx-1">/</span>}
+                {underlyingAssets.length !== index + 1 && <span className="mx-1">/</span>}
               </span>
             ))}
             <span className="font-bold text-xs/5 bg-[#22C9FF24] text-[#0091FF] px-2 rounded-lg">

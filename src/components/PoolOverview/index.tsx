@@ -11,10 +11,11 @@ import RemoveLiquidity from "./RemoveLiquidity";
 import { GraphOptions, TradeOptions } from "./helper";
 import PoolChart from "./Chart";
 import { CONTRACT_ADDRESSES } from "@lib/constants";
+import { getCurrentDateTime } from "@lib/utils/getCurrentTime";
 
 const PoolOverview = () => {
   const pool = allPoolsData[0];
-  const { assets, power, protocol, network } = pool;
+  const { underlyingAssets, power, protocol, network } = pool;
 
   const { chain } = useAccount();
 
@@ -33,7 +34,7 @@ const PoolOverview = () => {
       {/* Header */}
       <button className="whitespace-nowrap flex flex-row items-center gap-3 text-left font-medium rounded-full">
         <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-3">
-          {assets.map((asset: Token, index) => (
+          {underlyingAssets.map((asset: Token, index) => (
             <div
               key={index}
               className="z-0 flex overflow-hidden ring-1 ring-white rounded-full bg-neutral-800"
@@ -43,10 +44,10 @@ const PoolOverview = () => {
           ))}
         </div>
         <p className="font-extrabold text-[32px]/5">
-          {assets.map((asset: Token, index) => (
+          {underlyingAssets.map((asset: Token, index) => (
             <>
               <span key={index}>{asset.symbol}</span>
-              {assets.length !== index + 1 && (
+              {underlyingAssets.length !== index + 1 && (
                 <span className="text-[#9299AA] mx-2">/</span>
               )}
             </>
@@ -62,7 +63,7 @@ const PoolOverview = () => {
         <Label text="APR : 2.61%" />
         <Label text="Fee : 0.3%" />
         {chain && <Label text={`Network : ${chain?.name}`} />}
-        {assets.map((asset, index) => (
+        {underlyingAssets.map((asset, index) => (
           <Label
             key={index}
             text={asset.symbol}
@@ -91,8 +92,8 @@ const PoolOverview = () => {
                 </TabsTrigger>
               </TabsList>
               <div className="mt-6 mb-4 w-full flex flex-col gap-2">
-                <h2 className="font-semibold text-2xl/5">$508.731</h2>
-                <h5 className="font-normal text-base/5">Jun 12, 2024, 1:30PM</h5>
+                <h2 className="font-semibold text-2xl/5">$3382.63</h2>
+                <h5 className="font-normal text-base/5">{getCurrentDateTime()}</h5>
               </div>
               <TabsContent value={GraphOptions.counterpart}>
                 <PoolChart />

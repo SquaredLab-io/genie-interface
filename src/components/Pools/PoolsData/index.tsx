@@ -31,11 +31,11 @@ export const poolsColumns: ColumnDef<PoolType>[] = [
       </div>
     ),
     cell: ({ row }) => {
-      const { assets, power, protocol, network } = row.original;
+      const { underlyingAssets, power, protocol, network } = row.original;
       return (
         <div className="whitespace-nowrap flex flex-row gap-2 text-left font-medium pl-9 py-5">
           <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-2">
-            {assets.map((asset: Token) => (
+            {underlyingAssets.map((asset: Token) => (
               <div
                 key={asset.symbol}
                 className="z-0 flex overflow-hidden ring-1 ring-white rounded-full bg-neutral-800"
@@ -47,10 +47,10 @@ export const poolsColumns: ColumnDef<PoolType>[] = [
           <div className="flex flex-col gap-1 text-left">
             <div className="inline-flex gap-2">
               <p className="font-extrabold text-sm leading-5">
-                {assets.map((asset: Token, index) => (
+                {underlyingAssets.map((asset: Token, index) => (
                   <>
                     <span key={index}>{asset.symbol}</span>
-                    {assets.length !== index + 1 && (
+                    {underlyingAssets.length !== index + 1 && (
                       <span className="text-[#9299AA] mx-1">/</span>
                     )}
                   </>

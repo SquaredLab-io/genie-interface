@@ -13,6 +13,7 @@ import {
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
+// import {  } from "next/navigation";
 import { useAccount } from "wagmi";
 
 interface PropsType<TData, TValue> {
@@ -22,6 +23,7 @@ interface PropsType<TData, TValue> {
 
 const AllPoolsTable = <TData, TValue>({ columns, data }: PropsType<TData, TValue>) => {
   const { isConnected } = useAccount();
+
   const table = useReactTable({
     data,
     columns,
@@ -59,7 +61,14 @@ const AllPoolsTable = <TData, TValue>({ columns, data }: PropsType<TData, TValue
           </TableRow>
         ) : table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
+            <TableRow
+              key={row.id}
+              className="hover:bg-[#232730]"
+              // onClick={(e) => {
+              //   e.preventDefault();
+              //   router.push("/pool");
+              // }}
+            >
               {row.getVisibleCells().map((cell) => (
                 <TableCell key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
