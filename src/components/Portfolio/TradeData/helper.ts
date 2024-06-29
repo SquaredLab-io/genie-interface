@@ -1,22 +1,112 @@
-export type Token = {
-  symbol: string;
-  imgSrc: string;
-};
+import { OpenPositionType } from "@lib/types/portfolio";
 
-export type OpenPositionType = {
-  assets: Token[];
-  power: number;
-  protocol: string;
-  date: string;
-  time: string;
-  size: string;
-  value: string;
-  pnl: string;
-  return: string;
-};
+export function getDateTime(blockTimestamp: string) {
+  const dateObj = new Date(parseInt(blockTimestamp) * 1000);
+
+  // Get date components
+  const day = dateObj.getDate();
+  const month = dateObj.getMonth() + 1; // Months are zero-indexed, so add 1
+  const year = dateObj.getFullYear();
+
+  // Get time components
+  const hours = dateObj.getHours().toString().padStart(2, "0"); // Ensure two digits
+  const minutes = dateObj.getMinutes().toString().padStart(2, "0"); // Ensure two digits
+
+  // Format date and time strings
+  const formattedDate = `${day}/${month}/${year}`;
+  const formattedTime = `${hours}:${minutes}`;
+
+  return {
+    date: formattedDate,
+    time: formattedTime
+  };
+}
 
 // dummy List of user's open positions
 export const openPositionsData: OpenPositionType[] = [
+  {
+    assets: [
+      {
+        symbol: "WETH",
+        imgSrc: "/icons/ethereum.svg"
+      },
+      {
+        symbol: "ROME",
+        imgSrc: "/icons/rome.svg"
+      }
+    ],
+    power: 4,
+    protocol: "Potentia V1",
+    date: "21/07/2024",
+    time: "00:45",
+    size: "75000000",
+    value: "75000000",
+    pnl: "1500000",
+    return: "31.02"
+  },
+  {
+    assets: [
+      {
+        symbol: "WETH",
+        imgSrc: "/icons/ethereum.svg"
+      },
+      {
+        symbol: "ROME",
+        imgSrc: "/icons/rome.svg"
+      }
+    ],
+    power: 4,
+    protocol: "Potentia V1",
+    date: "21/07/2024",
+    time: "00:45",
+    size: "75000000",
+    value: "75000000",
+    pnl: "1500000",
+    return: "31.02"
+  },
+  {
+    assets: [
+      {
+        symbol: "WETH",
+        imgSrc: "/icons/ethereum.svg"
+      },
+      {
+        symbol: "ROME",
+        imgSrc: "/icons/rome.svg"
+      }
+    ],
+    power: 4,
+    protocol: "Potentia V1",
+    date: "21/07/2024",
+    time: "00:45",
+    size: "75000000",
+    value: "75000000",
+    pnl: "1500000",
+    return: "31.02"
+  },
+  {
+    assets: [
+      {
+        symbol: "WETH",
+        imgSrc: "/icons/ethereum.svg"
+      },
+      {
+        symbol: "ROME",
+        imgSrc: "/icons/rome.svg"
+      }
+    ],
+    power: 4,
+    protocol: "Potentia V1",
+    date: "21/07/2024",
+    time: "00:45",
+    size: "75000000",
+    value: "75000000",
+    pnl: "1500000",
+    return: "31.02"
+  }
+];
+
+export const transactionsHistoryData: OpenPositionType[] = [
   {
     assets: [
       {

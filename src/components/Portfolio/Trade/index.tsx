@@ -4,7 +4,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { cn } from "@lib/utils";
 import LongTrade from "./LongTrade";
 import ShortTrade from "./ShortTrade";
-import { useAccount, useBalance } from "wagmi";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 
 enum TradeOptions {
@@ -17,12 +16,6 @@ const tabsStyle =
 
 const Trade = () => {
   const { potentia } = usePotentiaSdk();
-
-  const { address } = useAccount();
-  const balance = useBalance({
-    address
-  });
-
   return (
     <div className="flex flex-col bg-primary-gray">
       <Tabs defaultValue={TradeOptions.long} className="w-full">

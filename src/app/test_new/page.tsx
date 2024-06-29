@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@components/ui/button";
 import { useIsMounted } from "@lib/hooks/useIsMounted";
 import { useAccount } from "wagmi";
 
@@ -14,7 +13,6 @@ export default function TestNew() {
 
   return (
     <div>
-      {address && <Button onClick={() => {}}>{"Get Long Positions"}</Button>}
       <p>{!address && "Connect wallet first!"}</p>
     </div>
   );

@@ -12,7 +12,6 @@ import {
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
-import { useEffect } from "react";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

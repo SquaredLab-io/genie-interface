@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@components/ui/dropdown-menu";
-import { Token } from "@components/Portfolio/TradeData/helper";
+import { Token } from "@lib/types/portfolio";
 
 const PoolMenu = ({ pool }: { pool: PoolType }) => {
   const { assets, power } = pool;

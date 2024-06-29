@@ -1,15 +1,20 @@
 "use client";
 
+import { useMemo } from "react";
 import Image from "next/image";
+import { formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { Button } from "@components/ui/button";
 import { toDollarUnits } from "@lib/utils/formatting";
-import { OpenPositionType, openPositionsData, Token } from "./helper";
+import { getDateTime } from "./helper";
 import OpenPositionsTable from "./OpenPositionsTable";
 import TransactionsHistoryTable from "./TransactionsHistoryTable";
 import ClosePositionModal from "./ClosePositionModal";
 import { useTradeStore } from "@store/tradeStore";
+import { useTxHistory } from "@lib/hooks/useTxHistory";
+import { Tx } from "@lib/types/portfolio";
+import { cn } from "@lib/utils";
 
 enum Tab {
   position = "position",
@@ -17,37 +22,56 @@ enum Tab {
 }
 
 const TradeData = () => {
-  // const [isPosModal, setIsPosModal] = useState<boolean>(false);
   const { isPositionModalOpen, setIsPositionModalOpen } = useTradeStore((state) => state);
 
-  const positionColumns: ColumnDef<OpenPositionType>[] = [
+  const { data: txHistory } = useTxHistory();
+
+  const openPositions = useMemo((): Tx[] => {
+    if (txHistory) {
+      return txHistory.filter((tx) => {
+        // Filter txHistory with Open Long/Short Positions
+        return tx.action === "Open Long Position" || tx.action === "Open Short Position";
+      });
+    } else {
+      return new Array<Tx>();
+    }
+  }, [txHistory]);
+
+  const positionColumns: ColumnDef<Tx>[] = [
     {
-      accessorKey: "assets",
+      accessorKey: "pool",
       header: () => (
         <div className="pl-10 pr-8 w-full border-r border-[#303030]">
           <span>Assets</span>
         </div>
       ),
       cell: ({ row }) => {
-        const { assets, power, protocol } = row.original;
+        const { power, pool } = row.original;
+        const assets = pool.split(" / ");
+        const _power = formatUnits(BigInt(power), 18);
         return (
           <div className="whitespace-nowrap py-3 flex flex-row gap-2 text-left font-medium pl-10 pr-8 border-r border-[#303030]">
             <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-1">
-              {assets.map((asset: Token) => (
+              {assets.map((asset: string) => (
                 <div
-                  key={asset.symbol}
+                  key={asset}
                   className="z-0 flex overflow-hidden ring-2 ring-[#E5E7EB] rounded-full bg-neutral-800"
                 >
-                  <Image src={asset.imgSrc} alt={asset.symbol} width={30} height={30} />
+                  <Image
+                    src={`/tokens/${asset.toLowerCase()}.svg`}
+                    alt={asset}
+                    width={30}
+                    height={30}
+                  />
                 </div>
               ))}
             </div>
             <div className="flex flex-col gap-1 text-left">
               <div className="inline-flex gap-2">
                 <p className="font-extrabold text-sm leading-5">
-                  {assets.map((asset: Token, index) => (
+                  {assets.map((asset: string, index) => (
                     <>
-                      <span key={index}>{asset.symbol}</span>
+                      <span key={index}>{asset}</span>
                       {assets.length !== index + 1 && (
                         <span className="text-[#9299AA]">/</span>
                       )}
@@ -55,10 +79,10 @@ const TradeData = () => {
                   ))}
                 </p>
                 <p className="font-medium text-xs leading-3 bg-[#1A3B00] py-[4.5px] px-[9px] rounded-md">
-                  p = {power}
+                  p = {_power}
                 </p>
               </div>
-              <p className="font-normal text-xs leading-5 text-[#6D6D6D]">{protocol}</p>
+              <p className="font-normal text-xs leading-5 text-[#6D6D6D]">Potentia V1</p>
             </div>
           </div>
         );
@@ -68,7 +92,8 @@ const TradeData = () => {
       accessorKey: "date",
       header: () => <span className="pl-[76px]">Date/Time</span>,
       cell: ({ row }) => {
-        const { time, date } = row.original;
+        const { dateTime } = row.original;
+        const { date, time } = getDateTime(dateTime);
         return (
           <div className="flex flex-col text-left whitespace-nowrap pl-[76px]">
             <span>{date}</span>
@@ -79,39 +104,50 @@ const TradeData = () => {
     },
     {
       accessorKey: "size",
-      header: "Size",
+      header: () => <span>Size</span>,
       cell: ({ row }) => {
-        const size = parseFloat(row.getValue("size"));
-        const formatted = toDollarUnits(size, 2);
+        const size = formatUnits(row.getValue("size") as bigint, 18);
+        const formatted = toDollarUnits(parseFloat(size), 2);
         return <span>{formatted}</span>;
       }
     },
     {
       accessorKey: "value",
-      header: "Value",
+      header: () => <span>Value</span>,
       cell: ({ row }) => {
-        const value = parseFloat(row.getValue("value"));
-        const formatted = toDollarUnits(value, 2);
-        return <span>{formatted}</span>;
+        // const value = parseFloat(row.getValue("value"));
+        // const formatted = toDollarUnits(value, 2);
+        return <span>-</span>;
       }
     },
     {
       accessorKey: "pnl",
-      header: "PNL",
+      header: () => <span>PNL</span>,
       cell: ({ row }) => {
-        const pnlValue = parseFloat(row.getValue("pnl"));
-        const formatted = toDollarUnits(pnlValue, 2);
-        return <span className="text-[#07AE3B]">{formatted}</span>;
+        // const pnlValue = parseFloat(row.getValue("pnl"));
+        // const formatted = toDollarUnits(pnlValue, 2);
+        const isGrowth = false;
+        return <span className={cn(isGrowth && "text-[#07AE3B]")}>-</span>;
       }
     },
     {
-      accessorKey: "return",
-      header: "%Return",
+      accessorKey: "type",
+      header: () => <span>Type</span>,
       cell: ({ row }) => {
-        const returnValue = parseFloat(row.getValue("return"));
-        return <span className="text-[#07AE3B]">{returnValue}%</span>;
+        const action = row.getValue("action") as string;
+        const type = action.split(" ")[1];
+        const _type = action.substring(5);
+        return <span>{_type}</span>;
       }
     },
+    // {
+    //   accessorKey: "return",
+    //   header: () => <span>%Return</span>,
+    //   cell: ({ row }) => {
+    //     const isGrowth = false;
+    //     return <span className={cn(isGrowth && "text-[#07AE3B]")}>-</span>;
+    //   }
+    // },
     {
       accessorKey: "action",
       header: () => <span className="pl-4">Action</span>,
@@ -129,6 +165,117 @@ const TradeData = () => {
             </span>
           </Button>
         );
+      }
+    }
+  ];
+
+  const transactionsColumns: ColumnDef<Tx>[] = [
+    {
+      accessorKey: "pool",
+      header: () => (
+        <div className="pl-10 pr-8 w-full border-r border-[#303030]">
+          <span>Assets</span>
+        </div>
+      ),
+      cell: ({ row }) => {
+        const { power, pool } = row.original;
+        const assets = pool.split(" / ");
+        const _power = formatUnits(BigInt(power), 18);
+        return (
+          <div className="whitespace-nowrap py-3 flex flex-row gap-2 text-left font-medium pl-10 pr-8 border-r border-[#303030]">
+            <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-1">
+              {assets.map((asset: string) => (
+                <div
+                  key={asset}
+                  className="z-0 flex overflow-hidden ring-2 ring-[#E5E7EB] rounded-full bg-neutral-800"
+                >
+                  <Image
+                    src={`/tokens/${asset.toLowerCase()}.svg`}
+                    alt={asset}
+                    width={30}
+                    height={30}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="flex flex-col gap-1 text-left">
+              <div className="inline-flex gap-2">
+                <p className="font-extrabold text-sm leading-5">
+                  {assets.map((asset: string, index) => (
+                    <>
+                      <span key={index}>{asset}</span>
+                      {assets.length !== index + 1 && (
+                        <span className="text-[#9299AA]">/</span>
+                      )}
+                    </>
+                  ))}
+                </p>
+                <p className="font-medium text-xs leading-3 bg-[#1A3B00] py-[4.5px] px-[9px] rounded-md">
+                  p = {_power}
+                </p>
+              </div>
+              <p className="font-normal text-xs leading-5 text-[#6D6D6D]">Potentia V1</p>
+            </div>
+          </div>
+        );
+      }
+    },
+    {
+      accessorKey: "date",
+      header: () => <span className="pl-[76px]">Date/Time</span>,
+      cell: ({ row }) => {
+        const { dateTime } = row.original;
+        const { date, time } = getDateTime(dateTime);
+        return (
+          <div className="flex flex-col text-left whitespace-nowrap pl-[76px]">
+            <span>{date}</span>
+            <span className="text-[#6D6D6D]">{time}</span>
+          </div>
+        );
+      }
+    },
+    {
+      accessorKey: "size",
+      header: () => <span>Size</span>,
+      cell: ({ row }) => {
+        const size = formatUnits(row.getValue("size") as bigint, 18);
+        const formatted = toDollarUnits(parseFloat(size), 2);
+        return <span>{formatted}</span>;
+      }
+    },
+    {
+      accessorKey: "value",
+      header: () => <span>Value</span>,
+      cell: ({ row }) => {
+        // const value = parseFloat(row.getValue("value"));
+        // const formatted = toDollarUnits(value, 2);
+        return <span>-</span>;
+      }
+    },
+    {
+      accessorKey: "pnl",
+      header: () => <span>PNL</span>,
+      cell: ({ row }) => {
+        // const pnlValue = parseFloat(row.getValue("pnl"));
+        // const formatted = toDollarUnits(pnlValue, 2);
+        const isGrowth = false;
+        return <span className={cn(isGrowth && "text-[#07AE3B]")}>-</span>;
+      }
+    },
+    {
+      accessorKey: "return",
+      header: () => <span>%Return</span>,
+      cell: ({ row }) => {
+        const isGrowth = false;
+        return <span className={cn(isGrowth && "text-[#07AE3B]")}>-</span>;
+      }
+    },
+    {
+      accessorKey: "action",
+      header: () => <span>Action</span>,
+      cell: ({ row }) => {
+        const action = row.getValue("action") as string;
+        return <span className="font-bold">{action}</span>;
       }
     }
   ];
@@ -152,11 +299,16 @@ const TradeData = () => {
           </TabsTrigger>
         </TabsList>
         {/* Tab Content */}
+        {/* --- Open Positions Table --- */}
         <TabsContent value={Tab.position}>
-          <OpenPositionsTable columns={positionColumns} data={openPositionsData} />
+          <OpenPositionsTable columns={positionColumns} data={openPositions} />
         </TabsContent>
+        {/* --- Transactions History Table --- */}
         <TabsContent value={Tab.history}>
-          <TransactionsHistoryTable columns={positionColumns} data={openPositionsData} />
+          <TransactionsHistoryTable
+            columns={transactionsColumns}
+            data={txHistory ?? []}
+          />
         </TabsContent>
       </Tabs>
       <ClosePositionModal open={isPositionModalOpen} setOpen={setIsPositionModalOpen} />
