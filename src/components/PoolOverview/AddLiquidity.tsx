@@ -18,7 +18,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isEmpty, isValidPositiveNumber } from "@lib/utils/checkVadility";
 
 const AddLiquidity = () => {
-  const { POTENTIA_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
+  const { WETH_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
 
   const { potentia } = usePotentiaSdk();
   const { openConnectModal } = useConnectModal();
@@ -51,7 +51,7 @@ const AddLiquidity = () => {
         address: WETH_ADDR,
         functionName: "approve",
         args: [
-          POTENTIA_POOL_ADDR,
+          WETH_POOL_ADDR,
           BigInt(_amount).toString() // Approving as much as input amount only
         ]
       });
@@ -68,7 +68,7 @@ const AddLiquidity = () => {
     console.log("_amount", _amount);
 
     const txn = await potentia?.addLiquidity(
-      POTENTIA_POOL_ADDR,
+      WETH_POOL_ADDR,
       BigInt(_amount).toString()
     );
     console.log("addliquiditytxn return", txn);

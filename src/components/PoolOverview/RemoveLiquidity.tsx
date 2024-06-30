@@ -13,7 +13,7 @@ import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import { cn } from "@lib/utils";
 
 const RemoveLiquidity = () => {
-  const { POTENTIA_POOL_ADDR } = CONTRACT_ADDRESSES;
+  const { WETH_POOL_ADDR } = CONTRACT_ADDRESSES;
   // Amount to remove
   const [amount, setAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +37,7 @@ const RemoveLiquidity = () => {
 
     try {
       const txnHash = await potentia?.removeLiquidity(
-        POTENTIA_POOL_ADDR,
+        WETH_POOL_ADDR,
         BigInt(shares).toString()
       );
       console.log("removeliquidity hash", txnHash);

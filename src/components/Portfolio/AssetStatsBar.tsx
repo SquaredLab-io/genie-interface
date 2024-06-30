@@ -4,12 +4,11 @@ import { price_day_update, token_price } from "./helper";
 import { allPoolsData } from "@components/Pools/PoolsData/helper";
 import { Token } from "@lib/types/portfolio";
 
-const AssetsStatsBar = () => {
+const AssetStatsBar = () => {
   const pool = allPoolsData[0];
   return (
     <div className="flex flex-row items-center gap-4 w-full bg-primary-gray px-[11px] py-2">
       <button className="group flex flex-row text-left gap-1 justify-start items-center min-w-fit p-2 -m-2">
-        {/* <Image src={pool.underlyingAssets[0].imgSrc} width={36} height={36} alt="icon" /> */}
         <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-3">
           {pool.underlyingAssets.map((asset: Token, index) => (
             <div
@@ -89,4 +88,4 @@ const AssetsStatsBar = () => {
   );
 };
 
-export default AssetsStatsBar;
+export default AssetStatsBar;

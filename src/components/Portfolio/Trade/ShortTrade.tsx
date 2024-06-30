@@ -27,7 +27,7 @@ interface PropsType {
 }
 
 const ShortTrade: FC<PropsType> = ({ potentia }) => {
-  const { POTENTIA_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
+  const { WETH_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
 
   const [quantity, setQuantity] = useState("");
   const [sliderValue, setSliderValue] = useState<number[]>([25]);
@@ -62,7 +62,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
         address: WETH_ADDR,
         functionName: "approve",
         args: [
-          POTENTIA_POOL_ADDR,
+          WETH_POOL_ADDR,
           BigInt(_amount).toString() // Approving as much as input amount only
         ]
       });
@@ -88,7 +88,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
 
     try {
       const txnHash = await potentia?.openPosition(
-        POTENTIA_POOL_ADDR, // poolAddress
+        WETH_POOL_ADDR, // poolAddress
         BigInt(_amount).toString(), // amt
         false // isLong
       );

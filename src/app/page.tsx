@@ -1,11 +1,11 @@
 "use client";
 
-import Trade from "@components/Portfolio";
+import Portfolio from "@components/Portfolio";
 
 export default function Home() {
   return (
     <main className="page-center">
-      <Trade />
+      <Portfolio />
     </main>
   );
 }

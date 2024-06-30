@@ -4,7 +4,7 @@ import Image from "next/image";
 import dynamic from "next/dynamic";
 import Script from "next/script";
 // Component, Util Imports
-import AssetsStatsBar from "./AssetStatsBar";
+import AssetStatsBar from "./AssetStatsBar";
 import MarketData from "./MarketData";
 import Trade from "./Trade";
 import TradeTable from "./TradeData";
@@ -32,7 +32,7 @@ const Portfolio = () => {
       <div className="flex flex-row gap-1 my-1">
         {/* Left Side */}
         <div className="flex-1 flex flex-col gap-1 max-h-screen">
-          <AssetsStatsBar />
+          <AssetStatsBar />
           {isScriptReady ? (
             <TradeChart {...defaultWidgetProps} />
           ) : (

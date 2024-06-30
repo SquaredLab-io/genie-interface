@@ -31,7 +31,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   const [selectedToken, setSelectedToken] = useState<string>(underlyingTokens[0]);
   const [sliderValue, setSliderValue] = useState<number[]>([25]);
 
-  const { POTENTIA_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
+  const { WETH_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
 
   // Contract Hooks
   const { address, isConnected } = useAccount();
@@ -65,7 +65,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
         address: WETH_ADDR,
         functionName: "approve",
         args: [
-          POTENTIA_POOL_ADDR,
+          WETH_POOL_ADDR,
           BigInt(_amount).toString() // Approving as much as input amount only
         ]
       });
@@ -90,7 +90,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     const _amount = parseFloat(quantity) * 10 ** 18;
     try {
       const txnHash = await potentia?.openPosition(
-        POTENTIA_POOL_ADDR, // poolAddress
+        WETH_POOL_ADDR, // poolAddress
         BigInt(_amount).toString(), // amt
         true // isLong
       );

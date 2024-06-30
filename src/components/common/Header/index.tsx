@@ -1,7 +1,6 @@
 "use client";
 
 import { memo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
@@ -9,6 +8,7 @@ import { navigation } from "@lib/constants";
 import FeedbackModal from "./feedback-modal";
 import ConnectWallet from "../ConnectWallet";
 import { CoinbaseCreateWallet } from "../ConnectWallet/CoinbaseCreateWallet";
+import NextImage from "../NextImage";
 
 const Header = () => {
   const pathname = usePathname();
@@ -20,12 +20,10 @@ const Header = () => {
         <div className="flex lg:flex-1 max-w-fit">
           <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Genie | SquaredLabs</span>
-            <Image
-              width={32}
-              height={32}
-              className="h-auto w-auto"
+            <NextImage
               src="/images/logo_text.svg"
-              alt="squaredlabs logo"
+              altText="genie logo"
+              className="h-8 w-8"
             />
           </Link>
         </div>
