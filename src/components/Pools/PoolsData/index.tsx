@@ -7,14 +7,16 @@ import { Button } from "@components/ui/button";
 import { Tabs, TabsContent, TabsTrigger } from "@components/ui/tabs";
 import AllPoolsTable from "./AllPoolsTable";
 import { Amount, TableOptions, Token, UserPoolType } from "./helper";
-import { toDollarUnits } from "@lib/utils/formatting";
+import toUnits, { toDollarUnits } from "@lib/utils/formatting";
 import UserPoolsTable from "./UserPoolsTable";
 import TrxnPoolsTable from "./TxnPoolsTable";
 import PoolMenu from "./PoolMenu";
 import { cn } from "@lib/utils";
-import { useTradeStore } from "@store/tradeStore";
+// import { useTradeStore } from "@store/tradeStore";
 import { potentiaPoolsList } from "@lib/pools";
-import { Pool, UnderlyingToken } from "@lib/types/common";
+import { Pool } from "@lib/types/common";
+import { usePools } from "@lib/hooks/usePools";
+import { formatUnits } from "viem";
 
 export const userPoolsColumns: ColumnDef<UserPoolType>[] = [
   {
@@ -117,6 +119,8 @@ export const userPoolsColumns: ColumnDef<UserPoolType>[] = [
 ];
 
 const PoolsData = () => {
+  const { pools, isFetching } = usePools();
+
   const poolsColumns: ColumnDef<Pool>[] = [
     {
       id: "assets",
@@ -180,7 +184,12 @@ const PoolsData = () => {
       header: () => <span className="pl-10">TVL</span>,
       cell: ({ row }) => {
         const tvl = parseFloat(row.getValue("tvl"));
-        return <span className="pl-10">{toDollarUnits(tvl, 2)}</span>;
+        const { underlyingTokens } = row.original;
+        return (
+          <span className="pl-10">
+            {toUnits(tvl, 2)} {underlyingTokens[0].symbol}
+          </span>
+        );
       }
     },
     {
@@ -189,16 +198,19 @@ const PoolsData = () => {
       header: () => <span className="pl-10">Volume (30d)</span>,
       cell: ({ row }) => {
         const vol: Amount = row.getValue("volume");
+        const decimals = row.original.decimals;
         const value = parseFloat(vol.value);
         const growth = parseFloat(vol.growth);
         return (
           <div className="pl-10 inline-flex gap-1">
-            <span>{toDollarUnits(value, 2)}</span>
-            <span
-              className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
-            >
-              {growth}%
-            </span>
+            <span>{value / 10 ** decimals}</span>
+            {growth !== 0 && (
+              <span
+                className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
+              >
+                {growth}%
+              </span>
+            )}
           </div>
         );
       }
@@ -214,11 +226,13 @@ const PoolsData = () => {
         return (
           <div className="pl-10 inline-flex gap-1">
             <span>{toDollarUnits(value, 2)}</span>
-            <span
-              className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
-            >
-              {growth}%
-            </span>
+            {growth !== 0 && (
+              <span
+                className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
+              >
+                {growth}%
+              </span>
+            )}
           </div>
         );
       }

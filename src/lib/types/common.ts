@@ -24,8 +24,22 @@ export interface Pool {
     value: string;
     growth: string;
   };
+  decimals: number;
 }
 
 export interface PotentiaPools {
   [key: string]: Pool;
+}
+
+export interface PoolInfo {
+  tvl: string;
+  age: string;
+  vol: string;
+  fee: string;
+  lastMonthTimestamp: string;
+  poolAddr: string;
+  underlying: string;
+  pool: string;
+  power: number;
+  underlyingDecimals: number;
 }

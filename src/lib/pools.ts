@@ -38,16 +38,17 @@ export const potentiaPools: PotentiaPools = {
     ],
     poolAddress: "0x762c9b8fa27546c0ddc3e49883fc14bb71723eeb" as Address,
     date: 1233435,
-    age: "15d",
-    tvl: "60110000", // in dollars
+    age: "Mon Jun 24 2024",
+    tvl: "22737", // in dollars
     volume: {
-      value: "60110000", // in dollars
+      value: "50000000000000000000", // in dollars
       growth: "18" // in %
     },
     fee: {
-      value: "32.1",
-      growth: "18"
-    }
+      value: "0",
+      growth: "0"
+    },
+    decimals: 18
   },
   wbtc: {
     id: 1,
@@ -68,16 +69,17 @@ export const potentiaPools: PotentiaPools = {
     ],
     poolAddress: "0x73d705ff0fc884315a61afd3fde3646fb0a949e6" as Address,
     date: 1233432,
-    age: "15d",
-    tvl: "60110000", // in dollars
+    age: "Sun Jun 30 2024",
+    tvl: "10029", // in dollars
     volume: {
-      value: "60110000", // in dollars
+      value: "20000000000000000000", // in dollars
       growth: "18" // in %
     },
     fee: {
       value: "32.1",
       growth: "18"
-    }
+    },
+    decimals: 18
   },
   usdc: {
     id: 2,
@@ -98,16 +100,17 @@ export const potentiaPools: PotentiaPools = {
     ],
     poolAddress: "0x390e5b479b9c743f933a4fe50cd0a4fae742fdb0" as Address,
     date: 1233431,
-    age: "15d",
-    tvl: "60110000", // in dollars
+    age: "Sun Jun 30 2024",
+    tvl: "10000000000", // in dollars
     volume: {
       value: "60110000", // in dollars
       growth: "18" // in %
     },
     fee: {
-      value: "32.1",
-      growth: "18"
-    }
+      value: "0",
+      growth: "0"
+    },
+    decimals: 6
   }
 };
 
