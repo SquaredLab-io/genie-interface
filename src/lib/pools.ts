@@ -14,7 +14,7 @@ import { Address } from "viem";
 
 export enum PoolOptions {
   weth = "weth",
-  btc = "wbtc",
+  wbtc = "wbtc",
   usdc = "usdc"
 }
 
@@ -91,7 +91,7 @@ export const potentiaPools: PotentiaPools = {
         icon: "/tokens/usdc.svg"
       },
       {
-        symbol: "USDC",
+        symbol: "USDT",
         address: "0xEA5f22bc4A620b01D48e74B6B69e74F3b2299654" as Address,
         icon: "/tokens/usdt.svg"
       }
@@ -124,6 +124,6 @@ export const getTokenSymbol = (symbol: string): string => {
 
 export const potentiaPoolsList: Pool[] = [
   potentiaPools[PoolOptions.weth],
-  potentiaPools[PoolOptions.btc],
+  potentiaPools[PoolOptions.wbtc],
   potentiaPools[PoolOptions.usdc]
 ];
