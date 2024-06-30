@@ -44,7 +44,7 @@ export default function TokenSelectPopover({ children }: PropsType) {
                 </>
               ))}
               <span className="font-medium text-2xs/[14px] rounded-sm py-px px-[4.5px] text-white bg-text-grad bg-gradient-blue">
-                p = 2
+                p = {pool.power}
               </span>
             </button>
           ))}
