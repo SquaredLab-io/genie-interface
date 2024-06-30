@@ -6,7 +6,7 @@ import { formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { Button } from "@components/ui/button";
-import { toDollarUnits } from "@lib/utils/formatting";
+import toUnits, { toDollarUnits } from "@lib/utils/formatting";
 import { getDateTime, getLatestTransactions } from "./helper";
 import OpenPositionsTable from "./OpenPositionsTable";
 import TransactionsHistoryTable from "./TransactionsHistoryTable";
@@ -256,7 +256,7 @@ const TradeData = () => {
       header: () => <span>Size</span>,
       cell: ({ row }) => {
         const size = formatUnits(row.getValue("size") as bigint, 18);
-        const formatted = toDollarUnits(parseFloat(size), 2);
+        const formatted = toUnits(parseFloat(size), 2);
         return <span>{formatted}</span>;
       }
     },

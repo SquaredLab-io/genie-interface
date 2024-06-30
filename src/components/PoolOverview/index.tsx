@@ -41,7 +41,6 @@ const PoolOverview = () => {
     if (overviewPool) {
       try {
         setIsLoading(true);
-        console.log("overviewPool.poolAddress", overviewPool.poolAddress);
         const data = await potentia?.getTimeseries(overviewPool.poolAddress);
         console.log("timeseries data", data);
         setTimeseries(data == undefined ? [] : data);
@@ -56,7 +55,7 @@ const PoolOverview = () => {
   useEffect(() => {
     getTimeseries();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [overviewPool, potentia]);
+  }, [potentia]);
 
   return (
     <div className="w-full px-11 py-[72px]">

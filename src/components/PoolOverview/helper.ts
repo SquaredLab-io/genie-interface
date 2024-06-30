@@ -39,3 +39,43 @@ export type Timeseries = {
   pool: string;
   timestamp: number;
 };
+
+// Function to convert timestamp to yyyy-mm-dd format
+export const formatDate = (timestamp: number) => {
+  const date = new Date(timestamp * 1000);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+// Function to remove duplicate dates and keep the last object for each date
+export const removeDuplicateDates = (data: { time: string; value: number }[]) => {
+  const dateMap = new Map<string, { time: string; value: number }>();
+
+  data.forEach((item) => {
+    dateMap.set(item.time, item);
+  });
+
+  return Array.from(dateMap.values());
+};
+
+// Function to transform timeseries data
+export const transformTimeseries = (timeseries: Timeseries[]) => {
+  console.log("timeseries", timeseries);
+
+  const _array1 = timeseries?.map((item) => ({
+    time: formatDate(item.timestamp),
+    value: parseFloat(item.R)
+  }));
+
+  const _array2 = timeseries?.map((item) => ({
+    time: formatDate(item.timestamp),
+    value: parseFloat(item.CL)
+  }));
+
+  const array1 = removeDuplicateDates(_array1);
+  const array2 = removeDuplicateDates(_array2);
+
+  return { array1, array2 };
+};

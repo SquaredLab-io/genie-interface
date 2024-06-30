@@ -6,50 +6,8 @@ import {
   DeepPartial,
   LineStyle
 } from "lightweight-charts";
-import { Timeseries } from "./helper";
+import { Timeseries, transformTimeseries } from "./helper";
 import { generateRandomData } from "./helper";
-
-// Function to convert timestamp to yyyy-mm-dd format
-const formatDate = (timestamp: number) => {
-  const date = new Date(timestamp * 1000);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
-
-// Function to remove duplicate dates and keep the last object for each date
-const removeDuplicateDates = (data: { time: string; value: number }[]) => {
-  const dateMap = new Map<string, { time: string; value: number }>();
-
-  data.forEach((item) => {
-    dateMap.set(item.time, item);
-  });
-
-  return Array.from(dateMap.values());
-};
-
-// Function to transform timeseries data
-const transformTimeseries = (timeseries: Timeseries[]) => {
-  console.log("timeseries", timeseries);
-
-  const _array1 = timeseries?.map((item) => ({
-    time: formatDate(item.timestamp),
-    value: parseFloat(item.R)
-  }));
-
-  const _array2 = timeseries?.map((item) => ({
-    time: formatDate(item.timestamp),
-    value: parseFloat(item.CL)
-  }));
-
-  const array1 = removeDuplicateDates(_array1);
-  const array2 = removeDuplicateDates(_array2);
-
-  console.log("array1", array1);
-  console.log("array2", array2);
-  return { array1, array2 };
-};
 
 const PoolChart = ({
   timeseries,
@@ -112,8 +70,7 @@ const PoolChart = ({
         baseLineStyle: LineStyle.Solid,
         baseLineWidth: 3
       });
-      const newSeries1data = generateRandomData("2018-12-01", 31, 20, 40);
-      console.log("genData", newSeries1data);
+      console.log("array1", array1);
       newSeries1.setData(array1);
 
       // Series 2
@@ -123,7 +80,7 @@ const PoolChart = ({
         baseLineStyle: LineStyle.Solid,
         baseLineWidth: 3
       });
-      const newSeries2data = generateRandomData("2018-12-01", 31, 10, 70);
+      console.log("array2", array2);
       newSeries2.setData(array2);
 
       window.addEventListener("resize", handleResize);
@@ -137,8 +94,6 @@ const PoolChart = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [array1]);
-
-  // useEffect(() => console.log("isloading", isLoadingChart), [isLoadingChart]);
 
   return (
     <>

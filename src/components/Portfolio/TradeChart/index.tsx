@@ -18,7 +18,7 @@ const TradeChart = (props: Partial<ChartingLibraryWidgetOptions>) => {
     useRef<HTMLDivElement>() as MutableRefObject<HTMLInputElement>;
 
   useEffect(() => {
-    console.log("selected pool", selectedPool);
+    // console.log("selected pool", selectedPool);
 
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: `Kraken:${selectedPool.symbol}` ?? "Kraken:USDC/USDT",
