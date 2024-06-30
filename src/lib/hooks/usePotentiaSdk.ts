@@ -3,6 +3,7 @@ import { useAccount, useWalletClient } from "wagmi";
 import { createPublicClient, http } from "viem";
 import { baseSepolia } from "viem/chains";
 import { PotentiaSdk } from "@squaredlab-io/sdk/src";
+import { SUBGRAPH_URL } from "@lib/keys";
 
 export const usePotentiaSdk = () => {
   const [potentia, setPotentia] = useState<PotentiaSdk | undefined>(undefined);
@@ -19,7 +20,7 @@ export const usePotentiaSdk = () => {
 
   async function userConnected() {
     if (address && chainId && status == "success") {
-      const potentia = new PotentiaSdk(publicClient, walletClient);
+      const potentia = new PotentiaSdk(publicClient, walletClient, SUBGRAPH_URL);
       setPotentia(potentia);
     }
   }

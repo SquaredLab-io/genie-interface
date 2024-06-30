@@ -1,4 +1,3 @@
-import { PoolType } from "@components/Pools/PoolsData/helper";
 import { Pool, PotentiaPools } from "./types/common";
 import { Address } from "viem";
 
@@ -109,6 +108,17 @@ export const potentiaPools: PotentiaPools = {
       value: "32.1",
       growth: "18"
     }
+  }
+};
+
+export const getTokenSymbol = (symbol: string): string => {
+  switch (symbol) {
+    case "WBTC":
+      return "BTC";
+    case "WETH":
+      return "ETH";
+    default:
+      return "";
   }
 };
 

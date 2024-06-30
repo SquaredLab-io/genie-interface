@@ -1,14 +1,19 @@
 import Image from "next/image";
 import { cn } from "@lib/utils";
-import { price_day_update, token_price } from "./helper";
-import { allPoolsData } from "@components/Pools/PoolsData/helper";
-import { Token } from "@lib/types/portfolio";
 import { usePower } from "@lib/hooks/usePotentiaMethods";
 import { useTradeStore } from "@store/tradeStore";
+import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
+import toUnits from "@lib/utils/formatting";
 
 const AssetStatsBar = () => {
   const { selectedPool } = useTradeStore();
 
+  const {
+    price,
+    isLoading: isPriceLoading,
+    volume,
+    isVolLoading
+  } = useCurrencyPrice(selectedPool.underlyingTokens[0].symbol);
   const { power, isLoading: isPowerLoading } = usePower(selectedPool.poolAddress);
 
   return (
@@ -55,41 +60,42 @@ const AssetStatsBar = () => {
       <span className="py-5 border-l border-[#25282C]" />
       <div className="flex flex-row items-center gap-10 xl:gap-20 w-full px-[11px] font-medium text-xs/[14px] overflow-visible z-50">
         <div className="flex flex-col items-start justify-between">
-          <span className="font-semibold text-base/6 text-negative-red">
-            {token_price.updated_price}
+          <span className="font-semibold text-base/6 text-positive-green">
+            {isPriceLoading ? "loading..." : price}
           </span>
-          <span>{token_price.price}</span>
+          <span>{isPriceLoading ? "loading..." : price}</span>
         </div>
         <div className="flex flex-col items-start justify-between gap-[4.5px]">
           <span className="font-normal text-xs text-dark-gray">24H Change %</span>
           <p
             className={cn(
-              "inline-flex items-center gap-1",
-              price_day_update.update > 0 ? "text-positive-green" : "text-negative-red"
+              "inline-flex items-center gap-1"
+              // price_day_update.update > 0 ? "text-positive-green" : "text-negative-red"
             )}
           >
-            <span>
+            -
+            {/* <span>
               {price_day_update.update > 0 && "+"}
               {price_day_update.update}
             </span>
             <span>
               ({price_day_update.update > 0 && "+"}
               {price_day_update.percetage}%)
-            </span>
+            </span> */}
           </p>
         </div>
         <div className="flex flex-col items-start justify-between gap-[4.5px]">
           <span className="font-normal text-xs text-dark-gray">24H High</span>
-          <span>71,819.60</span>
+          <span>{price}</span>
         </div>
         <div className="flex flex-col items-start justify-between gap-[4.5px]">
           <span className="font-normal text-xs text-dark-gray">24H Volume</span>
-          <span>70,101.00</span>
+          <span>${toUnits(parseFloat(volume?.top_tier_volume_total), 2)}</span>
         </div>
-        <div className="flex flex-col items-start justify-between gap-[4.5px]">
+        {/* <div className="flex flex-col items-start justify-between gap-[4.5px]">
           <span className="font-normal text-xs text-dark-gray">Funding Rate</span>
           <span className="text-gradient-blue">0.0105%</span>
-        </div>
+        </div> */}
       </div>
     </div>
   );
