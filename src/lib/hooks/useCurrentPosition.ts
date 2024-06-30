@@ -31,7 +31,7 @@ export function useCurrentPosition(isLong: PositionType) {
         try {
           setIsFetching(true);
           const currPos = await potentia?.getTokenBalance(
-            CONTRACT_ADDRESSES.POTENTIA_POOL_ADDR, // protocolAddress
+            CONTRACT_ADDRESSES.WETH_POOL_ADDR, // protocolAddress
             address as `0x${string}`, // userAddress
             isLong // isLong
           );

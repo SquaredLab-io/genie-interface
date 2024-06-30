@@ -1,4 +1,55 @@
-import { OpenPositionType } from "@lib/types/portfolio";
+import { Tx } from "@lib/types/portfolio";
+
+export function getLatestTransactions(transactions: Tx[]): Tx[] {
+  let latestLongTx: Tx | null = null;
+  let latestShortTx: Tx | null = null;
+
+  for (const tx of transactions) {
+    if (
+      tx.action === "Open Long Position" &&
+      (!latestLongTx || Number(tx.dateTime) > Number(latestLongTx.dateTime))
+    ) {
+      latestLongTx = tx;
+    } else if (
+      tx.action === "Open Short Position" &&
+      (!latestShortTx || Number(tx.dateTime) > Number(latestShortTx.dateTime))
+    ) {
+      latestShortTx = tx;
+    }
+  }
+
+  return [latestLongTx, latestShortTx].filter((tx) => tx !== null) as Tx[];
+}
+
+export function getLatestTransactionsByPool(transactions: Tx[]): Tx[] {
+  const latestLongTxByPool: Record<string, Tx> = {};
+  const latestShortTxByPool: Record<string, Tx> = {};
+
+  const filteredTx = transactions.filter((tx) => {
+    // Filter txHistory with Open Long/Short Positions
+    return tx.action === "Open Long Position" || tx.action === "Open Short Position";
+  });
+
+  for (const tx of filteredTx) {
+    if (tx.action === "Open Long Position") {
+      if (
+        !latestLongTxByPool[tx.pool] ||
+        Number(tx.dateTime) > Number(latestLongTxByPool[tx.pool].dateTime)
+      ) {
+        latestLongTxByPool[tx.pool] = tx;
+      }
+    } else if (tx.action === "Open Short Position") {
+      if (
+        !latestShortTxByPool[tx.pool] ||
+        Number(tx.dateTime) > Number(latestShortTxByPool[tx.pool].dateTime)
+      ) {
+        latestShortTxByPool[tx.pool] = tx;
+      }
+    }
+  }
+
+  return [...Object.values(latestLongTxByPool), ...Object.values(latestShortTxByPool)];
+}
 
 export function getDateTime(blockTimestamp: string) {
   const dateObj = new Date(parseInt(blockTimestamp) * 1000);

@@ -67,10 +67,7 @@ const AddLiquidity = () => {
     const _amount = parseFloat(amount) * 10 ** 18;
     console.log("_amount", _amount);
 
-    const txn = await potentia?.addLiquidity(
-      WETH_POOL_ADDR,
-      BigInt(_amount).toString()
-    );
+    const txn = await potentia?.addLiquidity(WETH_POOL_ADDR, BigInt(_amount).toString());
     console.log("addliquiditytxn return", txn);
     return txn;
   }

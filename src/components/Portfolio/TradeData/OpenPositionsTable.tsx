@@ -16,11 +16,13 @@ import {
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  isLoading: boolean;
 }
 
 const OpenPositionsTable = <TData, TValue>({
   columns,
-  data
+  data,
+  isLoading
 }: PropsType<TData, TValue>) => {
   const table = useReactTable({
     data,
@@ -61,8 +63,8 @@ const OpenPositionsTable = <TData, TValue>({
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={columns.length} className="h-96 text-center">
-              No Open Positions.
+            <TableCell colSpan={columns.length} className="h-36 text-center">
+              {isLoading ? "Fetching your Positions..." : "No Open Positions."}
             </TableCell>
           </TableRow>
         )}

@@ -7,7 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { Button } from "@components/ui/button";
 import { toDollarUnits } from "@lib/utils/formatting";
-import { getDateTime } from "./helper";
+import { getDateTime, getLatestTransactionsByPool } from "./helper";
 import OpenPositionsTable from "./OpenPositionsTable";
 import TransactionsHistoryTable from "./TransactionsHistoryTable";
 import ClosePositionModal from "./ClosePositionModal";
@@ -23,14 +23,13 @@ enum Tab {
 
 const TradeData = () => {
   const { isPositionModalOpen, setIsPositionModalOpen } = useTradeStore((state) => state);
-  const { data: txHistory } = useTxHistory();
+  // All Transactions -- LP, Open Long/Short, Close Long/Short
+  const { data: txHistory, isLoading: isTxLoading } = useTxHistory();
 
+  // User's Current Open Positions -- Long and Short
   const openPositions = useMemo((): Tx[] => {
     if (txHistory) {
-      return txHistory.filter((tx) => {
-        // Filter txHistory with Open Long/Short Positions
-        return tx.action === "Open Long Position" || tx.action === "Open Short Position";
-      });
+      return getLatestTransactionsByPool(txHistory);
     } else {
       return new Array<Tx>();
     }
@@ -300,13 +299,18 @@ const TradeData = () => {
         {/* Tab Content */}
         {/* --- Open Positions Table --- */}
         <TabsContent value={Tab.position}>
-          <OpenPositionsTable columns={positionColumns} data={openPositions} />
+          <OpenPositionsTable
+            columns={positionColumns}
+            data={openPositions}
+            isLoading={isTxLoading}
+          />
         </TabsContent>
         {/* --- Transactions History Table --- */}
         <TabsContent value={Tab.history}>
           <TransactionsHistoryTable
             columns={transactionsColumns}
             data={txHistory ?? []}
+            isLoading={isTxLoading}
           />
         </TabsContent>
       </Tabs>
