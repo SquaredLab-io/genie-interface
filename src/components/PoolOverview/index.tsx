@@ -20,8 +20,8 @@ const PoolOverview = () => {
 
   const { underlyingTokens, power } = overviewPool;
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [timeseries, setTimeseries] = useState<Timeseries[]>([]);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [timeseries, setTimeseries] = useState<Timeseries[]>([]);
 
   const { potentia } = usePotentiaSdk();
 
@@ -40,14 +40,14 @@ const PoolOverview = () => {
   async function getTimeseries() {
     if (overviewPool) {
       try {
-        setIsLoading(true);
+        // setIsLoading(true);
         const data = await potentia?.getTimeseries(overviewPool.poolAddress);
-        console.log("timeseries data", data);
-        setTimeseries(data == undefined ? [] : data);
+        // console.log("timeseries data", data);
+        // setTimeseries(data == undefined ? [] : data);
       } catch (error) {
         console.error("error", error);
       } finally {
-        setIsLoading(false);
+        // setIsLoading(false);
       }
     }
   }
@@ -62,7 +62,7 @@ const PoolOverview = () => {
       {/* Header */}
       <button
         className="whitespace-nowrap flex flex-row items-center gap-3 text-left font-medium rounded-full"
-        onClick={getTimeseries}
+        // onClick={getTimeseries}
       >
         <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-3">
           {underlyingTokens.map((asset, index) => (
@@ -127,7 +127,7 @@ const PoolOverview = () => {
                 <h5 className="font-normal text-base/5">{getCurrentDateTime()}</h5>
               </div>
               <TabsContent value={GraphOptions.counterpart}>
-                <PoolChart timeseries={timeseries} isLoadingData={isLoading} />
+                <PoolChart />
               </TabsContent>
               <TabsContent value={GraphOptions.volume}>Volume</TabsContent>
               <TabsContent value={GraphOptions.tvl}>TVL</TabsContent>
