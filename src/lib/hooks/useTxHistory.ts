@@ -26,7 +26,6 @@ export function useTxHistory(): ReturnType {
         address as Address,
         CONTRACT_ADDRESSES.WETH_POOL_ADDR
       );
-      console.log("allTxHistory", result);
       setTxHistory(result);
     } catch (error) {
       console.error("Error -- fetching transaction history", error);

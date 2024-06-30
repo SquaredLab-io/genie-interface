@@ -11,16 +11,16 @@ import {
 } from "wagmi";
 import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
 // Component, Util Imports
-import { selected_token, underlyingTokens } from "../helper";
+import { selected_token } from "../helper";
 import { Button } from "@components/ui/button";
 import TokenSlider from "./TokenSlider";
 import { getAccountBalance } from "@lib/utils/getAccountBalance";
 import { WethABi } from "@lib/abis";
-import { CONTRACT_ADDRESSES } from "@lib/constants";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { PositionType } from "@lib/types/enums";
 import { sliderValueHandler } from "@lib/utils/sliderValueHandler";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
+import { useTradeStore } from "@store/tradeStore";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -28,23 +28,26 @@ interface PropsType {
 
 const LongTrade: FC<PropsType> = ({ potentia }) => {
   const [quantity, setQuantity] = useState<string>("");
-  const [selectedToken, setSelectedToken] = useState<string>(underlyingTokens[0]);
+  // const [selectedToken, setSelectedToken] = useState<string>(underlyingTokens[0]);
   const [sliderValue, setSliderValue] = useState<number[]>([25]);
 
-  const { WETH_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
+  // const { WETH_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
+
+  const { selectedPool } = useTradeStore((state) => state);
+  const TOKEN_ADDR = selectedPool.underlyingTokens[0].address;
 
   // Contract Hooks
   const { address, isConnected } = useAccount();
 
   const { data: userBalance, isLoading: isBalLoading } = useBalance({
     address,
-    token: WETH_ADDR
+    token: TOKEN_ADDR
   });
 
   // Current Open Long Position
   const { data: positionData, isFetching: isPositionFetching } = useCurrentPosition(
     PositionType.long,
-    WETH_POOL_ADDR
+    selectedPool.poolAddress
   );
 
   // Write Hook => Token Approval
@@ -63,10 +66,10 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     try {
       await writeApproveToken({
         abi: WethABi,
-        address: WETH_ADDR,
+        address: TOKEN_ADDR,
         functionName: "approve",
         args: [
-          WETH_POOL_ADDR,
+          selectedPool.poolAddress,
           BigInt(_amount).toString() // Approving as much as input amount only
         ]
       });
@@ -91,7 +94,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     const _amount = parseFloat(quantity) * 10 ** 18;
     try {
       const txnHash = await potentia?.openPosition(
-        WETH_POOL_ADDR, // poolAddress
+        selectedPool.poolAddress, // poolAddress
         BigInt(_amount).toString(), // amt
         true // isLong
       );
@@ -136,7 +139,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
             <span>Fetching...</span>
           ) : (
             <span className="font-normal">
-              {positionData.formatted} {underlyingTokens[0]}
+              {positionData.formatted} {selectedPool.underlyingTokens[0].symbol}
               <sup>{selected_token.power}</sup>
             </span>
           )}
@@ -163,7 +166,9 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
               variant="ghost"
               className="hover:bg-transparent px-0 flex font-sans-manrope h-10 w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
             >
-              <span className="text-nowrap">{selectedToken ?? "Select Token"}</span>
+              <span className="text-nowrap">
+                {selectedPool.underlyingTokens[0].symbol}
+              </span>
               <BiSolidDownArrow className="h-3 w-3 ml-4" color="#9D9D9D" />
             </Button>
           </div>

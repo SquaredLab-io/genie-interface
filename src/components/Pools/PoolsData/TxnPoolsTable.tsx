@@ -71,7 +71,7 @@ const TxnPoolsTable = <TData, TValue>({ columns, data }: PropsType<TData, TValue
         ) : (
           <TableRow>
             <TableCell colSpan={columns.length} className="h-72 text-center">
-              No results.
+              Coming Soon.
             </TableCell>
           </TableRow>
         )}

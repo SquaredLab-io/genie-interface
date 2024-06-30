@@ -11,9 +11,10 @@ import {
   DropdownMenuTrigger
 } from "@components/ui/dropdown-menu";
 import { Token } from "@lib/types/portfolio";
+import { Pool } from "@lib/types/common";
 
-const PoolMenu = ({ pool }: { pool: PoolType }) => {
-  const { underlyingAssets, power } = pool;
+const PoolMenu = ({ pool }: { pool: Pool }) => {
+  const { underlyingTokens, power } = pool;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -22,10 +23,10 @@ const PoolMenu = ({ pool }: { pool: PoolType }) => {
       <DropdownMenuContent className="min-w-48 text-white">
         <DropdownMenuLabel>
           <>
-            {underlyingAssets.map((asset: Token, index) => (
+            {underlyingTokens.map((asset, index) => (
               <span key={index} className="font-bold text-sm/5">
                 {asset.symbol}
-                {underlyingAssets.length !== index + 1 && <span className="mx-1">/</span>}
+                {underlyingTokens.length !== index + 1 && <span className="mx-1">/</span>}
               </span>
             ))}
             <span className="font-bold text-xs/5 bg-[#22C9FF24] text-[#0091FF] px-2 rounded-lg">

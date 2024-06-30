@@ -20,8 +20,11 @@ import UserPoolsTable from "./UserPoolsTable";
 import TrxnPoolsTable from "./TxnPoolsTable";
 import PoolMenu from "./PoolMenu";
 import { cn } from "@lib/utils";
+import { useTradeStore } from "@store/tradeStore";
+import { PoolOptions, potentiaPools, potentiaPoolsList } from "@lib/pools";
+import { Pool } from "@lib/types/common";
 
-export const poolsColumns: ColumnDef<PoolType>[] = [
+export const poolsColumns: ColumnDef<Pool>[] = [
   {
     id: "assets",
     accessorKey: "assets",
@@ -31,26 +34,26 @@ export const poolsColumns: ColumnDef<PoolType>[] = [
       </div>
     ),
     cell: ({ row }) => {
-      const { underlyingAssets, power, protocol, network } = row.original;
+      const { underlyingTokens, power, network } = row.original;
       return (
         <div className="whitespace-nowrap flex flex-row gap-2 text-left font-medium pl-9 py-5">
           <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-2">
-            {underlyingAssets.map((asset: Token) => (
+            {underlyingTokens.map((asset) => (
               <div
                 key={asset.symbol}
                 className="z-0 flex overflow-hidden ring-1 ring-white rounded-full bg-neutral-800"
               >
-                <Image src={asset.imgSrc} alt={asset.symbol} width={26} height={26} />
+                <Image src={asset.icon} alt={asset.symbol} width={26} height={26} />
               </div>
             ))}
           </div>
           <div className="flex flex-col gap-1 text-left">
             <div className="inline-flex gap-2">
               <p className="font-extrabold text-sm leading-5">
-                {underlyingAssets.map((asset: Token, index) => (
+                {underlyingTokens.map((asset, index) => (
                   <>
                     <span key={index}>{asset.symbol}</span>
-                    {underlyingAssets.length !== index + 1 && (
+                    {underlyingTokens.length !== index + 1 && (
                       <span className="text-[#9299AA] mx-1">/</span>
                     )}
                   </>
@@ -62,7 +65,7 @@ export const poolsColumns: ColumnDef<PoolType>[] = [
             </div>
             <div className="font-normal text-xs leading-5 text-[#6D6D6D]">
               <p>
-                {protocol} • {network}
+                {"Potentia V1"} • {network}
               </p>
             </div>
           </div>
@@ -238,6 +241,8 @@ export const userPoolsColumns: ColumnDef<UserPoolType>[] = [
 ];
 
 const PoolsData = () => {
+  const { selectedPool } = useTradeStore();
+
   const activeTabStyle =
     "data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-cyan data-[state=active]:to-pure-blue";
 
@@ -258,13 +263,13 @@ const PoolsData = () => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value={TableOptions.all}>
-          <AllPoolsTable columns={poolsColumns} data={allPoolsData} />
+          <AllPoolsTable columns={poolsColumns} data={potentiaPoolsList} />
         </TabsContent>
         <TabsContent value={TableOptions.my}>
           <UserPoolsTable columns={userPoolsColumns} data={[]} />
         </TabsContent>
         <TabsContent value={TableOptions.trxn}>
-          <TrxnPoolsTable columns={poolsColumns} data={allPoolsData} />
+          <TrxnPoolsTable columns={poolsColumns} data={[]} />
         </TabsContent>
       </Tabs>
     </div>

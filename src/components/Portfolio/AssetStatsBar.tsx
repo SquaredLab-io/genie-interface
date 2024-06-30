@@ -3,39 +3,46 @@ import { cn } from "@lib/utils";
 import { price_day_update, token_price } from "./helper";
 import { allPoolsData } from "@components/Pools/PoolsData/helper";
 import { Token } from "@lib/types/portfolio";
+import { usePower } from "@lib/hooks/usePotentiaMethods";
+import { useTradeStore } from "@store/tradeStore";
 
 const AssetStatsBar = () => {
-  const pool = allPoolsData[0];
+  const { selectedPool } = useTradeStore();
+
+  const { power, isLoading: isPowerLoading } = usePower(selectedPool.poolAddress);
+
   return (
     <div className="flex flex-row items-center gap-4 w-full bg-primary-gray px-[11px] py-2">
       <button className="group flex flex-row text-left gap-1 justify-start items-center min-w-fit p-2 -m-2">
         <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-3">
-          {pool.underlyingAssets.map((asset: Token, index) => (
+          {selectedPool.underlyingTokens.map((asset, index) => (
             <div
               key={index}
               className="z-0 flex overflow-hidden ring-1 ring-white rounded-full bg-neutral-800"
             >
-              <Image src={asset.imgSrc} alt={asset.symbol} width={36} height={36} />
+              <Image src={asset.icon} alt={asset.symbol} width={36} height={36} />
             </div>
           ))}
         </div>
         <div className="flex flex-col gap-y-1 mr-4">
           <p className="inline-flex items-center gap-1">
             <span className="text-base/4 font-semibold">
-              {pool.underlyingAssets.map((asset: Token, index) => (
+              {selectedPool.underlyingTokens.map((asset, index) => (
                 <>
                   <span key={index}>{asset.symbol}</span>
-                  {pool.underlyingAssets.length !== index + 1 && (
+                  {selectedPool.underlyingTokens.length !== index + 1 && (
                     <span className="text-[#9299AA] mx-0">/</span>
                   )}
                 </>
               ))}
             </span>
             <span className="font-medium text-2xs/[14px] rounded-sm py-px px-[4.5px] text-white bg-text-grad bg-gradient-blue">
-              p = {pool.power}
+              p = {isPowerLoading ? "..." : power ?? "2"}
             </span>
           </p>
-          <span className="text-xs/4 text-light-gray">WETH Perpetual</span>
+          <span className="text-xs/4 text-light-gray">
+            {selectedPool.underlyingTokens[0].symbol} Perpetual
+          </span>
         </div>
         <Image
           src="/icons/MenuDropIcon.svg"

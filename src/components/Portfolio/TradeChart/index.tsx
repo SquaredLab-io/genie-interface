@@ -12,14 +12,16 @@ import { useTradeStore } from "@store/tradeStore";
 
 const TradeChart = (props: Partial<ChartingLibraryWidgetOptions>) => {
   const [isChartReady, setIsChartReady] = useState(false);
-  const { selectedPool, setSelectedPool } = useTradeStore();
+  const { selectedPool } = useTradeStore();
 
   const chartContainerRef =
     useRef<HTMLDivElement>() as MutableRefObject<HTMLInputElement>;
 
   useEffect(() => {
+    console.log("selected pool", selectedPool);
+
     const widgetOptions: ChartingLibraryWidgetOptions = {
-      symbol: `Kraken:${selectedPool}` ?? "Kraken:USDC/USDT",
+      symbol: `Kraken:${selectedPool.symbol}` ?? "Kraken:USDC/USDT",
       // BEWARE: no trailing slash is expected in feed URL
       datafeed: Datafeed,
       timezone: props.timezone,

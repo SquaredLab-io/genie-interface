@@ -30,11 +30,17 @@ export function useCurrentPosition(isLong: PositionType, poolAddress: Address) {
       (async () => {
         try {
           setIsFetching(true);
+          console.log("getTokenBalance", {
+            poolAddress,
+            address,
+            isLong
+          });
           const currPos = await potentia?.getTokenBalance(
             poolAddress, // poolAddress
             address as `0x${string}`, // userAddress
             isLong // isLong
           );
+          console.log("currPos", currPos);
           setPosition(currPos);
         } catch (error) {
           setIsFetching(false);

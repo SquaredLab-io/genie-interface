@@ -15,7 +15,7 @@ import { cn } from "@lib/utils";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import toUnits from "@lib/utils/formatting";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { isEmpty, isValidPositiveNumber } from "@lib/utils/checkVadility";
+import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 
 const AddLiquidity = () => {
   const { WETH_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;

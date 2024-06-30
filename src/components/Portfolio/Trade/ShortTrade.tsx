@@ -21,13 +21,15 @@ import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { PositionType } from "@lib/types/enums";
 import { sliderValueHandler } from "@lib/utils/sliderValueHandler";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
+import { useTradeStore } from "@store/tradeStore";
 
 interface PropsType {
   potentia?: PotentiaSdk;
 }
 
 const ShortTrade: FC<PropsType> = ({ potentia }) => {
-  const { WETH_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
+  const { selectedPool } = useTradeStore((state) => state);
+  const TOKEN_ADDR = selectedPool.underlyingTokens[0].address;
 
   const [quantity, setQuantity] = useState("");
   const [sliderValue, setSliderValue] = useState<number[]>([25]);
@@ -36,12 +38,12 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
   const { address, isConnected } = useAccount();
   const { data: userBalance, isLoading: isBalLoading } = useBalance({
     address,
-    token: WETH_ADDR
+    token: TOKEN_ADDR
   });
 
   const { data: positionData, isFetching: isPositionFetching } = useCurrentPosition(
     PositionType.short,
-    WETH_POOL_ADDR
+    selectedPool.poolAddress
   );
 
   // Write Hook => Token Approval
@@ -53,17 +55,17 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
   } = useWriteContract();
 
   /**
-   * This handler method approves signers WETH_ADDR tokens to be spent on Potentia Protocol
+   * This handler method approves signers TOKEN_ADDR tokens to be spent on Potentia Protocol
    */
   const approveHandler = async () => {
     const _amount = parseFloat(quantity) * 10 ** 18;
     try {
       await writeApproveToken({
         abi: WethABi,
-        address: WETH_ADDR,
+        address: TOKEN_ADDR,
         functionName: "approve",
         args: [
-          WETH_POOL_ADDR,
+          selectedPool.poolAddress,
           BigInt(_amount).toString() // Approving as much as input amount only
         ]
       });
@@ -89,7 +91,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
 
     try {
       const txnHash = await potentia?.openPosition(
-        WETH_POOL_ADDR, // poolAddress
+        selectedPool.poolAddress, // poolAddress
         BigInt(_amount).toString(), // amt
         false // isLong
       );
@@ -153,7 +155,9 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
               variant="ghost"
               className="hover:bg-transparent px-0 flex font-sans-manrope h-10 w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
             >
-              <span className="text-nowrap">{underlyingTokens[0]}</span>
+              <span className="text-nowrap">
+                {selectedPool.underlyingTokens[0].symbol}
+              </span>
               <BiSolidDownArrow className="h-3 w-3 ml-4" color="#9D9D9D" />
             </Button>
           </div>

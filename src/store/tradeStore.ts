@@ -1,20 +1,28 @@
+import { PoolOptions, potentiaPools } from "@lib/pools";
+import { Pool, UnderlyingToken } from "@lib/types/common";
+// import { Address } from "viem";
 import { create } from "zustand";
 
 interface iTrade {
+  selectedPool: Pool;
+  SELECTED_TOKEN: () => UnderlyingToken;
   isPositionModalOpen: boolean;
+  updateSelectedPool: (value: PoolOptions) => void;
   setIsPositionModalOpen: (value: boolean) => void;
-  selectedPool: string;
-  setSelectedPool: (value: string) => void;
 }
 
-export const useTradeStore = create<iTrade>((set) => ({
+export const useTradeStore = create<iTrade>((set, get) => ({
   // states
-  selectedPool: "ETH/USDC",
+  selectedPool: potentiaPools[PoolOptions.weth],
+  SELECTED_TOKEN: () => {
+    const state = get();
+    return state.selectedPool.underlyingTokens[0];
+  },
   isPositionModalOpen: false,
   // actions
-  setSelectedPool: (newPool: string) =>
+  updateSelectedPool: (newPool: PoolOptions) =>
     set(() => ({
-      selectedPool: newPool
+      selectedPool: potentiaPools[newPool]
     })),
   setIsPositionModalOpen: (updatedState: boolean) =>
     set(() => ({

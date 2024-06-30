@@ -26,11 +26,20 @@ enum Tab {
 }
 
 const TradeData = () => {
-  const { WETH_POOL_ADDR } = CONTRACT_ADDRESSES;
-  const { isPositionModalOpen, setIsPositionModalOpen } = useTradeStore((state) => state);
+  const { isPositionModalOpen, setIsPositionModalOpen, SELECTED_TOKEN, selectedPool } =
+    useTradeStore((state) => state);
+  const TOKEN = SELECTED_TOKEN();
 
-  const { data: longPosition } = useCurrentPosition(PositionType.long, WETH_POOL_ADDR);
-  const { data: shortPosition } = useCurrentPosition(PositionType.short, WETH_POOL_ADDR);
+  console.log("TOKEN", TOKEN);
+
+  const { data: longPosition } = useCurrentPosition(
+    PositionType.long,
+    selectedPool.poolAddress
+  );
+  const { data: shortPosition } = useCurrentPosition(
+    PositionType.short,
+    selectedPool.poolAddress
+  );
   // All Transactions -- LP, Open Long/Short, Close Long/Short
   const { data: txHistory, isLoading: isTxLoading } = useTxHistory();
 
