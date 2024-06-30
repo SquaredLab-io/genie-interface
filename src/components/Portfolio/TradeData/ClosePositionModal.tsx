@@ -4,19 +4,32 @@ import { underlyingTokens } from "../helper";
 import TokenSlider from "../Trade/TokenSlider";
 import { isValidPositive } from "@lib/utils/checkVadility";
 import DropDownIcon from "@components/icons/DropDownIcon";
+import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
+import { useTradeStore } from "@store/tradeStore";
 
 const ClosePositionModal = ({
   open,
   setOpen,
-  trigger
+  trigger,
+  longPos,
+  shortPos,
+  isLong
 }: {
   open: boolean;
   setOpen: (value: boolean) => void;
   trigger?: React.ReactNode;
+  longPos: string;
+  shortPos: string;
+  isLong: boolean;
 }) => {
   const [quantity, setQuantity] = useState<string>("");
-  const selectedToken = underlyingTokens[0];
+  // const selectedToken = underlyingTokens[0];
   const [sliderValue, setSliderValue] = useState<number[]>([25]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { selectedPool } = useTradeStore();
+
+  const { potentia } = usePotentiaSdk();
 
   const handleSliderInput = (event: ChangeEvent<HTMLInputElement>): void => {
     const input = event.target.value;
@@ -27,6 +40,27 @@ const ClosePositionModal = ({
       setSliderValue([parseFloat(input)]);
     }
   };
+
+  /**
+   * Handler for closePosition from SDK
+   */
+  async function closePositionHandlerSdk() {
+    const amount = parseFloat(quantity) * 10 ** 18;
+    console.log("Amount", amount);
+    setIsLoading(true);
+    try {
+      const txnHash = await potentia?.closePosition(
+        selectedPool.poolAddress,
+        BigInt(amount).toString(),
+        isLong
+      );
+      console.log("closePosition hash", txnHash);
+    } catch (error) {
+      console.error("closePosition Error", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <ModalWrapper
@@ -50,16 +84,16 @@ const ClosePositionModal = ({
                 className="bg-transparent p-2 w-full placeholder:text-[#6D6D6D] text-white font-sans-manrope font-semibold text-sm/6 focus:outline-none"
               />
               <span className="font-sans-manrope w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm">
-                {selectedToken}
+                {selectedPool.underlyingTokens[0].symbol}
               </span>
             </div>
-            <span>Balance: 0.0 USDT</span>
+            <span>Balance: {isLong ? longPos : shortPos}</span>
           </div>
-          <TokenSlider
+          {/* <TokenSlider
             value={sliderValue}
             setValue={setSliderValue}
             handler={handleSliderInput}
-          />
+          /> */}
           <hr className="border-b rounded-full border-[#303030] mt-2"></hr>
           <div className="flex flex-col gap-2">
             <p className="inline-flex items-center justify-between w-full">
@@ -71,16 +105,21 @@ const ClosePositionModal = ({
               <span className="font-normal text-white">0.25%</span>
             </p>
           </div>
-          <hr className="border-b rounded-full border-[#303030] mt-2"></hr>
-          <div className="w-full inline-flex items-center justify-between mt-1 mb-2 text-white">
+          {/* <hr className="border-b rounded-full border-[#303030] mt-2"></hr> */}
+          {/* <div className="w-full inline-flex items-center justify-between mt-1 mb-2 text-white">
             <span>Payout</span>
             <div className="inline-flex items-center gap-1">
               <span>0 BTC</span>
               <DropDownIcon className="size-3" />
             </div>
-          </div>
-          <button className="bg-[#202832] hover:bg-[#475B72] rounded-[3px] font-bold text-[14px]/6 text-[#3D85C6] text-center py-2 transition-colors duration-200">
-            Long
+          </div> */}
+          <button
+            className="bg-[#202832] hover:bg-[#475B72] rounded-[3px] font-bold text-[14px]/6 text-[#3D85C6] text-center py-2 transition-colors duration-200"
+            onClick={() => {
+              closePositionHandlerSdk();
+            }}
+          >
+            {isLoading ? <span>processing...</span> : <span>Close</span>}
           </button>
         </div>
       </>

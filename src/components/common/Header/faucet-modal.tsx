@@ -38,8 +38,8 @@ const FaucetModal = ({
     <ModalTrigger
       open={open}
       onOpenChange={setOpen}
-      title="Get Faucet of Token"
-      description="Select to get 50 Faucet Tokens."
+      title="Get Assets"
+      description="Select to get 50 Tokens on Base Sepolia"
       trigger={trigger}
     >
       <div className="flex flex-row gap-3">

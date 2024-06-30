@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import { formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
@@ -15,8 +15,6 @@ import { useTradeStore } from "@store/tradeStore";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
 import { Tx } from "@lib/types/portfolio";
 import { cn } from "@lib/utils";
-import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
-import { CONTRACT_ADDRESSES } from "@lib/constants";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { PositionType } from "@lib/types/enums";
 
@@ -31,6 +29,8 @@ const TradeData = () => {
   const TOKEN = SELECTED_TOKEN();
 
   console.log("TOKEN", TOKEN);
+
+  const [selectedPosType, setSelectedPosType] = useState("");
 
   const { data: longPosition } = useCurrentPosition(
     PositionType.long,
@@ -173,6 +173,7 @@ const TradeData = () => {
             variant="ghost"
             size="sm"
             onClick={() => {
+              setSelectedPosType(row.original.action);
               setIsPositionModalOpen(true);
             }}
           >
@@ -332,7 +333,13 @@ const TradeData = () => {
           />
         </TabsContent>
       </Tabs>
-      <ClosePositionModal open={isPositionModalOpen} setOpen={setIsPositionModalOpen} />
+      <ClosePositionModal
+        open={isPositionModalOpen}
+        setOpen={setIsPositionModalOpen}
+        longPos={longPosition.formatted}
+        shortPos={shortPosition.formatted}
+        isLong={selectedPosType == "Open Long Position" ? true : false}
+      />
     </div>
   );
 };

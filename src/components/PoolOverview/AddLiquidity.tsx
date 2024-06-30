@@ -9,16 +9,17 @@ import {
   useWriteContract,
   useWaitForTransactionReceipt
 } from "wagmi";
-import { CONTRACT_ADDRESSES } from "@lib/constants";
 import { WethABi } from "@lib/abis";
 import { cn } from "@lib/utils";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import toUnits from "@lib/utils/formatting";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
+import { useTradeStore } from "@store/tradeStore";
 
 const AddLiquidity = () => {
-  const { WETH_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
+  const { overviewPool } = useTradeStore();
+  const TOKEN = overviewPool.underlyingTokens[0];
 
   const { potentia } = usePotentiaSdk();
   const { openConnectModal } = useConnectModal();
@@ -29,7 +30,7 @@ const AddLiquidity = () => {
   const { address, isConnected } = useAccount();
   const { data: userBalance, isLoading: isBalLoading } = useBalance({
     address,
-    token: WETH_ADDR
+    token: TOKEN.address
   });
 
   // Write Hook => Token Approval
@@ -48,10 +49,10 @@ const AddLiquidity = () => {
     try {
       await writeApproveToken({
         abi: WethABi,
-        address: WETH_ADDR,
+        address: TOKEN.address,
         functionName: "approve",
         args: [
-          WETH_POOL_ADDR,
+          overviewPool.poolAddress,
           BigInt(_amount).toString() // Approving as much as input amount only
         ]
       });
@@ -67,7 +68,10 @@ const AddLiquidity = () => {
     const _amount = parseFloat(amount) * 10 ** 18;
     console.log("_amount", _amount);
 
-    const txn = await potentia?.addLiquidity(WETH_POOL_ADDR, BigInt(_amount).toString());
+    const txn = await potentia?.addLiquidity(
+      overviewPool.poolAddress,
+      BigInt(_amount).toString()
+    );
     console.log("addliquiditytxn return", txn);
     return txn;
   }
@@ -107,14 +111,14 @@ const AddLiquidity = () => {
                 setAmount(event.target.value);
               }}
             />
-            <span className="font-normal text-base/5">$0</span>
+            {/* <span className="font-normal text-base/5">$0</span> */}
           </div>
         </div>
         <div className="px-5 py-4 inline-flex items-center justify-between w-full">
           <div className="inline-flex items-center gap-3">
             <Image src="/icons/ethereum.svg" alt="Asset icon" height={42} width={42} />
             <p className="flex flex-col justify-between font-normal text-base/5 text-[#8F9BAA]">
-              <span>ETH</span>
+              <span>{overviewPool.underlyingTokens[0].symbol}</span>
               <span className="text-xs/4">
                 Balance:{" "}
                 {isBalLoading

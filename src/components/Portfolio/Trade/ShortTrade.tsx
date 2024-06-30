@@ -15,7 +15,6 @@ import { selected_token, underlyingTokens } from "../helper";
 import TokenSlider from "./TokenSlider";
 import { getAccountBalance } from "@lib/utils/getAccountBalance";
 import { Button } from "@components/ui/button";
-import { CONTRACT_ADDRESSES } from "@lib/constants";
 import { WethABi } from "@lib/abis";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { PositionType } from "@lib/types/enums";

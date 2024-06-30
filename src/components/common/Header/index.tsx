@@ -57,7 +57,7 @@ const Header = () => {
       </nav>
       <div className="inline-flex gap-6">
         <Button variant={"secondary"} onClick={() => setIsFaucetOpen(true)}>
-          Get Faucet
+          Faucet
         </Button>
         <CoinbaseCreateWallet />
         <ConnectWallet />

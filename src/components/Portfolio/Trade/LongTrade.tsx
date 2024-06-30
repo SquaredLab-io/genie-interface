@@ -31,8 +31,6 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   // const [selectedToken, setSelectedToken] = useState<string>(underlyingTokens[0]);
   const [sliderValue, setSliderValue] = useState<number[]>([25]);
 
-  // const { WETH_POOL_ADDR, WETH_ADDR } = CONTRACT_ADDRESSES;
-
   const { selectedPool } = useTradeStore((state) => state);
   const TOKEN_ADDR = selectedPool.underlyingTokens[0].address;
 

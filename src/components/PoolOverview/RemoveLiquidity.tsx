@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import { HiChevronDown } from "react-icons/hi2";
-import { CONTRACT_ADDRESSES } from "@lib/constants";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import { PositionType } from "@lib/types/enums";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
@@ -11,9 +10,11 @@ import { useAccount } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import { cn } from "@lib/utils";
+import { useTradeStore } from "@store/tradeStore";
 
 const RemoveLiquidity = () => {
-  const { WETH_POOL_ADDR } = CONTRACT_ADDRESSES;
+  const { overviewPool } = useTradeStore();
+
   // Amount to remove
   const [amount, setAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +26,7 @@ const RemoveLiquidity = () => {
   // pToken Balance
   const { data: pTokenData, isFetching: isPTokeneFetching } = useCurrentPosition(
     PositionType.lp,
-    WETH_POOL_ADDR
+    overviewPool.poolAddress
   );
 
   /**
@@ -38,7 +39,7 @@ const RemoveLiquidity = () => {
 
     try {
       const txnHash = await potentia?.removeLiquidity(
-        WETH_POOL_ADDR,
+        overviewPool.poolAddress,
         BigInt(shares).toString()
       );
       console.log("removeliquidity hash", txnHash);

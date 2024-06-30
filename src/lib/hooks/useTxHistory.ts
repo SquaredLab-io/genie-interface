@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { Address } from "viem";
-import { CONTRACT_ADDRESSES } from "@lib/constants";
 import { useTradeStore } from "@store/tradeStore";
 
 type ReturnType = {

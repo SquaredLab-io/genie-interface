@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { useAccount } from "wagmi";
-import { CONTRACT_ADDRESSES } from "@lib/constants";
 import { Address, formatUnits } from "viem";
 import { PositionType } from "@lib/types/enums";
 
