@@ -53,7 +53,7 @@ export const potentiaPools: PotentiaPools = {
     id: 1,
     symbol: "BTC/USDC",
     network: "Base Sepolia",
-    power: 2,
+    power: 3,
     underlyingTokens: [
       {
         symbol: "WBTC",

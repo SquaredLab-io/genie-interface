@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { cn } from "@lib/utils";
 import { usePower } from "@lib/hooks/usePotentiaMethods";
@@ -32,7 +34,7 @@ const AssetStatsBar = () => {
                 </div>
               ))}
             </div>
-            <div className="flex flex-col gap-y-1 mr-4">
+            <div className="flex flex-col items-start gap-y-1 mr-4">
               <p className="inline-flex items-center gap-1">
                 <span className="text-base/4 font-semibold">
                   {selectedPool.underlyingTokens.map((asset, index) => (

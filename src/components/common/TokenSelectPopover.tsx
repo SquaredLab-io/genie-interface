@@ -17,7 +17,7 @@ export default function TokenSelectPopover({ children }: PropsType) {
         <div className="flex flex-col gap-3 mt-3">
           {potentiaPoolsList.map((pool, index) => (
             <button
-              key={pool.id}
+              key={pool.symbol}
               onClick={() => {
                 if (index === 0) {
                   updateSelectedPool(PoolOptions.weth);

@@ -9,10 +9,13 @@ import FeedbackModal from "./feedback-modal";
 import ConnectWallet from "../ConnectWallet";
 import { CoinbaseCreateWallet } from "../ConnectWallet/CoinbaseCreateWallet";
 import NextImage from "../NextImage";
+import { Button } from "@components/ui/button";
+import FaucetModal from "@components/common/Header/faucet-modal";
 
 const Header = () => {
   const pathname = usePathname();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isFaucetOpen, setIsFaucetOpen] = useState<boolean>(false);
 
   return (
     <header className="flex flex-row py-3 px-4 justify-between bg-primary-gray">
@@ -53,9 +56,13 @@ const Header = () => {
         </div>
       </nav>
       <div className="inline-flex gap-6">
+        <Button variant={"secondary"} onClick={() => setIsFaucetOpen(true)}>
+          Get Faucet
+        </Button>
         <CoinbaseCreateWallet />
         <ConnectWallet />
       </div>
+      <FaucetModal open={isFaucetOpen} setOpen={setIsFaucetOpen} />
       <FeedbackModal open={isModalOpen} setOpen={setIsModalOpen} />
     </header>
   );
