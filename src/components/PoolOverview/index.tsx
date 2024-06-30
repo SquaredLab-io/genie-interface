@@ -1,21 +1,29 @@
 "use client";
+
 import Image from "next/image";
 import { useAccount } from "wagmi";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import DropDownIcon from "@components/icons/DropDownIcon";
-import { allPoolsData, Token } from "@components/Pools/PoolsData/helper";
 import { cn } from "@lib/utils";
 import Label from "./Label";
 import AddLiquidity from "./AddLiquidity";
 import RemoveLiquidity from "./RemoveLiquidity";
-import { GraphOptions, TradeOptions } from "./helper";
+import { GraphOptions, Timeseries, TradeOptions } from "./helper";
 import PoolChart from "./Chart";
-import { CONTRACT_ADDRESSES } from "@lib/constants";
 import { getCurrentDateTime } from "@lib/utils/getCurrentTime";
+import { useTradeStore } from "@store/tradeStore";
+import { useEffect, useState } from "react";
+import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 
 const PoolOverview = () => {
-  const pool = allPoolsData[0];
-  const { underlyingAssets, power, protocol, network } = pool;
+  const { overviewPool } = useTradeStore();
+
+  const { underlyingTokens, power } = overviewPool;
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [timeseries, setTimeseries] = useState<Timeseries[]>([]);
+
+  const { potentia } = usePotentiaSdk();
 
   const { chain } = useAccount();
 
@@ -29,25 +37,49 @@ const PoolOverview = () => {
     "data-[state=active]:border border-pure-blue data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-cyan data-[state=active]:to-pure-blue"
   );
 
+  async function getTimeseries() {
+    if (overviewPool) {
+      try {
+        setIsLoading(true);
+        console.log("overviewPool.poolAddress", overviewPool.poolAddress);
+        const data = await potentia?.getTimeseries(overviewPool.poolAddress);
+        console.log("timeseries data", data);
+        setTimeseries(data == undefined ? [] : data);
+      } catch (error) {
+        console.error("error", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  }
+
+  useEffect(() => {
+    getTimeseries();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [overviewPool, potentia]);
+
   return (
     <div className="w-full px-11 py-[72px]">
       {/* Header */}
-      <button className="whitespace-nowrap flex flex-row items-center gap-3 text-left font-medium rounded-full">
+      <button
+        className="whitespace-nowrap flex flex-row items-center gap-3 text-left font-medium rounded-full"
+        onClick={getTimeseries}
+      >
         <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-3">
-          {underlyingAssets.map((asset: Token, index) => (
+          {underlyingTokens.map((asset, index) => (
             <div
               key={index}
               className="z-0 flex overflow-hidden ring-1 ring-white rounded-full bg-neutral-800"
             >
-              <Image src={asset.imgSrc} alt={asset.symbol} width={44} height={44} />
+              <Image src={asset.icon} alt={asset.symbol} width={44} height={44} />
             </div>
           ))}
         </div>
         <p className="font-extrabold text-[32px]/5">
-          {underlyingAssets.map((asset: Token, index) => (
+          {underlyingTokens.map((asset, index) => (
             <>
               <span key={index}>{asset.symbol}</span>
-              {underlyingAssets.length !== index + 1 && (
+              {underlyingTokens.length !== index + 1 && (
                 <span className="text-[#9299AA] mx-2">/</span>
               )}
             </>
@@ -62,15 +94,15 @@ const PoolOverview = () => {
       <div className="inline-flex items-center mt-4 gap-1">
         <Label text="APR : 2.61%" />
         <Label text="Fee : 0.3%" />
-        {chain && <Label text={`Network : ${chain?.name}`} />}
-        {underlyingAssets.map((asset, index) => (
-          <Label
-            key={index}
-            text={asset.symbol}
-            imgSrc={asset.imgSrc}
-            link={CONTRACT_ADDRESSES.WETH_ADDR}
-          />
-        ))}
+        {chain && <Label text={`Network : ${overviewPool.network}`} />}
+        {/* {underlyingAssets.map((asset, index) => ( */}
+        <Label
+          // key={index}
+          text={overviewPool.underlyingTokens[0].symbol}
+          imgSrc={overviewPool.underlyingTokens[0].icon}
+          link={overviewPool.underlyingTokens[0].address}
+        />
+        {/* ))} */}
       </div>
       {/* Graph and Add/Remove Liquidity Box */}
       <div className="grid grid-cols-7 gap-1 mt-10">
@@ -96,7 +128,7 @@ const PoolOverview = () => {
                 <h5 className="font-normal text-base/5">{getCurrentDateTime()}</h5>
               </div>
               <TabsContent value={GraphOptions.counterpart}>
-                <PoolChart />
+                <PoolChart timeseries={timeseries} isLoadingData={isLoading} />
               </TabsContent>
               <TabsContent value={GraphOptions.volume}>Volume</TabsContent>
               <TabsContent value={GraphOptions.tvl}>TVL</TabsContent>

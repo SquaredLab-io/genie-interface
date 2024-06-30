@@ -6,6 +6,7 @@ import { potentiaPoolsList } from "@lib/pools";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import { useState } from "react";
 import { useAccount } from "wagmi";
+import { useIsMounted } from "@lib/hooks/useIsMounted";
 
 const FaucetModal = ({
   open,
@@ -19,6 +20,7 @@ const FaucetModal = ({
   const { potentia } = usePotentiaSdk();
   const [isLoading, setIsLoading] = useState(false);
   const { address } = useAccount();
+  const { isMounted } = useIsMounted();
 
   async function getFaucet(tokenAddress: string) {
     try {
@@ -32,6 +34,10 @@ const FaucetModal = ({
     } finally {
       setIsLoading(false);
     }
+  }
+
+  if (!isMounted) {
+    return <></>;
   }
 
   return (

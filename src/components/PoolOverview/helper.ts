@@ -28,6 +28,14 @@ export const generateRandomData = (
     });
     currentDate.setDate(currentDate.getDate() + 1);
   }
+  console.log("data for chart", data);
 
   return data;
+};
+
+export type Timeseries = {
+  CL: string;
+  R: string;
+  pool: string;
+  timestamp: number;
 };
