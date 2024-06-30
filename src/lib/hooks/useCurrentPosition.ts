@@ -50,7 +50,7 @@ export function useCurrentPosition(isLong: PositionType, poolAddress: Address) {
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [potentia, address]);
+  }, [potentia, address, poolAddress]);
 
   return {
     data: {

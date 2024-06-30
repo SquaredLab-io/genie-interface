@@ -4,6 +4,7 @@ import { useAccount } from "wagmi";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { Address } from "viem";
 import { CONTRACT_ADDRESSES } from "@lib/constants";
+import { useTradeStore } from "@store/tradeStore";
 
 type ReturnType = {
   isLoading: boolean;
@@ -14,6 +15,7 @@ type ReturnType = {
 export function useTxHistory(): ReturnType {
   const [txHistory, setTxHistory] = useState<Tx[]>();
   const [isLoadingTxH, setIsLoadingTxH] = useState<boolean>(false);
+  const { selectedPool } = useTradeStore();
 
   const { address } = useAccount();
   const { potentia } = usePotentiaSdk();
@@ -24,7 +26,7 @@ export function useTxHistory(): ReturnType {
       setIsLoadingTxH(true);
       const result = await potentia?.getUserTxHistory(
         address as Address,
-        CONTRACT_ADDRESSES.WETH_POOL_ADDR
+        selectedPool.poolAddress
       );
       setTxHistory(result);
     } catch (error) {
@@ -39,7 +41,7 @@ export function useTxHistory(): ReturnType {
       refetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, potentia]);
+  }, [address, potentia, selectedPool]);
 
   return { data: txHistory, isLoading: isLoadingTxH, refetch };
 }

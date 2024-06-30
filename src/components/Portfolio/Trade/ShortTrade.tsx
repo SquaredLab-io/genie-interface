@@ -128,7 +128,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
             <span>Fetching...</span>
           ) : (
             <span className="font-normal">
-              {positionData.formatted} {underlyingTokens[0]}
+              {positionData.formatted} {selectedPool.underlyingTokens[0].symbol}
               <sup>{selected_token.power}</sup>
             </span>
           )}
