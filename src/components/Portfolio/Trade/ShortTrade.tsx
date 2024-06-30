@@ -40,7 +40,8 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
   });
 
   const { data: positionData, isFetching: isPositionFetching } = useCurrentPosition(
-    PositionType.short
+    PositionType.short,
+    WETH_POOL_ADDR
   );
 
   // Write Hook => Token Approval

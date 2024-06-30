@@ -53,15 +53,3 @@ export interface Tx {
     | "Open Short Position"
     | "Close Short Position";
 }
-
-export type OpenPositionType = {
-  assets: Token[]; // underlyingToken
-  power: number;
-  protocol: string; // pool
-  date: string; // datetime
-  time: string;
-  size: string;
-  value: string;
-  pnl: string;
-  return: string;
-};

@@ -21,16 +21,11 @@ export function getLatestTransactions(transactions: Tx[]): Tx[] {
   return [latestLongTx, latestShortTx].filter((tx) => tx !== null) as Tx[];
 }
 
-export function getLatestTransactionsByPool(transactions: Tx[]): Tx[] {
+function getLatestTransactionsByPool(transactions: Tx[]): Tx[] {
   const latestLongTxByPool: Record<string, Tx> = {};
   const latestShortTxByPool: Record<string, Tx> = {};
 
-  const filteredTx = transactions.filter((tx) => {
-    // Filter txHistory with Open Long/Short Positions
-    return tx.action === "Open Long Position" || tx.action === "Open Short Position";
-  });
-
-  for (const tx of filteredTx) {
+  for (const tx of transactions) {
     if (tx.action === "Open Long Position") {
       if (
         !latestLongTxByPool[tx.pool] ||

@@ -43,7 +43,8 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
 
   // Current Open Long Position
   const { data: positionData, isFetching: isPositionFetching } = useCurrentPosition(
-    PositionType.long
+    PositionType.long,
+    WETH_POOL_ADDR
   );
 
   // Write Hook => Token Approval

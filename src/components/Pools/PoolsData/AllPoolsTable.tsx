@@ -13,7 +13,6 @@ import {
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
-// import {  } from "next/navigation";
 import { useAccount } from "wagmi";
 
 interface PropsType<TData, TValue> {

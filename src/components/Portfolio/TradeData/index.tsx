@@ -7,7 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { Button } from "@components/ui/button";
 import { toDollarUnits } from "@lib/utils/formatting";
-import { getDateTime, getLatestTransactionsByPool } from "./helper";
+import { getDateTime, getLatestTransactions } from "./helper";
 import OpenPositionsTable from "./OpenPositionsTable";
 import TransactionsHistoryTable from "./TransactionsHistoryTable";
 import ClosePositionModal from "./ClosePositionModal";
@@ -15,6 +15,10 @@ import { useTradeStore } from "@store/tradeStore";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
 import { Tx } from "@lib/types/portfolio";
 import { cn } from "@lib/utils";
+import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
+import { CONTRACT_ADDRESSES } from "@lib/constants";
+import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
+import { PositionType } from "@lib/types/enums";
 
 enum Tab {
   position = "position",
@@ -22,14 +26,18 @@ enum Tab {
 }
 
 const TradeData = () => {
+  const { WETH_POOL_ADDR } = CONTRACT_ADDRESSES;
   const { isPositionModalOpen, setIsPositionModalOpen } = useTradeStore((state) => state);
+
+  const { data: longPosition } = useCurrentPosition(PositionType.long, WETH_POOL_ADDR);
+  const { data: shortPosition } = useCurrentPosition(PositionType.short, WETH_POOL_ADDR);
   // All Transactions -- LP, Open Long/Short, Close Long/Short
   const { data: txHistory, isLoading: isTxLoading } = useTxHistory();
 
   // User's Current Open Positions -- Long and Short
   const openPositions = useMemo((): Tx[] => {
     if (txHistory) {
-      return getLatestTransactionsByPool(txHistory);
+      return getLatestTransactions(txHistory);
     } else {
       return new Array<Tx>();
     }
@@ -104,9 +112,12 @@ const TradeData = () => {
       accessorKey: "size",
       header: () => <span>Size</span>,
       cell: ({ row }) => {
-        const size = formatUnits(row.getValue("size") as bigint, 18);
-        const formatted = toDollarUnits(parseFloat(size), 2);
-        return <span>{formatted}</span>;
+        // const size = formatUnits(row.getValue("size") as bigint, 18);
+        const action = row.getValue("action") as string;
+        if (action == "Open Long Position") return <span>{longPosition.formatted}</span>;
+        else if (action == "Open Short Position")
+          return <span>{shortPosition.formatted}</span>;
+        return <span>-</span>;
       }
     },
     {
@@ -133,9 +144,7 @@ const TradeData = () => {
       header: () => <span>Type</span>,
       cell: ({ row }) => {
         const action = row.getValue("action") as string;
-        const type = action.split(" ")[1];
-        const _type = action.substring(5);
-        return <span>{_type}</span>;
+        return <span>{action.substring(5)}</span>;
       }
     },
     // {

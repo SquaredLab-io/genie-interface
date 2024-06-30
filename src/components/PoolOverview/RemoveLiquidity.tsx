@@ -24,7 +24,8 @@ const RemoveLiquidity = () => {
 
   // pToken Balance
   const { data: pTokenData, isFetching: isPTokeneFetching } = useCurrentPosition(
-    PositionType.lp
+    PositionType.lp,
+    WETH_POOL_ADDR
   );
 
   /**

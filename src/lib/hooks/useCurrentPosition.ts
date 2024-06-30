@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { useAccount } from "wagmi";
 import { CONTRACT_ADDRESSES } from "@lib/constants";
-import { formatUnits } from "viem";
+import { Address, formatUnits } from "viem";
 import { PositionType } from "@lib/types/enums";
 
 /**
@@ -18,7 +18,7 @@ import { PositionType } from "@lib/types/enums";
  *   isFetching: boolean
  * }} The current position data and fetching status.
  */
-export function useCurrentPosition(isLong: PositionType) {
+export function useCurrentPosition(isLong: PositionType, poolAddress: Address) {
   const [position, setPosition] = useState<string>("0");
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
@@ -31,7 +31,7 @@ export function useCurrentPosition(isLong: PositionType) {
         try {
           setIsFetching(true);
           const currPos = await potentia?.getTokenBalance(
-            CONTRACT_ADDRESSES.WETH_POOL_ADDR, // protocolAddress
+            poolAddress, // poolAddress
             address as `0x${string}`, // userAddress
             isLong // isLong
           );
