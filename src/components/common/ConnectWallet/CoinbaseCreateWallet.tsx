@@ -23,10 +23,10 @@ export function CoinbaseCreateWallet() {
 
   return (
     <button
-      className="border-transparent box-border flex items-center justify-between w-[200px] font-sans-manrope font-bold text-[18px] bg-[#0052FF] pl-[15px] rounded-md pr-[30px]"
+      className="flex flex-row border-transparent box-border items-center gap-3 font-sans-manrope font-bold text-base/5 bg-coinbase-theme pl-[15px] rounded-md pr-[30px]"
       onClick={createWallet}
     >
-      <CoinbaseWalletLogo />
+      <CoinbaseWalletLogo size={24} />
       Create Wallet
     </button>
   );

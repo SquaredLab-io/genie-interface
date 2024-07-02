@@ -39,7 +39,7 @@ export function useCurrencyPrice(symbol: string) {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [symbol]);
 
   return {
     price,

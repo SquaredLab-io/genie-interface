@@ -39,7 +39,8 @@ const config = {
         "positive-green": "#20B26C",
         "pure-blue": "#0099FF",
         "pure-cyan": "#00CCFF",
-        "off-white": "#C9C9C9"
+        "off-white": "#C9C9C9",
+        "coinbase-theme": "#0052FF"
       },
       keyframes: {
         "accordion-down": {
