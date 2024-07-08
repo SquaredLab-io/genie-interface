@@ -30,7 +30,7 @@ const TxnPoolsTable = <TData, TValue>({ columns, data }: PropsType<TData, TValue
   const { isConnected } = useAccount();
 
   return (
-    <Table className="bg-primary-gray rounded-xl">
+    <Table className="rounded-xl">
       <TableHeader className="border-b border-[#292B31]">
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>

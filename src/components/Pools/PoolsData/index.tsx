@@ -12,11 +12,9 @@ import UserPoolsTable from "./UserPoolsTable";
 import TrxnPoolsTable from "./TxnPoolsTable";
 import PoolMenu from "./PoolMenu";
 import { cn } from "@lib/utils";
-// import { useTradeStore } from "@store/tradeStore";
 import { potentiaPoolsList } from "@lib/pools";
 import { Pool } from "@lib/types/common";
 import { usePools } from "@lib/hooks/usePools";
-import { formatUnits } from "viem";
 
 export const userPoolsColumns: ColumnDef<UserPoolType>[] = [
   {

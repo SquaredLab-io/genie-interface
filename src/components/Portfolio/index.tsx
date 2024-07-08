@@ -29,14 +29,14 @@ const Portfolio = () => {
           setIsScriptReady(true);
         }}
       />
-      <div className="flex flex-row gap-1 my-1">
+      <div className="flex flex-row">
         {/* Left Side */}
-        <div className="flex-1 flex flex-col gap-1 max-h-screen">
+        <div className="flex-1 flex flex-col gap-1 max-h-screen border-r border-[#1F2D3F]">
           <AssetStatsBar />
           {isScriptReady ? (
             <TradeChart {...defaultWidgetProps} />
           ) : (
-            <div className="flex flex-col items-center h-full max-h-max justify-center bg-primary-gray">
+            <div className="flex flex-col items-center h-full max-h-max justify-center">
               <Image
                 src="/images/logo.svg"
                 height={44}

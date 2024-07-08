@@ -124,7 +124,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
 
   return (
     <div className="flex flex-col font-medium text-xs leading-4">
-      <div className="flex flex-col gap-2 pt-[14px] pb-2 pl-2 pr-3 border-b border-[#303030]">
+      <div className="flex flex-col gap-2 pt-[14px] pb-2 pl-2 pr-3">
         <p className="inline-flex items-center justify-between w-full">
           <span className="text-[#949E9C]">Balance</span>
           <span className="font-normal">
@@ -189,7 +189,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
           } // conditions to Long Button
           onClick={approveHandler}
         >
-          Long
+          BUY
         </button>
         {/* Iterate this data after calculating/fetching */}
         <div className="flex flex-col gap-2">

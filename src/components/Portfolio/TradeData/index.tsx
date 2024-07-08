@@ -298,7 +298,7 @@ const TradeData = () => {
   ];
 
   return (
-    <div className="font-medium text-xs leading-4 bg-primary-gray font-sans-manrope">
+    <div className="font-medium text-xs leading-4 font-sans-manrope border-t border-secondary-gray">
       {/* Tab Row */}
       <Tabs defaultValue={Tab.position}>
         <TabsList className="flex flex-row justify-start gap-8 py-2 px-10 rounded-none border-b border-[#303030] font-normal text-xs leading-9">

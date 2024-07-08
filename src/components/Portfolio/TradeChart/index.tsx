@@ -39,6 +39,10 @@ const TradeChart = (props: Partial<ChartingLibraryWidgetOptions>) => {
       autosize: props.autosize,
       theme: props.theme,
       debug: false,
+      favorites: {
+        intervals: ["1S", "1", "1D"] as ResolutionString[],
+        chartTypes: ["Area", "Candles"]
+      },
       symbol_search_request_delay: props.symbol_search_request_delay,
       auto_save_delay: props.auto_save_delay,
       toolbar_bg: props.toolbar_bg,
@@ -49,7 +53,8 @@ const TradeChart = (props: Partial<ChartingLibraryWidgetOptions>) => {
 
     tvWidget.onChartReady(() => {
       setIsChartReady(true);
-      tvWidget.headerReady().then(() => {});
+      tvWidget.setTimeFrame({val: {type: 'period-back', value: '12M'}, res: '1W'});
+      // tvWidget.headerReady().then(() => {});
     });
 
     return () => {

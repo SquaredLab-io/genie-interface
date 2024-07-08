@@ -105,7 +105,7 @@ const PoolOverview = () => {
       </div>
       {/* Graph and Add/Remove Liquidity Box */}
       <div className="grid grid-cols-7 gap-1 mt-10">
-        <div className="col-span-5 bg-primary-gray rounded-base">
+        <div className="col-span-5 rounded-base border border-gray-800">
           <div className="py-2 px-3">
             <Tabs defaultValue={GraphOptions.counterpart}>
               <TabsList className="inline-flex font-bold text-sm/5 gap-1">
@@ -137,7 +137,7 @@ const PoolOverview = () => {
         </div>
         <div className="col-span-2 flex flex-col gap-1">
           <Tabs defaultValue={TradeOptions.add}>
-            <TabsList className="inline-flex font-semibold text-sm/5 w-full bg-primary-gray mb-1">
+            <TabsList className="inline-flex font-semibold text-sm/5 w-full bg-gray-800 mb-1">
               <TabsTrigger value={TradeOptions.add} className={tradeTabStyle}>
                 Add Liquidity
               </TabsTrigger>

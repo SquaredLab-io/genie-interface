@@ -30,7 +30,7 @@ const AllPoolsTable = <TData, TValue>({ columns, data }: PropsType<TData, TValue
   });
 
   return (
-    <Table className="bg-primary-gray rounded-xl">
+    <Table className="bg-gray-900 rounded-xl">
       <TableHeader className="border-b border-[#292B31]">
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>

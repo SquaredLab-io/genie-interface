@@ -31,7 +31,8 @@ const config = {
         base: "4px"
       },
       colors: {
-        "primary-gray": "#16191F",
+        "primary-gray": "#0C1820",
+        "secondary-gray": "#1F2D3F",
         "dark-gray": "#71757A",
         "base-gray": "#6D6D6D",
         "light-gray": "#ADB1B8",

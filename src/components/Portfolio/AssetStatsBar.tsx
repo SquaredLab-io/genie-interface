@@ -20,7 +20,7 @@ const AssetStatsBar = () => {
   const { power, isLoading: isPowerLoading } = usePower(selectedPool.poolAddress);
 
   return (
-    <div className="flex flex-row items-center gap-4 w-full bg-primary-gray px-[11px] py-2">
+    <div className="flex flex-row items-center gap-4 w-full px-[11px] py-2 border-b border-secondary-gray">
       <button className="group flex flex-row text-left gap-1 justify-start items-center min-w-fit p-2 -m-2">
         <TokenSelectPopover>
           <div className="flex flex-row justify-normal items-center gap-1">

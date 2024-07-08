@@ -17,7 +17,7 @@ const tabsStyle =
 const Trade = () => {
   const { potentia } = usePotentiaSdk();
   return (
-    <div className="flex flex-col bg-primary-gray">
+    <div className="flex flex-col border-b border-secondary-gray">
       <Tabs defaultValue={TradeOptions.long} className="w-full">
         <TabsList className="w-full flex flex-row items-center font-sans-manrope font-semibold text-base border-b-[0.5px] border-[#303030]">
           <TabsTrigger

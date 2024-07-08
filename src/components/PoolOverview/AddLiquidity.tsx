@@ -97,7 +97,7 @@ const AddLiquidity = () => {
 
   return (
     <>
-      <div className="bg-primary-gray rounded-base">
+      <div className="border border-gray-800 rounded-base">
         <div className="p-5 border-b border-[#2A2C30]">
           <span className="font-normal text-xs/4 text-[#8F9BAA]">Add Liquidity</span>
           <div className="relative flex flex-col text-[#D4D4D4] items-center justify-center h-60">
@@ -132,7 +132,7 @@ const AddLiquidity = () => {
           </button>
         </div>
       </div>
-      <div className="flex flex-col gap-2 rounded-base bg-primary-gray py-4 px-5 mt-1 font-normal text-base/5 text-[#8F9BAA]">
+      <div className="flex flex-col gap-2 rounded-base border border-gray-800 py-4 px-5 mt-1 font-normal text-base/5 text-[#8F9BAA]">
         <span>LP Tokens</span>
         <span className="text-xs/4">N/A</span>
       </div>
