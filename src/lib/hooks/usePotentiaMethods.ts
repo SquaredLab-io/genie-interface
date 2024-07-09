@@ -12,7 +12,7 @@ export function usePower(poolAddress: Address) {
     try {
       setIsLoading(true);
       const p = await potentia?.getP(poolAddress);
-      console.log("getPower", p);
+      // console.log("power of", poolAddress, " -- ", p);
       setPower(p);
       setIsLoading(false);
     } catch (error) {
@@ -23,9 +23,11 @@ export function usePower(poolAddress: Address) {
   }
 
   useEffect(() => {
-    getPower();
+    if (potentia) {
+      getPower();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [potentia]);
 
   return {
     power,

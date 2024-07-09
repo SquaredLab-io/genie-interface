@@ -18,19 +18,20 @@ const Header = () => {
   const [isFaucetOpen, setIsFaucetOpen] = useState<boolean>(false);
 
   return (
-    <header className="flex flex-row py-3 px-4 justify-between border-b border-[#1F2D3F]">
+    <header className="flex flex-row py-3 px-4 justify-between border-b border-secondary-gray">
       <nav className="flex justify-start items-center gap-x-12" aria-label="Global">
+        {/* Brand Logo */}
         <div className="flex lg:flex-1 max-w-fit">
           <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Genie | SquaredLabs</span>
             <NextImage
               src="/images/logo_text.svg"
               altText="genie logo"
-              className="h-8 w-8"
+              className="w-[72px]"
             />
           </Link>
         </div>
-        <div className="hidden sm:flex lg:gap-x-4 font-normal text-[13px]/[17.76px]">
+        <div className="hidden sm:flex lg:gap-x-4 font-normal text-[13px]/[17.76px] uppercase">
           {navigation.map((item) => (
             <Link
               key={item.name}
@@ -46,7 +47,9 @@ const Header = () => {
             </Link>
           ))}
           <button
-            className={clsx("px-[10px] opacity-35 hover:opacity-70 transition-opacity")}
+            className={clsx(
+              "px-[10px] opacity-35 hover:opacity-70 transition-opacity uppercase"
+            )}
             onClick={() => {
               setIsModalOpen(true);
             }}
