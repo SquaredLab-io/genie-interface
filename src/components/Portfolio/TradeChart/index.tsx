@@ -53,7 +53,6 @@ const TradeChart = (props: Partial<ChartingLibraryWidgetOptions>) => {
 
     tvWidget.onChartReady(() => {
       setIsChartReady(true);
-      tvWidget.setTimeFrame({val: {type: 'period-back', value: '12M'}, res: '1W'});
       // tvWidget.headerReady().then(() => {});
     });
 

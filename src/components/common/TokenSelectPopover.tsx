@@ -32,21 +32,21 @@ export default function TokenSelectPopover({ children }: PropsType) {
               <div className="hidden sm:flex flex-row items-center max-w-git -space-x-2">
                 {pool.underlyingTokens.map((asset, index) => (
                   <div
-                    key={index}
+                    key={asset.address}
                     className="z-0 flex overflow-hidden ring-1 ring-white rounded-full bg-neutral-800"
                   >
                     <Image src={asset.icon} alt={asset.symbol} width={24} height={24} />
                   </div>
                 ))}
               </div>
-              <p>
+              <div>
                 {pool.underlyingTokens.map((asset, index) => (
                   <>
-                    <span key={index}>{asset.symbol}</span>
+                    <span key={asset.address}>{asset.symbol}</span>
                     {pool.underlyingTokens.length !== index + 1 && <span>-</span>}
                   </>
                 ))}
-              </p>
+              </div>
               <span className="font-medium text-2xs/[14px] rounded-sm py-px px-[4.5px] text-white bg-text-grad bg-gradient-blue">
                 p = {pool.power}
               </span>

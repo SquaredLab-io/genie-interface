@@ -18,7 +18,7 @@ import { getAccountBalance } from "@lib/utils/getAccountBalance";
 import { WethABi } from "@lib/abis";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { PositionType } from "@lib/types/enums";
-import { sliderValueHandler } from "@lib/utils/sliderValueHandler";
+// import { sliderValueHandler } from "@lib/utils/sliderValueHandler";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import { useTradeStore } from "@store/tradeStore";
 
@@ -124,7 +124,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
 
   return (
     <div className="flex flex-col font-medium text-xs leading-4">
-      <div className="flex flex-col gap-2 pt-[14px] pb-2 pl-2 pr-3">
+      <div className="flex flex-col gap-2 pt-4 pb-6 px-4">
         <p className="inline-flex items-center justify-between w-full">
           <span className="text-[#949E9C]">Balance</span>
           <span className="font-normal">
@@ -172,15 +172,11 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
           </div>
         </form>
         {/* Slider Component */}
-        <TokenSlider
-          value={sliderValue}
-          setValue={setSliderValue}
-          handler={(event) => sliderValueHandler(event, setSliderValue)}
-        />
-      </div>
-      <div className="flex flex-col gap-2 pt-[14px] pb-6 pl-2 pr-3">
+        <div className="w-full my-4">
+          <TokenSlider value={sliderValue} setValue={setSliderValue} />
+        </div>
         <button
-          className="bg-[#202832] hover:bg-[#475B72] rounded-[3px] font-sans-manrope font-bold text-[14px] leading-6 text-[#3D85C6] text-center py-[14px] transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-[#202832]"
+          className="bg-pure-blue hover:bg-pure-blue font-sans-ibm-plex font-medium text-[14px]/6 text-white text-center py-3 transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
           disabled={
             !isConnected ||
             !userBalance ||
@@ -192,7 +188,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
           BUY
         </button>
         {/* Iterate this data after calculating/fetching */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mt-1">
           <p className="inline-flex items-center justify-between w-full">
             <span className="text-[#6D6D6D]">Fee (0.555)</span>
             <span className="font-normal">0.25%</span>

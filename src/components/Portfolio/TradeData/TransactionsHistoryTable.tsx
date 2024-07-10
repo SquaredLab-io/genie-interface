@@ -12,6 +12,7 @@ import {
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
+import EmptyTable from "./EmptyTable";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -64,7 +65,7 @@ const TransactionsHistoryTable = <TData, TValue>({
         ) : (
           <TableRow>
             <TableCell colSpan={columns.length} className="h-36 text-center">
-              {isLoading ? "Fetching your Positions..." : "No Open Positions."}
+              <EmptyTable isLoading={isLoading} />
             </TableCell>
           </TableRow>
         )}

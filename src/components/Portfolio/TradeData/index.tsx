@@ -297,22 +297,19 @@ const TradeData = () => {
     }
   ];
 
+  const tabStyle =
+    "data-[state=active]:bg-white data-[state=active]:text-black uppercase py-2 px-4";
+
   return (
     <div className="font-medium text-xs leading-4 font-sans-manrope border-t border-secondary-gray">
       {/* Tab Row */}
       <Tabs defaultValue={Tab.position}>
-        <TabsList className="flex flex-row justify-start gap-8 py-2 px-10 rounded-none border-b border-[#303030] font-normal text-xs leading-9">
-          <TabsTrigger
-            value={Tab.position}
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-blue data-[state=active]:to-pure-cyan"
-          >
-            Open Positions
+        <TabsList className="flex flex-row justify-start rounded-none font-medium text-sm/6 font-sans-ibm-plex">
+          <TabsTrigger value={Tab.position} className={tabStyle}>
+            Open Positions ({openPositions.length})
           </TabsTrigger>
-          <TabsTrigger
-            value={Tab.history}
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-blue data-[state=active]:to-pure-cyan"
-          >
-            Trade History
+          <TabsTrigger value={Tab.history} className={tabStyle}>
+            Order & Trade History
           </TabsTrigger>
         </TabsList>
         {/* Tab Content */}

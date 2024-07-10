@@ -11,14 +11,13 @@ import {
 import { BiSolidDownArrow } from "react-icons/bi";
 import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
 // Component, Util Imports
-import { selected_token, underlyingTokens } from "../helper";
+import { selected_token } from "../helper";
 import TokenSlider from "./TokenSlider";
 import { getAccountBalance } from "@lib/utils/getAccountBalance";
 import { Button } from "@components/ui/button";
 import { WethABi } from "@lib/abis";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { PositionType } from "@lib/types/enums";
-import { sliderValueHandler } from "@lib/utils/sliderValueHandler";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import { useTradeStore } from "@store/tradeStore";
 
@@ -162,11 +161,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
           </div>
         </form>
         {/* Slider Component */}
-        <TokenSlider
-          value={sliderValue}
-          setValue={setSliderValue}
-          handler={(event) => sliderValueHandler(event, setSliderValue)}
-        />
+        <TokenSlider value={sliderValue} setValue={setSliderValue} />
       </div>
       <div className="flex flex-col gap-2 pt-[14px] pb-6 pl-2 pr-3">
         <button
