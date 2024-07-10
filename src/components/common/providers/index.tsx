@@ -11,10 +11,11 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import { config } from "@lib/wagmi";
-import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { RainbowKitProvider, Theme } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { baseSepolia } from "viem/chains";
 import { SUBGRAPH_URL } from "@lib/keys";
+import { theme } from "../ConnectWallet/theme";
 
 const Providers: React.FC<PropsWithChildren> = ({ children }) => {
   // React Query client setup
@@ -41,13 +42,7 @@ const Providers: React.FC<PropsWithChildren> = ({ children }) => {
         <RainbowKitProvider
           initialChain={baseSepolia}
           modalSize="compact"
-          theme={darkTheme({
-            accentColor: "#0099FF",
-            accentColorForeground: "#FFFFFF",
-            borderRadius: "small",
-            overlayBlur: "small",
-            fontStack: "system"
-          })}
+          theme={theme as Theme}
         >
           <UrqlProvider client={client} ssr={ssr}>
             {children}

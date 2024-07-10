@@ -7,9 +7,9 @@ import clsx from "clsx";
 import { navigation } from "@lib/constants";
 import FeedbackModal from "./feedback-modal";
 import ConnectWallet from "../ConnectWallet";
-import { CoinbaseCreateWallet } from "../ConnectWallet/CoinbaseCreateWallet";
+// import { CoinbaseCreateWallet } from "../ConnectWallet/CoinbaseCreateWallet";
 import NextImage from "../NextImage";
-import { Button } from "@components/ui/button";
+// import { Button } from "@components/ui/button";
 import FaucetModal from "@components/common/Header/faucet-modal";
 
 const Header = () => {
@@ -18,8 +18,8 @@ const Header = () => {
   const [isFaucetOpen, setIsFaucetOpen] = useState<boolean>(false);
 
   return (
-    <header className="flex flex-row py-3 px-4 justify-between border-b border-secondary-gray">
-      <nav className="flex justify-start items-center gap-x-12" aria-label="Global">
+    <header className="flex flex-row py-4 px-5 justify-between border-b border-secondary-gray font-sans-ibm-plex">
+      <nav className="flex justify-start items-center gap-x-[60px]" aria-label="Global">
         {/* Brand Logo */}
         <div className="flex lg:flex-1 max-w-fit">
           <Link href="/" className="-m-1.5 p-1.5">
@@ -31,14 +31,13 @@ const Header = () => {
             />
           </Link>
         </div>
-        <div className="hidden sm:flex lg:gap-x-4 font-normal text-[13px]/[17.76px] uppercase">
+        <div className="hidden sm:flex gap-x-6 lg:gap-x-11 font-medium text-[14px]/[22px] uppercase">
           {navigation.map((item) => (
             <Link
               key={item.name}
               href={item.href}
               target={item.target}
               className={clsx(
-                "px-[10px]",
                 pathname !== item.href && "opacity-35 hover:opacity-70 transition-opacity"
               )}
               aria-label={item.name}
@@ -47,9 +46,7 @@ const Header = () => {
             </Link>
           ))}
           <button
-            className={clsx(
-              "px-[10px] opacity-35 hover:opacity-70 transition-opacity uppercase"
-            )}
+            className={clsx("opacity-35 hover:opacity-70 transition-opacity uppercase")}
             onClick={() => {
               setIsModalOpen(true);
             }}
@@ -59,10 +56,10 @@ const Header = () => {
         </div>
       </nav>
       <div className="inline-flex gap-6">
-        <Button variant={"secondary"} onClick={() => setIsFaucetOpen(true)}>
+        {/* <Button variant={"secondary"} onClick={() => setIsFaucetOpen(true)}>
           Faucet
-        </Button>
-        <CoinbaseCreateWallet />
+        </Button> */}
+        {/* <CoinbaseCreateWallet /> */}
         <ConnectWallet />
       </div>
       <FaucetModal open={isFaucetOpen} setOpen={setIsFaucetOpen} />
