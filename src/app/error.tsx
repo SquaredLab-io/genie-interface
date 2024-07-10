@@ -17,7 +17,7 @@ const Error: NextPage<PropsType> = ({ error, reset }) => {
 
   return (
     <div className="page-center items-center justify-center">
-      <h2 className="font-sans-manrope text-4xl tracking-wide">Something went wrong!</h2>
+      <h2 className="text-4xl tracking-wide">Something went wrong!</h2>
       <Button
         onClick={
           // Attempt to recover by trying to re-render the segment

@@ -1,6 +1,6 @@
-import { Props } from "./type";
+import { IconProps } from "./type";
 
-export default function DropDownIcon(props: Props) {
+export default function DropDownIcon(props: IconProps) {
   return (
     <svg
       width="18"

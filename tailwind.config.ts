@@ -21,8 +21,8 @@ const config = {
     },
     extend: {
       fontFamily: {
-        "sans-manrope": ["var(--font-manrope)"],
-        "sans-ibm-plex": ["var(--font-ibm-plex-sans)"]
+        "sans-ibm-plex": ["var(--font-ibm-plex-sans)"],
+        "helvetica-neue": ["var(--font-helvetica-neue)"]
       },
       fontSize: {
         "2xs": "8px"
@@ -36,9 +36,9 @@ const config = {
         "dark-gray": "#71757A",
         "base-gray": "#6D6D6D",
         "light-gray": "#ADB1B8",
-        "negative-red": "#EF454A",
-        "positive-green": "#20B26C",
-        "pure-blue": "#0099FF",
+        "negative-red": "#FF615C",
+        "positive-green": "#29B577",
+        "pure-blue": "#01A1FF",
         "pure-cyan": "#00CCFF",
         "off-white": "#C9C9C9",
         "coinbase-theme": "#0052FF"

@@ -8,7 +8,7 @@ import TooltipX from "@components/common/TooltipX";
 const Hero = () => {
   return (
     <div className="flex flex-col md:flex-row gap-10 justify-between items-center py-[90px] px-16 lg:px-24 pb-[77px]">
-      <div className="flex flex-col gap-4 text-center md:text-left max-w-[523px] font-sans-manrope">
+      <div className="flex flex-col gap-4 text-center md:text-left max-w-[523px]">
         <h1 className="font-normal text-4xl/10 md:text-5xl/[52.8px]">
           Shape the future with <span className="text-gradient-blue">powerful</span>{" "}
           derivatives.

@@ -301,7 +301,7 @@ const TradeData = () => {
     "data-[state=active]:bg-white data-[state=active]:text-black uppercase py-2 px-4";
 
   return (
-    <div className="font-medium text-xs leading-4 font-sans-manrope border-t border-secondary-gray">
+    <div className="font-medium text-xs leading-4 border-t border-secondary-gray">
       {/* Tab Row */}
       <Tabs defaultValue={Tab.position}>
         <TabsList className="flex flex-row justify-start rounded-none font-medium text-sm/6 font-sans-ibm-plex">

@@ -158,11 +158,11 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
               placeholder="0"
               onChange={(event) => setQuantity(event.target.value)}
               id="quantity"
-              className="bg-transparent p-2 w-full placeholder:text-[#6D6D6D] text-white font-sans-manrope font-semibold text-base leading-6 focus:outline-none"
+              className="bg-transparent p-2 w-full placeholder:text-[#6D6D6D] text-white font-semibold text-base leading-6 focus:outline-none"
             />
             <Button
               variant="ghost"
-              className="hover:bg-transparent px-0 flex font-sans-manrope h-10 w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
+              className="hover:bg-transparent px-0 flex h-10 w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
             >
               <span className="text-nowrap">
                 {selectedPool.underlyingTokens[0].symbol}

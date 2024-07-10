@@ -253,7 +253,7 @@ const PoolsData = () => {
     "data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-cyan data-[state=active]:to-pure-blue";
 
   return (
-    <div className="pt-9 pb-20 px-16 lg:px-24 font-sans-manrope">
+    <div className="pt-9 pb-20 px-16 lg:px-24">
       <Tabs defaultValue={TableOptions.all}>
         <TabsList className="inline-flex font-medium text-2xl mb-8">
           <TabsTrigger value={TableOptions.all} className={cn(activeTabStyle)}>

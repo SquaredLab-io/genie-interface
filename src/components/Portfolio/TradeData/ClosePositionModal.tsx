@@ -81,9 +81,9 @@ const ClosePositionModal = ({
                 placeholder="0"
                 onChange={(event) => setQuantity(event.target.value)}
                 id="quantity"
-                className="bg-transparent p-2 w-full placeholder:text-[#6D6D6D] text-white font-sans-manrope font-semibold text-sm/6 focus:outline-none"
+                className="bg-transparent p-2 w-full placeholder:text-[#6D6D6D] text-white font-semibold text-sm/6 focus:outline-none"
               />
-              <span className="font-sans-manrope w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm">
+              <span className="w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm">
                 {selectedPool.underlyingTokens[0].symbol}
               </span>
             </div>

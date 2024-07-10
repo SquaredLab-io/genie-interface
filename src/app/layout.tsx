@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import clsx from "clsx";
-import { manrope, ibm_plex_sans } from "@lib/fonts";
+import { ibm_plex_sans, helvetica_neue } from "@lib/fonts";
 import Header from "@components/common/Header";
 import { meta } from "@lib/constants";
 import Providers from "@components/common/providers";
@@ -69,7 +69,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={clsx(manrope.variable, ibm_plex_sans.variable)}>
+      <body className={clsx(ibm_plex_sans.variable, helvetica_neue.variable)}>
         <Providers>
           <Header />
           {children}
