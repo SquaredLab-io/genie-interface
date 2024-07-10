@@ -31,7 +31,7 @@ export default function PricesBar({ selectedPool }: PricesBarProps) {
   } = useCurrencyPrice(selectedPool.underlyingTokens[0].symbol);
   return (
     <div className="flex flex-row items-center gap-9 w-full px-10 py-[11px] font-normal text-xs/4 overflow-x-auto z-50">
-      <div className="flex flex-col items-start justify-between gap-1 h-full">
+      <div className="flex flex-col items-start justify-between gap-1">
         <span className="font-bold text-lg/[8px] text-white">
           {isPriceLoading ? "loading..." : price}
         </span>

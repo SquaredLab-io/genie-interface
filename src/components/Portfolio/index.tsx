@@ -22,14 +22,14 @@ const Portfolio = () => {
 
   return (
     <>
-      {/* <Script
+      <Script
         src="/static/datafeeds/udf/dist/bundle.js"
         strategy="lazyOnload"
         onReady={() => {
           console.log("Chart script is ready!");
           setIsScriptReady(true);
         }}
-      /> */}
+      />
       <div className="flex flex-row">
         {/* Left Side */}
         <div className="flex-1 flex flex-col gap-1 max-h-screen border-r border-[#1F2D3F]">
