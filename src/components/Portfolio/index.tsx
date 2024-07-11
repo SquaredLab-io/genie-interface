@@ -32,17 +32,23 @@ const Portfolio = () => {
       />
       <div className="flex flex-row">
         {/* Left Side */}
-        <div className="flex-1 flex flex-col gap-1 max-h-screen border-r border-[#1F2D3F]">
+        <div className="flex-1 flex flex-col gap-1 border-r border-secondary-gray">
           <AssetStatsBar />
           {isScriptReady ? <TradeChart {...defaultWidgetProps} /> : <ChartLoader />}
         </div>
         {/* Right Side */}
         <div className="flex-1 max-w-64 xl:max-w-[400px] w-full">
           <Trade />
+        </div>
+      </div>
+    <div className="flex flex-row justify-between w-full">
+        <div className="flex-1">
+          <TradeData />
+        </div>
+        <div className="flex-1 max-w-64 xl:max-w-[400px] w-full border-l border-secondary-gray">
           <MarketData />
         </div>
       </div>
-      <TradeData />
     </>
   );
 };

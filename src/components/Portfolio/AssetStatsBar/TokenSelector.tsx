@@ -11,7 +11,7 @@ export default function TokenSelector({ selectedPool }: { selectedPool: Pool }) 
 
   return (
     <TokenSelectPopover>
-      <div className="group flex flex-row justify-normal items-center text-left py-3 px-5 gap-2">
+      <button className="group flex flex-row justify-normal items-center text-left py-3 px-5 gap-2">
         {/* Tokens Images */}
         <div className="z-0 flex overflow-hidden ring-1 ring-primary-gray rounded-full bg-neutral-800">
           <Image src={asset.icon} alt={asset.symbol} width={32} height={32} />
@@ -36,7 +36,7 @@ export default function TokenSelector({ selectedPool }: { selectedPool: Pool }) 
           height={20}
           alt="menu-icon"
         />
-      </div>
+      </button>
     </TokenSelectPopover>
   );
 }

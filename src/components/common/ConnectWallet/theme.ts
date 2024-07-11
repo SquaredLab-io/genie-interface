@@ -5,7 +5,7 @@ export const theme: Theme = merge(darkTheme(), {
   colors: {
     accentColor: "#01A1FF",
     accentColorForeground: "#FFFFFF",
-    connectButtonBackground: "#01A1FF",
+    connectButtonBackground: "#0C1820",
     connectButtonText: "#FFFFFF",
     modalBackground: "#16191F",
     modalText: "#FFFFFF",
