@@ -18,8 +18,6 @@ const TradeChart = (props: Partial<ChartingLibraryWidgetOptions>) => {
     useRef<HTMLDivElement>() as MutableRefObject<HTMLInputElement>;
 
   useEffect(() => {
-    // console.log("selected pool", selectedPool);
-
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: `Kraken:${selectedPool.symbol}` ?? "Kraken:USDC/USDT",
       // BEWARE: no trailing slash is expected in feed URL
@@ -64,7 +62,7 @@ const TradeChart = (props: Partial<ChartingLibraryWidgetOptions>) => {
   return (
     <div
       ref={chartContainerRef}
-      className="flex flex-col items-center h-full max-h-max justify-center"
+      className="flex flex-col items-center justify-center h-full min-h-[392px]"
     />
   );
 };

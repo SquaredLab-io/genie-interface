@@ -75,7 +75,7 @@ const ClosePositionPopover: FC<PropsType> = ({
                 className="bg-transparent p-2 w-full placeholder:text-[#6D6D6D] text-white font-semibold text-sm/6 focus:outline-none"
               />
               <span className="w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm">
-                {"SLBTC"}
+                {selectedPool.underlyingTokens[0].symbol}
               </span>
             </div>
             <span>Balance: {isLong ? longPos : shortPos}</span>

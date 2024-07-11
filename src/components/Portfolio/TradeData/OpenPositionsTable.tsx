@@ -32,7 +32,7 @@ const OpenPositionsTable = <TData, TValue>({
   });
 
   return (
-    <Table>
+    <Table className="h-full max-h-72">
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>

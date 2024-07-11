@@ -29,13 +29,29 @@ const Portfolio = () => {
           setIsScriptReady(true);
         }}
       />
-      <div className="flex flex-row">
+      <div className="flex flex-row h-full">
         {/* Left Side */}
         <div className="flex-1 flex flex-col gap-1 border-r border-secondary-gray">
           <AssetStatsBar />
           {isScriptReady ? <TradeChart {...defaultWidgetProps} /> : <ChartLoader />}
+          <TradeData />
         </div>
         {/* Right Side */}
+        <div className="flex-1 flex flex-col max-w-64 xl:max-w-[400px] w-full">
+          <Trade />
+          <MarketData />
+        </div>
+      </div>
+    </>
+  );
+};
+
+/**
+ * <div className="flex flex-row">
+        <div className="flex-1 flex flex-col gap-1 border-r border-secondary-gray">
+          <AssetStatsBar />
+          {isScriptReady ? <TradeChart {...defaultWidgetProps} /> : <ChartLoader />}
+        </div>
         <div className="flex-1 max-w-64 xl:max-w-[400px] w-full">
           <Trade />
         </div>
@@ -48,8 +64,6 @@ const Portfolio = () => {
           <MarketData />
         </div>
       </div>
-    </>
-  );
-};
+ */
 
 export default Portfolio;
