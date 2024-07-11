@@ -5,18 +5,17 @@ import Image from "next/image";
 import { formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
-import { Button } from "@components/ui/button";
-import toUnits, { toDollarUnits } from "@lib/utils/formatting";
+import toUnits from "@lib/utils/formatting";
 import { getDateTime, getLatestTransactions } from "./helper";
 import OpenPositionsTable from "./OpenPositionsTable";
 import TransactionsHistoryTable from "./TransactionsHistoryTable";
-import ClosePositionModal from "./ClosePositionModal";
 import { useTradeStore } from "@store/tradeStore";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
 import { Tx } from "@lib/types/portfolio";
 import { cn } from "@lib/utils";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { PositionType } from "@lib/types/enums";
+import ClosePositionPopover from "./ClosePositionPopover";
 
 enum Tab {
   position = "position",
@@ -24,11 +23,7 @@ enum Tab {
 }
 
 const TradeData = () => {
-  const { isPositionModalOpen, setIsPositionModalOpen, SELECTED_TOKEN, selectedPool } =
-    useTradeStore((state) => state);
-  const TOKEN = SELECTED_TOKEN();
-
-  console.log("TOKEN", TOKEN);
+  const { selectedPool } = useTradeStore((state) => state);
 
   const [selectedPosType, setSelectedPosType] = useState("");
 
@@ -156,31 +151,26 @@ const TradeData = () => {
         return <span>{action.substring(5)}</span>;
       }
     },
-    // {
-    //   accessorKey: "return",
-    //   header: () => <span>%Return</span>,
-    //   cell: ({ row }) => {
-    //     const isGrowth = false;
-    //     return <span className={cn(isGrowth && "text-[#07AE3B]")}>-</span>;
-    //   }
-    // },
     {
       accessorKey: "action",
-      header: () => <span className="pl-4">Action</span>,
+      header: () => <span className="sr-only">Action</span>,
       cell: ({ row }) => {
+        const action = row.original.action;
         return (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              setSelectedPosType(row.original.action);
-              setIsPositionModalOpen(true);
-            }}
+          <ClosePositionPopover
+            longPos={longPosition.formatted}
+            shortPos={shortPosition.formatted}
+            isLong={selectedPosType == "Open Long Position" ? true : false}
           >
-            <span className="bg-gradient-to-r text-transparent bg-clip-text from-pure-blue to-pure-cyan">
-              Close Position
-            </span>
-          </Button>
+            <button
+              className="py-1 px-[22px] text-white bg-[#32120D] font-normal text-[14px]/5 rounded-sm"
+              onClick={() => {
+                setSelectedPosType(action);
+              }}
+            >
+              Close
+            </button>
+          </ClosePositionPopover>
         );
       }
     }
@@ -330,13 +320,6 @@ const TradeData = () => {
           />
         </TabsContent>
       </Tabs>
-      <ClosePositionModal
-        open={isPositionModalOpen}
-        setOpen={setIsPositionModalOpen}
-        longPos={longPosition.formatted}
-        shortPos={shortPosition.formatted}
-        isLong={selectedPosType == "Open Long Position" ? true : false}
-      />
     </div>
   );
 };

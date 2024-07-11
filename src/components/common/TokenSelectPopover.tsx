@@ -11,7 +11,9 @@ export default function TokenSelectPopover({ children }: PropsType) {
   const { updateSelectedPool } = useTradeStore((state) => state);
   return (
     <Popover>
-      <PopoverTrigger className="min-w-fit">{children}</PopoverTrigger>
+      <PopoverTrigger className="min-w-fit" asChild aria-label="Popover trigger">
+        {children}
+      </PopoverTrigger>
       <PopoverContent>
         <h1 className="font-medium text-lg">Select Pool</h1>
         <div className="flex flex-col gap-3 mt-3">

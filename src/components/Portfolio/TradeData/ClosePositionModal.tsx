@@ -24,22 +24,22 @@ const ClosePositionModal = ({
 }) => {
   const [quantity, setQuantity] = useState<string>("");
   // const selectedToken = underlyingTokens[0];
-  const [sliderValue, setSliderValue] = useState<number[]>([25]);
+  // const [sliderValue, setSliderValue] = useState<number[]>([25]);
   const [isLoading, setIsLoading] = useState(false);
 
   const { selectedPool } = useTradeStore();
 
   const { potentia } = usePotentiaSdk();
 
-  const handleSliderInput = (event: ChangeEvent<HTMLInputElement>): void => {
-    const input = event.target.value;
-    // When value is a positive integer and not an invalid number
-    const isValid = (isValidPositive(input) && !isNaN(parseFloat(input))) || input === "";
-    // Only set the value when it's valid
-    if (isValid) {
-      setSliderValue([parseFloat(input)]);
-    }
-  };
+  // const handleSliderInput = (event: ChangeEvent<HTMLInputElement>): void => {
+  //   const input = event.target.value;
+  //   // When value is a positive integer and not an invalid number
+  //   const isValid = (isValidPositive(input) && !isNaN(parseFloat(input))) || input === "";
+  //   // Only set the value when it's valid
+  //   if (isValid) {
+  //     setSliderValue([parseFloat(input)]);
+  //   }
+  // };
 
   /**
    * Handler for closePosition from SDK
