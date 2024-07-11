@@ -1,6 +1,5 @@
 // Library Imports
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import dynamic from "next/dynamic";
 import Script from "next/script";
 // Component, Util Imports
@@ -41,7 +40,7 @@ const Portfolio = () => {
           <Trade />
         </div>
       </div>
-    <div className="flex flex-row justify-between w-full">
+      <div className="flex flex-row justify-between w-full">
         <div className="flex-1">
           <TradeData />
         </div>
