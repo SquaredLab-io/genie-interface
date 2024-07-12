@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 const ChartLoader = () => (
-  <div className="flex flex-col items-center h-full min-h-[392px] justify-center opacity-70">
+  <div className="flex flex-col items-center w-full h-full min-h-[392px] justify-center opacity-70">
     <Image
       src="/images/logo.svg"
       height={44}

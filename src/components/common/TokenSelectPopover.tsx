@@ -20,6 +20,7 @@ export default function TokenSelectPopover({ children }: PropsType) {
           {potentiaPoolsList.map((pool, index) => (
             <button
               key={pool.symbol}
+              className="flex flex-row items-center gap-2 py-2 px-2 rounded-md bg-white/10 hover:bg-white/20 transition-colors duration-300"
               onClick={() => {
                 if (index === 0) {
                   updateSelectedPool(PoolOptions.weth);
@@ -29,10 +30,9 @@ export default function TokenSelectPopover({ children }: PropsType) {
                   updateSelectedPool(PoolOptions.usdc);
                 }
               }}
-              className="flex flex-row items-center gap-2 py-2 px-2 rounded-md bg-white/10 hover:bg-white/20 transition-colors duration-300"
             >
               <div className="hidden sm:flex flex-row items-center max-w-git -space-x-2">
-                {pool.underlyingTokens.map((asset, index) => (
+                {pool.underlyingTokens.map((asset) => (
                   <div
                     key={asset.address}
                     className="z-0 flex overflow-hidden ring-1 ring-white rounded-full bg-neutral-800"
@@ -43,10 +43,10 @@ export default function TokenSelectPopover({ children }: PropsType) {
               </div>
               <div>
                 {pool.underlyingTokens.map((asset, index) => (
-                  <>
-                    <span key={asset.address}>{asset.symbol}</span>
+                  <span key={asset.symbol}>
+                    {asset.symbol}
                     {pool.underlyingTokens.length !== index + 1 && <span>-</span>}
-                  </>
+                  </span>
                 ))}
               </div>
               <span className="font-medium text-2xs/[14px] rounded-sm py-px px-[4.5px] text-white bg-text-grad bg-gradient-blue">
