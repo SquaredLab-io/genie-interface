@@ -9,6 +9,7 @@ import Trade from "@components/Portfolio/Trade";
 import TradeData from "@components/Portfolio/TradeData";
 import { defaultWidgetProps } from "./helper";
 import ChartLoader from "./TradeChart/loader";
+import TradeFlow from "./TradeFlow";
 
 // Trading Chart Container imported dynamically
 const TradeChart = dynamic(() => import("./TradeChart").then((mod) => mod.default));
@@ -31,9 +32,12 @@ const Portfolio = () => {
       />
       <div className="flex flex-row h-full">
         {/* Left Side */}
-        <div className="flex-1 flex flex-col gap-1 border-r border-secondary-gray">
+        <div className="flex-1 flex flex-col border-r border-secondary-gray">
           <AssetStatsBar />
-          {isScriptReady ? <TradeChart {...defaultWidgetProps} /> : <ChartLoader />}
+          <div className="flex flex-row justify-end w-full">
+            {isScriptReady ? <TradeChart {...defaultWidgetProps} /> : <ChartLoader />}
+            <TradeFlow />
+          </div>
           <TradeData />
         </div>
         {/* Right Side */}

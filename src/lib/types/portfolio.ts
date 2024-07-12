@@ -1,5 +1,11 @@
 import { Address } from "viem";
 
+export enum TradeflowLayout {
+  all = "all",
+  "positive" = "positive",
+  "negative" = "negative"
+}
+
 export type Token = {
   symbol: string;
   imgSrc: string;
