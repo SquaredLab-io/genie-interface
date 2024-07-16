@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import Image from "next/image";
 import { formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
@@ -38,6 +38,8 @@ const TradeData = () => {
   // All Transactions -- LP, Open Long/Short, Close Long/Short
   const { data: txHistory, isLoading: isTxLoading } = useTxHistory();
 
+  useEffect(() => console.log('txHistory in Tradedata', txHistory), [txHistory]);
+
   // User's Current Open Positions -- Long and Short
   const openPositions = useMemo((): Tx[] => {
     if (txHistory) {
@@ -51,7 +53,7 @@ const TradeData = () => {
     {
       accessorKey: "pool",
       header: () => (
-        <div className="pl-10 pr-8 w-full border-r border-[#303030]">
+        <div className="pl-4">
           <span>Assets</span>
         </div>
       ),
@@ -100,7 +102,7 @@ const TradeData = () => {
     },
     {
       accessorKey: "date",
-      header: () => <span className="pl-[76px]">Date/Time</span>,
+      header: () => <span className="">Side</span>,
       cell: ({ row }) => {
         const { dateTime } = row.original;
         const { date, time } = getDateTime(dateTime);
@@ -126,7 +128,7 @@ const TradeData = () => {
     },
     {
       accessorKey: "value",
-      header: () => <span>Value</span>,
+      header: () => <span>Entry/ Mark</span>,
       cell: ({ row }) => {
         // const value = parseFloat(row.getValue("value"));
         // const formatted = toDollarUnits(value, 2);
@@ -135,20 +137,12 @@ const TradeData = () => {
     },
     {
       accessorKey: "pnl",
-      header: () => <span>PNL</span>,
+      header: () => <span>P&L</span>,
       cell: ({ row }) => {
         // const pnlValue = parseFloat(row.getValue("pnl"));
         // const formatted = toDollarUnits(pnlValue, 2);
         const isGrowth = false;
         return <span className={cn(isGrowth && "text-[#07AE3B]")}>-</span>;
-      }
-    },
-    {
-      accessorKey: "type",
-      header: () => <span>Type</span>,
-      cell: ({ row }) => {
-        const action = row.getValue("action") as string;
-        return <span>{action.substring(5)}</span>;
       }
     },
     {
@@ -291,7 +285,7 @@ const TradeData = () => {
     "data-[state=active]:bg-white data-[state=active]:text-black uppercase py-2 px-4";
 
   return (
-    <div className="font-medium text-xs leading-4 border-t border-secondary-gray">
+    <div className="col-span-4 w-full font-medium text-xs leading-4 h-full border border-t border-secondary-gray">
       {/* Tab Row */}
       <Tabs defaultValue={Tab.position}>
         <TabsList className="flex flex-row justify-start rounded-none font-medium text-sm/6 font-sans-ibm-plex">

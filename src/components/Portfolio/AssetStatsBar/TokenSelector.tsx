@@ -1,14 +1,12 @@
 import Image from "next/image";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
-import { usePower } from "@lib/hooks/usePotentiaMethods";
+// import { usePower } from "@lib/hooks/usePotentiaMethods";
 import { Pool } from "@lib/types/common";
 
 export default function TokenSelector({ selectedPool }: { selectedPool: Pool }) {
-  const { power, isLoading: isPowerLoading } = usePower(selectedPool.poolAddress);
+  // const { power, isLoading: isPowerLoading } = usePower(selectedPool.poolAddress);
   const asset = selectedPool.underlyingTokens[0];
-
-  // console.log("power", power);
-
+  
   return (
     <TokenSelectPopover>
       <button className="group flex flex-row justify-normal items-center text-left py-3 px-5 gap-2">
@@ -24,6 +22,7 @@ export default function TokenSelector({ selectedPool }: { selectedPool: Pool }) 
             ))}
           </span>
           <span className="text-nowrap font-normal text-2xs/[14px] rounded-sm py-px px-[4.5px] text-white bg-text-grad bg-gradient-blue">
+            {/* Fix this, get Power from SDK */}
             p = {selectedPool.power}
             {/* p = {isPowerLoading ? "..." : power ?? "NA"} */}
           </span>

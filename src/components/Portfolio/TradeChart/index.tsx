@@ -62,7 +62,7 @@ const TradeChart = (props: Partial<ChartingLibraryWidgetOptions>) => {
   return (
     <div
       ref={chartContainerRef}
-      className="flex flex-col items-center justify-center w-full h-full min-h-[392px]"
+      className="col-span-3 size-full"
     />
   );
 };

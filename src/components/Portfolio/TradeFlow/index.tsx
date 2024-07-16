@@ -36,7 +36,7 @@ const TradeFlow = () => {
   );
 
   return (
-    <div className="flex-col w-full max-w-[267px] h-full max-h-[392px] border-l border-secondary-gray overflow-auto">
+    <div className="col-span-1 flex flex-col border-l border-secondary-gray overflow-auto">
       <h1 className="font-medium text-sm/5 p-4">Trade Flow</h1>
       <Separator />
       <div className="flex flex-col pt-3 pl-3">

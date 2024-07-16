@@ -34,11 +34,11 @@ const Portfolio = () => {
         {/* Left Side */}
         <div className="flex-1 flex flex-col border-r border-secondary-gray">
           <AssetStatsBar />
-          <div className="flex flex-row justify-end w-full">
+          <div className="grid grid-cols-4 w-full h-[calc(100vh-135px)]">
             {isScriptReady ? <TradeChart {...defaultWidgetProps} /> : <ChartLoader />}
             <TradeFlow />
+            <TradeData />
           </div>
-          <TradeData />
         </div>
         {/* Right Side */}
         <div className="flex-1 flex flex-col max-w-64 xl:max-w-[400px] w-full">
