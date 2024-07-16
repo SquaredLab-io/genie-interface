@@ -56,7 +56,7 @@ const ClosePositionPopover: FC<PropsType> = ({
       <PopoverTrigger className="min-w-fit">{children}</PopoverTrigger>
       <PopoverContent
         side="top"
-        className="bg-primary-gray border border-secondary-gray rounded-[4px] p-0"
+        className="bg-primary-gray border border-secondary-gray rounded-base p-0"
       >
         <h1 className="text-center font-sans-ibm-plex font-medium text-sm/5 mt-[14px] mb-2">
           Close Long Position

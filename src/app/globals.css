@@ -28,6 +28,10 @@
   .page-center {
     @apply flex flex-col h-[calc(100vh-74px)]; /* adjustment_height(header_height) */
   }
+
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
 }
 
 /* Scroll bar */
