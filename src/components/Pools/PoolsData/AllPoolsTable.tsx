@@ -30,13 +30,13 @@ const AllPoolsTable = <TData, TValue>({ columns, data }: PropsType<TData, TValue
   });
 
   return (
-    <Table className="bg-gray-900 rounded-xl">
-      <TableHeader className="border-b border-[#292B31]">
+    <Table className="">
+      <TableHeader className="font-sans-ibm-plex">
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map((header) => {
               return (
-                <TableHead key={header.id} className="font-bold text-base/4 text-white">
+                <TableHead key={header.id} className="font-bold text-sm/[18px] text-[#5F7183]">
                   {header.isPlaceholder
                     ? null
                     : flexRender(header.column.columnDef.header, header.getContext())}
