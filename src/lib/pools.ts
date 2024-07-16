@@ -38,7 +38,7 @@ export const potentiaPools: PotentiaPools = {
     ],
     poolAddress: "0x762c9b8fa27546c0ddc3e49883fc14bb71723eeb" as Address,
     date: 1233435,
-    age: "Mon Jun 24 2024",
+    age: "2M 5d",
     tvl: "22737", // in dollars
     volume: {
       value: "50000000000000000000", // in dollars
@@ -69,7 +69,7 @@ export const potentiaPools: PotentiaPools = {
     ],
     poolAddress: "0x73d705ff0fc884315a61afd3fde3646fb0a949e6" as Address,
     date: 1233432,
-    age: "Sun Jun 30 2024",
+    age: "2M 5d",
     tvl: "10029", // in dollars
     volume: {
       value: "20000000000000000000", // in dollars
@@ -100,7 +100,7 @@ export const potentiaPools: PotentiaPools = {
     ],
     poolAddress: "0x390e5b479b9c743f933a4fe50cd0a4fae742fdb0" as Address,
     date: 1233431,
-    age: "Sun Jun 30 2024",
+    age: "2M 5d",
     tvl: "10000000000", // in dollars
     volume: {
       value: "60110000", // in dollars

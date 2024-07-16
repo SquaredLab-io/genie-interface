@@ -10,7 +10,7 @@ export function useCurrencyPrice(symbol: string) {
   const _symbol = getTokenSymbol(symbol);
 
   const pricePath = `data/price?fsym=${_symbol.toUpperCase()}&tsyms=USD`;
-  const dailyVolPath = `data/symbol/histoday?fsym=ETH&tsym=USD&limit=10`;
+  const dailyVolPath = `data/symbol/histoday?fsym=${_symbol.toUpperCase()}&tsym=USD&limit=10`;
 
   useEffect(() => {
     (async () => {

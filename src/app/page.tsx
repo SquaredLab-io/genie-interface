@@ -7,7 +7,7 @@ import Portfolio from "@components/Portfolio";
  */
 export default function Home() {
   return (
-    <main className="page-center">
+    <main className="border-t border-secondary-gray page-center">
       <Portfolio />
     </main>
   );

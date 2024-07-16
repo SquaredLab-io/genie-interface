@@ -55,31 +55,31 @@ export const navigation: {
 ];
 
 // Pools page header social links
-export const pools_social: {
-  name: string;
-  href: string;
-  target: string;
-  icon: IconType;
-}[] = [
-  {
-    name: "twitter",
-    href: meta.TWITTER,
-    icon: FaXTwitter,
-    target: "_blank"
-  },
-  {
-    name: "discord",
-    href: meta.DISCORD,
-    icon: FaDiscord,
-    target: "_blank"
-  },
-  {
-    name: "telegram",
-    href: meta.TELEGRAM,
-    icon: FaTelegramPlane,
-    target: "_blank"
-  }
-];
+// export const pools_social: {
+//   name: string;
+//   href: string;
+//   target: string;
+//   icon: IconType;
+// }[] = [
+//   {
+//     name: "twitter",
+//     href: meta.TWITTER,
+//     icon: FaXTwitter,
+//     target: "_blank"
+//   },
+//   {
+//     name: "discord",
+//     href: meta.DISCORD,
+//     icon: FaDiscord,
+//     target: "_blank"
+//   },
+//   {
+//     name: "telegram",
+//     href: meta.TELEGRAM,
+//     icon: FaTelegramPlane,
+//     target: "_blank"
+//   }
+// ];
 
 export const CONTRACT_ADDRESSES = {
   POTENTIA_FACTORY_ADDR: "0xff5de5c7aa95ac5f36ec0ec16f376281f505c74c" as Address,

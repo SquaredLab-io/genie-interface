@@ -5,14 +5,15 @@ import { baseSepolia } from "viem/chains";
 import { PotentiaSdk } from "@squaredlab-io/sdk/src";
 import { SUBGRAPH_URL } from "@lib/keys";
 
+/**
+ * Hook to creates a Potentia SDK instance after a user is connected
+ * @returns Potentia SDK Instance
+ */
 export const usePotentiaSdk = () => {
   const [potentia, setPotentia] = useState<PotentiaSdk | undefined>(undefined);
 
   const { address, chainId } = useAccount();
-
-  // Wallet Client
   const { data: walletClient, status } = useWalletClient();
-  // Public Client
   const publicClient: any = createPublicClient({
     chain: baseSepolia,
     transport: http()

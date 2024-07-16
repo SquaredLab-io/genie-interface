@@ -18,7 +18,7 @@ const Header = () => {
   const [isFaucetOpen, setIsFaucetOpen] = useState<boolean>(false);
 
   return (
-    <header className="flex flex-row py-4 px-5 justify-between border-b border-secondary-gray font-sans-ibm-plex">
+    <header className="flex flex-row py-4 px-5 justify-between font-sans-ibm-plex">
       <nav className="flex justify-start items-center gap-x-[60px]" aria-label="Global">
         {/* Brand Logo */}
         <div className="flex lg:flex-1 max-w-fit">

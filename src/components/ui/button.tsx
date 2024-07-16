@@ -7,22 +7,22 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-lg font-medium text-base/6 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ring-offset-slate-950 focus-visible:ring-slate-300",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-lg font-medium text-sm/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ring-offset-slate-950 focus-visible:ring-slate-300",
   {
     variants: {
       variant: {
-        default: "bg-gradient-blue text-white",
+        default: "bg-[#00A0FC] text-white",
         destructive: "bg-red-900 text-slate-50 hover:bg-red-900/90",
         outline:
           "border border-[#B5B5B5] text-[#B5B5B5] bg-transparent hover:text-slate-50 hover:bg-white/5",
         "default-outline": "border border-pure-blue text-gradient-blue",
-        secondary: "bg-slate-800 text-slate-50 hover:bg-slate-800/80",
+        secondary: "bg-[#212C42] text-white hover:bg-slate-800/80",
         ghost: "hover:bg-slate-800 hover:text-slate-50",
         link: "underline-offset-4 hover:underline text-slate-50"
       },
       size: {
         default: "h-12 px-10 py-3",
-        sm: "h-9 rounded-md px-3",
+        sm: "h-9 rounded-lg py-2 px-3",
         lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10"
       }
@@ -45,7 +45,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant, size, className }), "")}
         ref={ref}
         {...props}
       />
