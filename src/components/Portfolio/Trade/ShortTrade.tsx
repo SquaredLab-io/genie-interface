@@ -20,6 +20,7 @@ import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { PositionType } from "@lib/types/enums";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import { useTradeStore } from "@store/tradeStore";
+import TokenSelectPopover from "@components/common/TokenSelectPopover";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -162,13 +163,14 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
               className="bg-transparent py-2 w-full placeholder:text-[#6D6D6D] text-white font-noemal text-sm/4 focus:outline-none"
             />
           </div>
-          <Button
-            variant="ghost"
-            className="hover:bg-transparent px-0 flex h-10 items-center justify-between gap-0 font-normal text-sm/4 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
-          >
-            <span className="text-nowrap">{selectedPool.underlyingTokens[0].symbol}</span>
-            <BiSolidDownArrow className="h-3 w-3 ml-4" color="#9D9D9D" />
-          </Button>
+          <TokenSelectPopover>
+            <button className="hover:bg-transparent px-0 flex h-10 items-center justify-between gap-0 font-normal text-sm/4 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1">
+              <span className="text-nowrap">
+                {selectedPool.underlyingTokens[0].symbol}
+              </span>
+              <BiSolidDownArrow className="h-3 w-3 ml-4" color="#9D9D9D" />
+            </button>
+          </TokenSelectPopover>
         </div>
       </form>
       {/* Slider Component */}

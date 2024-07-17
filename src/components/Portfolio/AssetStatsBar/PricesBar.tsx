@@ -1,4 +1,3 @@
-import SpinnerIcon from "@components/icons/SpinnerIcon";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import { Pool } from "@lib/types/common";
 

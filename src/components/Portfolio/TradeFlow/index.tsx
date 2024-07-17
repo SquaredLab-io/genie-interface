@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Separator } from "@components/ui/separator";
 import NextImage from "@components/common/NextImage";
 import { cn } from "@lib/utils";
@@ -11,29 +11,47 @@ import {
   TableRow
 } from "@components/ui/table";
 import { TradeflowLayout } from "@lib/types/portfolio";
-import { tradeFlowData, TradeflowDataType } from "../helper";
+import { getTradeflowData, tradeFlowData } from "./helper";
 
-function getTradeflowData(layout: TradeflowLayout, data: TradeflowDataType[]) {
-  switch (layout) {
-    case TradeflowLayout.all:
-      return data;
-    case TradeflowLayout.positive:
-      return data.filter((d, i) => {
-        if (i == 0) return true;
-        else d.amount > data[i - 1].amount;
-      });
-    case TradeflowLayout.negative:
-      return data.filter((d, i) => {
-        if (i == 0) return true;
-        else d.amount < data[i - 1].amount;
-      });
-  }
-}
+const LayoutSelector = ({
+  layout,
+  setLayout
+}: {
+  layout: TradeflowLayout;
+  setLayout: Dispatch<SetStateAction<TradeflowLayout>>;
+}) => {
+  return (
+    <div className="inline-flex items-center justify-start gap-1 mb-2">
+      {[TradeflowLayout.all, TradeflowLayout.positive, TradeflowLayout.negative].map(
+        (tfl) => (
+          <button
+            key={tfl}
+            className={cn(
+              tfl == layout && "bg-secondary-gray",
+              "hover:bg-secondary-gray rounded-sm"
+            )}
+            onClick={() => {
+              setLayout(tfl);
+            }}
+          >
+            <NextImage
+              src={`/icons/trade-flow-${tfl}.svg`}
+              altText={`${tfl}-layout`}
+              className="size-6 max-w-fit"
+            />
+          </button>
+        )
+      )}
+    </div>
+  );
+};
 
 const TradeFlow = () => {
   const [tradeflowLayout, setTradeflowLayout] = useState<TradeflowLayout>(
     TradeflowLayout.all // default show all
   );
+
+  const data = getTradeflowData(tradeflowLayout, tradeFlowData);
 
   return (
     <div className="hidden col-span-1 xl:flex flex-col border-l border-secondary-gray overflow-auto">
@@ -41,28 +59,7 @@ const TradeFlow = () => {
       <Separator />
       <div className="flex flex-col pt-3 pl-3">
         {/* Layout Selections */}
-        <div className="inline-flex items-center justify-start gap-1 mb-2">
-          {[TradeflowLayout.all, TradeflowLayout.positive, TradeflowLayout.negative].map(
-            (layout) => (
-              <button
-                key={layout}
-                className={cn(
-                  layout == tradeflowLayout && "bg-secondary-gray",
-                  "hover:bg-secondary-gray"
-                )}
-                onClick={() => {
-                  setTradeflowLayout(layout);
-                }}
-              >
-                <NextImage
-                  src={`/icons/trade-flow-${layout}.svg`}
-                  altText={`${layout}-layout`}
-                  className="size-6 max-w-fit"
-                />
-              </button>
-            )
-          )}
-        </div>
+        <LayoutSelector layout={tradeflowLayout} setLayout={setTradeflowLayout} />
         {/* TradeFlow table */}
         <Table>
           <TableHeader>
@@ -73,7 +70,7 @@ const TradeFlow = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {getTradeflowData(tradeflowLayout, tradeFlowData).map((data, index) => (
+            {data.map((data, index) => (
               <TableRow
                 key={`${data.amount}_${index}`}
                 className="font-normal text-[11px]/4"
