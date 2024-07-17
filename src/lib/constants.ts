@@ -81,6 +81,9 @@ export const navigation: {
 //   }
 // ];
 
+export const PROTOCOL = "Potentia V1";
+export const TEST_NETWORK = "Base Sepolia";
+
 export const CONTRACT_ADDRESSES = {
   POTENTIA_FACTORY_ADDR: "0xff5de5c7aa95ac5f36ec0ec16f376281f505c74c" as Address,
   WETH_ADDR: "0x3e36708aa8b5c027cb3a77f36c4ebdfb689b3bd6" as Address,

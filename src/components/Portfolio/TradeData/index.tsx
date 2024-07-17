@@ -16,6 +16,7 @@ import { cn } from "@lib/utils";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { PositionType } from "@lib/types/enums";
 import ClosePositionPopover from "./ClosePositionPopover";
+import { PROTOCOL, TEST_NETWORK } from "@lib/constants";
 
 enum Tab {
   position = "position",
@@ -38,7 +39,7 @@ const TradeData = () => {
   // All Transactions -- LP, Open Long/Short, Close Long/Short
   const { data: txHistory, isLoading: isTxLoading } = useTxHistory();
 
-  useEffect(() => console.log('txHistory in Tradedata', txHistory), [txHistory]);
+  useEffect(() => console.log("txHistory in Tradedata", txHistory), [txHistory]);
 
   // User's Current Open Positions -- Long and Short
   const openPositions = useMemo((): Tx[] => {
@@ -59,58 +60,68 @@ const TradeData = () => {
       ),
       cell: ({ row }) => {
         const { power, pool } = row.original;
-        const assets = pool.split(" / ");
+        const assets = pool.split(" / ").map((asset) => asset.trim());
         const _power = formatUnits(BigInt(power), 18);
         return (
-          <div className="whitespace-nowrap py-3 flex flex-row gap-2 text-left font-medium pl-10 pr-8 border-r border-[#303030]">
-            <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-1">
-              {assets.map((asset: string) => (
+          <div className="whitespace-nowrap flex flex-row gap-2 text-left font-medium pl-[18px] py-6">
+            <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-2">
+              {assets.map((asset) => (
                 <div
                   key={asset}
-                  className="z-0 flex overflow-hidden ring-2 ring-[#E5E7EB] rounded-full bg-neutral-800"
+                  className="z-0 flex overflow-hidden ring-1 ring-white rounded-full bg-neutral-800"
                 >
                   <Image
                     src={`/tokens/${asset.toLowerCase()}.svg`}
-                    alt={asset}
-                    width={30}
-                    height={30}
+                    alt={`${asset} icon`}
+                    width={26}
+                    height={26}
                   />
                 </div>
               ))}
             </div>
             <div className="flex flex-col gap-1 text-left">
               <div className="inline-flex gap-2">
-                <p className="font-extrabold text-sm leading-5">
-                  {assets.map((asset: string, index) => (
+                <p className="font-bold text-sm/5">
+                  {assets.map((asset, index) => (
                     <>
                       <span key={index}>{asset}</span>
                       {assets.length !== index + 1 && (
-                        <span className="text-[#9299AA]">/</span>
+                        <span className="text-[#9299AA] mx-1">/</span>
                       )}
                     </>
                   ))}
                 </p>
-                <p className="font-medium text-xs leading-3 bg-[#1A3B00] py-[4.5px] px-[9px] rounded-md">
+                <p className="font-medium text-xs/3 bg-[#49AFE9] py-1 px-[10px] rounded-md">
                   p = {_power}
                 </p>
               </div>
-              <p className="font-normal text-xs leading-5 text-[#6D6D6D]">Potentia V1</p>
+              <div className="font-normal text-sm/5 text-[#9299AA]">
+                <p>
+                  {PROTOCOL} • {TEST_NETWORK}
+                </p>
+              </div>
             </div>
           </div>
         );
       }
     },
     {
-      accessorKey: "date",
+      accessorKey: "action",
       header: () => <span className="">Side</span>,
       cell: ({ row }) => {
-        const { dateTime } = row.original;
-        const { date, time } = getDateTime(dateTime);
+        const action = (row.getValue("action") as string).split(" ")[1];
         return (
-          <div className="flex flex-col text-left whitespace-nowrap pl-[76px]">
-            <span>{date}</span>
-            <span className="text-[#6D6D6D]">{time}</span>
-          </div>
+          <span
+            className={cn(
+              action === "Long"
+                ? "text-[#0AFC5C]"
+                : action === "Short"
+                  ? "text-[#FF3318]"
+                  : ""
+            )}
+          >
+            {action}
+          </span>
         );
       }
     },
@@ -122,7 +133,7 @@ const TradeData = () => {
         const action = row.getValue("action") as string;
         if (action == "Open Long Position") return <span>{longPosition.formatted}</span>;
         else if (action == "Open Short Position")
-          return <span>{shortPosition.formatted}</span>;
+          return <span>{toUnits(parseFloat(shortPosition.formatted), 3)}</span>;
         return <span>-</span>;
       }
     },
@@ -174,7 +185,7 @@ const TradeData = () => {
     {
       accessorKey: "pool",
       header: () => (
-        <div className="pl-10 pr-8 w-full border-r border-[#303030]">
+        <div className="pl-4">
           <span>Assets</span>
         </div>
       ),
@@ -183,39 +194,43 @@ const TradeData = () => {
         const assets = pool.split(" / ");
         const _power = formatUnits(BigInt(power), 18);
         return (
-          <div className="whitespace-nowrap py-3 flex flex-row gap-2 text-left font-medium pl-10 pr-8 border-r border-[#303030]">
-            <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-1">
-              {assets.map((asset: string) => (
+          <div className="whitespace-nowrap flex flex-row gap-2 text-left font-medium pl-[18px] py-6">
+            <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-2">
+              {assets.map((asset) => (
                 <div
                   key={asset}
-                  className="z-0 flex overflow-hidden ring-2 ring-[#E5E7EB] rounded-full bg-neutral-800"
+                  className="z-0 flex overflow-hidden ring-1 ring-white rounded-full bg-neutral-800"
                 >
                   <Image
                     src={`/tokens/${asset.toLowerCase()}.svg`}
-                    alt={asset}
-                    width={30}
-                    height={30}
+                    alt={`${asset} icon`}
+                    width={26}
+                    height={26}
                   />
                 </div>
               ))}
             </div>
             <div className="flex flex-col gap-1 text-left">
               <div className="inline-flex gap-2">
-                <p className="font-extrabold text-sm leading-5">
-                  {assets.map((asset: string, index) => (
+                <p className="font-bold text-sm/5">
+                  {assets.map((asset, index) => (
                     <>
                       <span key={index}>{asset}</span>
                       {assets.length !== index + 1 && (
-                        <span className="text-[#9299AA]">/</span>
+                        <span className="text-[#9299AA] mx-1">/</span>
                       )}
                     </>
                   ))}
                 </p>
-                <p className="font-medium text-xs leading-3 bg-[#1A3B00] py-[4.5px] px-[9px] rounded-md">
+                <p className="font-medium text-xs/3 bg-[#49AFE9] py-1 px-[10px] rounded-md">
                   p = {_power}
                 </p>
               </div>
-              <p className="font-normal text-xs leading-5 text-[#6D6D6D]">Potentia V1</p>
+              <div className="font-normal text-sm/5 text-[#9299AA]">
+                <p>
+                  {PROTOCOL} • {TEST_NETWORK}
+                </p>
+              </div>
             </div>
           </div>
         );
@@ -223,12 +238,12 @@ const TradeData = () => {
     },
     {
       accessorKey: "date",
-      header: () => <span className="pl-[76px]">Date/Time</span>,
+      header: () => <span className="">Date/Time</span>,
       cell: ({ row }) => {
         const { dateTime } = row.original;
         const { date, time } = getDateTime(dateTime);
         return (
-          <div className="flex flex-col text-left whitespace-nowrap pl-[76px]">
+          <div className="flex flex-col text-left whitespace-nowrap">
             <span>{date}</span>
             <span className="text-[#6D6D6D]">{time}</span>
           </div>

@@ -53,7 +53,9 @@ const OpenPositionsTable = <TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody
+            className="font-normal text-sm/4"
+          >
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => (

@@ -32,7 +32,7 @@ const TransactionsHistoryTable = <TData, TValue>({
   });
 
   return (
-    <Table className="h-full max-h-72">
+    <Table className="h-full max-h-64">
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
@@ -40,7 +40,7 @@ const TransactionsHistoryTable = <TData, TValue>({
               return (
                 <TableHead
                   key={header.id}
-                  className="font-normal text-2xs/[34px] text-[#F6FEFD]"
+                  className="font-sans-ibm-plex font-bold text-xs/[18px] text-[#5F7183] pt-[18px] pb-3"
                 >
                   {header.isPlaceholder
                     ? null
@@ -51,7 +51,7 @@ const TransactionsHistoryTable = <TData, TValue>({
           </TableRow>
         ))}
       </TableHeader>
-      <TableBody>
+      <TableBody className="font-normal text-sm/4">
         {table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => (
             <TableRow key={row.id}>
