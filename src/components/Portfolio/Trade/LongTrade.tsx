@@ -12,7 +12,6 @@ import {
 import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
 // Component, Util Imports
 import { selected_token } from "../helper";
-import { Button } from "@components/ui/button";
 import TokenSlider from "./TokenSlider";
 import { getAccountBalance } from "@lib/utils/getAccountBalance";
 import { WethABi } from "@lib/abis";

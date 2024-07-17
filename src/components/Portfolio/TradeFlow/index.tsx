@@ -27,8 +27,8 @@ const LayoutSelector = ({
           <button
             key={tfl}
             className={cn(
-              tfl == layout && "bg-secondary-gray",
-              "hover:bg-secondary-gray rounded-sm"
+              tfl == layout && "bg-secondary-gray rounded-sm",
+              "hover:bg-secondary-gray"
             )}
             onClick={() => {
               setLayout(tfl);

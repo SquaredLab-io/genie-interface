@@ -13,6 +13,8 @@ import {
   useReactTable
 } from "@tanstack/react-table";
 import EmptyTable from "./EmptyTable";
+import { useTradeStore } from "@store/tradeStore";
+import { TradeOptions } from "@lib/types/enums";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -30,6 +32,8 @@ const OpenPositionsTable = <TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel()
   });
+
+  const { setTradeType } = useTradeStore();
 
   return (
     <Table>
@@ -55,7 +59,20 @@ const OpenPositionsTable = <TData, TValue>({
           </TableHeader>
           <TableBody className="font-normal text-sm/4">
             {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
+              <TableRow
+                key={row.id}
+                className="cursor-pointer hover:bg-[#101F29]"
+                onClick={() => {
+                  const action = (row.getValue("action") as string)
+                    .split(" ")[1]
+                    .toLowerCase();
+                  if (action == "long") {
+                    setTradeType(TradeOptions.long);
+                  } else {
+                    setTradeType(TradeOptions.short);
+                  }
+                }}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

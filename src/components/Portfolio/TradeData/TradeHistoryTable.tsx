@@ -20,7 +20,7 @@ interface PropsType<TData, TValue> {
   isLoading: boolean;
 }
 
-const TransactionsHistoryTable = <TData, TValue>({
+const TradeHistoryTable = <TData, TValue>({
   columns,
   data,
   isLoading
@@ -74,4 +74,4 @@ const TransactionsHistoryTable = <TData, TValue>({
   );
 };
 
-export default TransactionsHistoryTable;
+export default TradeHistoryTable;

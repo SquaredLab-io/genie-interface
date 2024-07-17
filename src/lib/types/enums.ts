@@ -3,3 +3,8 @@ export enum PositionType {
   long,
   short
 }
+
+export enum TradeOptions {
+  long = "long",
+  short = "short"
+}

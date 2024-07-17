@@ -5,7 +5,7 @@ export enum GraphOptions {
   counterpart = "counterpart"
 }
 
-export enum TradeOptions {
+export enum LiquidityOptions {
   add = "add",
   remove = "remove"
 }

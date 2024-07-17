@@ -8,7 +8,7 @@ import { cn } from "@lib/utils";
 import Label from "./Label";
 import AddLiquidity from "./AddLiquidity";
 import RemoveLiquidity from "./RemoveLiquidity";
-import { GraphOptions, Timeseries, TradeOptions } from "./helper";
+import { GraphOptions, LiquidityOptions } from "./helper";
 import PoolChart from "./Chart";
 import { getCurrentDateTime } from "@lib/utils/getCurrentTime";
 import { useTradeStore } from "@store/tradeStore";
@@ -136,19 +136,19 @@ const PoolOverview = () => {
           </div>
         </div>
         <div className="col-span-2 flex flex-col gap-1">
-          <Tabs defaultValue={TradeOptions.add}>
+          <Tabs defaultValue={LiquidityOptions.add}>
             <TabsList className="inline-flex font-semibold text-sm/5 w-full bg-gray-800 mb-1">
-              <TabsTrigger value={TradeOptions.add} className={tradeTabStyle}>
+              <TabsTrigger value={LiquidityOptions.add} className={tradeTabStyle}>
                 Add Liquidity
               </TabsTrigger>
-              <TabsTrigger value={TradeOptions.remove} className={tradeTabStyle}>
+              <TabsTrigger value={LiquidityOptions.remove} className={tradeTabStyle}>
                 Remove Liquidity
               </TabsTrigger>
             </TabsList>
-            <TabsContent value={TradeOptions.add}>
+            <TabsContent value={LiquidityOptions.add}>
               <AddLiquidity />
             </TabsContent>
-            <TabsContent value={TradeOptions.remove}>
+            <TabsContent value={LiquidityOptions.remove}>
               <RemoveLiquidity />
             </TabsContent>
           </Tabs>
