@@ -32,7 +32,7 @@ const TransactionsHistoryTable = <TData, TValue>({
   });
 
   return (
-    <Table className="h-full max-h-64">
+    <Table>
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
@@ -51,7 +51,7 @@ const TransactionsHistoryTable = <TData, TValue>({
           </TableRow>
         ))}
       </TableHeader>
-      <TableBody className="font-normal text-sm/4">
+      <TableBody className="font-normal text-sm/4 max-h-64 overflow-y-auto">
         {table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => (
             <TableRow key={row.id}>

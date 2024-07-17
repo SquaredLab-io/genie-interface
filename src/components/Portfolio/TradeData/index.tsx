@@ -300,10 +300,10 @@ const TradeData = () => {
     "data-[state=active]:bg-white data-[state=active]:text-black uppercase py-2 px-4";
 
   return (
-    <div className="col-span-4 w-full font-medium text-xs leading-4 h-full border border-t border-secondary-gray">
+    <div className="col-span-4 w-full font-medium text-xs leading-4 h-full border-t border-secondary-gray">
       {/* Tab Row */}
       <Tabs defaultValue={Tab.position}>
-        <TabsList className="flex flex-row justify-start rounded-none font-medium text-sm/6 font-sans-ibm-plex">
+        <TabsList className="flex flex-row justify-start rounded-none font-medium text-sm/6 font-sans-ibm-plex border-b border-secondary-gray">
           <TabsTrigger value={Tab.position} className={tabStyle}>
             Open Positions ({openPositions.length})
           </TabsTrigger>
@@ -313,7 +313,7 @@ const TradeData = () => {
         </TabsList>
         {/* Tab Content */}
         {/* --- Open Positions Table --- */}
-        <TabsContent value={Tab.position}>
+        <TabsContent value={Tab.position} className="max-h-64 overflow-y-auto">
           <OpenPositionsTable
             columns={positionColumns}
             data={openPositions}
@@ -321,7 +321,7 @@ const TradeData = () => {
           />
         </TabsContent>
         {/* --- Transactions History Table --- */}
-        <TabsContent value={Tab.history}>
+        <TabsContent value={Tab.history} className="max-h-64 overflow-y-auto">
           <TransactionsHistoryTable
             columns={transactionsColumns}
             data={txHistory ?? []}

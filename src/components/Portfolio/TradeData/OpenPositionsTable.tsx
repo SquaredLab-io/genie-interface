@@ -32,7 +32,7 @@ const OpenPositionsTable = <TData, TValue>({
   });
 
   return (
-    <Table className="h-full max-h-64">
+    <Table>
       {table.getRowModel().rows?.length ? (
         <>
           <TableHeader>
@@ -53,9 +53,7 @@ const OpenPositionsTable = <TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody
-            className="font-normal text-sm/4"
-          >
+          <TableBody className="font-normal text-sm/4">
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => (
