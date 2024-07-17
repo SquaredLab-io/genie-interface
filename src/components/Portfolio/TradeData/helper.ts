@@ -1,6 +1,8 @@
 import { Tx } from "@lib/types/portfolio";
 
-export function getLatestTransactions(transactions: Tx[]): Tx[] {
+export function getLatestTransactions(transactions?: Tx[]): Tx[] {
+  if (!transactions) return new Array<Tx>();
+
   let latestLongTx: Tx | null = null;
   let latestShortTx: Tx | null = null;
 
@@ -19,6 +21,15 @@ export function getLatestTransactions(transactions: Tx[]): Tx[] {
   }
 
   return [latestLongTx, latestShortTx].filter((tx) => tx !== null) as Tx[];
+}
+
+export function getClosedTransactions(transactions?: Tx[]): Tx[] {
+  if (!transactions) return new Array<Tx>();
+  return transactions.filter(
+    (tx) =>
+      (tx.action === "Close Long Position" || tx.action === "Close Short Position") &&
+      tx !== null
+  ) as Tx[];
 }
 
 export function getDateTime(blockTimestamp: string) {
