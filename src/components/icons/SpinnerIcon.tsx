@@ -16,7 +16,7 @@ const SpinnerIcon = (props: IconProps) => (
         strokeDasharray="188.49555921538757 64.83185307179586"
         r="40"
         strokeWidth="9"
-        stroke="#0094ff"
+        stroke="#FFFFFF"
         fill="none"
         cy="50"
         cx="50"

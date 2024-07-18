@@ -11,7 +11,7 @@ interface PoolsListProps {
 
 const PoolsList = ({ pools, noPools, updateSelectedPool }: PoolsListProps) => {
   if (noPools)
-    return <div className="flex-center w-full h-20 opacity-50">No pools found</div>;
+    return <div className="flex-row-center w-full h-20 opacity-50">No pools found</div>;
   return (
     <div className="flex flex-col mb-2">
       {pools.map((pool, index) => {

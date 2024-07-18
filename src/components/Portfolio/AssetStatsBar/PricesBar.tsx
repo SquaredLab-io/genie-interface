@@ -29,13 +29,13 @@ export default function PricesBar({ selectedPool }: PricesBarProps) {
     isVolLoading
   } = useCurrencyPrice(selectedPool.underlyingTokens[0].symbol);
   return (
-    <div className="flex flex-row items-center gap-9 w-full px-10 py-[11px] font-normal text-xs/4 overflow-x-auto z-50">
-      <div className="flex flex-col items-start justify-between gap-1">
+    <div className="flex flex-row items-center justify-start gap-9 w-full px-8 xl:px-10 font-normal text-xs/4 overflow-x-auto z-50">
+      <p className="flex flex-col items-start min-h-fit gap-1 -mb-1">
         <span className="font-bold text-lg/[8px] text-white">
           {isPriceLoading ? "loading..." : price}
         </span>
         <span className="text-[#07AE3B]">+2.73%</span>
-      </div>
+      </p>
       <div className="inline-flex gap-6">
         <Marker label="Mark" value={"60363.3"} />
         <Marker label="Index" value={"60363.3"} />

@@ -34,7 +34,7 @@ const PoolOverview = () => {
 
   const tradeTabStyle = cn(
     "w-1/2 py-3 text-center px-3 rounded-base",
-    "data-[state=active]:border border-pure-blue data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-cyan data-[state=active]:to-pure-blue"
+    "data-[state=active]:border border-primary-blue data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-cyan data-[state=active]:to-primary-blue"
   );
 
   async function getTimeseries() {

@@ -14,7 +14,7 @@
 
 @layer utilities {
   .bg-gradient-blue {
-    @apply bg-gradient-to-r from-pure-cyan to-pure-blue;
+    @apply bg-gradient-to-r from-primary-cyan to-primary-blue;
   }
 
   .bg-gradient-white {
@@ -29,8 +29,12 @@
     @apply flex flex-col h-[calc(100vh-74px)]; /* adjustment_height(header_height) */
   }
 
-  .flex-center {
-    @apply flex items-center justify-center;
+  .flex-col-center {
+    @apply flex flex-row items-center justify-center;
+  }
+
+  .flex-row-center {
+    @apply flex flex-row items-center justify-center;
   }
 }
 

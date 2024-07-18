@@ -178,7 +178,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
         <TokenSlider value={sliderValue} setValue={setSliderValue} />
       </div>
       <button
-        className="bg-pure-blue hover:bg-pure-blue font-sans-ibm-plex font-medium text-[14px]/6 text-white text-center py-3 transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+        className="bg-primary-blue hover:bg-primary-blue font-sans-ibm-plex font-medium text-[14px]/6 text-white text-center py-3 transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
         disabled={
           !isConnected || !userBalance || isTxnLoading || !isValidPositiveNumber(quantity)
         } // conditions to Long Button

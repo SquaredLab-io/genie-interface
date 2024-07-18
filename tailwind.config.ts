@@ -30,6 +30,13 @@ const config = {
       borderRadius: {
         base: "4px"
       },
+      backgroundSize: {
+        "size-200": "200% 200%"
+      },
+      backgroundPosition: {
+        "pos-0": "0% 0%",
+        "pos-100": "100% 100%"
+      },
       colors: {
         "primary-gray": "#0C1820",
         "secondary-gray": "#1F2D3F",
@@ -38,8 +45,9 @@ const config = {
         "light-gray": "#ADB1B8",
         "negative-red": "#FF615C",
         "positive-green": "#29B577",
-        "pure-blue": "#01A1FF",
-        "pure-cyan": "#00CCFF",
+        "primary-blue": "#01A1FF",
+        "secondary-blue": "#0099FF",
+        "primary-cyan": "#00CCFF",
         "off-white": "#C9C9C9",
         "coinbase-theme": "#0052FF"
       },

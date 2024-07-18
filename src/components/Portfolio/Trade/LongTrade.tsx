@@ -21,6 +21,7 @@ import { PositionType } from "@lib/types/enums";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import { useTradeStore } from "@store/tradeStore";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
+import SpinnerIcon from "@components/icons/SpinnerIcon";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -183,14 +184,15 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       <div className="w-full my-4">
         <TokenSlider value={sliderValue} setValue={setSliderValue} />
       </div>
+      {/* CTA: BUY LONG TRADE BUTTON */}
       <button
-        className="bg-pure-blue hover:bg-pure-blue font-sans-ibm-plex font-medium text-[14px]/6 text-white text-center py-3 transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+        className="inline-flex items-center justify-center bg-gradient-to-l from-secondary-blue via-secondary-blue to-primary-cyan bg-size-200 bg-pos-100 hover:bg-pos-0 font-sans-ibm-plex font-medium text-[14px]/6 text-white text-center py-3 disabled:opacity-70 disabled:cursor-not-allowed uppercase transition-all duration-200"
         disabled={
           !isConnected || !userBalance || isTxnLoading || !isValidPositiveNumber(quantity)
         } // conditions to Long Button
         onClick={approveHandler}
       >
-        BUY
+        {isTxnLoading ? <SpinnerIcon className="size-[22px] border" /> : <span>BUY</span>}
       </button>
       {/* Iterate this data after calculating/fetching */}
       <div className="flex flex-col gap-2 mt-5 font-normal text-xs/[14px]">
