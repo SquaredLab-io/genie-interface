@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useState, memo } from "react";
 import Image from "next/image";
 import { formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
@@ -137,7 +137,7 @@ const TradeData = () => {
     },
     {
       accessorKey: "value",
-      header: () => <span>Entry/ Mark</span>,
+      header: () => <span>Entry/ Exit</span>,
       cell: ({ row }) => {
         // const value = parseFloat(row.getValue("value"));
         // const formatted = toDollarUnits(value, 2);
@@ -164,12 +164,15 @@ const TradeData = () => {
             longPos={longPosition.formatted}
             shortPos={shortPosition.formatted}
             isLong={selectedPosType == "Open Long Position" ? true : false}
+            onClickTrigger={() => {
+              setSelectedPosType(action);
+            }}
           >
             <button
               className="py-1 px-[22px] text-white bg-[#32120D] font-normal text-[14px]/5 rounded-sm"
-              onClick={() => {
-                setSelectedPosType(action);
-              }}
+              // onClick={() => {
+              //   setIsPopoverOpen(true);
+              // }}
             >
               Close
             </button>
@@ -338,7 +341,7 @@ const TradeData = () => {
   );
 };
 
-export default TradeData;
+export default memo(TradeData);
 
 // old trade history component
 // const transactionsColumns: ColumnDef<Tx>[] = [

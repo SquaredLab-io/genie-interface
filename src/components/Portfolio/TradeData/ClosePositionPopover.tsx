@@ -10,6 +10,7 @@ interface PropsType {
   longPos: string;
   shortPos: string;
   isLong: boolean;
+  onClickTrigger?: () => void;
   isOpen?: boolean;
   setIsOpen?: (open: boolean) => void;
 }
@@ -19,6 +20,7 @@ const ClosePositionPopover: FC<PropsType> = ({
   longPos,
   shortPos,
   isLong,
+  onClickTrigger,
   isOpen,
   setIsOpen
 }) => {
@@ -53,7 +55,9 @@ const ClosePositionPopover: FC<PropsType> = ({
 
   return (
     <Popover open={isOpen} onOpenChange={isLoading ? () => {} : setIsOpen}>
-      <PopoverTrigger className="min-w-fit">{children}</PopoverTrigger>
+      <PopoverTrigger className="min-w-fit z-50" onClick={onClickTrigger}>
+        {children}
+      </PopoverTrigger>
       <PopoverContent
         side="top"
         className="bg-primary-gray border border-secondary-gray rounded-base p-0"

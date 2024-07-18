@@ -61,17 +61,17 @@ const OpenPositionsTable = <TData, TValue>({
             {table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                className="cursor-pointer hover:bg-[#101F29]"
-                onClick={() => {
-                  const action = (row.getValue("action") as string)
-                    .split(" ")[1]
-                    .toLowerCase();
-                  if (action == "long") {
-                    setTradeType(TradeOptions.long);
-                  } else {
-                    setTradeType(TradeOptions.short);
-                  }
-                }}
+                className="hover:bg-[#101F29] -z-10"
+                // onClick={() => {
+                //   const action = (row.getValue("action") as string)
+                //     .split(" ")[1]
+                //     .toLowerCase();
+                //   if (action == "long") {
+                //     setTradeType(TradeOptions.long);
+                //   } else {
+                //     setTradeType(TradeOptions.short);
+                //   }
+                // }}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
