@@ -1,9 +1,10 @@
-import { FC, memo, ReactNode, useState } from "react";
+import { FC, memo, ReactNode, useEffect, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover";
 import { Separator } from "@components/ui/separator";
 import DropDownIcon from "@components/icons/DropDownIcon";
 import { useTradeStore } from "@store/tradeStore";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
+import SliderBar from "../Trade/SliderBar";
 
 interface PropsType {
   children: ReactNode;
@@ -25,6 +26,8 @@ const ClosePositionPopover: FC<PropsType> = ({
   setIsOpen
 }) => {
   const [quantity, setQuantity] = useState<string>("");
+  const [sliderValue, setSliderValue] = useState<number[]>([0]);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const { selectedPool } = useTradeStore();
@@ -53,6 +56,15 @@ const ClosePositionPopover: FC<PropsType> = ({
     }
   }
 
+  // Slider value updater
+  useEffect(() => {
+    const balance = isLong ? longPos : shortPos;
+    if (balance) {
+      const amount = (parseFloat(balance) * sliderValue[0]) / 100;
+      setQuantity(amount.toString());
+    }
+  }, [longPos, shortPos, sliderValue]);
+
   return (
     <Popover open={isOpen} onOpenChange={isLoading ? () => {} : setIsOpen}>
       <PopoverTrigger className="min-w-fit z-50" onClick={onClickTrigger}>
@@ -62,13 +74,14 @@ const ClosePositionPopover: FC<PropsType> = ({
         side="top"
         className="bg-primary-gray border border-secondary-gray rounded-base p-0"
       >
+        {/* Title */}
         <h1 className="text-center font-sans-ibm-plex font-medium text-sm/5 mt-[14px] mb-2">
           Close Long Position
         </h1>
-        {/* Closing Amount Container - Input, Token, Slider */}
+        {/* Closing Amount Container - Input, Token */}
         <div className="flex flex-col gap-2 text-left text-xs/4 font-medium text-[#9299AA] py-4 px-2">
           <label htmlFor="quantity">Quantity</label>
-          <div className="flex flex-col items-start w-full border-spacing-0 border border-secondary-gray rounded-[4px] py-2 pl-3 pr-4">
+          <div className="flex flex-col items-start w-full border-spacing-0 border border-secondary-gray rounded-[4px] py-2 pl-3 pr-4 mb-1">
             <div className="inline-flex justify-between items-center w-full">
               <input
                 type="number"
@@ -84,6 +97,7 @@ const ClosePositionPopover: FC<PropsType> = ({
             </div>
             <span>Balance: {isLong ? longPos : shortPos}</span>
           </div>
+          <SliderBar value={sliderValue} setValue={setSliderValue} min={0} max={100} />
         </div>
         <Separator />
         <div className="flex flex-col gap-2 px-6 py-2 font-normal text-[#9299AA] text-xs/4">

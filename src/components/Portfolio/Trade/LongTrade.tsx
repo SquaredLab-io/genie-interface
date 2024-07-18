@@ -12,7 +12,7 @@ import {
 import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
 // Component, Util Imports
 import { selected_token } from "../helper";
-import TokenSlider from "./TokenSlider";
+import TokenSlider from "./SliderBar";
 import { getAccountBalance } from "@lib/utils/getAccountBalance";
 import { WethABi } from "@lib/abis";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
@@ -29,7 +29,6 @@ interface PropsType {
 
 const LongTrade: FC<PropsType> = ({ potentia }) => {
   const [quantity, setQuantity] = useState<string>("");
-  // const [selectedToken, setSelectedToken] = useState<string>(underlyingTokens[0]);
   const [sliderValue, setSliderValue] = useState<number[]>([25]);
 
   const { selectedPool } = useTradeStore((state) => state);
@@ -182,7 +181,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       </form>
       {/* Slider Component */}
       <div className="w-full my-4">
-        <TokenSlider value={sliderValue} setValue={setSliderValue} />
+        <TokenSlider value={sliderValue} setValue={setSliderValue} min={0} max={100} />
       </div>
       {/* CTA: BUY LONG TRADE BUTTON */}
       <button
@@ -192,7 +191,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
         } // conditions to Long Button
         onClick={approveHandler}
       >
-        {isTxnLoading ? <SpinnerIcon className="size-[22px] border" /> : <span>BUY</span>}
+        {isTxnLoading ? <SpinnerIcon className="size-[22px]" /> : <span>BUY</span>}
       </button>
       {/* Iterate this data after calculating/fetching */}
       <div className="flex flex-col gap-2 mt-5 font-normal text-xs/[14px]">

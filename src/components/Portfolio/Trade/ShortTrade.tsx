@@ -12,7 +12,7 @@ import { BiSolidDownArrow } from "react-icons/bi";
 import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
 // Component, Util Imports
 import { selected_token } from "../helper";
-import TokenSlider from "./TokenSlider";
+import TokenSlider from "./SliderBar";
 import { getAccountBalance } from "@lib/utils/getAccountBalance";
 import { Button } from "@components/ui/button";
 import { WethABi } from "@lib/abis";
@@ -175,7 +175,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       </form>
       {/* Slider Component */}
       <div className="w-full my-4">
-        <TokenSlider value={sliderValue} setValue={setSliderValue} />
+        <TokenSlider value={sliderValue} setValue={setSliderValue} min={0} max={100} />
       </div>
       <button
         className="bg-primary-blue hover:bg-primary-blue font-sans-ibm-plex font-medium text-[14px]/6 text-white text-center py-3 transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed"

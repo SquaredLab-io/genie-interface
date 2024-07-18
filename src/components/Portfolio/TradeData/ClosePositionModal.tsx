@@ -1,7 +1,7 @@
 import ModalWrapper from "@components/common/Modal";
 import { ChangeEvent, useState } from "react";
 import { underlyingTokens } from "../helper";
-import TokenSlider from "../Trade/TokenSlider";
+import TokenSlider from "../Trade/SliderBar";
 import { isValidPositive } from "@lib/utils/checkVadility";
 import DropDownIcon from "@components/icons/DropDownIcon";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
