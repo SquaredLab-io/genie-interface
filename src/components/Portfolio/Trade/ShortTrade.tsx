@@ -1,7 +1,7 @@
 "use client";
 
 // Library Imports
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import {
   useAccount,
   useBalance,
@@ -21,6 +21,7 @@ import { PositionType } from "@lib/types/enums";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import { useTradeStore } from "@store/tradeStore";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
+import { cn } from "@lib/utils";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -120,6 +121,12 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     }
   }, [userBalance, sliderValue]);
 
+  const balanceExceedError = useMemo(
+    () =>
+      !!userBalance?.value && parseFloat(quantity) >= parseFloat(userBalance?.formatted),
+    [userBalance, quantity]
+  );
+
   return (
     <div className="flex flex-col font-normal text-xs/[14px] gap-2 pt-4 pb-6 px-4">
       <p className="inline-flex items-start gap-1 w-full">
@@ -151,7 +158,13 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
             {"0.00"} {selectedPool.underlyingTokens[0].symbol}
           </span>
         </p>
-        <div className="inline-flex w-full justify-between items-center border border-[#1F2D3F] p-3 bg-transparent">
+        {/* Input Box: Token Input and Selection */}
+        <div
+          className={cn(
+            "inline-flex w-full justify-between items-center border p-3 bg-transparent",
+            balanceExceedError ? "border-[#FF615C]" : "border-[#1F2D3F]"
+          )}
+        >
           <div className="flex flex-col gap-1 items-start w-full max-w-full">
             <label htmlFor="quantity">Size</label>
             <input
@@ -172,6 +185,9 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
             </button>
           </TokenSelectPopover>
         </div>
+        {balanceExceedError && (
+          <p className="font-normal text-xs/[14px] text-[#FF615C]">Insufficient Funds</p>
+        )}
       </form>
       {/* Slider Component */}
       <div className="w-full my-4">
@@ -180,7 +196,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       <button
         className="bg-primary-blue hover:bg-primary-blue font-sans-ibm-plex font-medium text-[14px]/6 text-white text-center py-3 transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
         disabled={
-          !isConnected || !userBalance || isTxnLoading || !isValidPositiveNumber(quantity)
+          !isConnected || !userBalance || isTxnLoading || !isValidPositiveNumber(quantity) || balanceExceedError
         } // conditions to Long Button
         onClick={approveHandler}
       >

@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useMemo } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { Slider } from "@components/ui/slider";
 import { cn } from "@lib/utils";
 
@@ -24,13 +24,6 @@ interface PropsType {
  */
 const SliderBar = ({ value, setValue, min, max, step = 1, className }: PropsType) => {
   const Stepper = ({ index }: { index: number }) => {
-    // If index is either minima or maxima
-    // if (index === 0 || index === max)
-    //   return (
-    //     <p className="mt-3 text-white">
-    //       <span>{index}%</span>
-    //     </p>
-    //   );
     return (
       <p
         className={cn(
