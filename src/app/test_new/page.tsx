@@ -1,59 +1,60 @@
 "use client";
 
+import { Button } from "@components/ui/button";
 import { useIsMounted } from "@lib/hooks/useIsMounted";
-import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
-import { Tx } from "@lib/types/portfolio";
-import { useTradeStore } from "@store/tradeStore";
-import { useEffect, useState } from "react";
-import { Address } from "viem";
+import notification from "@components/common/notification";
 import { useAccount } from "wagmi";
 
 export default function TestNew() {
   const { isMounted } = useIsMounted();
   const { address } = useAccount();
-  const { selectedPool } = useTradeStore((state) => state);
-  const { potentia } = usePotentiaSdk();
-
-  const [isLoadingTxH, setIsLoadingTxH] = useState<boolean>(false);
-
-
-  async function refetch() {
-    try {
-      console.log("testing _txHistory...", {
-        userAddress: address,
-        poolAddress: selectedPool.poolAddress
-      });
-      setIsLoadingTxH(true);
-      const result = await potentia?.getUserTxHistory(
-        address as Address,
-        selectedPool.poolAddress
-      );
-      console.log("txHistory", result);
-      // setTxHistory(result);
-    } catch (error) {
-      console.error("Error -- fetching transaction history", error);
-    } finally {
-      setIsLoadingTxH(false);
-    }
-  }
-
-  useEffect(() => {
-    if (address && potentia) {
-      console.log('refetching...');
-      refetch();
-    } else {
-      console.log('preparing...');
-    }
-  }, [potentia, address]);
 
   if (!isMounted) {
     return <></>;
   }
 
   return (
-    <div>
+    <main className="flex-col-center gap-3">
       <p>{!address && "Connect wallet first!"}</p>
-      <p>{isLoadingTxH ? "fetching..." : "not fetching."}</p>
-    </div>
+      <Button
+        variant={"default"}
+        onClick={() => {
+          notification.success({
+            title: "Order placed successfully",
+            description: "This is a successful transaction!",
+            duration: 2000
+          });
+        }}
+        className="bg-green-400 text-black"
+      >
+        Success
+      </Button>
+      <Button
+        variant={"default"}
+        onClick={() => {
+          notification.info({
+            title: "Order placed successfully",
+            description: "This is a successful transaction!",
+            duration: 2000,
+          });
+        }}
+        className="bg-yellow-400 text-black"
+      >
+        Info
+      </Button>
+      <Button
+        variant={"default"}
+        onClick={() => {
+          notification.success({
+            title: "Order placed successfully",
+            description: "This is a successful transaction!",
+            duration: 2000
+          });
+        }}
+        className="bg-red-400 text-black"
+      >
+        Error
+      </Button>
+    </main>
   );
 }

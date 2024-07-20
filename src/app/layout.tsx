@@ -1,9 +1,10 @@
 import { Metadata } from "next";
-import clsx from "clsx";
 import { ibm_plex_sans, helvetica_neue } from "@lib/fonts";
+import { cn } from "@lib/utils";
 import Header from "@components/common/Header";
 import { meta } from "@lib/constants";
 import Providers from "@components/common/providers";
+import { Toaster } from "@components/ui/sonner";
 import "./globals.css";
 
 const { APP_NAME, DESCRIPTION, KEYWORDS, URL, IMAGE, SITE_NAME, USERNAME } = meta;
@@ -69,11 +70,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={clsx(ibm_plex_sans.variable, helvetica_neue.variable)}>
+      <body className={cn(ibm_plex_sans.variable, helvetica_neue.variable)}>
         <Providers>
           <Header />
           {children}
         </Providers>
+        <Toaster
+          position="bottom-right"
+          expand
+          visibleToasts={4}
+          offset={"28px"}
+          toastOptions={{
+            unstyled: true,
+            className: "min-w-[345px] rounded-sm backdrop-blur-md bg-[#161A1C17]/5"
+          }}
+        />
       </body>
     </html>
   );
