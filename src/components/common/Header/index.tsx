@@ -3,13 +3,12 @@
 import { memo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import clsx from "clsx";
+import { cn } from "@lib/utils";
 import { navigation } from "@lib/constants";
 import FeedbackModal from "./feedback-modal";
 import ConnectWallet from "../ConnectWallet";
 // import { CoinbaseCreateWallet } from "../ConnectWallet/CoinbaseCreateWallet";
 import NextImage from "../NextImage";
-// import { Button } from "@components/ui/button";
 import FaucetModal from "@components/common/Header/faucet-modal";
 
 const Header = () => {
@@ -37,8 +36,8 @@ const Header = () => {
               key={item.name}
               href={item.href}
               target={item.target}
-              className={clsx(
-                pathname !== item.href && "opacity-35 hover:opacity-70 transition-opacity"
+              className={cn(
+                pathname !== item.href && "opacity-35 hover:opacity-90 transition-opacity"
               )}
               aria-label={item.name}
             >
@@ -46,19 +45,33 @@ const Header = () => {
             </Link>
           ))}
           <button
-            className={clsx("opacity-35 hover:opacity-70 transition-opacity uppercase")}
+            className={cn(
+              "max-w-fit uppercase",
+              !isModalOpen && "opacity-35 hover:opacity-90 transition-opacity"
+            )}
             onClick={() => {
               setIsModalOpen(true);
             }}
           >
             Feedback & Support
           </button>
+          <button
+            className={cn(
+              "max-w-fit uppercase",
+              !isFaucetOpen && "opacity-35 hover:opacity-90 transition-opacity"
+            )}
+            onClick={() => {
+              setIsFaucetOpen(true);
+            }}
+          >
+            Faucet
+          </button>
         </div>
       </nav>
       <div className="inline-flex gap-6">
-        {/* <Button variant={"secondary"} onClick={() => setIsFaucetOpen(true)}>
-          Faucet
-        </Button> */}
+        {/* <button variant={"secondary"} onClick={() => setIsFaucetOpen(true)}>
+        className="max-w-fit hover:underline underline-offset-2"
+        </button> */}
         {/* <CoinbaseCreateWallet /> */}
         <ConnectWallet />
       </div>

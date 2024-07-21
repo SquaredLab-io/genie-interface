@@ -50,7 +50,7 @@ const FeedbackModal = ({
       onOpenChange={setOpen}
       title="Contact SquaredLabs Team"
       trigger={trigger}
-      className="max-w-5xl"
+      className="max-w-5xl px-7 py-6"
       footer={
         <div className="inline-flex items-center justify-between w-full">
           <p>
@@ -83,7 +83,7 @@ const FeedbackModal = ({
           <button
             key={option.title}
             className={cn(
-              "inline-flex rounded-full border border-[#ECECEC] hover:bg-white/10 py-[6px] px-3 gap-3 transition-colors",
+              "inline-flex rounded-full border border-[#ECECEC] hover:bg-white/10 py-[6px] px-3 gap-3 transition-colors font-medium text-xl/6",
               selectedFeedback === option.title && "bg-white/10"
             )}
             onClick={() => setSelectedFeedback(option.title)}
