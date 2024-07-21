@@ -22,6 +22,8 @@ import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import { useTradeStore } from "@store/tradeStore";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
 import { cn } from "@lib/utils";
+import ButtonCTA from "@components/common/button-cta";
+import SpinnerIcon from "@components/icons/SpinnerIcon";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -193,15 +195,18 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       <div className="w-full my-4">
         <TokenSlider value={sliderValue} setValue={setSliderValue} min={0} max={100} />
       </div>
-      <button
-        className="bg-primary-blue hover:bg-primary-blue font-sans-ibm-plex font-medium text-[14px]/6 text-white text-center py-3 transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+      <ButtonCTA
         disabled={
-          !isConnected || !userBalance || isTxnLoading || !isValidPositiveNumber(quantity) || balanceExceedError
+          !isConnected ||
+          !userBalance ||
+          isTxnLoading ||
+          !isValidPositiveNumber(quantity) ||
+          balanceExceedError
         } // conditions to Long Button
         onClick={approveHandler}
       >
-        BUY
-      </button>
+        {isTxnLoading ? <SpinnerIcon className="size-[22px]" /> : <span>BUY</span>}
+      </ButtonCTA>
       {/* Iterate this data after calculating/fetching */}
       <div className="flex flex-col gap-2 mt-5 font-normal text-xs/[14px]">
         <p className="inline-flex items-center justify-between w-full">
