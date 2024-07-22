@@ -18,19 +18,26 @@ import { Pool } from "@lib/types/common";
 import { usePools } from "@lib/hooks/usePools";
 import { useTradeStore } from "@store/tradeStore";
 import { TableOptions } from "./helper";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getAllPools } from "./pool-columns";
 import { usePoolsStore } from "@store/poolsStore";
+import SearchInput from "./SearchInput";
+import { useFilteredPools } from "@components/common/TokenSelectPopover/useFilteredPools";
 
 const PoolsData = () => {
   const { updatePoolsData } = usePoolsStore();
+  const [showSearch, setShowSearch] = useState(false);
+  const [term, setTerm] = useState("");
 
   const { pools, isFetching } = usePools();
 
+  const { pools: _pools, noPools } = useFilteredPools(potentiaPoolsList, term);
+
   useEffect(() => {
-    if (pools.length) { // If there're pools, update it globally
+    if (pools.length) {
+      // If there're pools, update it globally
       updatePoolsData(pools);
-      console.log('pools updated', pools);
+      console.log("pools updated", pools);
     }
   }, [pools]);
 
@@ -258,16 +265,19 @@ const PoolsData = () => {
             <button className="inline-flex items-center py-2 px-3 gap-1 text-[#49AFE9] hover:bg-[#0A344D] transition-colors font-medium text-sm/5 rounded-lg font-sans-ibm-plex">
               <PlusIcon size={16} /> Create Pool
             </button>
-            <button className="p-[6px] text-white">
-              <SearchIcon size={24} />
-            </button>
+            <SearchInput
+              term={term}
+              setTerm={setTerm}
+              showSearch={showSearch}
+              setShowSearch={setShowSearch}
+            />
           </div>
         </div>
         <TabsContent value={TableOptions.all}>
-          <PoolsTable columns={poolsColumns} data={potentiaPoolsList} />
+          <PoolsTable columns={poolsColumns} data={_pools} />
         </TabsContent>
         <TabsContent value={TableOptions.my}>
-          <PoolsTable columns={userPoolsColumns} data={potentiaPoolsList} />
+          <PoolsTable columns={userPoolsColumns} data={_pools} />
         </TabsContent>
         <TabsContent value={TableOptions.trxn}>
           <PoolsTable columns={transactionColumns} data={potentiaPoolsList} />

@@ -95,7 +95,7 @@ const TradeData = () => {
               </div>
               <div className="font-normal text-sm/5 text-[#9299AA]">
                 <p>
-                  {BASE_SEPOLIA.PROTOCOL} • {BASE_SEPOLIA.NETWORK}
+                  {BASE_SEPOLIA.PROTOCOL} • {BASE_SEPOLIA.NAME}
                 </p>
               </div>
             </div>
@@ -229,7 +229,7 @@ const TradeData = () => {
               </div>
               <div className="font-normal text-sm/5 text-[#9299AA]">
                 <p>
-                  {BASE_SEPOLIA.PROTOCOL} • {BASE_SEPOLIA.NETWORK}
+                  {BASE_SEPOLIA.PROTOCOL} • {BASE_SEPOLIA.NAME}
                 </p>
               </div>
             </div>

@@ -32,7 +32,7 @@ export default function TokenSelectPopover({ children }: PropsWithChildren) {
         {children}
       </PopoverTrigger>
       <PopoverContent className="bg-primary-gray w-full max-w-fit">
-        <SearchInput term={term} setTerm={setTerm} />
+        <SearchInput term={term} setTerm={setTerm} placeholder="Search markets" className="px-4 mt-4" />
         <Tabs defaultValue={PoolSelectTypes.all}>
           <TabsList className="inline-flex p-4 font-normal text-[10px]/6 gap-2">
             <TabsTrigger value={PoolSelectTypes.all} className={tabStyle}>
