@@ -20,23 +20,26 @@ interface PropsType<TData, TValue> {
   data: TData[];
 }
 
-const UserPoolsTable = <TData, TValue>({ columns, data }: PropsType<TData, TValue>) => {
+const PoolsList = <TData, TValue>({ columns, data }: PropsType<TData, TValue>) => {
+  const { isConnected } = useAccount();
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel()
   });
 
-  const { isConnected } = useAccount();
-
   return (
-    <Table className="rounded-xl">
-      <TableHeader className="border-b border-[#292B31]">
+    <Table>
+      <TableHeader className="font-sans-ibm-plex">
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map((header) => {
               return (
-                <TableHead key={header.id} className="font-bold text-base/4 text-white">
+                <TableHead
+                  key={header.id}
+                  className="font-bold text-sm/[18px] text-[#5F7183]"
+                >
                   {header.isPlaceholder
                     ? null
                     : flexRender(header.column.columnDef.header, header.getContext())}
@@ -60,9 +63,9 @@ const UserPoolsTable = <TData, TValue>({ columns, data }: PropsType<TData, TValu
           </TableRow>
         ) : table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
+            <TableRow key={row.id} className="hover:bg-[#232730]">
               {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id} className="border">
+                <TableCell key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
               ))}
@@ -71,7 +74,7 @@ const UserPoolsTable = <TData, TValue>({ columns, data }: PropsType<TData, TValu
         ) : (
           <TableRow>
             <TableCell colSpan={columns.length} className="h-72 text-center">
-              Coming Soon.
+              No results.
             </TableCell>
           </TableRow>
         )}
@@ -80,4 +83,4 @@ const UserPoolsTable = <TData, TValue>({ columns, data }: PropsType<TData, TValu
   );
 };
 
-export default UserPoolsTable;
+export default PoolsList;

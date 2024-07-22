@@ -4,7 +4,6 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { PoolType } from "./helper";
 import { HiEllipsisHorizontal } from "react-icons/hi2";
 import {
   DropdownMenu,
@@ -14,13 +13,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@components/ui/dropdown-menu";
-import { Token } from "@lib/types/portfolio";
 import { Pool } from "@lib/types/common";
-import { useTradeStore } from "@store/tradeStore";
-import { PoolOptions } from "@lib/pools";
+import { useRouter } from "next/navigation";
 
 const PoolMenu = ({ pool }: { pool: Pool }) => {
-  const { updateOverviewPool } = useTradeStore();
+  // const { updateOverviewPool } = useTradeStore();
+  const router = useRouter();
 
   const { underlyingTokens, power } = pool;
   return (
@@ -46,9 +44,8 @@ const PoolMenu = ({ pool }: { pool: Pool }) => {
         <DropdownMenuItem
           onClick={() => {
             const symbol = pool.underlyingTokens[0].symbol;
-            if (symbol == "WETH") updateOverviewPool(PoolOptions.weth);
-            else if (symbol == "WBTC") updateOverviewPool(PoolOptions.wbtc);
-            else if (symbol == "USDC") updateOverviewPool(PoolOptions.usdc);
+            // TODO: Update this with original pool later
+            router.push(`/pool/${symbol}`);
           }}
         >
           <Link className="inline-flex gap-2 items-center w-full" href="/pool">
@@ -59,9 +56,9 @@ const PoolMenu = ({ pool }: { pool: Pool }) => {
         <DropdownMenuItem
           onClick={() => {
             const symbol = pool.underlyingTokens[0].symbol;
-            if (symbol == "WETH") updateOverviewPool(PoolOptions.weth);
-            else if (symbol == "WBTC") updateOverviewPool(PoolOptions.wbtc);
-            else if (symbol == "USDC") updateOverviewPool(PoolOptions.usdc);
+            // if (symbol == "WETH") updateOverviewPool(PoolOptions.weth);
+            // else if (symbol == "WBTC") updateOverviewPool(PoolOptions.wbtc);
+            // else if (symbol == "USDC") updateOverviewPool(PoolOptions.usdc);
           }}
         >
           <Link className="inline-flex gap-2 items-center w-full" href="/pool">

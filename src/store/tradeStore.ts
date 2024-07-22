@@ -9,10 +9,8 @@ interface iTrade {
   SELECTED_TOKEN: () => UnderlyingToken;
   isPositionModalOpen: boolean;
   tradeType: string;
-  updateSelectedPool: (value: PoolOptions) => void;
+  updateSelectedPool: (value: Pool) => void;
   setIsPositionModalOpen: (value: boolean) => void;
-  overviewPool: Pool;
-  updateOverviewPool: (value: PoolOptions) => void;
   setTradeType: (value: string) => void;
 }
 
@@ -27,13 +25,9 @@ export const useTradeStore = create<iTrade>((set, get) => ({
   isPositionModalOpen: false,
   tradeType: TradeOptions.long,
   // actions
-  updateSelectedPool: (newPool: PoolOptions) =>
+  updateSelectedPool: (newPool: Pool) =>
     set(() => ({
-      selectedPool: potentiaPools[newPool]
-    })),
-  updateOverviewPool: (newPool: PoolOptions) =>
-    set(() => ({
-      overviewPool: potentiaPools[newPool]
+      selectedPool: potentiaPools[newPool.underlyingTokens[0].symbol.toLowerCase()]
     })),
   setIsPositionModalOpen: (updatedState: boolean) =>
     set(() => ({

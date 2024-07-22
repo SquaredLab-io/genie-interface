@@ -1,55 +1,10 @@
-import { Address } from "viem";
+import { PoolType } from "@lib/types/pools";
 
 export enum TableOptions {
   all = "all",
   my = "my",
   trxn = "trxn"
 }
-
-export type Token = {
-  symbol: string;
-  imgSrc: string;
-  address: Address;
-};
-
-export type Amount = {
-  value: string;
-  growth: string;
-};
-
-export type PoolType = {
-  id: number;
-  underlyingAssets: Token[];
-  network: string;
-  power: number;
-  age: string;
-  tvl: string;
-  volume: Amount;
-  fee: Amount;
-  protocol: string;
-};
-
-export type UserPoolType = {
-  id: number;
-  assets: Token[];
-  network: string;
-  power: number;
-  protocol: string;
-  totalAmount: Amount;
-};
-
-export type TxnPoolType = {
-  id: number;
-  assets: Token[];
-  network: string;
-  power: number;
-  protocol: string;
-  txnHash: string;
-  amount: string;
-  feesEarned: string;
-  total: string;
-  totalDollar: string;
-};
 
 // dummy List of user's open positions
 export const allPoolsData: PoolType[] = [
