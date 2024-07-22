@@ -14,12 +14,11 @@ import { getCurrentDateTime } from "@lib/utils/getCurrentTime";
 import { useTradeStore } from "@store/tradeStore";
 import { useEffect, useState } from "react";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
+import { PoolInfo } from "@lib/types/pools";
+import { Address } from "viem";
 
-const PoolOverview = () => {
-  const { overviewPool } = useTradeStore();
-
-  const { underlyingTokens, power } = overviewPool;
-
+const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) => {
+  // const { overviewPool } = useTradeStore();
   // const [isLoading, setIsLoading] = useState(false);
   // const [timeseries, setTimeseries] = useState<Timeseries[]>([]);
 
@@ -41,7 +40,7 @@ const PoolOverview = () => {
     if (overviewPool) {
       try {
         // setIsLoading(true);
-        const data = await potentia?.getTimeseries(overviewPool.poolAddress);
+        const data = await potentia?.getTimeseries(overviewPool.poolAddr as Address);
         // console.log("timeseries data", data);
         // setTimeseries(data == undefined ? [] : data);
       } catch (error) {
@@ -57,6 +56,11 @@ const PoolOverview = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [potentia]);
 
+  if (!overviewPool) return <main>Pool Not Found</main>;
+
+  const { underlying, pool, power } = overviewPool;
+  const underlyingTokens = pool.split("/").map((p) => p.trim());
+
   return (
     <div className="w-full px-11 py-[72px]">
       {/* Header */}
@@ -70,14 +74,14 @@ const PoolOverview = () => {
               key={index}
               className="z-0 flex overflow-hidden ring-1 ring-white rounded-full bg-neutral-800"
             >
-              <Image src={asset.icon} alt={asset.symbol} width={44} height={44} />
+              <Image src={`/tokens/${asset.toLowerCase()}.svg`} alt={asset} width={44} height={44} />
             </div>
           ))}
         </div>
         <p className="font-extrabold text-[32px]/5">
           {underlyingTokens.map((asset, index) => (
             <>
-              <span key={index}>{asset.symbol}</span>
+              <span key={index}>{asset}</span>
               {underlyingTokens.length !== index + 1 && (
                 <span className="text-[#9299AA] mx-2">/</span>
               )}
@@ -93,13 +97,13 @@ const PoolOverview = () => {
       <div className="inline-flex items-center mt-4 gap-1">
         <Label text="APR : 2.61%" />
         <Label text="Fee : 0.3%" />
-        {chain && <Label text={`Network : ${overviewPool.network}`} />}
+        {chain && <Label text={`Network : Base Sepolia`} />}
         {/* {underlyingAssets.map((asset, index) => ( */}
         <Label
           // key={index}
-          text={overviewPool.underlyingTokens[0].symbol}
-          imgSrc={overviewPool.underlyingTokens[0].icon}
-          link={overviewPool.underlyingTokens[0].address}
+          text={overviewPool.underlying}
+          imgSrc={`/tokens/${overviewPool.underlying.toLowerCase()}.svg`}
+          link={overviewPool.poolAddr}
         />
         {/* ))} */}
       </div>

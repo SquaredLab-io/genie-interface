@@ -15,10 +15,13 @@ import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import toUnits from "@lib/utils/formatting";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
-import { useTradeStore } from "@store/tradeStore";
+import { potentiaPools } from "@lib/pools";
 
 const AddLiquidity = () => {
-  const { overviewPool } = useTradeStore();
+  // const { overviewPool } = useTradeStore();
+  // TODO: Update this with currentPool
+  const overviewPool = potentiaPools[0];
+  
   const TOKEN = overviewPool.underlyingTokens[0];
 
   const { potentia } = usePotentiaSdk();

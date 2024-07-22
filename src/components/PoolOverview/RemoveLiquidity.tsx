@@ -11,9 +11,11 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import { cn } from "@lib/utils";
 import { useTradeStore } from "@store/tradeStore";
+import { potentiaPools } from "@lib/pools";
 
 const RemoveLiquidity = () => {
-  const { overviewPool } = useTradeStore();
+  // TODO: Update this with currentPool
+  const overviewPool = potentiaPools[0];
 
   // Amount to remove
   const [amount, setAmount] = useState("");

@@ -6,7 +6,7 @@ import { memo } from "react";
 interface PoolsListProps {
   pools: Pool[];
   noPools: boolean;
-  updateSelectedPool: (value: PoolOptions) => void;
+  updateSelectedPool: (value: Pool) => void;
 }
 
 const PoolsList = ({ pools, noPools, updateSelectedPool }: PoolsListProps) => {
@@ -14,20 +14,14 @@ const PoolsList = ({ pools, noPools, updateSelectedPool }: PoolsListProps) => {
     return <div className="flex-row-center w-full h-20 opacity-50">No pools found</div>;
   return (
     <div className="flex flex-col mb-2">
-      {pools.map((pool, index) => {
+      {pools.map((pool) => {
         const asset = pool.underlyingTokens[0];
         return (
           <button
             key={pool.symbol}
             className="flex flex-row px-4 py-2 w-full justify-between items-center gap-2 hover:bg-[#15212A] transition-colors duration-300"
             onClick={() => {
-              if (index === 0) {
-                updateSelectedPool(PoolOptions.weth);
-              } else if (index === 1) {
-                updateSelectedPool(PoolOptions.wbtc);
-              } else if (index === 2) {
-                updateSelectedPool(PoolOptions.usdc);
-              }
+              updateSelectedPool(pool);
             }}
           >
             <div className="inline-flex items-center gap-1">

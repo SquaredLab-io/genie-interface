@@ -10,6 +10,7 @@ import {
 // import { generateRandomData } from "./helper";
 import { useTradeStore } from "@store/tradeStore";
 import { transformTimeseries } from "./helper";
+import { potentiaPools } from "@lib/pools";
 
 const PoolChart = (
   {
@@ -20,7 +21,9 @@ const PoolChart = (
     // isLoadingData: boolean;
   }
 ) => {
-  const { overviewPool } = useTradeStore();
+  // const { overviewPool } = useTradeStore();
+  // TODO: Update this with currentPool
+  const overviewPool = potentiaPools[0];
   const { underlyingTokens } = overviewPool;
 
   const chartContainerRef = useRef(null);

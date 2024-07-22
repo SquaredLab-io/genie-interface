@@ -8,6 +8,7 @@ interface ArgsType {
   closable?: boolean;
   duration?: number;
 }
+
 const success = ({ title, description, closable = true, duration = 5000 }: ArgsType) => {
   return toast.custom(
     (t) => (
@@ -36,6 +37,36 @@ const success = ({ title, description, closable = true, duration = 5000 }: ArgsT
 };
 
 const info = ({ title, description, closable = true, duration = 5000 }: ArgsType) => {
+  return toast.custom(
+    (t) => (
+      <div className="relative inline-flex items-start gap-3 font-normal text-sm/4 py-5 px-3 bg-[#161A1C17]/5 border-b border-[#F7931A] w-full">
+        <Image
+          src="/icons/toast-info.svg"
+          alt="toast success"
+          height={24}
+          width={24}
+        />
+        <div className="flex flex-col gap-2">
+          <h2 className="text-[#F7931A]">{title}</h2>
+          <p className="text-white">{description}</p>
+          {closable && (
+            <button
+              className="absolute top-5 right-3"
+              onClick={() => toast.dismiss(t)}
+            >
+              <XIcon size="12" color="#FFFFFF" />
+            </button>
+          )}
+        </div>
+      </div>
+    ),
+    {
+      duration
+    }
+  );
+};
+
+const loading = ({ title, description, closable = true, duration = 5000 }: ArgsType) => {
   return toast.custom(
     (t) => (
       <div className="relative inline-flex items-start gap-3 font-normal text-sm/4 py-5 px-3 bg-[#161A1C17]/5 border-b border-[#F7931A] w-full">
@@ -101,7 +132,8 @@ const error = ({ title, description, closable = true, duration = 5000 }: ArgsTyp
 const notification = {
   success,
   info,
-  error
+  error,
+  loading
 };
 
 export default notification;
