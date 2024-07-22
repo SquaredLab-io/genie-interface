@@ -16,7 +16,7 @@ import { cn } from "@lib/utils";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { PositionType } from "@lib/types/enums";
 import ClosePositionPopover from "./ClosePositionPopover";
-import { PROTOCOL, TEST_NETWORK } from "@lib/constants";
+import { BASE_SEPOLIA } from "@lib/constants";
 
 enum Tab {
   position = "position",
@@ -95,7 +95,7 @@ const TradeData = () => {
               </div>
               <div className="font-normal text-sm/5 text-[#9299AA]">
                 <p>
-                  {PROTOCOL} • {TEST_NETWORK}
+                  {BASE_SEPOLIA.PROTOCOL} • {BASE_SEPOLIA.NETWORK}
                 </p>
               </div>
             </div>
@@ -229,7 +229,7 @@ const TradeData = () => {
               </div>
               <div className="font-normal text-sm/5 text-[#9299AA]">
                 <p>
-                  {PROTOCOL} • {TEST_NETWORK}
+                  {BASE_SEPOLIA.PROTOCOL} • {BASE_SEPOLIA.NETWORK}
                 </p>
               </div>
             </div>

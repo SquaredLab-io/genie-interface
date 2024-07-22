@@ -31,7 +31,7 @@ const ClosePositionPopover: FC<PropsType> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const { selectedPool } = useTradeStore();
-  console.log("selectedPool", selectedPool);
+  // console.log("selectedPool", selectedPool);
 
   const { potentia } = usePotentiaSdk();
 

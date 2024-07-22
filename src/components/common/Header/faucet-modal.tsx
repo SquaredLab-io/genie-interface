@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import ModalTrigger from "@components/common/Modal";
-import { potentiaPoolsList } from "@lib/pools";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { useIsMounted } from "@lib/hooks/useIsMounted";
 import {
@@ -16,6 +15,10 @@ import {
 } from "@components/ui/select";
 import ButtonCTA from "../button-cta";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
+import {
+  SUPPORTED_NETWORKS,
+  SUPPORTED_TOKENS,
+} from "@lib/constants";
 
 const FaucetModal = ({
   open,
@@ -31,6 +34,9 @@ const FaucetModal = ({
   const { address } = useAccount();
   const { isMounted } = useIsMounted();
 
+  const [selectedNetwork, setSelectedNetwork] = useState(SUPPORTED_NETWORKS[0]);
+  const [selectedToken, setSelectedToken] = useState(SUPPORTED_TOKENS[0]);
+
   async function getFaucet(tokenAddress: string) {
     try {
       setIsLoading(true);
@@ -44,6 +50,8 @@ const FaucetModal = ({
       setIsLoading(false);
     }
   }
+
+  useEffect(() => console.log("selectedtoken", selectedToken), [selectedToken]);
 
   if (!isMounted) {
     return <></>;
@@ -59,32 +67,86 @@ const FaucetModal = ({
       className="p-5 min-w-fit"
     >
       <div className="flex flex-col items-start text-left space-y-[22px] font-medium text-base/[14px]">
+        {/* NETWORK SELECTOR */}
         <div className="space-y-3 w-full">
           <label>Select Network</label>
-          <Select>
+          <Select
+            value={selectedNetwork.NAME}
+            onValueChange={(value) => {
+              const network = SUPPORTED_NETWORKS.find((n) => n.NAME === value)!;
+              setSelectedNetwork(network);
+            }}
+          >
             <SelectTrigger className="border border-secondary-gray uppercase rounded-sm">
-              <SelectValue placeholder="ETHEREUM" />
+              <SelectValue
+                placeholder={
+                  <p className="inline-flex items-center justify-start gap-x-2 uppercase">
+                    <Image
+                      src={selectedNetwork.LOGO}
+                      alt={selectedNetwork.NAME}
+                      height="24"
+                      width="24"
+                    />
+                    {selectedNetwork.NAME}
+                  </p>
+                }
+              />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">ETHEREUM</SelectItem>
-              <SelectItem value="dark">POLYGON</SelectItem>
-              <SelectItem value="system">ARBITRUM</SelectItem>
+              {SUPPORTED_NETWORKS.map((network) => (
+                <SelectItem value={network.NAME} key={network.NAME}>
+                  <p className="inline-flex items-center justify-start gap-x-2 uppercase">
+                    <Image
+                      src={network.LOGO}
+                      alt={network.NAME}
+                      height="24"
+                      width="24"
+                    />
+                    {network.NAME}
+                  </p>
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
+        {/* TOKEN SELECTOR */}
         <div className="space-y-3 w-full">
           <label>Select Token</label>
-          <Select>
+          <Select
+            value={selectedToken.token}
+            onValueChange={(value) => {
+              const token = SUPPORTED_TOKENS.find((token) => token.token === value)!;
+              setSelectedToken(token);
+            }}
+          >
             <SelectTrigger className="border border-secondary-gray uppercase rounded-sm">
-              <SelectValue placeholder="ETH" />
+              <SelectValue
+                placeholder={
+                  <p className="inline-flex items-center justify-start gap-x-2 uppercase">
+                    <Image
+                      src={SUPPORTED_TOKENS[0].logo}
+                      alt={SUPPORTED_TOKENS[0].token}
+                      height="24"
+                      width="24"
+                    />
+                    {SUPPORTED_TOKENS[0].token}
+                  </p>
+                }
+              />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">ETH</SelectItem>
-              <SelectItem value="dark">MATIC</SelectItem>
-              <SelectItem value="system">BTC</SelectItem>
+              {SUPPORTED_TOKENS.map((token) => (
+                <SelectItem value={token.token} key={token.logo}>
+                  <p className="inline-flex items-center justify-start gap-x-2">
+                    <Image src={token.logo} alt={token.token} height="24" width="24" />
+                    {token.token.toUpperCase()}
+                  </p>
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
+        {/* CTA */}
         <ButtonCTA disabled={isLoading} className="w-full rounded-[4px]">
           {isLoading ? <SpinnerIcon className="size-[22px]" /> : <span>GET TOKENS</span>}
         </ButtonCTA>
@@ -94,32 +156,3 @@ const FaucetModal = ({
 };
 
 export default FaucetModal;
-
-/*
-      <div className="flex flex-row gap-3 border">
-        {potentiaPoolsList.map((pool, index) => (
-          <button
-            key={pool.id}
-            onClick={() => {
-              getFaucet(pool.underlyingTokens[0].address);
-            }}
-            className="flex flex-row items-center gap-1 p-0 rounded-md bg-white/10 hover:bg-white/20 transition-colors duration-300"
-          >
-            <div key={index} className="z-0 flex flex-row gap-2">
-              <Image
-                src={pool.underlyingTokens[0].icon}
-                alt={pool.underlyingTokens[0].symbol}
-                width={24}
-                height={24}
-              />
-              <span>{pool.underlyingTokens[0].symbol}</span>
-            </div>
-          </button>
-        ))}
-      </div>
-      {isLoading && (
-        <div className="text-center w-full">
-          <p>loading faucets...</p>
-        </div>
-      )}
-*/

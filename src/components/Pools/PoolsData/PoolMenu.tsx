@@ -56,9 +56,6 @@ const PoolMenu = ({ pool }: { pool: Pool }) => {
         <DropdownMenuItem
           onClick={() => {
             const symbol = pool.underlyingTokens[0].symbol;
-            // if (symbol == "WETH") updateOverviewPool(PoolOptions.weth);
-            // else if (symbol == "WBTC") updateOverviewPool(PoolOptions.wbtc);
-            // else if (symbol == "USDC") updateOverviewPool(PoolOptions.usdc);
           }}
         >
           <Link className="inline-flex gap-2 items-center w-full" href="/pool">
