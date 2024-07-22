@@ -54,40 +54,37 @@ export const navigation: {
   }
 ];
 
-// Pools page header social links
-// export const pools_social: {
-//   name: string;
-//   href: string;
-//   target: string;
-//   icon: IconType;
-// }[] = [
-//   {
-//     name: "twitter",
-//     href: meta.TWITTER,
-//     icon: FaXTwitter,
-//     target: "_blank"
-//   },
-//   {
-//     name: "discord",
-//     href: meta.DISCORD,
-//     icon: FaDiscord,
-//     target: "_blank"
-//   },
-//   {
-//     name: "telegram",
-//     href: meta.TELEGRAM,
-//     icon: FaTelegramPlane,
-//     target: "_blank"
-//   }
-// ];
+export const SUPPORTED_NETWORKS = [
+  {
+    NAME: "Base Sepolia",
+    PROTOCOL: "Potentia V1",
+    LOGO: "/images/base_logo.svg"
+  }
+];
+export const BASE_SEPOLIA = SUPPORTED_NETWORKS[0];
 
-export const PROTOCOL = "Potentia V1";
-export const TEST_NETWORK = "Base Sepolia";
+export const SUPPORTED_TOKENS = [
+  {
+    token: "WETH",
+    address: "0x7de827f7C7edD7b6E256779d847e7ae03475012D",
+    logo: "/tokens/weth.svg"
+  },
+  {
+    token: "WBTC",
+    address: "",
+    logo: "/tokens/wbtc.svg"
+  },
+  {
+    token: "USDC",
+    address: "",
+    logo: "/tokens/usdc.svg"
+  }
+];
 
 export const CONTRACT_ADDRESSES = {
-  POTENTIA_FACTORY_ADDR: "0xff5de5c7aa95ac5f36ec0ec16f376281f505c74c" as Address,
-  WETH_ADDR: "0x3e36708aa8b5c027cb3a77f36c4ebdfb689b3bd6" as Address,
-  WETH_POOL_ADDR: "0x762c9b8fa27546c0ddc3e49883fc14bb71723eeb" as Address,
+  POTENTIA_FACTORY_ADDR: "0x1768069E7d862e2131343e4743923eA2DF3b0Bd6" as Address,
+  WETH_ADDR: "0x7de827f7C7edD7b6E256779d847e7ae03475012D" as Address,
+  WETH_POOL_ADDR: "0xa27f1938be3C6EaFc47F38Aa5250b360196D8Cc3" as Address,
   PTOKEN_ADDR: "0x56169607c23501d4ad5ffd16a5a164d007de57f8" as Address,
   WBTC_ADDR: "0xa74ca0170ad066881d6413e3cef5a2dbafde5bdf" as Address,
   WBTC_POOL_ADDR: "0x73d705ff0fc884315a61afd3fde3646fb0a949e6" as Address,
