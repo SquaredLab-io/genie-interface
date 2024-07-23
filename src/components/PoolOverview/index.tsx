@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useAccount } from "wagmi";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
@@ -9,138 +10,144 @@ import Label from "./Label";
 import AddLiquidity from "./AddLiquidity";
 import RemoveLiquidity from "./RemoveLiquidity";
 import { GraphOptions, LiquidityOptions } from "./helper";
-import PoolChart from "./Chart";
+import PoolChart from "./PoolChart";
 import { getCurrentDateTime } from "@lib/utils/getCurrentTime";
 import { useTradeStore } from "@store/tradeStore";
-import { useEffect, useState } from "react";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import { PoolInfo } from "@lib/types/pools";
-import { Address } from "viem";
+import TokenSelectPopover from "@components/common/TokenSelectPopover";
+import { LpTradeOptions } from "@lib/types/enums";
+import SelectLpTrade from "./SelectLpTrade";
+import { Separator } from "@components/ui/separator";
+
+const PoolHeader = ({ assets, power }: { assets: string[]; power: number }) => {
+  return (
+    <TokenSelectPopover>
+      <div className="whitespace-nowrap flex flex-row items-center gap-3 text-left font-medium rounded-full max-w-fit p-2 cursor-pointer">
+        <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-3">
+          {assets.map((asset, index) => (
+            <div
+              key={`${asset}_${index}`}
+              className="z-0 flex overflow-hidden ring-2 ring-white rounded-full bg-neutral-800"
+            >
+              <Image
+                src={`/tokens/${asset.toLowerCase()}.svg`}
+                alt={asset}
+                width={42}
+                height={42}
+              />
+            </div>
+          ))}
+        </div>
+        <p className="font-extrabold text-[32px]/5 text-nowrap">
+          {assets[0]}
+          <span className="text-[#9299AA] mx-2">/</span>
+          {assets[1]}
+        </p>
+        <p className="font-medium text-xs/3 bg-[#49AFE9] pt-[4.5px] pb-[5.5px] px-3 rounded-md">
+          p = {power}
+        </p>
+        <DropDownIcon className="ml-2" />
+      </div>
+    </TokenSelectPopover>
+  );
+};
 
 const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) => {
   // const { overviewPool } = useTradeStore();
   // const [isLoading, setIsLoading] = useState(false);
   // const [timeseries, setTimeseries] = useState<Timeseries[]>([]);
 
-  const { potentia } = usePotentiaSdk();
+  const [lpTrade, setLpTrade] = useState<LpTradeOptions>(LpTradeOptions.supply);
 
+  // const { potentia } = usePotentiaSdk();
   const { chain } = useAccount();
 
   const graphTabStyle = cn(
-    "py-[5px] px-3 rounded-base bg-[#232323]",
-    "data-[state=active]:bg-[#202832] data-[state=active]:text-[#1766AF]"
+    "p-2 rounded-none bg-primary-gray", // base state
+    "data-[state=active]:bg-white data-[state=active]:text-black" // active state
   );
 
-  const tradeTabStyle = cn(
-    "w-1/2 py-3 text-center px-3 rounded-base",
-    "data-[state=active]:border border-primary-blue data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-cyan data-[state=active]:to-primary-blue"
-  );
+  // const tradeTabStyle = cn(
+  //   "w-1/2 py-3 text-center px-3",
+  //   "data-[state=active]:border border-primary-blue data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-cyan data-[state=active]:to-primary-blue"
+  // );
 
-  async function getTimeseries() {
-    if (overviewPool) {
-      try {
-        // setIsLoading(true);
-        const data = await potentia?.getTimeseries(overviewPool.poolAddr as Address);
-        // console.log("timeseries data", data);
-        // setTimeseries(data == undefined ? [] : data);
-      } catch (error) {
-        console.error("error", error);
-      } finally {
-        // setIsLoading(false);
-      }
-    }
-  }
+  // TODO: Activate this fetching function
+  // Fetch the timeseries if after Potentia SDK is established
+  // useEffect(() => {
+  //   if (potentia) {
+  //     (async () => {
+  //       if (overviewPool) {
+  //         try {
+  //           // setIsLoading(true);
+  //           const data = await potentia?.getTimeseries(overviewPool.poolAddr as Address);
+  //           // console.log("timeseries data", data);
+  //           // setTimeseries(data == undefined ? [] : data);
+  //         } catch (error) {
+  //           console.error("error", error);
+  //         } finally {
+  //           // setIsLoading(false);
+  //         }
+  //       }
+  //     })();
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [potentia]);
 
-  useEffect(() => {
-    getTimeseries();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [potentia]);
+  if (!overviewPool) return <main></main>;
 
-  if (!overviewPool) return <main>Pool Not Found</main>;
-
-  const { underlying, pool, power } = overviewPool;
-  const underlyingTokens = pool.split("/").map((p) => p.trim());
+  const { pool, power } = overviewPool;
+  const [token0, token1] = pool.split("/").map((p) => p.trim());
 
   return (
-    <div className="w-full px-11 py-[72px]">
+    <div className="overflow-auto pl-11 pt-11 h-full">
       {/* Header */}
-      <button
-        className="whitespace-nowrap flex flex-row items-center gap-3 text-left font-medium rounded-full"
-        // onClick={getTimeseries}
-      >
-        <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-3">
-          {underlyingTokens.map((asset, index) => (
-            <div
-              key={index}
-              className="z-0 flex overflow-hidden ring-1 ring-white rounded-full bg-neutral-800"
-            >
-              <Image src={`/tokens/${asset.toLowerCase()}.svg`} alt={asset} width={44} height={44} />
-            </div>
-          ))}
-        </div>
-        <p className="font-extrabold text-[32px]/5">
-          {underlyingTokens.map((asset, index) => (
-            <>
-              <span key={index}>{asset}</span>
-              {underlyingTokens.length !== index + 1 && (
-                <span className="text-[#9299AA] mx-2">/</span>
-              )}
-            </>
-          ))}
-        </p>
-        <p className="font-medium text-xs/3 bg-[#1A3B00] pt-[4.5px] pb-[5.5px] px-3 rounded-md">
-          p = {power}
-        </p>
-        <DropDownIcon className="ml-3" />
-      </button>
+      <PoolHeader assets={[token0, token1]} power={power} />
       {/* Labels of Pool Information */}
-      <div className="inline-flex items-center mt-4 gap-1">
+      <div className="inline-flex items-center mt-3 gap-1">
         <Label text="APR : 2.61%" />
         <Label text="Fee : 0.3%" />
         {chain && <Label text={`Network : Base Sepolia`} />}
-        {/* {underlyingAssets.map((asset, index) => ( */}
-        <Label
-          // key={index}
-          text={overviewPool.underlying}
-          imgSrc={`/tokens/${overviewPool.underlying.toLowerCase()}.svg`}
-          link={overviewPool.poolAddr}
-        />
-        {/* ))} */}
       </div>
       {/* Graph and Add/Remove Liquidity Box */}
-      <div className="grid grid-cols-7 gap-1 mt-10">
-        <div className="col-span-5 rounded-base border border-gray-800">
-          <div className="py-2 px-3">
-            <Tabs defaultValue={GraphOptions.counterpart}>
-              <TabsList className="inline-flex font-bold text-sm/5 gap-1">
-                <TabsTrigger value={GraphOptions.counterpart} className={graphTabStyle}>
-                  Counterpart Liquidity
-                </TabsTrigger>
-                <TabsTrigger value={GraphOptions.volume} className={graphTabStyle}>
-                  Volume
-                </TabsTrigger>
-                <TabsTrigger value={GraphOptions.tvl} className={graphTabStyle}>
-                  TVL
-                </TabsTrigger>
-                <TabsTrigger value={GraphOptions.crossbook} className={graphTabStyle}>
-                  Cross Book
-                </TabsTrigger>
-              </TabsList>
-              <div className="mt-6 mb-4 w-full flex flex-col gap-2">
-                <h2 className="font-semibold text-2xl/5">$3382.63</h2>
-                <h5 className="font-normal text-base/5">{getCurrentDateTime()}</h5>
-              </div>
-              <TabsContent value={GraphOptions.counterpart}>
-                <PoolChart />
-              </TabsContent>
-              <TabsContent value={GraphOptions.volume}>Volume</TabsContent>
-              <TabsContent value={GraphOptions.tvl}>TVL</TabsContent>
-              <TabsContent value={GraphOptions.crossbook}>Cross Book</TabsContent>
-            </Tabs>
-          </div>
+      <div className="grid grid-cols-7 mt-8 h-[calc(100vh-254px)]">
+        <div className="col-span-5 border border-gray-800">
+          <Tabs defaultValue={GraphOptions.volume} className="size-full">
+            <TabsList className="inline-flex justify-start font-medium text-sm/6 w-full">
+              <TabsTrigger value={GraphOptions.volume} className={graphTabStyle}>
+                Volume
+              </TabsTrigger>
+              <TabsTrigger value={GraphOptions.tvl} className={graphTabStyle}>
+                TVL
+              </TabsTrigger>
+              <TabsTrigger value={GraphOptions.crossbook} className={graphTabStyle}>
+                Cross Book
+              </TabsTrigger>
+              <TabsTrigger value={GraphOptions.counterpart} className={graphTabStyle}>
+                Counterpart Liquidity
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value={GraphOptions.volume}>Volume</TabsContent>
+            <TabsContent value={GraphOptions.tvl}>TVL</TabsContent>
+            <TabsContent value={GraphOptions.crossbook}>Cross Book</TabsContent>
+            <TabsContent value={GraphOptions.counterpart} className="h-[calc(100%-36px)]">
+              <PoolChart />
+            </TabsContent>
+          </Tabs>
         </div>
-        <div className="col-span-2 flex flex-col gap-1">
-          <Tabs defaultValue={LiquidityOptions.add}>
+        <div className="col-span-2">
+          <div className="flex flex-col px-4 border-y border-secondary-gray h-full">
+            <header className="inline-flex items-center justify-between py-5">
+              <h2 className="font-medium text-lg/6">
+                {lpTrade === LpTradeOptions.supply ? "Add Liquidity" : "Remove Liquidity"}
+              </h2>
+              <SelectLpTrade lpTrade={lpTrade} setLpTrade={setLpTrade} />
+            </header>
+            <Separator className="mb-3" />
+            {lpTrade === LpTradeOptions.supply ? <AddLiquidity /> : <RemoveLiquidity />}
+          </div>
+          {/* <Tabs defaultValue={LiquidityOptions.add}>
             <TabsList className="inline-flex font-semibold text-sm/5 w-full bg-gray-800 mb-1">
               <TabsTrigger value={LiquidityOptions.add} className={tradeTabStyle}>
                 Add Liquidity
@@ -155,7 +162,7 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
             <TabsContent value={LiquidityOptions.remove}>
               <RemoveLiquidity />
             </TabsContent>
-          </Tabs>
+          </Tabs> */}
         </div>
       </div>
     </div>

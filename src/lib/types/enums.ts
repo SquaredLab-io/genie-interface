@@ -8,3 +8,8 @@ export enum TradeOptions {
   long = "long",
   short = "short"
 }
+
+export enum LpTradeOptions {
+  supply = "Supply",
+  withdraw = "Withdraw"
+}

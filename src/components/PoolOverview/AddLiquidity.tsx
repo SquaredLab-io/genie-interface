@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
-import { HiChevronDown } from "react-icons/hi2";
+import Image from "next/image";
 import {
   useBalance,
   useAccount,
@@ -15,19 +14,22 @@ import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import toUnits from "@lib/utils/formatting";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
-import { potentiaPools } from "@lib/pools";
+import { PoolOptions, potentiaPools } from "@lib/pools";
+import ButtonCTA from "@components/common/button-cta";
+import { HiInformationCircle } from "react-icons/hi2";
+import { Info } from "lucide-react";
 
 const AddLiquidity = () => {
   // const { overviewPool } = useTradeStore();
   // TODO: Update this with currentPool
-  const overviewPool = potentiaPools[0];
-  
+  const overviewPool = potentiaPools[PoolOptions.weth];
   const TOKEN = overviewPool.underlyingTokens[0];
 
   const { potentia } = usePotentiaSdk();
   const { openConnectModal } = useConnectModal();
 
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState<string>("");
+  const [showInfo, setShowInfo] = useState<boolean>(true);
 
   // Contract Hooks
   const { address, isConnected } = useAccount();
@@ -99,13 +101,21 @@ const AddLiquidity = () => {
   }, [isTxnSuccess]);
 
   return (
-    <>
-      <div className="border border-gray-800 rounded-base">
-        <div className="p-5 border-b border-[#2A2C30]">
-          <span className="font-normal text-xs/4 text-[#8F9BAA]">Add Liquidity</span>
-          <div className="relative flex flex-col text-[#D4D4D4] items-center justify-center h-60">
+    <div className="flex flex-col justify-between py-4 h-full">
+      <div className="w-full space-y-3">
+        {/* SUPPLY */}
+        <div className="rounded-[4px] border-x-secondary-gray flex flex-col gap-y-2 border border-secondary-gray p-4">
+          <p className="w-full inline-flex justify-between font-medium text-xs/3 text-[#5F7183] mb-1">
+            <span>You Supply</span>
+            <span>~$0.00</span>
+          </p>
+          <div className="inline-flex-between">
+            <div className="max-w-fit inline-flex gap-2 items-center">
+              <Image src={TOKEN.icon} alt="token" width={24} height={24} />
+              <span className="font-medium text-base/5">{TOKEN.symbol}</span>
+            </div>
             <input
-              className="text-7xl/[98px] font-medium w-fit max-w-[250px] bg-primary-gray outline-none text-center"
+              className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right"
               placeholder="0"
               disabled={userBalance == undefined}
               type="number"
@@ -114,35 +124,70 @@ const AddLiquidity = () => {
                 setAmount(event.target.value);
               }}
             />
-            {/* <span className="font-normal text-base/5">$0</span> */}
+          </div>
+          <div className="inline-flex items-end justify-between font-normal text-xs/3">
+            <span className="text-[#5F7183]">
+              Your balance:{" "}
+              {isBalLoading
+                ? "loading balance..."
+                : toUnits(parseFloat(userBalance?.formatted ?? "0"), 3)}
+            </span>
+            <div className="inline-flex gap-2">
+              <button
+                className="py-[5.5px] px-[6px] rounded-[4px] bg-[#212C42] hover:bg-[#283751] transition-colors disabled:opacity-50 disabled:pointer-events-none"
+                onClick={() =>
+                  setAmount((parseFloat(userBalance?.formatted ?? "0") * 0.5).toString())
+                }
+                disabled={!isConnected || !userBalance?.formatted}
+              >
+                Half
+              </button>
+              <button
+                className="py-[5.5px] px-[6px] rounded-[4px] bg-[#212C42] hover:bg-[#283751] transition-colors disabled:opacity-50 disabled:pointer-events-none"
+                onClick={() =>
+                  setAmount(parseFloat(userBalance?.formatted ?? "0").toString())
+                }
+                disabled={!isConnected || !userBalance?.formatted}
+              >
+                Max
+              </button>
+            </div>
           </div>
         </div>
-        <div className="px-5 py-4 inline-flex items-center justify-between w-full">
-          <div className="inline-flex items-center gap-3">
-            <Image src="/icons/ethereum.svg" alt="Asset icon" height={42} width={42} />
-            <p className="flex flex-col justify-between font-normal text-base/5 text-[#8F9BAA]">
-              <span>{overviewPool.underlyingTokens[0].symbol}</span>
-              <span className="text-xs/4">
-                Balance:{" "}
-                {isBalLoading
-                  ? "loading balance..."
-                  : toUnits(parseFloat(userBalance?.formatted ?? "0"), 3)}
-              </span>
+        {/* YOU RECEIVE */}
+        <div className="rounded-[4px] border-x-secondary-gray flex flex-col gap-y-2 border border-secondary-gray p-4">
+          <p className="w-full inline-flex justify-between font-medium text-xs/3 text-[#5F7183]">
+            <span>You Receive</span>
+            <span>~$0.00</span>
+          </p>
+          <div className="inline-flex-between">
+            <h4 className="font-medium text-base/5">LP Tokens</h4>
+            <span className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right">
+              0
+            </span>
+          </div>
+          <div className="font-normal text-xs/3 mt-1">
+            <span className="text-[#5F7183]">Your LP balance: 0</span>
+          </div>
+        </div>
+        {showInfo && (
+          <div className="flex flex-row items-center justify-between mt-2 bg-[#00456D14] bg-opacity-10 py-4 px-6 gap-4 rounded-[4px] border border-[#01A1FF] w-full">
+            <Info size={22} color="#01A1FF" />
+            <p className="font-normal text-sm/[18px] max-w-72">
+              The tokens in your wallet are being converted automatically by Genie for a
+              small fee.
             </p>
           </div>
-          <button className="p-2 -m-2 rounded-full">
-            <HiChevronDown size={10} color="#8F9BAA" />
-          </button>
+        )}
+      </div>
+      <div className="flex flex-col gap-4 mt-3">
+        <div className="inline-flex-between text-xs/[14px]">
+          <span className="font-normal text-[#757B80]">Conversion Fee</span>
+          <span className="font-medium">0.000 BTC</span>
         </div>
-      </div>
-      <div className="flex flex-col gap-2 rounded-base border border-gray-800 py-4 px-5 mt-1 font-normal text-base/5 text-[#8F9BAA]">
-        <span>LP Tokens</span>
-        <span className="text-xs/4">N/A</span>
-      </div>
-      <div className="mt-1">
-        <button
+        <ButtonCTA
           className={cn(
-            "w-full rounded-[3px] font-bold text-[14px] leading-6 text-center py-[14px]",
+            "w-full font-bold text-[14px] leading-6 text-center py-[14px]",
             "bg-[#202832] hover:bg-[#475B72] text-[#3D85C6] transition-colors duration-200",
             "disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-[#202832]"
           )}
@@ -163,9 +208,9 @@ const AddLiquidity = () => {
           }
         >
           {isConnected ? <span>Add Liquidity</span> : <span>Connect Wallet</span>}
-        </button>
+        </ButtonCTA>
       </div>
-    </>
+    </div>
   );
 };
 

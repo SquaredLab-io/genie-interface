@@ -15,10 +15,7 @@ import {
 } from "@components/ui/select";
 import ButtonCTA from "../button-cta";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
-import {
-  SUPPORTED_NETWORKS,
-  SUPPORTED_TOKENS,
-} from "@lib/constants";
+import { SUPPORTED_NETWORKS, SUPPORTED_TOKENS } from "@lib/constants";
 
 const FaucetModal = ({
   open,
@@ -51,8 +48,6 @@ const FaucetModal = ({
     }
   }
 
-  useEffect(() => console.log("selectedtoken", selectedToken), [selectedToken]);
-
   if (!isMounted) {
     return <></>;
   }
@@ -77,7 +72,7 @@ const FaucetModal = ({
               setSelectedNetwork(network);
             }}
           >
-            <SelectTrigger className="border border-secondary-gray uppercase rounded-sm">
+            <SelectTrigger className="border border-secondary-gray uppercase rounded-sm px-4 pt-2 pb-1">
               <SelectValue
                 placeholder={
                   <p className="inline-flex items-center justify-start gap-x-2 uppercase">
@@ -86,22 +81,18 @@ const FaucetModal = ({
                       alt={selectedNetwork.NAME}
                       height="24"
                       width="24"
+                      className="border"
                     />
-                    {selectedNetwork.NAME}
+                    <span className="border">{selectedNetwork.NAME}</span>
                   </p>
                 }
               />
             </SelectTrigger>
             <SelectContent>
               {SUPPORTED_NETWORKS.map((network) => (
-                <SelectItem value={network.NAME} key={network.NAME}>
+                <SelectItem value={network.NAME} key={network.NAME} className="pt-2 pb-1 pl-[9.5px] pr-[9.5px]">
                   <p className="inline-flex items-center justify-start gap-x-2 uppercase">
-                    <Image
-                      src={network.LOGO}
-                      alt={network.NAME}
-                      height="24"
-                      width="24"
-                    />
+                    <Image src={network.LOGO} alt={network.NAME} height="24" width="24" />
                     {network.NAME}
                   </p>
                 </SelectItem>
@@ -119,7 +110,7 @@ const FaucetModal = ({
               setSelectedToken(token);
             }}
           >
-            <SelectTrigger className="border border-secondary-gray uppercase rounded-sm">
+            <SelectTrigger className="border border-secondary-gray uppercase rounded-sm pt-2 pb-1">
               <SelectValue
                 placeholder={
                   <p className="inline-flex items-center justify-start gap-x-2 uppercase">
@@ -136,7 +127,11 @@ const FaucetModal = ({
             </SelectTrigger>
             <SelectContent>
               {SUPPORTED_TOKENS.map((token) => (
-                <SelectItem value={token.token} key={token.logo}>
+                <SelectItem
+                  value={token.token}
+                  key={token.logo}
+                  className="data-[state=checked]:bg-[#293849] hover:bg-[#293849] pt-2 pb-1 pl-[9.5px] pr-[9.5px]"
+                >
                   <p className="inline-flex items-center justify-start gap-x-2">
                     <Image src={token.logo} alt={token.token} height="24" width="24" />
                     {token.token.toUpperCase()}

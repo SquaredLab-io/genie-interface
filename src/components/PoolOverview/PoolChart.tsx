@@ -8,9 +8,10 @@ import {
 } from "lightweight-charts";
 // import { Timeseries, transformTimeseries } from "./helper";
 // import { generateRandomData } from "./helper";
-import { useTradeStore } from "@store/tradeStore";
-import { transformTimeseries } from "./helper";
-import { potentiaPools } from "@lib/pools";
+// import { useTradeStore } from "@store/tradeStore";
+// import { transformTimeseries } from "./helper";
+import { PoolOptions, potentiaPools } from "@lib/pools";
+import SpinnerIcon from "@components/icons/SpinnerIcon";
 
 const PoolChart = (
   {
@@ -23,7 +24,7 @@ const PoolChart = (
 ) => {
   // const { overviewPool } = useTradeStore();
   // TODO: Update this with currentPool
-  const overviewPool = potentiaPools[0];
+  const overviewPool = potentiaPools[PoolOptions.weth];
   const { underlyingTokens } = overviewPool;
 
   const chartContainerRef = useRef(null);
@@ -75,8 +76,7 @@ const PoolChart = (
       ]
     ];
 
-    const currentArray =
-      overviewPool.underlyingTokens[0].symbol == "WETH" ? ethArray : btcArray;
+    const currentArray = underlyingTokens[0].symbol == "WETH" ? ethArray : btcArray;
 
     const colors = {
       backgroundColor: "#16191F",
@@ -153,10 +153,13 @@ const PoolChart = (
   return (
     <>
       {isLoadingChart ? (
-        <p>preparing chart...</p>
+        <div className="size-full flex-col-center">
+          <SpinnerIcon stroke="#01A1FF" />
+          <span>preparing chart...</span>
+        </div>
       ) : (
         <div
-          className="size-full border-dotted border-t border-[#2A2C30]"
+          className="h-[calc(100%-20px)]"
           ref={chartContainerRef}
         />
       )}
