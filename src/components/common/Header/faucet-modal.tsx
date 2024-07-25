@@ -1,10 +1,10 @@
 "use client";
 
+import { memo, useState } from "react";
 import Image from "next/image";
-import ModalTrigger from "@components/common/Modal";
-import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
-import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
+import Modal from "@components/common/Modal";
+import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import { useIsMounted } from "@lib/hooks/useIsMounted";
 import {
   Select,
@@ -53,7 +53,7 @@ const FaucetModal = ({
   }
 
   return (
-    <ModalTrigger
+    <Modal
       open={open}
       onOpenChange={setOpen}
       title="Get Test Tokens"
@@ -146,8 +146,8 @@ const FaucetModal = ({
           {isLoading ? <SpinnerIcon className="size-[22px]" /> : <span>GET TOKENS</span>}
         </ButtonCTA>
       </div>
-    </ModalTrigger>
+    </Modal>
   );
 };
 
-export default FaucetModal;
+export default memo(FaucetModal);

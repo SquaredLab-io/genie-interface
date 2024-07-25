@@ -38,5 +38,5 @@ export default function toUnits(num: number, decimals: number): string {
 
 export function shortenHash(hash: string): string {
   if (!hash) return "N/A";
-  return hash.slice(0, 4) + "..." + hash.slice(-2);
+  return hash.slice(0, 8) + "..." + hash.slice(-6);
 }

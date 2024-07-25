@@ -4,7 +4,7 @@ import { XIcon } from "lucide-react";
 
 interface ArgsType {
   title: string;
-  description: string;
+  description?: string;
   closable?: boolean;
   duration?: number;
 }
@@ -127,7 +127,7 @@ const error = ({ title, description, closable = true, duration = 5000 }: ArgsTyp
 };
 
 /**
- * @returns Notifications: Success, Info, Error
+ * @returns Notifications: Success, Info, Error, Loading
  */
 const notification = {
   success,

@@ -5,7 +5,7 @@ import { useTradeStore } from "@store/tradeStore";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { cn } from "@lib/utils";
 import { Separator } from "@components/ui/separator";
-import { useFilteredPools } from "./useFilteredPools";
+import { useFilteredPools } from "../../../lib/hooks/useFilteredPools";
 import SearchInput from "./SearchInput";
 import PoolsList from "./PoolsList";
 

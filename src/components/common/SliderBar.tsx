@@ -10,6 +10,8 @@ interface PropsType {
   min: number;
   max: number;
   step?: number;
+  indices?: number[];
+  isPerc?: boolean;
   className?: string;
 }
 
@@ -22,13 +24,22 @@ interface PropsType {
  * @param step* The stepping interval.
  * @param className*
  */
-const SliderBar = ({ value, setValue, min, max, step = 1, className }: PropsType) => {
-  const Stepper = ({ index }: { index: number }) => {
+const SliderBar = ({
+  value,
+  setValue,
+  min,
+  max,
+  step = 1,
+  indices,
+  isPerc = false,
+  className
+}: PropsType) => {
+  const Stepper = ({ index, isPerc }: { index: number; isPerc: boolean }) => {
     return (
       <p
         className={cn(
           index === 0 ? "items-start" : index === max ? "items-end" : "items-center",
-          "flex flex-col gap-[6px]"
+          "relative flex flex-col"
         )}
       >
         <span
@@ -37,7 +48,10 @@ const SliderBar = ({ value, setValue, min, max, step = 1, className }: PropsType
             value[0] >= index ? "bg-primary-blue" : "bg-[#373C40]"
           )}
         />
-        <span>{index}%</span>
+        <span className="absolute top-3">
+          {index}
+          {isPerc && "%"}
+        </span>
       </p>
     );
   };
@@ -52,13 +66,13 @@ const SliderBar = ({ value, setValue, min, max, step = 1, className }: PropsType
         step={step}
         onValueChange={(e) => setValue(e)}
       />
-      <div className="absolute inline-flex justify-between -top-0.5 left-0 right-0 mx-auto w-full text-xs/[18px] text-[#757B80] -z-10">
-        <Stepper index={0} />
-        <Stepper index={25} />
-        <Stepper index={50} />
-        <Stepper index={75} />
-        <Stepper index={100} />
-      </div>
+      {indices && (
+        <div className="absolute inline-flex justify-between -top-0.5 left-0 right-0 mx-auto w-full text-xs/[18px] text-[#757B80] -z-10">
+          {indices.map((i) => (
+            <Stepper index={i} key={i} isPerc={isPerc} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

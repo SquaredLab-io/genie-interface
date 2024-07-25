@@ -12,7 +12,7 @@ import {
 import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
 // Component, Util Imports
 import { selected_token } from "../helper";
-import TokenSlider from "./SliderBar";
+import SliderBar from "../../common/SliderBar";
 import { getAccountBalance } from "@lib/utils/getAccountBalance";
 import { WethABi } from "@lib/abis";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
@@ -197,7 +197,14 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       </form>
       {/* Slider Component */}
       <div className="w-full my-4">
-        <TokenSlider value={sliderValue} setValue={setSliderValue} min={0} max={100} />
+        <SliderBar
+          value={sliderValue}
+          setValue={setSliderValue}
+          min={0}
+          max={100}
+          indices={[0, 25, 50, 75, 100]}
+          isPerc={true}
+        />
       </div>
       {/* CTA: BUY LONG TRADE BUTTON */}
       <ButtonCTA

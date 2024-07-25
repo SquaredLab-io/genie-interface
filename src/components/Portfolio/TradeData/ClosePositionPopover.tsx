@@ -4,7 +4,7 @@ import { Separator } from "@components/ui/separator";
 import DropDownIcon from "@components/icons/DropDownIcon";
 import { useTradeStore } from "@store/tradeStore";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
-import SliderBar from "../Trade/SliderBar";
+import SliderBar from "../../common/SliderBar";
 
 interface PropsType {
   children: ReactNode;
@@ -97,7 +97,14 @@ const ClosePositionPopover: FC<PropsType> = ({
             </div>
             <span>Balance: {isLong ? longPos : shortPos}</span>
           </div>
-          <SliderBar value={sliderValue} setValue={setSliderValue} min={0} max={100} />
+          <SliderBar
+            value={sliderValue}
+            setValue={setSliderValue}
+            min={0}
+            max={100}
+            indices={[0, 25, 50, 75, 100]}
+            isPerc={true}
+          />
         </div>
         <Separator />
         <div className="flex flex-col gap-2 px-6 py-2 font-normal text-[#9299AA] text-xs/4">

@@ -7,6 +7,9 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@components/ui/dialog";
+import { Close } from "@radix-ui/react-dialog";
+import { X } from "lucide-react";
+import { HiMiniXMark } from "react-icons/hi2";
 
 interface Props {
   children: React.ReactNode;
@@ -17,6 +20,7 @@ interface Props {
   description?: string;
   className?: string;
   footer?: React.ReactNode;
+  closable?: boolean;
 }
 
 /**
@@ -29,9 +33,9 @@ interface Props {
  * @param children* Content to be displayed inside the modal
  * @param className Styling for Modal content
  * @param footer Footer content for the modal
- * @returns JSX element
+ * @param closable Close button state
  */
-const ModalWrapper: React.FC<Props> = ({
+const Modal: React.FC<Props> = ({
   open,
   onOpenChange,
   trigger,
@@ -39,7 +43,8 @@ const ModalWrapper: React.FC<Props> = ({
   description,
   children,
   className,
-  footer
+  footer,
+  closable = false
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -50,10 +55,16 @@ const ModalWrapper: React.FC<Props> = ({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         {children}
+        {closable && (
+          <Close className="absolute right-4 top-4 rounded-lg disabled:pointer-events-none ring-1 ring-[#272A2F] ring-offset-[#272A2F] focus:outline-none p-3 bg-transparent">
+            <X className="w-5 h-5 text-[#555555]" />
+            <span className="sr-only">Close</span>
+          </Close>
+        )}
         {footer && <DialogFooter>{footer}</DialogFooter>}
       </DialogContent>
     </Dialog>
   );
 };
 
-export default ModalWrapper;
+export default Modal;
