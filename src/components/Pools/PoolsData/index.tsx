@@ -1,14 +1,18 @@
 "use client";
 
 // Library Imports
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { TabsList } from "@radix-ui/react-tabs";
 import { ColumnDef } from "@tanstack/react-table";
-import { PlusIcon, SearchIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 // Component Imports
 import { Button } from "@components/ui/button";
 import { Tabs, TabsContent, TabsTrigger } from "@components/ui/tabs";
 import PoolsTable from "./PoolsTable";
+import { getAllPools } from "./pool-columns";
+import SearchInput from "./SearchInput";
+import CreatePoolModal from "../CreatePoolModal";
 // Library, Store Imports
 import { Amount } from "@lib/types/pools";
 import { toDollarUnits } from "@lib/utils/formatting";
@@ -18,16 +22,14 @@ import { Pool } from "@lib/types/common";
 import { usePools } from "@lib/hooks/usePools";
 import { useTradeStore } from "@store/tradeStore";
 import { TableOptions } from "./helper";
-import { useEffect, useState } from "react";
-import { getAllPools } from "./pool-columns";
 import { usePoolsStore } from "@store/poolsStore";
-import SearchInput from "./SearchInput";
-import { useFilteredPools } from "@components/common/TokenSelectPopover/useFilteredPools";
+import { useFilteredPools } from "@lib/hooks/useFilteredPools";
 
 const PoolsData = () => {
   const { updatePoolsData } = usePoolsStore();
   const [showSearch, setShowSearch] = useState(false);
   const [term, setTerm] = useState("");
+  const [openModal, setOpenModal] = useState(false);
 
   const { pools, isFetching } = usePools();
 
@@ -262,7 +264,10 @@ const PoolsData = () => {
             </TabsTrigger>
           </TabsList>
           <div className="inline-flex items-center gap-6">
-            <button className="inline-flex items-center py-2 px-3 gap-1 text-[#49AFE9] hover:bg-[#0A344D] transition-colors font-medium text-sm/5 rounded-lg font-sans-ibm-plex">
+            <button
+              className="inline-flex items-center py-2 px-3 gap-1 text-[#49AFE9] hover:bg-[#0A344D] transition-colors font-medium text-sm/5 rounded-lg font-sans-ibm-plex"
+              onClick={() => setOpenModal(true)}
+            >
               <PlusIcon size={16} /> Create Pool
             </button>
             <SearchInput
@@ -283,6 +288,7 @@ const PoolsData = () => {
           <PoolsTable columns={transactionColumns} data={potentiaPoolsList} />
         </TabsContent>
       </Tabs>
+      {openModal && <CreatePoolModal open={openModal} setOpen={setOpenModal} />}
     </div>
   );
 };
