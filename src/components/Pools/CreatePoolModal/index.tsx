@@ -11,6 +11,16 @@ import { shortenHash } from "@lib/utils/formatting";
 import notification from "@components/common/notification";
 import { Separator } from "@components/ui/separator";
 import ButtonCTA from "@components/common/button-cta";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@components/ui/table";
+import NewPoModal from "./new-po-modal";
 
 const CreatePoolModal = ({
   open,
@@ -21,6 +31,35 @@ const CreatePoolModal = ({
 }) => {
   const [sqlDiscount, setSqlDiscount] = useState<number[]>([0]);
   const VAULT_ADDRESS = "0x428084313F9dCc38e9d0cB51dBBe466c8300a35c";
+
+  const [newPoOpen, setNewPoOpen] = useState<boolean>(false);
+
+  const POOL_OPERATORS = [
+    {
+      id: 123,
+      address: "0x428084313F9dCc38e9d0cB51dBBe466c8300a35c",
+      since: "2023 .07. 15",
+      expire: "Never"
+    },
+    {
+      id: 234,
+      address: "0x428084313F9dCc38e9d0cB51dBBe466c8300a35c",
+      since: "2023 .07. 15",
+      expire: "2023 .07. 15"
+    },
+    {
+      id: 345,
+      address: "0x428084313F9dCc38e9d0cB51dBBe466c8300a35c",
+      since: "2023 .07. 15",
+      expire: "2023 .07. 15"
+    },
+    {
+      id: 456,
+      address: "0x428084313F9dCc38e9d0cB51dBBe466c8300a35c",
+      since: "2023 .07. 15",
+      expire: "2023 .07. 15"
+    }
+  ];
 
   return (
     <Modal
@@ -35,6 +74,7 @@ const CreatePoolModal = ({
           Create a new pool or create a liquidity position on an existing pool.
         </DialogDescription>
       </DialogHeader>
+      {/* SQL Discount Lock Section */}
       <div className="p-6 flex flex-col gap-10">
         <div className="flex flex-row items-start justify-between">
           <h5>SQL Discount Lock</h5>
@@ -81,7 +121,8 @@ const CreatePoolModal = ({
         </div>
       </div>
       <Separator />
-      <div className="pt-10 px-6 pb-6">
+      {/* Advanced Section */}
+      <div className="p-6">
         <h4 className="font-normal text-base/6 text-[#94A3B8] mb-6">Advanced</h4>
         <div className="flex flex-row items-start justify-between mb-12">
           <h5>Position Half Life</h5>
@@ -119,10 +160,36 @@ const CreatePoolModal = ({
         <ButtonCTA className="w-1/2 rounded-lg float-right">Update</ButtonCTA>
       </div>
       <Separator />
-      <div className="pt-10 px-6 pb-6">
+      {/* Pool Operators Section */}
+      <div className="p-6">
         <h4 className="font-normal text-base/6 text-[#94A3B8] mb-6">Pool Operators</h4>
-        <ButtonCTA className="w-1/2 rounded-lg float-right">New PO</ButtonCTA>
+        <Table className="text-base/6 mb-9">
+          <TableHeader className="text-[#94A3B8]">
+            <TableRow>
+              <TableHead className="w-[100px]">Wallet</TableHead>
+              <TableHead>Since</TableHead>
+              <TableHead>Expire</TableHead>
+              <TableHead className="text-center">Action</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {POOL_OPERATORS.map((po) => (
+              <TableRow key={po.id}>
+                <TableCell className="pb-1">{shortenHash(po.address)}</TableCell>
+                <TableCell>{po.since}</TableCell>
+                <TableCell>{po.expire}</TableCell>
+                <TableCell className="text-center">
+                  <button className="text-[#01A1FF]" aria-label="Revoke Pool Operator">
+                    Revoke
+                  </button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <ButtonCTA className="w-1/2 rounded-lg float-right" onClick={() => setNewPoOpen(true)}>New PO</ButtonCTA>
       </div>
+      <NewPoModal open={newPoOpen} setOpen={setNewPoOpen} />
     </Modal>
   );
 };
