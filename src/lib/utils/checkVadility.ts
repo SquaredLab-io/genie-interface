@@ -16,3 +16,8 @@ export function isValidPositiveNumber(num: string): boolean {
   const reg = /^(?!0(\.0+)?$)\d+(\.\d+)?$/;
   return reg.test(num);
 }
+
+export function isValidAddress(addr: string): boolean {
+  const reg = /^0x[0-9a-fA-F]+/;
+  return reg.test(addr);
+}
