@@ -12,7 +12,8 @@ import { Tabs, TabsContent, TabsTrigger } from "@components/ui/tabs";
 import PoolsTable from "./PoolsTable";
 import { getAllPools } from "./pool-columns";
 import SearchInput from "./SearchInput";
-import CreatePoolModal from "../CreatePoolModal";
+import CreatePoolModal from "../create-pool-modal";
+import ManagePoolModal from "../manage-pool-modal";
 // Library, Store Imports
 import { Amount } from "@lib/types/pools";
 import { toDollarUnits } from "@lib/utils/formatting";
@@ -29,7 +30,9 @@ const PoolsData = () => {
   const { updatePoolsData } = usePoolsStore();
   const [showSearch, setShowSearch] = useState(false);
   const [term, setTerm] = useState("");
-  const [openModal, setOpenModal] = useState(false);
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [openManageModal, setOpenManageModal] = useState(false);
+
 
   const { pools, isFetching } = usePools();
 
@@ -266,7 +269,13 @@ const PoolsData = () => {
           <div className="inline-flex items-center gap-6">
             <button
               className="inline-flex items-center py-2 px-3 gap-1 text-[#49AFE9] hover:bg-[#0A344D] transition-colors font-medium text-sm/5 rounded-lg font-sans-ibm-plex"
-              onClick={() => setOpenModal(true)}
+              onClick={() => setOpenManageModal(true)}
+            >
+              <PlusIcon size={16} /> Manage Pool
+            </button>
+            <button
+              className="inline-flex items-center py-2 px-3 gap-1 text-[#49AFE9] hover:bg-[#0A344D] transition-colors font-medium text-sm/5 rounded-lg font-sans-ibm-plex"
+              onClick={() => setOpenCreateModal(true)}
             >
               <PlusIcon size={16} /> Create Pool
             </button>
@@ -288,7 +297,8 @@ const PoolsData = () => {
           <PoolsTable columns={transactionColumns} data={potentiaPoolsList} />
         </TabsContent>
       </Tabs>
-      {openModal && <CreatePoolModal open={openModal} setOpen={setOpenModal} />}
+      {openCreateModal && <CreatePoolModal open={openCreateModal} setOpen={setOpenCreateModal} />}
+      {openManageModal && <ManagePoolModal open={openCreateModal} setOpen={setOpenManageModal} />}
     </div>
   );
 };

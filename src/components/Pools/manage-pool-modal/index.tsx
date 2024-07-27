@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Modal from "@components/common/Modal";
 import SliderBar from "@components/common/SliderBar";
 import { DialogHeader, DialogDescription, DialogTitle } from "@components/ui/dialog";
@@ -21,8 +21,9 @@ import {
   TableRow
 } from "@components/ui/table";
 import NewPoModal from "./new-po-modal";
+import { cn } from "@lib/utils";
 
-const CreatePoolModal = ({
+const ManagePoolModal = ({
   open,
   setOpen
 }: {
@@ -30,7 +31,24 @@ const CreatePoolModal = ({
   setOpen: (value: boolean) => void;
 }) => {
   const [sqlDiscount, setSqlDiscount] = useState<number[]>([0]);
+  const [halfLife, setHalfLife] = useState<number>(0);
+  const [priceUpdateFactor, setPriceUpdateFactor] = useState<number[]>([0]);
   const VAULT_ADDRESS = "0x428084313F9dCc38e9d0cB51dBBe466c8300a35c";
+
+  const [isSqlDiscValid, sqlDiscMin, sqlDiscMax] = useMemo(() => {
+    const disc = sqlDiscount[0];
+    if (disc > 0 && disc <= 2000) {
+      return [true, false, false];
+    }
+    return [false, disc < 0, disc > 2000];
+  }, [sqlDiscount]);
+
+  const isValidUpdate =
+    halfLife > 0 &&
+    !isNaN(halfLife) &&
+    priceUpdateFactor[0] > 0 &&
+    !isNaN(priceUpdateFactor[0]) &&
+    !isSqlDiscValid;
 
   const [newPoOpen, setNewPoOpen] = useState<boolean>(false);
 
@@ -82,10 +100,24 @@ const CreatePoolModal = ({
             <Input
               placeholder="0"
               value={sqlDiscount[0]}
-              onChange={(e) => setSqlDiscount([parseFloat(e.target.value)])}
+              onChange={(e) => {
+                setSqlDiscount([parseFloat(e.target.value)]);
+              }}
               type="number"
-              className="p-4 bg-transparent"
+              className={cn("p-4 bg-transparent", !isSqlDiscValid && "border-[#FF3318]")}
             />
+            <div className="text-[#FF3318] mt-2 text-sm/5">
+              {sqlDiscMin && (
+                <p>
+                  Please enter a number greater than 0.
+                </p>
+              )}
+              {sqlDiscMax && (
+                <p>
+                  Please enter a number less than or equal to 2000.
+                </p>
+              )}
+            </div>
             <SliderBar
               value={sqlDiscount}
               setValue={setSqlDiscount}
@@ -129,8 +161,8 @@ const CreatePoolModal = ({
           <div className="w-1/2">
             <Input
               placeholder="0"
-              value={sqlDiscount[0]}
-              onChange={(e) => setSqlDiscount([parseFloat(e.target.value)])}
+              value={halfLife}
+              onChange={(e) => setHalfLife(parseFloat(e.target.value))}
               type="number"
               className="p-4 bg-transparent"
             />
@@ -141,23 +173,25 @@ const CreatePoolModal = ({
           <div className="w-1/2">
             <Input
               placeholder="0"
-              value={sqlDiscount[0]}
-              onChange={(e) => setSqlDiscount([parseFloat(e.target.value)])}
+              value={priceUpdateFactor[0]}
+              onChange={(e) => setPriceUpdateFactor([parseFloat(e.target.value)])}
               type="number"
               className="p-4 bg-transparent"
             />
             <SliderBar
-              value={sqlDiscount}
-              setValue={setSqlDiscount}
+              value={priceUpdateFactor}
+              setValue={setPriceUpdateFactor}
               min={0}
               max={1}
-              step={0.25}
+              step={0.001}
               className="mt-4"
               indices={[0, 0.25, 0.5, 0.75, 1]}
             />
           </div>
         </div>
-        <ButtonCTA className="w-1/2 rounded-lg float-right">Update</ButtonCTA>
+        <ButtonCTA className="w-1/2 rounded-lg float-right" disabled={!isValidUpdate}>
+          Update
+        </ButtonCTA>
       </div>
       <Separator />
       {/* Pool Operators Section */}
@@ -187,11 +221,16 @@ const CreatePoolModal = ({
             ))}
           </TableBody>
         </Table>
-        <ButtonCTA className="w-1/2 rounded-lg float-right" onClick={() => setNewPoOpen(true)}>New PO</ButtonCTA>
+        <ButtonCTA
+          className="w-1/2 rounded-lg float-right"
+          onClick={() => setNewPoOpen(true)}
+        >
+          New PO
+        </ButtonCTA>
       </div>
       <NewPoModal open={newPoOpen} setOpen={setNewPoOpen} />
     </Modal>
   );
 };
 
-export default CreatePoolModal;
+export default ManagePoolModal;

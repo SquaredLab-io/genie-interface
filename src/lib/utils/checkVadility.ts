@@ -21,3 +21,8 @@ export function isValidAddress(addr: string): boolean {
   const reg = /^0x[0-9a-fA-F]+/;
   return reg.test(addr);
 }
+
+// export function isInRange(min: number, max: number, num: string): boolean {
+//   const reg = new RegExp(`(?:[0-9]|[1-9][0-9]|[1-9][0-9]{2}|1[0-9]{3}|2000)$`);
+//   return reg.test(num);
+// }
