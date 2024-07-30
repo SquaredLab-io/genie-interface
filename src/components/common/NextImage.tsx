@@ -7,7 +7,7 @@ type NextImageProps = {
 };
 
 /**
- * A Next Image that do not have to use fixed width and height, and keeps your images optimized.
+ * A not have to use fixed width and height, and keeps your images optimized.
  *
  * @params `src`, `altText`, `className`
  */

@@ -2,7 +2,6 @@
 
 import { memo, useState } from "react";
 import Image from "next/image";
-import { useAccount } from "wagmi";
 import Modal from "@components/common/Modal";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import { useIsMounted } from "@lib/hooks/useIsMounted";
@@ -30,30 +29,31 @@ const FaucetModal = ({
   setOpen: (value: boolean) => void;
   trigger?: React.ReactNode;
 }) => {
-  // const { potentia } = usePotentiaSdk();
+  const { potentia } = usePotentiaSdk();
+
   const [isLoading, setIsLoading] = useState(false);
-  // const { address } = useAccount();
   const { isMounted } = useIsMounted();
 
   const [selectedNetwork, setSelectedNetwork] = useState(SUPPORTED_NETWORKS[0]);
   const [selectedToken, setSelectedToken] = useState(SUPPORTED_TOKENS[0]);
-  const [userAddr, setUserAddr] = useState<string>("");
+  const [userAddress, setUserAddress] = useState<string>("");
 
-  const isValidInput = isValidAddress(userAddr);
+  const isValidInput = isValidAddress(userAddress);
 
-  // async function getFaucet(tokenAddress: string) {
-  //   try {
-  //     setIsLoading(true);
-  //     const hash = await potentia?.callFaucet(tokenAddress, address as string);
-  //     if (hash) {
-  //       setIsLoading(false);
-  //     }
-  //   } catch (error) {
-  //     console.error("error", error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }
+  async function getFaucet(tokenAddress: string) {
+    try {
+      setIsLoading(true);
+      // Default and only Network: Base Sepolia
+      const hash = await potentia?.pool.callFaucet(tokenAddress, userAddress);
+      if (hash) {
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("error", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   if (!isMounted) {
     return <></>;
@@ -160,9 +160,12 @@ const FaucetModal = ({
           <Input
             placeholder="0xxxxxxxxx..."
             type="type"
-            value={userAddr}
-            onChange={(e) => setUserAddr(e.target.value)}
-            className={cn("placeholder:text-[#404950]", !isValidInput && userAddr !== "" && "border-negative-red")}
+            value={userAddress}
+            onChange={(e) => setUserAddress(e.target.value)}
+            className={cn(
+              "placeholder:text-[#404950]",
+              !isValidInput && userAddress !== "" && "border-negative-red"
+            )}
           />
         </div>
         {/* CTA */}

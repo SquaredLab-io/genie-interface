@@ -1,6 +1,3 @@
-import { IconType } from "react-icons";
-import { FaTelegramPlane } from "react-icons/fa";
-import { FaDiscord, FaXTwitter } from "react-icons/fa6";
 import { Address } from "viem";
 import { ALCHEMY_KEY } from "./keys";
 
@@ -66,7 +63,7 @@ export const BASE_SEPOLIA = SUPPORTED_NETWORKS[0];
 export const SUPPORTED_TOKENS = [
   {
     token: "WETH",
-    address: "0x7de827f7C7edD7b6E256779d847e7ae03475012D",
+    address: "0x212cfa035c6707331adeDe61c35d4E0C9e0b4007",
     logo: "/tokens/weth.svg"
   },
   {
@@ -82,9 +79,9 @@ export const SUPPORTED_TOKENS = [
 ];
 
 export const CONTRACT_ADDRESSES = {
-  POTENTIA_FACTORY_ADDR: "0x1768069E7d862e2131343e4743923eA2DF3b0Bd6" as Address,
-  WETH_ADDR: "0x7de827f7C7edD7b6E256779d847e7ae03475012D" as Address,
-  WETH_POOL_ADDR: "0xa27f1938be3C6EaFc47F38Aa5250b360196D8Cc3" as Address,
+  POTENTIA_FACTORY_ADDR: "0xB7CEb18E71291A03810D589851066A7eA0E87C2F" as Address,
+  WETH_ADDR: "0x212cfa035c6707331adeDe61c35d4E0C9e0b4007" as Address,
+  WETH_POOL_ADDR: "0xe6b3e196bdfA012B20B5EdA6dB9396a61963C117" as Address,
   PTOKEN_ADDR: "0x56169607c23501d4ad5ffd16a5a164d007de57f8" as Address,
   WBTC_ADDR: "0xa74ca0170ad066881d6413e3cef5a2dbafde5bdf" as Address,
   WBTC_POOL_ADDR: "0x73d705ff0fc884315a61afd3fde3646fb0a949e6" as Address,

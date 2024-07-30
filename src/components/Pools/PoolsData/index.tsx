@@ -298,7 +298,7 @@ const PoolsData = () => {
         </TabsContent>
       </Tabs>
       {openCreateModal && <CreatePoolModal open={openCreateModal} setOpen={setOpenCreateModal} />}
-      {openManageModal && <ManagePoolModal open={openCreateModal} setOpen={setOpenManageModal} />}
+      {openManageModal && <ManagePoolModal open={openManageModal} setOpen={setOpenManageModal} />}
     </div>
   );
 };

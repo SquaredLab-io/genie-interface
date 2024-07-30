@@ -46,7 +46,7 @@ const RemoveLiquidity = () => {
     setIsLoading(true);
 
     try {
-      const txnHash = await potentia?.removeLiquidity(
+      const txnHash = await potentia?.pool.removeLiquidity(
         overviewPool.poolAddress,
         BigInt(shares).toString()
       );

@@ -105,12 +105,13 @@ const TradeData = () => {
     },
     {
       accessorKey: "action",
-      header: () => <span className="">Side</span>,
+      header: () => <span className="ml-10">Side</span>,
       cell: ({ row }) => {
         const action = (row.getValue("action") as string).split(" ")[1];
         return (
           <span
             className={cn(
+              "w-full ml-10",
               action === "Long"
                 ? "text-[#0AFC5C]"
                 : action === "Short"
@@ -136,8 +137,17 @@ const TradeData = () => {
       }
     },
     {
-      accessorKey: "value",
-      header: () => <span>Entry/ Exit</span>,
+      accessorKey: "entry",
+      header: () => <span>Entry</span>,
+      cell: ({ row }) => {
+        // const value = parseFloat(row.getValue("value"));
+        // const formatted = toDollarUnits(value, 2);
+        return <span>-</span>;
+      }
+    },
+    {
+      accessorKey: "open_time",
+      header: () => <span>Open Time</span>,
       cell: ({ row }) => {
         // const value = parseFloat(row.getValue("value"));
         // const formatted = toDollarUnits(value, 2);
@@ -239,12 +249,13 @@ const TradeData = () => {
     },
     {
       accessorKey: "action",
-      header: () => <span className="">Side</span>,
+      header: () => <span className="ml-10">Side</span>,
       cell: ({ row }) => {
         const action = (row.getValue("action") as string).split(" ")[1];
         return (
           <span
             className={cn(
+              "w-full ml-10",
               action === "Long"
                 ? "text-[#0AFC5C]"
                 : action === "Short"
@@ -261,7 +272,6 @@ const TradeData = () => {
       accessorKey: "size",
       header: () => <span>Size</span>,
       cell: ({ row }) => {
-        // const size = formatUnits(row.getValue("size") as bigint, 18);
         const action = row.getValue("action") as string;
         if (action == "Close Long Position") return <span>{longPosition.formatted}</span>;
         else if (action == "Close Short Position")
@@ -270,8 +280,26 @@ const TradeData = () => {
       }
     },
     {
-      accessorKey: "value",
-      header: () => <span>Entry/ Mark</span>,
+      accessorKey: "entry",
+      header: () => <span>Entry</span>,
+      cell: ({ row }) => {
+        // const value = parseFloat(row.getValue("value"));
+        // const formatted = toDollarUnits(value, 2);
+        return <span>-</span>;
+      }
+    },
+    {
+      accessorKey: "open_time",
+      header: () => <span>Open Time</span>,
+      cell: ({ row }) => {
+        // const value = parseFloat(row.getValue("value"));
+        // const formatted = toDollarUnits(value, 2);
+        return <span>-</span>;
+      }
+    },
+    {
+      accessorKey: "close_time",
+      header: () => <span>Close Time</span>,
       cell: ({ row }) => {
         // const value = parseFloat(row.getValue("value"));
         // const formatted = toDollarUnits(value, 2);
@@ -285,23 +313,23 @@ const TradeData = () => {
         // const pnlValue = parseFloat(row.getValue("pnl"));
         // const formatted = toDollarUnits(pnlValue, 2);
         const isGrowth = false;
-        return <span className={cn(isGrowth && "text-[#07AE3B]")}>-</span>;
-      }
-    },
-    {
-      accessorKey: "action",
-      header: () => <span className="sr-only">Action</span>,
-      cell: ({ row }) => {
-        const action = row.original.action;
-        return (
-          <div className="bg-[#757B80] px-4 py-1 rounded-sm max-w-fit">
-            <span className="font-medium text-sm/5 text-white uppercase font-sans-ibm-plex">
-              CLOSED
-            </span>
-          </div>
-        );
+        return <span className={cn(isGrowth && "border text-[#07AE3B]")}>-</span>;
       }
     }
+    // {
+    //   accessorKey: "action",
+    //   header: () => <span className="sr-only">Action</span>,
+    //   cell: ({ row }) => {
+    //     const action = row.original.action;
+    //     return (
+    //       <div className="bg-[#757B80] px-4 py-1 rounded-sm max-w-fit">
+    //         <span className="font-medium text-sm/5 text-white uppercase font-sans-ibm-plex">
+    //           CLOSED
+    //         </span>
+    //       </div>
+    //     );
+    //   }
+    // }
   ];
 
   const tabStyle =
@@ -342,119 +370,3 @@ const TradeData = () => {
 };
 
 export default memo(TradeData);
-
-// old trade history component
-// const transactionsColumns: ColumnDef<Tx>[] = [
-//   {
-//     accessorKey: "pool",
-//     header: () => (
-//       <div className="pl-4">
-//         <span>Assets</span>
-//       </div>
-//     ),
-//     cell: ({ row }) => {
-//       const { power, pool } = row.original;
-//       const assets = pool.split(" / ");
-//       const _power = formatUnits(BigInt(power), 18);
-//       return (
-//         <div className="whitespace-nowrap flex flex-row gap-2 text-left font-medium pl-[18px] py-6">
-//           <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-2">
-//             {assets.map((asset) => (
-//               <div
-//                 key={asset}
-//                 className="z-0 flex overflow-hidden ring-1 ring-white rounded-full bg-neutral-800"
-//               >
-//                 <Image
-//                   src={`/tokens/${asset.toLowerCase()}.svg`}
-//                   alt={`${asset} icon`}
-//                   width={26}
-//                   height={26}
-//                 />
-//               </div>
-//             ))}
-//           </div>
-//           <div className="flex flex-col gap-1 text-left">
-//             <div className="inline-flex gap-2">
-//               <p className="font-bold text-sm/5">
-//                 {assets.map((asset, index) => (
-//                   <>
-//                     <span key={index}>{asset}</span>
-//                     {assets.length !== index + 1 && (
-//                       <span className="text-[#9299AA] mx-1">/</span>
-//                     )}
-//                   </>
-//                 ))}
-//               </p>
-//               <p className="font-medium text-xs/3 bg-[#49AFE9] py-1 px-[10px] rounded-md">
-//                 p = {_power}
-//               </p>
-//             </div>
-//             <div className="font-normal text-sm/5 text-[#9299AA]">
-//               <p>
-//                 {PROTOCOL} • {TEST_NETWORK}
-//               </p>
-//             </div>
-//           </div>
-//         </div>
-//       );
-//     }
-//   },
-//   {
-//     accessorKey: "date",
-//     header: () => <span className="">Date/Time</span>,
-//     cell: ({ row }) => {
-//       const { dateTime } = row.original;
-//       const { date, time } = getDateTime(dateTime);
-//       return (
-//         <div className="flex flex-col text-left whitespace-nowrap">
-//           <span>{date}</span>
-//           <span className="text-[#6D6D6D]">{time}</span>
-//         </div>
-//       );
-//     }
-//   },
-//   {
-//     accessorKey: "size",
-//     header: () => <span>Size</span>,
-//     cell: ({ row }) => {
-//       const size = formatUnits(row.getValue("size") as bigint, 18);
-//       const formatted = toUnits(parseFloat(size), 2);
-//       return <span>{formatted}</span>;
-//     }
-//   },
-//   {
-//     accessorKey: "value",
-//     header: () => <span>Value</span>,
-//     cell: ({ row }) => {
-//       // const value = parseFloat(row.getValue("value"));
-//       // const formatted = toDollarUnits(value, 2);
-//       return <span>-</span>;
-//     }
-//   },
-//   {
-//     accessorKey: "pnl",
-//     header: () => <span>PNL</span>,
-//     cell: ({ row }) => {
-//       // const pnlValue = parseFloat(row.getValue("pnl"));
-//       // const formatted = toDollarUnits(pnlValue, 2);
-//       const isGrowth = false;
-//       return <span className={cn(isGrowth && "text-[#07AE3B]")}>-</span>;
-//     }
-//   },
-//   {
-//     accessorKey: "return",
-//     header: () => <span>%Return</span>,
-//     cell: ({ row }) => {
-//       const isGrowth = false;
-//       return <span className={cn(isGrowth && "text-[#07AE3B]")}>-</span>;
-//     }
-//   },
-//   {
-//     accessorKey: "action",
-//     header: () => <span>Action</span>,
-//     cell: ({ row }) => {
-//       const action = row.getValue("action") as string;
-//       return <span className="font-bold">{action}</span>;
-//     }
-//   }
-// ];

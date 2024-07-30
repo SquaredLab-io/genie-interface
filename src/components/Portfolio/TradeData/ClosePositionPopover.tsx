@@ -43,7 +43,7 @@ const ClosePositionPopover: FC<PropsType> = ({
     console.log("Amount", amount);
     setIsLoading(true);
     try {
-      const txnHash = await potentia?.closePosition(
+      const txnHash = await potentia?.pool.closePosition(
         selectedPool.poolAddress,
         BigInt(amount).toString(),
         isLong

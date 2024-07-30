@@ -85,7 +85,7 @@ const OpenPositionsTable = <TData, TValue>({
       ) : (
         <TableBody>
           <TableRow>
-            <TableCell colSpan={columns.length} className="h-48 text-center">
+            <TableCell colSpan={columns.length} className="size-48 text-center">
               <EmptyTable isLoading={isLoading} />
             </TableCell>
           </TableRow>
