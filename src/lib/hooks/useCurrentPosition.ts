@@ -24,29 +24,30 @@ export function useCurrentPosition(isLong: PositionType, poolAddress: Address) {
   const { potentia } = usePotentiaSdk();
   const { address } = useAccount();
 
+  const refetch = async () => {
+    try {
+      setIsFetching(true);
+      console.log("getTokenBalance", {
+        poolAddress,
+        address,
+        isLong
+      });
+      const currPos = await potentia?.getTokenBalance(
+        poolAddress, // poolAddress
+        address as `0x${string}`, // userAddress
+        isLong // isLong
+      );
+      setPosition(currPos ?? "0");
+    } catch (error) {
+      setIsFetching(false);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   useEffect(() => {
     if (potentia) {
-      (async () => {
-        try {
-          setIsFetching(true);
-          console.log("getTokenBalance", {
-            poolAddress,
-            address,
-            isLong
-          });
-          const currPos = await potentia?.getTokenBalance(
-            poolAddress, // poolAddress
-            address as `0x${string}`, // userAddress
-            isLong // isLong
-          );
-          console.log("currPos", currPos);
-          setPosition(currPos);
-        } catch (error) {
-          setIsFetching(false);
-        } finally {
-          setIsFetching(false);
-        }
-      })();
+      refetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [potentia, address, poolAddress]);
@@ -56,6 +57,7 @@ export function useCurrentPosition(isLong: PositionType, poolAddress: Address) {
       value: position,
       formatted: parseFloat(formatUnits(BigInt(position), 18)).toFixed(3)
     },
-    isFetching
+    isFetching,
+    refetch
   };
 }
