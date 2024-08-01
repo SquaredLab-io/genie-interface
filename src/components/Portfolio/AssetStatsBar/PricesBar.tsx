@@ -1,5 +1,5 @@
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
-import { Pool } from "@lib/types/common";
+import { PoolInfo } from "@squaredlab-io/sdk/src";
 
 interface MarkerProps {
   label: string;
@@ -7,7 +7,7 @@ interface MarkerProps {
 }
 
 interface PricesBarProps {
-  selectedPool: Pool;
+  selectedPool: PoolInfo | undefined;
 }
 
 function Marker({ label, value }: MarkerProps) {
@@ -27,7 +27,7 @@ export default function PricesBar({ selectedPool }: PricesBarProps) {
     isLoading: isPriceLoading,
     volume,
     isVolLoading
-  } = useCurrencyPrice(selectedPool.underlyingTokens[0].symbol);
+  } = useCurrencyPrice(selectedPool?.underlying);
   return (
     <div className="flex flex-row items-center justify-start gap-9 w-full px-8 xl:px-10 font-normal text-xs/4 overflow-x-auto z-50">
       <p className="flex flex-col items-start min-h-fit gap-1 -mb-1">
@@ -37,8 +37,8 @@ export default function PricesBar({ selectedPool }: PricesBarProps) {
         <span className="text-[#07AE3B]">+2.73%</span>
       </p>
       <div className="inline-flex gap-6">
-        <Marker label="Mark" value={"60363.3"} />
-        <Marker label="Index" value={"60363.3"} />
+        {/* <Marker label="Mark" value={"60363.3"} /> */}
+        {/* <Marker label="Index" value={"60363.3"} /> */}
         <Marker label="Funding Rate" value={"+0.0100%"} />
         <Marker label="24h High" value={"62362.8"} />
         <Marker label="24h Low" value={"59523.0"} />

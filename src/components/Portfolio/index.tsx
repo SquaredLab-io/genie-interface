@@ -17,7 +17,7 @@ const TradeChart = dynamic(() => import("./TradeChart").then((mod) => mod.defaul
 const Portfolio = () => {
   const [isScriptReady, setIsScriptReady] = useState(false);
 
-  // TBR
+  // TODO: To be removed
   useEffect(() => console.log("isScriptReady", isScriptReady), [isScriptReady]);
 
   return (
@@ -49,25 +49,5 @@ const Portfolio = () => {
     </>
   );
 };
-
-/**
- * <div className="flex flex-row">
-        <div className="flex-1 flex flex-col gap-1 border-r border-secondary-gray">
-          <AssetStatsBar />
-          {isScriptReady ? <TradeChart {...defaultWidgetProps} /> : <ChartLoader />}
-        </div>
-        <div className="flex-1 max-w-64 xl:max-w-[400px] w-full">
-          <Trade />
-        </div>
-      </div>
-      <div className="flex flex-row justify-between w-full">
-        <div className="flex-1">
-          <TradeData />
-        </div>
-        <div className="flex-1 max-w-64 xl:max-w-[400px] w-full border-l border-secondary-gray">
-          <MarketData />
-        </div>
-      </div>
- */
 
 export default Portfolio;

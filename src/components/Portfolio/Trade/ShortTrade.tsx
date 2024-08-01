@@ -18,21 +18,24 @@ import { WethABi } from "@lib/abis";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { PositionType } from "@lib/types/enums";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
-import { useTradeStore } from "@store/tradeStore";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
 import { cn } from "@lib/utils";
 import ButtonCTA from "@components/common/button-cta";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
 import TradeInfo from "./TradeInfo";
 import notification from "@components/common/notification";
+import toUnits from "@lib/utils/formatting";
+import { CONFIRMATION } from "@lib/constants";
+import { usePoolsStore } from "@store/poolsStore";
+import { Address } from "viem";
+import { getTokenAddress } from "@lib/utils/getTokenAddress";
 
 interface PropsType {
   potentia?: PotentiaSdk;
 }
 
 const ShortTrade: FC<PropsType> = ({ potentia }) => {
-  const { selectedPool } = useTradeStore((state) => state);
-  const TOKEN_ADDR = selectedPool.underlyingTokens[0].address;
+  const { selectedPool } = usePoolsStore((state) => state);
 
   const [quantity, setQuantity] = useState("");
   const [sliderValue, setSliderValue] = useState<number[]>([25]);
@@ -46,14 +49,14 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     refetch: refetchBalance
   } = useBalance({
     address,
-    token: TOKEN_ADDR
+    token: selectedPool()?.poolAddr as Address
   });
 
   const {
     data: positionData,
     isFetching: isPositionFetching,
     refetch: refetchPosition
-  } = useCurrentPosition(PositionType.short, selectedPool.poolAddress);
+  } = useCurrentPosition(PositionType.short, selectedPool()?.poolAddr as Address);
 
   // Write Hook => Token Approval
   const {
@@ -71,10 +74,10 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     try {
       await writeApproveToken({
         abi: WethABi,
-        address: TOKEN_ADDR,
+        address: getTokenAddress(selectedPool()?.underlying),
         functionName: "approve",
         args: [
-          selectedPool.poolAddress,
+          selectedPool()?.poolAddr! as Address,
           BigInt(_amount).toString() // Approving as much as input amount only
         ]
       });
@@ -94,13 +97,15 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     isError: isApproveError,
     error: approvalError
   } = useWaitForTransactionReceipt({
-    hash: approvalData
+    hash: approvalData,
+    confirmations: CONFIRMATION
   });
 
   // wait for open short position transaction
   const { isSuccess, isLoading, isPending, isError, error } =
     useWaitForTransactionReceipt({
-      hash: txHash
+      hash: txHash,
+      confirmations: CONFIRMATION
     });
 
   /**
@@ -110,7 +115,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     const _amount = parseFloat(quantity) * 10 ** 18;
     try {
       const hash = await potentia?.pool.openPosition(
-        selectedPool.poolAddress, // poolAddress
+        selectedPool()?.poolAddr as Address, // poolAddress
         BigInt(_amount).toString(), // amt
         false // isLong
       );
@@ -120,11 +125,11 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
         console.log("txnHash", hash);
       }
     } catch (e) {
-      notification.error({
-        title: "Opening Long position failed",
-        description: `${error?.name}`
-      });
-      console.log("Opening Long position failed", error);
+      // notification.error({
+      //   title: "Opening Short position failed",
+      //   description: `${error?.message}`
+      // });
+      console.log("Opening Short position failed", error);
     } finally {
       console.log("open_short_position amount", _amount);
     }
@@ -132,7 +137,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
 
   const balanceExceedError = useMemo(
     () =>
-      !!userBalance?.value && parseFloat(quantity) >= parseFloat(userBalance?.formatted),
+      !!userBalance?.value && parseFloat(quantity) > parseFloat(userBalance?.formatted),
     [userBalance, quantity]
   );
 
@@ -159,7 +164,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       });
     } else if (isError) {
       notification.error({
-        title: "Opening long position failed",
+        title: "Opening short position failed",
         description: `${error.message}`
       });
     } else if (isSuccess) {
@@ -193,7 +198,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
           <span>Fetching...</span>
         ) : (
           <span className="font-medium">
-            {positionData.formatted} {selectedPool.underlyingTokens[0].symbol}
+            {toUnits(parseFloat(positionData.formatted), 4)} {selectedPool()?.underlying}
             <sup>{selected_token.power}</sup>
           </span>
         )}
@@ -207,7 +212,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
         <p className="inline-flex items-start gap-1 w-full">
           <span className="text-[#757B80]">Available:</span>
           <span className="font-medium">
-            {"0.00"} {selectedPool.underlyingTokens[0].symbol}
+            {"0.00"} {selectedPool()?.underlying}
           </span>
         </p>
         {/* Input Box: Token Input and Selection */}
@@ -222,17 +227,15 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
             <input
               type="number"
               value={quantity}
-              placeholder={`Qty (min) is 0.001 ${selectedPool.underlyingTokens[0].symbol}`}
+              placeholder={`Qty (min) is 0.001 ${selectedPool()?.underlying}`}
               onChange={(event) => setQuantity(event.target.value)}
               id="quantity"
               className="bg-transparent py-2 w-full placeholder:text-[#6D6D6D] text-white font-noemal text-sm/4 focus:outline-none"
             />
           </div>
-          <TokenSelectPopover>
+          <TokenSelectPopover size="compact">
             <button className="hover:bg-transparent px-0 flex h-10 items-center justify-between gap-0 font-normal text-sm/4 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1">
-              <span className="text-nowrap">
-                {selectedPool.underlyingTokens[0].symbol}
-              </span>
+              <span className="text-nowrap">{selectedPool()?.underlying}</span>
               <BiSolidDownArrow className="h-3 w-3 ml-4" color="#9D9D9D" />
             </button>
           </TokenSelectPopover>

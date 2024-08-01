@@ -1,13 +1,13 @@
-import { PropsWithChildren, useState } from "react";
+import { ReactNode, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { potentiaPoolsList } from "@lib/pools";
-import { useTradeStore } from "@store/tradeStore";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { cn } from "@lib/utils";
 import { Separator } from "@components/ui/separator";
 import { useFilteredPools } from "../../../lib/hooks/useFilteredPools";
 import SearchInput from "./SearchInput";
 import PoolsList from "./PoolsList";
+import { PopoverSizes } from "@lib/types/pools";
+import { usePoolsStore } from "@store/poolsStore";
 
 enum PoolSelectTypes {
   all = "all",
@@ -15,11 +15,19 @@ enum PoolSelectTypes {
   coins = "coins"
 }
 
-export default function TokenSelectPopover({ children }: PropsWithChildren) {
+interface PropsType {
+  size: PopoverSizes;
+  children?: ReactNode | undefined;
+}
+
+export default function TokenSelectPopover({ size, children }: PropsType) {
+  // Search term
   const [term, setTerm] = useState("");
 
-  const { updateSelectedPool } = useTradeStore((state) => state);
-  const { pools, noPools } = useFilteredPools(potentiaPoolsList, term);
+  const isCompact = size === "compact";
+
+  const { poolsData, updateSelectedPool } = usePoolsStore((state) => state);
+  const { pools, noPools } = useFilteredPools(poolsData, term);
 
   const tabStyle = cn(
     "px-[10px] py-1 rounded-base border border-secondary-gray hover:bg-[#15212A]",
@@ -31,7 +39,13 @@ export default function TokenSelectPopover({ children }: PropsWithChildren) {
       <PopoverTrigger className="min-w-fit" asChild aria-label="Popover trigger">
         {children}
       </PopoverTrigger>
-      <PopoverContent className="bg-primary-gray w-full max-w-fit" align="end">
+      <PopoverContent
+        className={cn(
+          "bg-primary-gray w-full",
+          isCompact ? "max-w-fit" : "max-w-[640px]"
+        )}
+        align="end"
+      >
         <SearchInput
           term={term}
           setTerm={setTerm}
@@ -58,21 +72,26 @@ export default function TokenSelectPopover({ children }: PropsWithChildren) {
           <Separator />
           <header className="mb-2 mt-4 inline-flex w-full px-4 justify-between font-medium text-xs/4 font-sans-ibm-plex text-[#9299AA]">
             <h4>Market</h4>
-            <h4>Power</h4>
+            {isCompact ? (
+              <h4>Power</h4>
+            ) : (
+              <>
+                <h4>Price</h4>
+                <h4>24h Change</h4>
+                <h4>24h Volume</h4>
+              </>
+            )}
           </header>
           <TabsContent value={PoolSelectTypes.all}>
-            <PoolsList
-              pools={pools}
-              noPools={noPools}
-              updateSelectedPool={updateSelectedPool}
-            />
+            <PoolsList pools={pools!} updateSelectedPool={updateSelectedPool} noPools={noPools} size={size} />
           </TabsContent>
           <TabsContent value={PoolSelectTypes.pools}>
-            <PoolsList
+            {/* <PoolsList
               pools={pools}
               noPools={noPools}
               updateSelectedPool={updateSelectedPool}
-            />
+              size={size}
+            /> */}
           </TabsContent>
         </Tabs>
       </PopoverContent>

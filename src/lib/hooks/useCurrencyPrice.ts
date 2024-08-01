@@ -1,8 +1,8 @@
+import { useEffect, useState } from "react";
 import { makeApiRequest } from "@lib/datafeed/helpers";
 import { getTokenSymbol } from "@lib/pools";
-import { useEffect, useState } from "react";
 
-export function useCurrencyPrice(symbol: string) {
+export function useCurrencyPrice(symbol = "") {
   const [price, setPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [volume, setVolume] = useState<any>();
@@ -16,7 +16,7 @@ export function useCurrencyPrice(symbol: string) {
     (async () => {
       try {
         const result = await makeApiRequest(pricePath);
-        console.log("result", result);
+        // console.log("result", result);
         setPrice(result.USD);
         setIsLoading(false);
       } catch (error) {
@@ -29,7 +29,7 @@ export function useCurrencyPrice(symbol: string) {
     (async () => {
       try {
         const result = await makeApiRequest(dailyVolPath);
-        console.log("daily volume", result);
+        // console.log("daily volume", result);
         setVolume(result.Data[10]);
         setVolIsLoading(false);
       } catch (error) {

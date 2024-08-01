@@ -2,9 +2,10 @@ import { FC, memo, ReactNode, useEffect, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover";
 import { Separator } from "@components/ui/separator";
 import DropDownIcon from "@components/icons/DropDownIcon";
-import { useTradeStore } from "@store/tradeStore";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import SliderBar from "../../common/SliderBar";
+import { usePoolsStore } from "@store/poolsStore";
+import { Address } from "viem";
 
 interface PropsType {
   children: ReactNode;
@@ -30,7 +31,7 @@ const ClosePositionPopover: FC<PropsType> = ({
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const { selectedPool } = useTradeStore();
+  const { selectedPool } = usePoolsStore();
   // console.log("selectedPool", selectedPool);
 
   const { potentia } = usePotentiaSdk();
@@ -44,7 +45,7 @@ const ClosePositionPopover: FC<PropsType> = ({
     setIsLoading(true);
     try {
       const txnHash = await potentia?.pool.closePosition(
-        selectedPool.poolAddress,
+        selectedPool()?.poolAddr! as Address,
         BigInt(amount).toString(),
         isLong
       );
@@ -92,7 +93,7 @@ const ClosePositionPopover: FC<PropsType> = ({
                 className="bg-transparent p-2 w-full placeholder:text-[#6D6D6D] text-white font-semibold text-sm/6 focus:outline-none"
               />
               <span className="w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm">
-                {selectedPool.underlyingTokens[0].symbol}
+                {selectedPool()?.underlying}
               </span>
             </div>
             <span>Balance: {isLong ? longPos : shortPos}</span>

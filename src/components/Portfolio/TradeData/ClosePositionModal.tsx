@@ -1,8 +1,3 @@
-import ModalWrapper from "@components/common/Modal";
-import { useState } from "react";
-import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
-import { useTradeStore } from "@store/tradeStore";
-
 const ClosePositionModal = ({
   open,
   setOpen,

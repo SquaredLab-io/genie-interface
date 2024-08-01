@@ -1,12 +1,16 @@
-import { Pool } from "@lib/types/common";
+import { PoolInfo } from "@lib/types/pools";
 
-export function useFilteredPools(pools: Pool[], term: string) {
-  if (!pools) return { pools, noPools: true };
+interface ReturnType {
+  pools: PoolInfo[];
+  noPools: boolean;
+}
+
+export function useFilteredPools(pools: PoolInfo[] | undefined, term: string): ReturnType {
+  if (!pools) return { pools: [], noPools: true };
   else if (term == "") return { pools, noPools: false };
   const searchTerm = term.toLowerCase();
   const filtered = pools.filter((pool) => {
-    const [asset0, asset1] = pool.underlyingTokens;
-    const matchTerm = `${asset0.symbol} ${asset1.symbol} ${pool.symbol}`.toLowerCase();
+    const matchTerm = `${pool.pool}`.toLowerCase();
     if (matchTerm.indexOf(searchTerm) >= 0) return true;
     return false;
   });

@@ -6,27 +6,24 @@ import {
   DeepPartial,
   LineStyle
 } from "lightweight-charts";
+import { PoolInfo } from "@squaredlab-io/sdk/src";
 // import { Timeseries, transformTimeseries } from "./helper";
 // import { generateRandomData } from "./helper";
 // import { useTradeStore } from "@store/tradeStore";
 // import { transformTimeseries } from "./helper";
-import { PoolOptions, potentiaPools } from "@lib/pools";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
 
 const PoolChart = (
   {
+    overviewPool
     // timeseries,
     // isLoadingData
   }: {
+    overviewPool: PoolInfo
     // timeseries: Timeseries[];
     // isLoadingData: boolean;
   }
 ) => {
-  // const { overviewPool } = useTradeStore();
-  // TODO: Update this with currentPool
-  const overviewPool = potentiaPools[PoolOptions.weth];
-  const { underlyingTokens } = overviewPool;
-
   const chartContainerRef = useRef(null);
   const [isLoadingChart, setIsLoadingChart] = useState(false);
 
@@ -76,7 +73,7 @@ const PoolChart = (
       ]
     ];
 
-    const currentArray = underlyingTokens[0].symbol == "WETH" ? ethArray : btcArray;
+    const currentArray = ethArray;
 
     const colors = {
       backgroundColor: "#16191F",

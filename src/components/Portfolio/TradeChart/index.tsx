@@ -8,18 +8,18 @@ import {
   widget
 } from "../../../../public/static/charting_library";
 import Datafeed from "@lib/datafeed";
-import { useTradeStore } from "@store/tradeStore";
+import { usePoolsStore } from "@store/poolsStore";
 
 const TradeChart = (props: Partial<ChartingLibraryWidgetOptions>) => {
   const [isChartReady, setIsChartReady] = useState(false);
-  const { selectedPool } = useTradeStore();
+  const { selectedPool } = usePoolsStore();
 
   const chartContainerRef =
     useRef<HTMLDivElement>() as MutableRefObject<HTMLInputElement>;
 
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
-      symbol: `Kraken:${selectedPool.symbol}` ?? "Kraken:USDC/USDT",
+      symbol: `Kraken:${selectedPool()?.underlying}`,
       // BEWARE: no trailing slash is expected in feed URL
       datafeed: Datafeed,
       timezone: props.timezone,
@@ -59,12 +59,7 @@ const TradeChart = (props: Partial<ChartingLibraryWidgetOptions>) => {
     };
   }, [props, selectedPool]);
 
-  return (
-    <div
-      ref={chartContainerRef}
-      className="col-span-4 xl:col-span-3"
-    />
-  );
+  return <div ref={chartContainerRef} className="col-span-4 xl:col-span-3" />;
 };
 
 export default memo(TradeChart);

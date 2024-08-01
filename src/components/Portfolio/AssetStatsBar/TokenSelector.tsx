@@ -1,30 +1,25 @@
 import Image from "next/image";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
-// import { usePower } from "@lib/hooks/usePotentiaMethods";
-import { Pool } from "@lib/types/common";
+import { PoolInfo } from "@squaredlab-io/sdk/src";
 
-export default function TokenSelector({ selectedPool }: { selectedPool: Pool }) {
-  // const { power, isLoading: isPowerLoading } = usePower(selectedPool.poolAddress);
-  const asset = selectedPool.underlyingTokens[0];
-  
+export default function TokenSelector({ selectedPool }: { selectedPool: PoolInfo | undefined }) {
   return (
-    <TokenSelectPopover>
+    <TokenSelectPopover size="wide">
       <button className="group flex flex-row justify-normal items-center text-left py-3 px-5 gap-2">
         {/* Tokens Images */}
         <div className="z-0 flex overflow-hidden ring-1 ring-primary-gray rounded-full bg-neutral-800">
-          <Image src={asset.icon} alt={asset.symbol} width={32} height={32} />
+          <Image src={`/tokens/${selectedPool?.underlying}.svg`} alt="token icon" width={32} height={32} />
         </div>
         {/* Tokens Symbols */}
         <div className="inline-flex items-center gap-1">
           <span className="text-base/5 font-medium text-nowrap">
-            {selectedPool.underlyingTokens.map((asset) => (
+            {selectedPool?.pool}
+            {/* {selectedPool.underlyingTokens.map((asset) => (
               <span key={asset.address}>{asset.symbol}</span>
-            ))}
+            ))} */}
           </span>
           <span className="text-nowrap font-normal text-2xs/[14px] rounded-sm py-px px-[4.5px] text-white bg-text-grad bg-gradient-blue">
-            {/* Fix this, get Power from SDK */}
-            p = {selectedPool.power}
-            {/* p = {isPowerLoading ? "..." : power ?? "NA"} */}
+            {/* Fix this, get Power from SDK */}p = {selectedPool?.power}
           </span>
         </div>
         {/* Drop Menu Icon */}

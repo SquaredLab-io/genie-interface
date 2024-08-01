@@ -11,7 +11,7 @@ export function usePower(poolAddress: Address) {
   async function getPower() {
     try {
       setIsLoading(true);
-      const p = await potentia?.getP(poolAddress);
+      const p = await potentia?.pool.getP(poolAddress);
       // console.log("power of", poolAddress, " -- ", p);
       setPower(p);
       setIsLoading(false);

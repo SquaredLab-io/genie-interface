@@ -1,24 +1,27 @@
-import { PoolOptions, potentiaPools } from "@lib/pools";
-import { Pool } from "@lib/types/common";
-import { PoolInfo } from "@lib/types/pools";
 import { create } from "zustand";
+import { PoolInfo } from "@squaredlab-io/sdk/src";
+
 
 interface iPools {
-  overviewPool: Pool;
-  poolsData: PoolInfo[] | undefined;
-  updateOverviewPool: (value: Pool) => void;
-  updatePoolsData: (value: PoolInfo[]) => void;
+  poolsData: PoolInfo[];
+  selectedPool: () => PoolInfo | undefined;
+  updatePoolsData: (value: PoolInfo[] | undefined) => void;
+  updateSelectedPool: (value: PoolInfo) => void;
 }
 
 export const usePoolsStore = create<iPools>((set, get) => ({
-  overviewPool: potentiaPools[PoolOptions.weth],
-  poolsData: undefined,
+  poolsData: [],
+  selectedPool: () => {
+    const state = get();
+    return state.poolsData?.[0];
+  },
   // actions
-  updateOverviewPool: (newPool: Pool) =>
+  updateSelectedPool: (newPool) => {
     set(() => ({
-      overviewPool: potentiaPools[newPool.underlyingTokens[0].symbol.toLowerCase()]
-    })),
-  updatePoolsData: (pools: PoolInfo[]) =>
+      selectedPool: () => newPool
+    }));
+  },
+  updatePoolsData: (pools) =>
     set(() => ({
       poolsData: pools
     }))

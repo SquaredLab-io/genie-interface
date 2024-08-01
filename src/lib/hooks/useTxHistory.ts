@@ -3,7 +3,7 @@ import { useAccount } from "wagmi";
 import { Address } from "viem";
 import { Tx } from "@lib/types/portfolio";
 import { usePotentiaSdk } from "./usePotentiaSdk";
-import { useTradeStore } from "@store/tradeStore";
+import { usePoolsStore } from "@store/poolsStore";
 
 type ReturnTxHistory = {
   data: Tx[] | undefined;
@@ -18,7 +18,7 @@ type ReturnTxHistory = {
 export function useTxHistory(): ReturnTxHistory {
   const [txHistory, setTxHistory] = useState<Tx[]>();
   const [isLoadingTxH, setIsLoadingTxH] = useState<boolean>(false);
-  const { selectedPool } = useTradeStore();
+  const { selectedPool } = usePoolsStore();
 
   const { address } = useAccount();
   const { potentia } = usePotentiaSdk();
@@ -27,12 +27,12 @@ export function useTxHistory(): ReturnTxHistory {
     try {
       console.log("fetching txHistory...", {
         address,
-        poolAddress: selectedPool.poolAddress
+        poolAddress: selectedPool()?.poolAddr
       });
       setIsLoadingTxH(true);
       const result = await potentia?.getUserTxHistory(
-        address as Address,
-        selectedPool.poolAddress
+        address as Address, // user
+        selectedPool()?.poolAddr! as Address // pool
       );
       console.log('txHistory', result);
       setTxHistory(result);
@@ -44,7 +44,7 @@ export function useTxHistory(): ReturnTxHistory {
   }
 
   useEffect(() => {
-    if (address && potentia) {
+    if (address && potentia && selectedPool()) {
       refetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

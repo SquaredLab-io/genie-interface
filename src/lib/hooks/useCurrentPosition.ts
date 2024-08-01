@@ -5,19 +5,12 @@ import { Address, formatUnits } from "viem";
 import { PositionType } from "@lib/types/enums";
 
 /**
- * useCurrentPosition - A hook to fetch the current position of a user in the Potentia protocol.
+ * useCurrentPosition - A hook to fetch the current position of a user in the Potentia Protocol.
  *
- * @param {PositionType} isLong - Indicates whether the position is long or short.
- *
- * @returns {{
- *   data: {
- *     value: string,
- *     formatted: string
- *   },
- *   isFetching: boolean
- * }} The current position data and fetching status.
+ * @param {PositionType} isLong - Boolean for Long position
+ * @returns Position data, isFetching, refetch method
  */
-export function useCurrentPosition(isLong: PositionType, poolAddress: Address) {
+export function useCurrentPosition(isLong: PositionType, poolAddress: Address | undefined) {
   const [position, setPosition] = useState<string>("0");
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
@@ -27,13 +20,13 @@ export function useCurrentPosition(isLong: PositionType, poolAddress: Address) {
   const refetch = async () => {
     try {
       setIsFetching(true);
-      console.log("getTokenBalance", {
-        poolAddress,
-        address,
-        isLong
-      });
+      // console.log("getTokenBalance", {
+      //   poolAddress,
+      //   address,
+      //   isLong
+      // });
       const currPos = await potentia?.getTokenBalance(
-        poolAddress, // poolAddress
+        poolAddress!, // poolAddress
         address as `0x${string}`, // userAddress
         isLong // isLong
       );
@@ -46,7 +39,7 @@ export function useCurrentPosition(isLong: PositionType, poolAddress: Address) {
   };
 
   useEffect(() => {
-    if (potentia) {
+    if (potentia && poolAddress) {
       refetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

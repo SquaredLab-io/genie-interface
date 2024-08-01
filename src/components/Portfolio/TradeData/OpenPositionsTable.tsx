@@ -13,8 +13,6 @@ import {
   useReactTable
 } from "@tanstack/react-table";
 import EmptyTable from "./EmptyTable";
-import { useTradeStore } from "@store/tradeStore";
-import { TradeOptions } from "@lib/types/enums";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -32,8 +30,6 @@ const OpenPositionsTable = <TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel()
   });
-
-  const { setTradeType } = useTradeStore();
 
   return (
     <Table>

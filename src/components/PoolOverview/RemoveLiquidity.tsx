@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { HiChevronDown } from "react-icons/hi2";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import { PositionType } from "@lib/types/enums";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
@@ -10,16 +9,14 @@ import { useAccount } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import { cn } from "@lib/utils";
-import { useTradeStore } from "@store/tradeStore";
-import { PoolOptions, potentiaPools } from "@lib/pools";
 import ButtonCTA from "@components/common/button-cta";
 import toUnits from "@lib/utils/formatting";
 import { Info } from "lucide-react";
+import { PoolInfo } from "@squaredlab-io/sdk/src";
+import { Address } from "viem";
 
-const RemoveLiquidity = () => {
-  // TODO: Update this with currentPool
-  const overviewPool = potentiaPools[PoolOptions.weth];
-  const TOKEN = overviewPool.underlyingTokens[0];
+const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
+  const { underlying } = overviewPool;
 
   // Amount to remove
   const [amount, setAmount] = useState("");
@@ -34,7 +31,7 @@ const RemoveLiquidity = () => {
   // pToken Balance
   const { data: pTokenData, isFetching: isPTokenFetching } = useCurrentPosition(
     PositionType.lp,
-    overviewPool.poolAddress
+    overviewPool.poolAddr as Address
   );
 
   /**
@@ -47,7 +44,7 @@ const RemoveLiquidity = () => {
 
     try {
       const txnHash = await potentia?.pool.removeLiquidity(
-        overviewPool.poolAddress,
+        overviewPool.poolAddr as Address,
         BigInt(shares).toString()
       );
       console.log("removeliquidity hash", txnHash);
@@ -117,8 +114,8 @@ const RemoveLiquidity = () => {
           </p>
           <div className="inline-flex-between">
             <div className="max-w-fit inline-flex gap-2 items-center">
-              <Image src={TOKEN.icon} alt="token" width={24} height={24} />
-              <span className="font-medium text-base/5">{TOKEN.symbol}</span>
+              <Image src={`/tokens/${underlying}`} alt="token" width={24} height={24} />
+              <span className="font-medium text-base/5">{underlying}</span>
             </div>
             <span className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right">
               0

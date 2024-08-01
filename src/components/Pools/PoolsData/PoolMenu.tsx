@@ -17,7 +17,6 @@ import { Pool } from "@lib/types/common";
 import { useRouter } from "next/navigation";
 
 const PoolMenu = ({ pool }: { pool: Pool }) => {
-  // const { updateOverviewPool } = useTradeStore();
   const router = useRouter();
 
   const { underlyingTokens, power } = pool;

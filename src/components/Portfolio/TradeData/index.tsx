@@ -2,14 +2,13 @@
 
 import { useMemo, useEffect, useState, memo } from "react";
 import Image from "next/image";
-import { formatUnits } from "viem";
+import { Address, formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import toUnits from "@lib/utils/formatting";
 import { getClosedTransactions, getLatestTransactions } from "./helper";
 import OpenPositionsTable from "./OpenPositionsTable";
 import TradeHistoryTable from "./TradeHistoryTable";
-import { useTradeStore } from "@store/tradeStore";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
 import { Tx } from "@lib/types/portfolio";
 import { cn } from "@lib/utils";
@@ -17,6 +16,7 @@ import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { PositionType } from "@lib/types/enums";
 import ClosePositionPopover from "./ClosePositionPopover";
 import { BASE_SEPOLIA } from "@lib/constants";
+import { usePoolsStore } from "@store/poolsStore";
 
 enum Tab {
   position = "position",
@@ -24,17 +24,17 @@ enum Tab {
 }
 
 const TradeData = () => {
-  const { selectedPool } = useTradeStore((state) => state);
+  const { selectedPool } = usePoolsStore();
 
   const [selectedPosType, setSelectedPosType] = useState("");
 
   const { data: longPosition } = useCurrentPosition(
     PositionType.long,
-    selectedPool.poolAddress
+    selectedPool()?.poolAddr as Address
   );
   const { data: shortPosition } = useCurrentPosition(
     PositionType.short,
-    selectedPool.poolAddress
+    selectedPool()?.poolAddr as Address
   );
   // All Transactions -- LP, Open Long/Short, Close Long/Short
   const { data: txHistory, isLoading: isTxLoading } = useTxHistory();
@@ -136,24 +136,24 @@ const TradeData = () => {
         return <span>-</span>;
       }
     },
-    {
-      accessorKey: "entry",
-      header: () => <span>Entry</span>,
-      cell: ({ row }) => {
-        // const value = parseFloat(row.getValue("value"));
-        // const formatted = toDollarUnits(value, 2);
-        return <span>-</span>;
-      }
-    },
-    {
-      accessorKey: "open_time",
-      header: () => <span>Open Time</span>,
-      cell: ({ row }) => {
-        // const value = parseFloat(row.getValue("value"));
-        // const formatted = toDollarUnits(value, 2);
-        return <span>-</span>;
-      }
-    },
+    // {
+    //   accessorKey: "entry",
+    //   header: () => <span>Entry</span>,
+    //   cell: ({ row }) => {
+    //     // const value = parseFloat(row.getValue("value"));
+    //     // const formatted = toDollarUnits(value, 2);
+    //     return <span>-</span>;
+    //   }
+    // },
+    // {
+    //   accessorKey: "open_time",
+    //   header: () => <span>Open Time</span>,
+    //   cell: ({ row }) => {
+    //     // const value = parseFloat(row.getValue("value"));
+    //     // const formatted = toDollarUnits(value, 2);
+    //     return <span>-</span>;
+    //   }
+    // },
     {
       accessorKey: "pnl",
       header: () => <span>P&L</span>,

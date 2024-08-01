@@ -60,6 +60,8 @@ export const SUPPORTED_NETWORKS = [
 ];
 export const BASE_SEPOLIA = SUPPORTED_NETWORKS[0];
 
+export const CONFIRMATION = 5;
+
 export const SUPPORTED_TOKENS = [
   {
     token: "WETH",
@@ -77,6 +79,12 @@ export const SUPPORTED_TOKENS = [
     logo: "/tokens/usdc.svg"
   }
 ];
+
+export const TOKENS: {
+  [key: string]: `0x${string}`
+} = {
+  WETH: "0x212cfa035c6707331adeDe61c35d4E0C9e0b4007" as Address
+}
 
 export const CONTRACT_ADDRESSES = {
   POTENTIA_FACTORY_ADDR: "0xB7CEb18E71291A03810D589851066A7eA0E87C2F" as Address,

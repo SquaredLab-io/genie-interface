@@ -13,16 +13,15 @@ import { GraphOptions, LiquidityOptions } from "./helper";
 import PoolChart from "./PoolChart";
 import { getCurrentDateTime } from "@lib/utils/getCurrentTime";
 import { useTradeStore } from "@store/tradeStore";
-import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
-import { PoolInfo } from "@lib/types/pools";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
 import { LpTradeOptions } from "@lib/types/enums";
 import SelectLpTrade from "./SelectLpTrade";
 import { Separator } from "@components/ui/separator";
+import { PoolInfo } from "@squaredlab-io/sdk/src";
 
 const PoolHeader = ({ assets, power }: { assets: string[]; power: number }) => {
   return (
-    <TokenSelectPopover>
+    <TokenSelectPopover size="wide">
       <div className="whitespace-nowrap flex flex-row items-center gap-3 text-left font-medium rounded-full max-w-fit p-2 cursor-pointer">
         <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-3">
           {assets.map((asset, index) => (
@@ -54,7 +53,6 @@ const PoolHeader = ({ assets, power }: { assets: string[]; power: number }) => {
 };
 
 const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) => {
-  // const { overviewPool } = useTradeStore();
   // const [isLoading, setIsLoading] = useState(false);
   // const [timeseries, setTimeseries] = useState<Timeseries[]>([]);
 
@@ -145,7 +143,7 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
               <SelectLpTrade lpTrade={lpTrade} setLpTrade={setLpTrade} />
             </header>
             <Separator className="mb-3" />
-            {lpTrade === LpTradeOptions.supply ? <AddLiquidity /> : <RemoveLiquidity />}
+            {lpTrade === LpTradeOptions.supply ? <AddLiquidity overviewPool={overviewPool} /> : <RemoveLiquidity />}
           </div>
           {/* <Tabs defaultValue={LiquidityOptions.add}>
             <TabsList className="inline-flex font-semibold text-sm/5 w-full bg-gray-800 mb-1">

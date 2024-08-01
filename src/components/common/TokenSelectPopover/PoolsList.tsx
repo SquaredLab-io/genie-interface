@@ -1,47 +1,59 @@
-import { PoolOptions } from "@lib/pools";
-import { Pool } from "@lib/types/common";
-import Image from "next/image";
 import { memo } from "react";
+import Image from "next/image";
+import { PopoverSizes } from "@lib/types/pools";
+import { PoolInfo } from "@squaredlab-io/sdk/src";
 
 interface PoolsListProps {
-  pools: Pool[];
+  pools: PoolInfo[];
+  updateSelectedPool: (value: PoolInfo) => void;
   noPools: boolean;
-  updateSelectedPool: (value: Pool) => void;
+  size: PopoverSizes;
 }
 
-const PoolsList = ({ pools, noPools, updateSelectedPool }: PoolsListProps) => {
-  if (noPools)
+const PoolsList = ({ pools, updateSelectedPool, noPools, size }: PoolsListProps) => {
+  console.log({
+    pools,
+    noPools
+  });
+
+  if (noPools) {
     return <div className="flex-row-center w-full h-20 opacity-50">No pools found</div>;
+  }
+
   return (
-    <div className="flex flex-col mb-2">
-      {pools.map((pool) => {
-        const asset = pool.underlyingTokens[0];
+    <div className="flex flex-col mb-2 border">
+      {pools.map((_pool) => {
+        const { pool, underlying, power } = _pool;
+        const assets = pool.split("/").map((p) => p.trim());
         return (
           <button
-            key={pool.symbol}
+            key={underlying}
             className="flex flex-row px-4 py-2 w-full justify-between items-center gap-2 hover:bg-[#15212A] transition-colors duration-300"
             onClick={() => {
-              updateSelectedPool(pool);
+              const selectedPool = pools.find((p) => p.poolAddr === _pool.poolAddr);
+              updateSelectedPool(selectedPool);
             }}
           >
             <div className="inline-flex items-center gap-1">
-              <div
-                key={asset.address}
-                className="z-0 flex overflow-hidden ring-0 rounded-full bg-secondary-gray"
-              >
-                <Image src={asset.icon} alt={asset.symbol} width={24} height={24} />
+              <div className="z-0 flex overflow-hidden ring-0 rounded-full bg-secondary-gray">
+                <Image
+                  src={`/tokens/${underlying.toLowerCase()}.svg`}
+                  alt={`${underlying} token icon`}
+                  width={24}
+                  height={24}
+                />
               </div>
               <p>
-                {pool.underlyingTokens.map((asset, index) => (
-                  <span key={asset.symbol}>
-                    {asset.symbol}
-                    {pool.underlyingTokens.length !== index + 1 && <span>-</span>}
+                {assets.map((asset, index) => (
+                  <span key={asset}>
+                    {asset}
+                    {assets.length !== index + 1 && <span>-</span>}
                   </span>
                 ))}
               </p>
             </div>
             <span className="font-medium text-2xs/[14px] rounded-sm py-px px-[4.5px] text-white bg-text-grad bg-gradient-blue">
-              p = {pool.power}
+              p = {power}
             </span>
           </button>
         );

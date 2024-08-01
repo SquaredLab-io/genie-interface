@@ -18,9 +18,14 @@ import { useAccount } from "wagmi";
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  loading: boolean;
 }
 
-const PoolsList = <TData, TValue>({ columns, data }: PropsType<TData, TValue>) => {
+const PoolsList = <TData, TValue>({
+  columns,
+  data,
+  loading
+}: PropsType<TData, TValue>) => {
   const { isConnected } = useAccount();
 
   const table = useReactTable({
@@ -74,7 +79,7 @@ const PoolsList = <TData, TValue>({ columns, data }: PropsType<TData, TValue>) =
         ) : (
           <TableRow>
             <TableCell colSpan={columns.length} className="h-72 text-center">
-              No results.
+              { !data && loading ? "Loading Pools..." : "No pools found"}
             </TableCell>
           </TableRow>
         )}

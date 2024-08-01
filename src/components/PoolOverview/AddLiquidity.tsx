@@ -14,22 +14,24 @@ import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import toUnits from "@lib/utils/formatting";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
-import { PoolOptions, potentiaPools } from "@lib/pools";
 import ButtonCTA from "@components/common/button-cta";
-import { HiInformationCircle } from "react-icons/hi2";
 import { Info } from "lucide-react";
+import notification from "@components/common/notification";
+import { CONFIRMATION } from "@lib/constants";
+import { PoolInfo } from "@squaredlab-io/sdk/src";
 
-const AddLiquidity = () => {
-  // const { overviewPool } = useTradeStore();
-  // TODO: Update this with currentPool
-  const overviewPool = potentiaPools[PoolOptions.weth];
-  const TOKEN = overviewPool.underlyingTokens[0];
+const AddLiquidity = ({overviewPool}: {
+  overviewPool: PoolInfo
+}) => {
+  const TOKEN = overviewPool.underlying;
 
   const { potentia } = usePotentiaSdk();
   const { openConnectModal } = useConnectModal();
 
   const [amount, setAmount] = useState<string>("");
   const [showInfo, setShowInfo] = useState<boolean>(true);
+
+  const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
 
   // Contract Hooks
   const { address, isConnected } = useAccount();
@@ -63,6 +65,9 @@ const AddLiquidity = () => {
       });
     } catch (error) {
       console.log("error while approving", approveError);
+      notification.error({
+        title: "Approval confirmation failed!"
+      });
     }
   };
 
@@ -73,32 +78,44 @@ const AddLiquidity = () => {
     const _amount = parseFloat(amount) * 10 ** 18;
     console.log("_amount", _amount);
 
-    const txn = await potentia?.pool.addLiquidity(
+    const hash = await potentia?.pool.addLiquidity(
       overviewPool.poolAddress,
       BigInt(_amount).toString()
     );
-    console.log("addliquiditytxn return", txn);
-    return txn;
+
+    if (hash) {
+      setTxHash(hash as `0x${string}`);
+    }
+    console.log("addliquiditytxn return", hash);
+    return hash;
   }
 
   // wait for approval transaction
   const {
-    isSuccess: isTxnSuccess,
-    isLoading: isTxnLoading
-    // isError: isTxnError
+    isSuccess: isApproveSuccess,
+    isLoading: isApproveLoading,
+    isError: isApproveError
   } = useWaitForTransactionReceipt({
-    hash: approvalData
+    hash: approvalData,
+    confirmations: CONFIRMATION
   });
+
+  // wait for add liquidity transaction
+  const { isSuccess, isLoading, isPending, isError, error } =
+    useWaitForTransactionReceipt({
+      hash: txHash,
+      confirmations: CONFIRMATION
+    });
 
   useEffect(() => {
     // Executes Add Liquidity handlers if Approval Txn is successful
-    console.log("approve txn final status", isTxnSuccess);
-    if (isTxnSuccess) {
+    console.log("approve txn final status", isApproveSuccess);
+    if (isApproveSuccess) {
       console.log("Token is approved for the selected amount!");
       addLiquidityHandlerSdk();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isTxnSuccess]);
+  }, [isApproveSuccess]);
 
   return (
     <div className="flex flex-col justify-between py-4 h-full">
@@ -201,7 +218,7 @@ const AddLiquidity = () => {
           }}
           disabled={
             isConnected &&
-            (isTxnLoading ||
+            (isApproveLoading ||
               isApprovePending ||
               // isEmpty(amount) ||
               !isValidPositiveNumber(amount))
