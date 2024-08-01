@@ -3,8 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
-import { PositionType } from "@lib/types/enums";
-import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { useAccount } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
@@ -15,7 +13,15 @@ import { Info } from "lucide-react";
 import { PoolInfo } from "@squaredlab-io/sdk/src";
 import { Address } from "viem";
 
-const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
+const RemoveLiquidity = ({
+  overviewPool,
+  lpBalance,
+  isFetchingBal
+}: {
+  overviewPool: PoolInfo;
+  lpBalance: string;
+  isFetchingBal: boolean;
+}) => {
   const { underlying } = overviewPool;
 
   // Amount to remove
@@ -27,12 +33,6 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const { potentia } = usePotentiaSdk();
   const { isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
-
-  // pToken Balance
-  const { data: pTokenData, isFetching: isPTokenFetching } = useCurrentPosition(
-    PositionType.lp,
-    overviewPool.poolAddr as Address
-  );
 
   /**
    * Handler for RemoveLiquidity from SDK
@@ -69,7 +69,7 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
             <input
               className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right"
               placeholder="0"
-              disabled={pTokenData == undefined}
+              disabled={lpBalance == undefined}
               type="number"
               value={amount}
               onChange={(event) => {
@@ -80,26 +80,40 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           <div className="inline-flex items-end justify-between font-normal text-xs/3">
             <span className="text-[#5F7183]">
               Your balance:{" "}
-              {isPTokenFetching
+              {isFetchingBal
                 ? "loading balance..."
-                : toUnits(parseFloat(pTokenData?.formatted ?? "0"), 3)}
+                : toUnits(
+                    parseFloat(lpBalance ?? "0") / 10 ** overviewPool.underlyingDecimals,
+                    3
+                  )}
             </span>
             <div className="inline-flex gap-2">
               <button
                 className="py-[5.5px] px-[6px] rounded-[4px] bg-[#212C42] hover:bg-[#283751] transition-colors disabled:opacity-50 disabled:pointer-events-none"
                 onClick={() =>
-                  setAmount((parseFloat(pTokenData?.formatted ?? "0") * 0.5).toString())
+                  setAmount(
+                    (
+                      (parseFloat(lpBalance ?? "0") /
+                        10 ** overviewPool.underlyingDecimals) *
+                      0.5
+                    ).toString()
+                  )
                 }
-                disabled={!isConnected || !pTokenData?.formatted}
+                disabled={!isConnected || !lpBalance}
               >
                 Half
               </button>
               <button
                 className="py-[5.5px] px-[6px] rounded-[4px] bg-[#212C42] hover:bg-[#283751] transition-colors disabled:opacity-50 disabled:pointer-events-none"
                 onClick={() =>
-                  setAmount(parseFloat(pTokenData?.formatted ?? "0").toString())
+                  setAmount(
+                    (
+                      parseFloat(lpBalance ?? "0") /
+                      10 ** overviewPool.underlyingDecimals
+                    ).toString()
+                  )
                 }
-                disabled={!isConnected || !pTokenData?.formatted}
+                disabled={!isConnected || !lpBalance}
               >
                 Max
               </button>

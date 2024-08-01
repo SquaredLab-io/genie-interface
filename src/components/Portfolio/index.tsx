@@ -7,9 +7,9 @@ import AssetStatsBar from "@components/Portfolio/AssetStatsBar";
 import MarketData from "@components/Portfolio/MarketData";
 import Trade from "@components/Portfolio/Trade";
 import TradeData from "@components/Portfolio/TradeData";
-import { defaultWidgetProps } from "./helper";
 import ChartLoader from "./TradeChart/loader";
 import TradeFlow from "./TradeFlow";
+import { defaultWidgetProps } from "./helper";
 
 // Trading Chart Container imported dynamically
 const TradeChart = dynamic(() => import("./TradeChart").then((mod) => mod.default));

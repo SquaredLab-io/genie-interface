@@ -1,4 +1,4 @@
-// Note: This method is WIP
+// TODO: This method is WIP
 export function createNumRegex(decimal: number): RegExp {
   if (!decimal || decimal == undefined) {
     return new RegExp(`^(\\d+\\.?\\d*|\\.\\d+)$`);

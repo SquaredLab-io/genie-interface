@@ -52,7 +52,7 @@ const FeedbackModal = ({
       trigger={trigger}
       className="max-w-5xl px-7 py-6"
       footer={
-        <div className="inline-flex items-center justify-between w-full">
+        <div className="inline-flex items-center justify-between w-full mt-6">
           <p>
             You can also email us at{" "}
             <a
@@ -64,7 +64,7 @@ const FeedbackModal = ({
             </a>
           </p>
           <div className="font-medium text-xl/6">
-            <button className="py-[10px] px-6 bg-transparent text-white border border-white rounded-2xl mr-6">
+            <button className="py-[10px] px-6 bg-transparent text-white border border-secondary-gray rounded-2xl mr-6">
               Help Center
             </button>
             <a
@@ -77,8 +77,10 @@ const FeedbackModal = ({
           </div>
         </div>
       }
+      closable
     >
-      <div className="flex flex-row gap-3">
+      <div className="flex flex-row gap-3 my-4">
+        {/* Feedback type option selector */}
         {options.map((option) => (
           <button
             key={option.title}

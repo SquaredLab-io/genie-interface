@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Address, formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
-import toUnits from "@lib/utils/formatting";
+import toUnits, { getDecimalAdjusted } from "@lib/utils/formatting";
 import { getClosedTransactions, getLatestTransactions } from "./helper";
 import OpenPositionsTable from "./OpenPositionsTable";
 import TradeHistoryTable from "./TradeHistoryTable";
@@ -13,7 +13,6 @@ import { useTxHistory } from "@lib/hooks/useTxHistory";
 import { Tx } from "@lib/types/portfolio";
 import { cn } from "@lib/utils";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
-import { PositionType } from "@lib/types/enums";
 import ClosePositionPopover from "./ClosePositionPopover";
 import { BASE_SEPOLIA } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
@@ -28,14 +27,7 @@ const TradeData = () => {
 
   const [selectedPosType, setSelectedPosType] = useState("");
 
-  const { data: longPosition } = useCurrentPosition(
-    PositionType.long,
-    selectedPool()?.poolAddr as Address
-  );
-  const { data: shortPosition } = useCurrentPosition(
-    PositionType.short,
-    selectedPool()?.poolAddr as Address
-  );
+  const { data: positions } = useCurrentPosition(selectedPool()?.poolAddr as Address);
   // All Transactions -- LP, Open Long/Short, Close Long/Short
   const { data: txHistory, isLoading: isTxLoading } = useTxHistory();
 
@@ -47,6 +39,16 @@ const TradeData = () => {
   }, [txHistory]);
 
   const closedPositions = getClosedTransactions(txHistory);
+
+  const longTokenBalance = toUnits(
+    getDecimalAdjusted(positions.longToken.balance, selectedPool()?.underlyingDecimals!),
+    3
+  );
+  
+  const shortTokenBalance = toUnits(
+    getDecimalAdjusted(positions.shortToken.balance, selectedPool()?.underlyingDecimals!),
+    3
+  );
 
   const positionColumns: ColumnDef<Tx>[] = [
     {
@@ -130,9 +132,18 @@ const TradeData = () => {
       cell: ({ row }) => {
         // const size = formatUnits(row.getValue("size") as bigint, 18);
         const action = row.getValue("action") as string;
-        if (action == "Open Long Position") return <span>{longPosition.formatted}</span>;
+        if (action == "Open Long Position")
+          return (
+            <span>
+              {longTokenBalance}
+            </span>
+          );
         else if (action == "Open Short Position")
-          return <span>{toUnits(parseFloat(shortPosition.formatted), 3)}</span>;
+          return (
+            <span>
+              {shortTokenBalance}
+            </span>
+          );
         return <span>-</span>;
       }
     },
@@ -171,8 +182,7 @@ const TradeData = () => {
         const action = row.original.action;
         return (
           <ClosePositionPopover
-            longPos={longPosition.formatted}
-            shortPos={shortPosition.formatted}
+            positions={positions}
             isLong={selectedPosType == "Open Long Position" ? true : false}
             onClickTrigger={() => {
               setSelectedPosType(action);
@@ -273,9 +283,9 @@ const TradeData = () => {
       header: () => <span>Size</span>,
       cell: ({ row }) => {
         const action = row.getValue("action") as string;
-        if (action == "Close Long Position") return <span>{longPosition.formatted}</span>;
+        if (action == "Close Long Position") return <span>{longTokenBalance}</span>;
         else if (action == "Close Short Position")
-          return <span>{toUnits(parseFloat(shortPosition.formatted), 3)}</span>;
+          return <span>{shortTokenBalance}</span>;
         return <span>-</span>;
       }
     },

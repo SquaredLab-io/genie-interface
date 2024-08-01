@@ -1,4 +1,5 @@
-import { PoolInfo } from "@lib/types/pools";
+import { PoolInfo } from "@squaredlab-io/sdk/src";
+
 
 interface ReturnType {
   pools: PoolInfo[];

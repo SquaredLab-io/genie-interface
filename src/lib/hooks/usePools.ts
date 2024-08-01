@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { usePotentiaSdk } from "./usePotentiaSdk";
-import { PoolInfo } from "@lib/types/common";
 import notification from "@components/common/notification";
+import { PoolInfo } from "@squaredlab-io/sdk/src";
 
 interface ReturnType {
   pools: PoolInfo[] | undefined;

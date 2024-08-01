@@ -19,25 +19,31 @@ import { Info } from "lucide-react";
 import notification from "@components/common/notification";
 import { CONFIRMATION } from "@lib/constants";
 import { PoolInfo } from "@squaredlab-io/sdk/src";
+import { Address } from "viem";
 
-const AddLiquidity = ({overviewPool}: {
-  overviewPool: PoolInfo
+const AddLiquidity = ({
+  overviewPool,
+  lpBalance,
+  isFetchingBal
+}: {
+  overviewPool: PoolInfo;
+  lpBalance: string;
+  isFetchingBal: boolean;
 }) => {
-  const TOKEN = overviewPool.underlying;
+  const [amount, setAmount] = useState<string>("");
+  const [showInfo, setShowInfo] = useState<boolean>(true);
+  const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
 
   const { potentia } = usePotentiaSdk();
   const { openConnectModal } = useConnectModal();
 
-  const [amount, setAmount] = useState<string>("");
-  const [showInfo, setShowInfo] = useState<boolean>(true);
-
-  const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
+  const { underlying, poolAddr, underlyingAddress, underlyingDecimals } = overviewPool;
 
   // Contract Hooks
   const { address, isConnected } = useAccount();
   const { data: userBalance, isLoading: isBalLoading } = useBalance({
     address,
-    token: TOKEN.address
+    token: underlyingAddress! as Address
   });
 
   // Write Hook => Token Approval
@@ -56,10 +62,10 @@ const AddLiquidity = ({overviewPool}: {
     try {
       await writeApproveToken({
         abi: WethABi,
-        address: TOKEN.address,
+        address: overviewPool.underlyingAddress! as Address,
         functionName: "approve",
         args: [
-          overviewPool.poolAddress,
+          overviewPool.poolAddr,
           BigInt(_amount).toString() // Approving as much as input amount only
         ]
       });
@@ -79,7 +85,7 @@ const AddLiquidity = ({overviewPool}: {
     console.log("_amount", _amount);
 
     const hash = await potentia?.pool.addLiquidity(
-      overviewPool.poolAddress,
+      overviewPool.poolAddr,
       BigInt(_amount).toString()
     );
 
@@ -128,8 +134,8 @@ const AddLiquidity = ({overviewPool}: {
           </p>
           <div className="inline-flex-between">
             <div className="max-w-fit inline-flex gap-2 items-center">
-              <Image src={TOKEN.icon} alt="token" width={24} height={24} />
-              <span className="font-medium text-base/5">{TOKEN.symbol}</span>
+              <Image src={""} alt="token" width={24} height={24} />
+              <span className="font-medium text-base/5">{underlying}</span>
             </div>
             <input
               className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right"
@@ -184,7 +190,12 @@ const AddLiquidity = ({overviewPool}: {
             </span>
           </div>
           <div className="font-normal text-xs/3 mt-1">
-            <span className="text-[#5F7183]">Your LP balance: 0</span>
+            <span className="text-[#5F7183]">
+              Your LP balance:{" "}
+              {isFetchingBal
+                ? "loading..."
+                : parseFloat(lpBalance ?? "0") / 10 ** underlyingDecimals}
+            </span>
           </div>
         </div>
         {showInfo && (

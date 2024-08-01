@@ -1,17 +1,50 @@
 import { useEffect, useState } from "react";
-import { usePotentiaSdk } from "./usePotentiaSdk";
 import { useAccount } from "wagmi";
-import { Address, formatUnits } from "viem";
-import { PositionType } from "@lib/types/enums";
+import { Address } from "viem";
+import { usePotentiaSdk } from "./usePotentiaSdk";
+import notification from "@components/common/notification";
+
+export interface Token {
+  address: string;
+  balance: string;
+}
+
+export interface TokenBalances {
+  lpToken: Token; // 0
+  longToken: Token; // 1
+  shortToken: Token; // 2
+}
+
+interface ReturnType {
+  data: TokenBalances;
+  isFetching: boolean;
+  refetch: () => Promise<void>;
+}
+
+const getParsedJson = (pos: string | undefined) => {
+  if (pos) {
+    try {
+      const parsedJson = JSON.parse(pos);
+      console.log("parsedJson", parsedJson);
+      return parsedJson;
+    } catch (error) {
+      console.error("Failed to parse JSON:", error);
+      notification.error({
+        title: `Failed to parse JSON: ${error}`
+      });
+      return {};
+    }
+  }
+  return {};
+};
 
 /**
- * useCurrentPosition - A hook to fetch the current position of a user in the Potentia Protocol.
+ * useCurrentPosition - A hook to fetch the current LP, Long and Short position of a user in the Potentia Protocol
  *
- * @param {PositionType} isLong - Boolean for Long position
  * @returns Position data, isFetching, refetch method
  */
-export function useCurrentPosition(isLong: PositionType, poolAddress: Address | undefined) {
-  const [position, setPosition] = useState<string>("0");
+export function useCurrentPosition(poolAddress: Address | undefined): ReturnType {
+  const [position, setPosition] = useState<string | undefined>("");
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
   const { potentia } = usePotentiaSdk();
@@ -20,18 +53,18 @@ export function useCurrentPosition(isLong: PositionType, poolAddress: Address | 
   const refetch = async () => {
     try {
       setIsFetching(true);
-      // console.log("getTokenBalance", {
-      //   poolAddress,
-      //   address,
-      //   isLong
-      // });
+
       const currPos = await potentia?.getTokenBalance(
-        poolAddress!, // poolAddress
-        address as `0x${string}`, // userAddress
-        isLong // isLong
+        poolAddress as Address, // poolAddress
+        address as Address // userAddress
       );
-      setPosition(currPos ?? "0");
+      setPosition(currPos);
     } catch (error) {
+      // notification.error({
+      //   title: "Error while fetching positions",
+      //   description: "Please try again"
+      // });
+      console.error("Error while fetching positions");
       setIsFetching(false);
     } finally {
       setIsFetching(false);
@@ -46,11 +79,8 @@ export function useCurrentPosition(isLong: PositionType, poolAddress: Address | 
   }, [potentia, address, poolAddress]);
 
   return {
-    data: {
-      value: position,
-      formatted: parseFloat(formatUnits(BigInt(position), 18)).toFixed(3)
-    },
+    data: getParsedJson(position),
     isFetching,
     refetch
-  };
+  } satisfies ReturnType;
 }

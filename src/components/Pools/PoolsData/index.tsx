@@ -3,13 +3,12 @@
 // Library Imports
 import { useEffect, useMemo, useState } from "react";
 import { TabsList } from "@radix-ui/react-tabs";
-import { ColumnDef } from "@tanstack/react-table";
 import { PlusIcon } from "lucide-react";
 // Component Imports
 import { Button } from "@components/ui/button";
 import { Tabs, TabsContent, TabsTrigger } from "@components/ui/tabs";
 import PoolsTable from "./PoolsTable";
-import { allPoolsColumnDef, transactionsColumnDef, userPoolsColumnDef } from "./pool-columns";
+import { allPoolsColumnDef } from "./pool-columns";
 import SearchInput from "./SearchInput";
 import CreatePoolModal from "../create-pool-modal";
 import ManagePoolModal from "../manage-pool-modal";
@@ -52,7 +51,7 @@ const PoolsData = () => {
   }, [pools]);
 
   const poolsColumns = allPoolsColumnDef();
-  const userColumns = userPoolsColumnDef();
+  // const userColumns = userPoolsColumnDef();
 
   const activeTabStyle =
     "py-2 px-4 data-[state=active]:border data-[state=active]:border-[#00A0FC] rounded-lg data-[state=active]:bg-[#0A344D]";

@@ -6,11 +6,12 @@ import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import SliderBar from "../../common/SliderBar";
 import { usePoolsStore } from "@store/poolsStore";
 import { Address } from "viem";
+import { TokenBalances } from "@lib/hooks/useCurrentPosition";
+import { getDecimalAdjusted } from "@lib/utils/formatting";
 
 interface PropsType {
   children: ReactNode;
-  longPos: string;
-  shortPos: string;
+  positions: TokenBalances;
   isLong: boolean;
   onClickTrigger?: () => void;
   isOpen?: boolean;
@@ -19,8 +20,7 @@ interface PropsType {
 
 const ClosePositionPopover: FC<PropsType> = ({
   children,
-  longPos,
-  shortPos,
+  positions,
   isLong,
   onClickTrigger,
   isOpen,
@@ -57,14 +57,24 @@ const ClosePositionPopover: FC<PropsType> = ({
     }
   }
 
+  const longTokenBalance = getDecimalAdjusted(
+    positions.longToken.balance,
+    selectedPool()?.underlyingDecimals!
+  );
+
+  const shortTokenBalance = getDecimalAdjusted(
+    positions.shortToken.balance,
+    selectedPool()?.underlyingDecimals!
+  );
+
   // Slider value updater
   useEffect(() => {
-    const balance = isLong ? longPos : shortPos;
+    const balance = isLong ? longTokenBalance : shortTokenBalance;
     if (balance) {
-      const amount = (parseFloat(balance) * sliderValue[0]) / 100;
+      const amount = (balance * sliderValue[0]) / 100;
       setQuantity(amount.toString());
     }
-  }, [longPos, shortPos, sliderValue]);
+  }, [longTokenBalance, shortTokenBalance, sliderValue]);
 
   return (
     <Popover open={isOpen} onOpenChange={isLoading ? () => {} : setIsOpen}>
@@ -96,7 +106,7 @@ const ClosePositionPopover: FC<PropsType> = ({
                 {selectedPool()?.underlying}
               </span>
             </div>
-            <span>Balance: {isLong ? longPos : shortPos}</span>
+            <span>Balance: {isLong ? longTokenBalance : shortTokenBalance}</span>
           </div>
           <SliderBar
             value={sliderValue}

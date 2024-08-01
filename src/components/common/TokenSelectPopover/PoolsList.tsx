@@ -30,7 +30,7 @@ const PoolsList = ({ pools, updateSelectedPool, noPools, size }: PoolsListProps)
             key={underlying}
             className="flex flex-row px-4 py-2 w-full justify-between items-center gap-2 hover:bg-[#15212A] transition-colors duration-300"
             onClick={() => {
-              const selectedPool = pools.find((p) => p.poolAddr === _pool.poolAddr);
+              const selectedPool = pools.find((p) => p.poolAddr === _pool.poolAddr)!;
               updateSelectedPool(selectedPool);
             }}
           >

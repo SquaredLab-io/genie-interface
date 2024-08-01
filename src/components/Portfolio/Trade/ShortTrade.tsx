@@ -49,14 +49,14 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     refetch: refetchBalance
   } = useBalance({
     address,
-    token: selectedPool()?.poolAddr as Address
+    token: selectedPool()?.underlyingAddress as Address
   });
 
   const {
     data: positionData,
     isFetching: isPositionFetching,
     refetch: refetchPosition
-  } = useCurrentPosition(PositionType.short, selectedPool()?.poolAddr as Address);
+  } = useCurrentPosition(selectedPool()?.poolAddr as Address);
 
   // Write Hook => Token Approval
   const {
@@ -70,11 +70,11 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
    * This handler method approves signers TOKEN_ADDR tokens to be spent on Potentia Protocol
    */
   const approveHandler = async () => {
-    const _amount = parseFloat(quantity) * 10 ** 18;
+    const _amount = parseFloat(quantity) * 10 ** (selectedPool()?.underlyingDecimals ?? 18);
     try {
       await writeApproveToken({
         abi: WethABi,
-        address: getTokenAddress(selectedPool()?.underlying),
+        address: selectedPool()?.underlyingAddress! as Address,
         functionName: "approve",
         args: [
           selectedPool()?.poolAddr! as Address,
@@ -198,8 +198,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
           <span>Fetching...</span>
         ) : (
           <span className="font-medium">
-            {toUnits(parseFloat(positionData.formatted), 4)} {selectedPool()?.underlying}
-            <sup>{selected_token.power}</sup>
+            {toUnits(parseFloat(positionData?.shortToken?.balance ?? "0") / 10 ** (selectedPool()?.underlyingDecimals ?? 18), 4)}
           </span>
         )}
       </p>

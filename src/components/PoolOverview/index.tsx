@@ -9,15 +9,16 @@ import { cn } from "@lib/utils";
 import Label from "./Label";
 import AddLiquidity from "./AddLiquidity";
 import RemoveLiquidity from "./RemoveLiquidity";
-import { GraphOptions, LiquidityOptions } from "./helper";
+import { GraphOptions } from "./helper";
 import PoolChart from "./PoolChart";
 import { getCurrentDateTime } from "@lib/utils/getCurrentTime";
-import { useTradeStore } from "@store/tradeStore";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
 import { LpTradeOptions } from "@lib/types/enums";
 import SelectLpTrade from "./SelectLpTrade";
 import { Separator } from "@components/ui/separator";
 import { PoolInfo } from "@squaredlab-io/sdk/src";
+import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
+import { Address } from "viem";
 
 const PoolHeader = ({ assets, power }: { assets: string[]; power: number }) => {
   return (
@@ -65,6 +66,13 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
     "p-2 rounded-none bg-primary-gray", // base state
     "data-[state=active]:bg-white data-[state=active]:text-black" // active state
   );
+
+  // Current Open Long Position
+  const {
+    data: position,
+    isFetching: isPositionFetching,
+    refetch: refetchPosition
+  } = useCurrentPosition(overviewPool?.poolAddr! as Address);
 
   // const tradeTabStyle = cn(
   //   "w-1/2 py-3 text-center px-3",
@@ -130,7 +138,7 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
             <TabsContent value={GraphOptions.tvl}>TVL</TabsContent>
             <TabsContent value={GraphOptions.crossbook}>Cross Book</TabsContent>
             <TabsContent value={GraphOptions.counterpart} className="h-[calc(100%-36px)]">
-              <PoolChart />
+              <PoolChart overviewPool={overviewPool} />
             </TabsContent>
           </Tabs>
         </div>
@@ -143,7 +151,11 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
               <SelectLpTrade lpTrade={lpTrade} setLpTrade={setLpTrade} />
             </header>
             <Separator className="mb-3" />
-            {lpTrade === LpTradeOptions.supply ? <AddLiquidity overviewPool={overviewPool} /> : <RemoveLiquidity />}
+            {lpTrade === LpTradeOptions.supply ? (
+              <AddLiquidity overviewPool={overviewPool} lpBalance={position.lpToken.balance} isFetchingBal={isPositionFetching} />
+            ) : (
+              <RemoveLiquidity overviewPool={overviewPool} lpBalance={position.lpToken.balance} isFetchingBal={isPositionFetching} />
+            )}
           </div>
           {/* <Tabs defaultValue={LiquidityOptions.add}>
             <TabsList className="inline-flex font-semibold text-sm/5 w-full bg-gray-800 mb-1">

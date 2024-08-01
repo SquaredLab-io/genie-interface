@@ -68,16 +68,16 @@ export const SUPPORTED_TOKENS = [
     address: "0x212cfa035c6707331adeDe61c35d4E0C9e0b4007",
     logo: "/tokens/weth.svg"
   },
-  {
-    token: "WBTC",
-    address: "",
-    logo: "/tokens/wbtc.svg"
-  },
-  {
-    token: "USDC",
-    address: "",
-    logo: "/tokens/usdc.svg"
-  }
+  // {
+  //   token: "WBTC",
+  //   address: "",
+  //   logo: "/tokens/wbtc.svg"
+  // },
+  // {
+  //   token: "USDC",
+  //   address: "",
+  //   logo: "/tokens/usdc.svg"
+  // }
 ];
 
 export const TOKENS: {

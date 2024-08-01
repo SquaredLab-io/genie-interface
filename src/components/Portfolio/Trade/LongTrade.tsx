@@ -16,7 +16,6 @@ import SliderBar from "../../common/SliderBar";
 import { getAccountBalance } from "@lib/utils/getAccountBalance";
 import { WethABi } from "@lib/abis";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
-import { PositionType } from "@lib/types/enums";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
@@ -27,7 +26,6 @@ import TradeInfo from "./TradeInfo";
 import toUnits from "@lib/utils/formatting";
 import { CONFIRMATION } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
-import { getTokenAddress } from "@lib/utils/getTokenAddress";
 import { Address } from "viem";
 
 interface PropsType {
@@ -51,7 +49,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     refetch: refetchBalance
   } = useBalance({
     address,
-    token: getTokenAddress(selectedPool()?.underlying)
+    token: selectedPool()?.underlyingAddress! as Address
   });
 
   // Current Open Long Position
@@ -59,7 +57,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     data: positionData,
     isFetching: isPositionFetching,
     refetch: refetchPosition
-  } = useCurrentPosition(PositionType.long, selectedPool()?.poolAddr as Address);
+  } = useCurrentPosition(selectedPool()?.poolAddr as Address);
 
   // Write Hook => Token Approval
   const {
@@ -77,7 +75,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     try {
       await writeApproveToken({
         abi: WethABi,
-        address: getTokenAddress(selectedPool()?.underlying),
+        address: selectedPool()?.underlyingAddress! as Address,
         functionName: "approve",
         args: [
           selectedPool()?.poolAddr,
@@ -87,7 +85,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     } catch (error) {
       notification.error({
         title: "Token approval failed!",
-        description: `${approveError?.name}`
+        description: `${approveError?.message}`
       });
       console.log("Token approval failed", error);
     }
@@ -202,9 +200,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
           <span>Fetching...</span>
         ) : (
           <span className="font-medium">
-            {toUnits(parseFloat(positionData.formatted), 4)}{" "}
-            {selectedPool()?.underlying}
-            <sup>{selected_token.power}</sup>
+            {toUnits(parseFloat(positionData?.longToken?.balance ?? "0") / 10 ** (selectedPool()?.underlyingDecimals ?? 18), 4)}
           </span>
         )}
       </p>
@@ -243,9 +239,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
               // variant="ghost"
               className="hover:bg-transparent px-0 flex h-10 items-center justify-between gap-0 font-normal text-sm/4 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
             >
-              <span className="text-nowrap">
-                {selectedPool()?.underlying}
-              </span>
+              <span className="text-nowrap">{selectedPool()?.underlying}</span>
               <BiSolidDownArrow className="h-3 w-3 ml-4" color="#9D9D9D" />
             </button>
           </TokenSelectPopover>

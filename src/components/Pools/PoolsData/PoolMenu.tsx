@@ -13,13 +13,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@components/ui/dropdown-menu";
-import { Pool } from "@lib/types/common";
 import { useRouter } from "next/navigation";
+import { PoolInfo } from "@squaredlab-io/sdk/src";
 
-const PoolMenu = ({ pool }: { pool: Pool }) => {
+const PoolMenu = ({ pool }: { pool: PoolInfo }) => {
   const router = useRouter();
 
-  const { underlyingTokens, power } = pool;
+  const { underlying, pool: assets, power } = pool;
+  const underlyingAssets = assets.split("/").map((p) => p.trim());
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -28,10 +29,10 @@ const PoolMenu = ({ pool }: { pool: Pool }) => {
       <DropdownMenuContent className="min-w-48 text-white">
         <DropdownMenuLabel>
           <>
-            {underlyingTokens.map((asset, index) => (
+            {underlyingAssets.map((asset, index) => (
               <span key={index} className="font-bold text-sm/5">
-                {asset.symbol}
-                {underlyingTokens.length !== index + 1 && <span className="mx-1">/</span>}
+                {asset}
+                {underlyingAssets.length !== index + 1 && <span className="mx-1">/</span>}
               </span>
             ))}
             <span className="font-bold text-xs/5 bg-[#22C9FF24] text-[#0091FF] px-2 rounded-lg">
@@ -41,11 +42,10 @@ const PoolMenu = ({ pool }: { pool: Pool }) => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => {
-            const symbol = pool.underlyingTokens[0].symbol;
-            // TODO: Update this with original pool later
-            router.push(`/pool/${symbol}`);
-          }}
+          // onClick={() => {;
+          //   // TODO: Update this with original pool later
+          //   router.push(`/pool/${underlying}`);
+          // }}
         >
           <Link className="inline-flex gap-2 items-center w-full" href="/pool">
             <Image src="/icons/StatsIcon.svg" width={16} height={16} alt="stats icon" />
@@ -53,9 +53,9 @@ const PoolMenu = ({ pool }: { pool: Pool }) => {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() => {
-            const symbol = pool.underlyingTokens[0].symbol;
-          }}
+          // onClick={() => {
+          //   const symbol = pool.underlyingTokens[0].symbol;
+          // }}
         >
           <Link className="inline-flex gap-2 items-center w-full" href="/pool">
             <Image src="/icons/PlusIcon.svg" width={16} height={16} alt="add icon" />
