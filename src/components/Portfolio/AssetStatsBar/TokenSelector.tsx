@@ -4,7 +4,7 @@ import { PoolInfo } from "@squaredlab-io/sdk/src";
 
 export default function TokenSelector({ selectedPool }: { selectedPool: PoolInfo | undefined }) {
   return (
-    <TokenSelectPopover size="wide">
+    <TokenSelectPopover size="compact">
       <button className="group flex flex-row justify-normal items-center text-left py-3 px-5 gap-2">
         {/* Tokens Images */}
         <div className="z-0 flex overflow-hidden ring-1 ring-primary-gray rounded-full bg-neutral-800">

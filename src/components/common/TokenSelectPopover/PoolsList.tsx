@@ -21,7 +21,7 @@ const PoolsList = ({ pools, updateSelectedPool, noPools, size }: PoolsListProps)
   }
 
   return (
-    <div className="flex flex-col mb-2 border">
+    <div className="flex flex-col mb-2">
       {pools.map((_pool) => {
         const { pool, underlying, power } = _pool;
         const assets = pool.split("/").map((p) => p.trim());

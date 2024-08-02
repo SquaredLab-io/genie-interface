@@ -1,5 +1,10 @@
 import { Tx } from "@lib/types/portfolio";
+import { OpenPositionInfo, PositionTab } from "@squaredlab-io/sdk/src";
 
+/**
+ * TODO: Remove as deprecated
+ * Get your latest Trade History aggregated into Open Long/Short Positions.
+ */
 export function getLatestTransactions(transactions?: Tx[]): Tx[] {
   if (!transactions) return new Array<Tx>();
 
@@ -21,6 +26,13 @@ export function getLatestTransactions(transactions?: Tx[]): Tx[] {
   }
 
   return [latestLongTx, latestShortTx].filter((tx) => tx !== null) as Tx[];
+}
+
+export function getOpenTransactions(openOrders?: PositionTab): OpenPositionInfo[] {
+  if (!openOrders) return new Array<OpenPositionInfo>();
+  const data = [openOrders.longPositionTab, openOrders.shortPositionTab]
+  console.log('openorders in tradedata', data);
+  return data;
 }
 
 export function getClosedTransactions(transactions?: Tx[]): Tx[] {

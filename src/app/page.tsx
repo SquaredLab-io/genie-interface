@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
 import { useIsMounted } from "@lib/hooks/useIsMounted";
@@ -17,7 +17,7 @@ const Portfolio = dynamic(() =>
  * Trade Interface - Currently set as the Homepage of Genie
  */
 export default function Home() {
-  // const [notFound, setNotFound] = useState(false);
+  const [notFound, setNotFound] = useState(false);
 
   const { pools, isFetching, refetch } = usePools();
   const { isMounted } = useIsMounted();
@@ -30,16 +30,17 @@ export default function Home() {
       return poolsData;
     } else if (pools.length) {
       // 2. if not, re/fetch pools
-      refetch();
+      // refetch();
       return pools;
+    } else {
+      return undefined;
     }
-    return undefined;
   }, [poolsData, pools]);
 
   // useEffect(() => {
   //   const timeout = setTimeout(() => {
   //     if (!_pools) setNotFound(true);
-  //   }, 10000);
+  //   }, 20000);
   //   return () => clearTimeout(timeout);
   // }, []);
 
@@ -51,11 +52,17 @@ export default function Home() {
     }
   }, [pools]);
 
-  if (!isMounted || !_pools)
+  if (!isMounted || ( isFetching && !_pools))
     return (
       <main className="page-center size-full flex-col-center gap-5 font-sans-ibm-plex">
         <SpinnerIcon stroke="#01A1FF" />
         <span>preparing...</span>
+      </main>
+    );
+  else if (notFound)
+    return (
+      <main className="page-center size-full flex-col-center gap-5 font-sans-ibm-plex">
+        <h3 className="text-2xl">No pools found</h3>
       </main>
     );
 

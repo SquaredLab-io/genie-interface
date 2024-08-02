@@ -12,7 +12,7 @@ import {
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
-import EmptyTable from "./EmptyTable";
+import NextImage from "@components/common/NextImage";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -65,7 +65,16 @@ const TradeHistoryTable = <TData, TValue>({
         ) : (
           <TableRow>
             <TableCell colSpan={columns.length} className="h-36 text-center">
-              <EmptyTable isLoading={isLoading} />
+              <div className="flex flex-col gap-2">
+                <NextImage
+                  src="/icons/file-icon.svg"
+                  className="size-[62px]"
+                  altText="file icon"
+                />
+                <span className="text-[#B0B3B8] font-normal text-sm/6">
+                  {isLoading ? "Fetching your Positions..." : "No Close Positions."}
+                </span>
+              </div>
             </TableCell>
           </TableRow>
         )}

@@ -6,7 +6,11 @@ import { Address, formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import toUnits, { getDecimalAdjusted } from "@lib/utils/formatting";
-import { getClosedTransactions, getLatestTransactions } from "./helper";
+import {
+  getClosedTransactions,
+  getLatestTransactions,
+  getOpenTransactions
+} from "./helper";
 import OpenPositionsTable from "./OpenPositionsTable";
 import TradeHistoryTable from "./TradeHistoryTable";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
@@ -16,6 +20,8 @@ import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import ClosePositionPopover from "./ClosePositionPopover";
 import { BASE_SEPOLIA } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
+import { useOpenOrders } from "@lib/hooks/useOpenOrders";
+import { OpenPositionInfo } from "@squaredlab-io/sdk/src";
 
 enum Tab {
   position = "position",
@@ -31,26 +37,39 @@ const TradeData = () => {
   // All Transactions -- LP, Open Long/Short, Close Long/Short
   const { data: txHistory, isLoading: isTxLoading } = useTxHistory();
 
-  useEffect(() => console.log("txHistory in Tradedata", txHistory), [txHistory]);
+  const {
+    openOrders,
+    isFetching: loadingOpenOrders,
+    refetch
+  } = useOpenOrders(selectedPool()?.poolAddr!);
+
+  useEffect(() => console.log("openOrders in Tradedata", openOrders), [openOrders]);
 
   // User's Current Open Positions -- Long and Short
-  const openPositions = useMemo((): Tx[] => {
-    return getLatestTransactions(txHistory);
-  }, [txHistory]);
+  // const openPositions = useMemo((): Tx[] => {
+  //   return getLatestTransactions(txHistory);
+  // }, [txHistory]);
 
+  const openPositions = getOpenTransactions(openOrders);
   const closedPositions = getClosedTransactions(txHistory);
 
   const longTokenBalance = toUnits(
-    getDecimalAdjusted(positions.longToken.balance, selectedPool()?.underlyingDecimals!),
-    3
-  );
-  
-  const shortTokenBalance = toUnits(
-    getDecimalAdjusted(positions.shortToken.balance, selectedPool()?.underlyingDecimals!),
+    getDecimalAdjusted(
+      positions?.longToken?.balance,
+      selectedPool()?.underlyingDecimals!
+    ),
     3
   );
 
-  const positionColumns: ColumnDef<Tx>[] = [
+  const shortTokenBalance = toUnits(
+    getDecimalAdjusted(
+      positions?.shortToken?.balance,
+      selectedPool()?.underlyingDecimals!
+    ),
+    3
+  );
+
+  const positionColumns: ColumnDef<OpenPositionInfo>[] = [
     {
       accessorKey: "pool",
       header: () => (
@@ -59,9 +78,8 @@ const TradeData = () => {
         </div>
       ),
       cell: ({ row }) => {
-        const { power, pool } = row.original;
+        const { power, pool } = selectedPool()!;
         const assets = pool.split(" / ").map((asset) => asset.trim());
-        const _power = formatUnits(BigInt(power), 18);
         return (
           <div className="whitespace-nowrap flex flex-row gap-2 text-left font-medium pl-[18px] py-6">
             <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-2">
@@ -92,7 +110,7 @@ const TradeData = () => {
                   ))}
                 </p>
                 <p className="font-medium text-xs/3 bg-[#49AFE9] py-1 px-[10px] rounded-md">
-                  p = {_power}
+                  p = {power}
                 </p>
               </div>
               <div className="font-normal text-sm/5 text-[#9299AA]">
@@ -106,22 +124,22 @@ const TradeData = () => {
       }
     },
     {
-      accessorKey: "action",
+      accessorKey: "side",
       header: () => <span className="ml-10">Side</span>,
       cell: ({ row }) => {
-        const action = (row.getValue("action") as string).split(" ")[1];
+        const side = row.original.side;
         return (
           <span
             className={cn(
               "w-full ml-10",
-              action === "Long"
+              side === "Long"
                 ? "text-[#0AFC5C]"
-                : action === "Short"
+                : side === "Short"
                   ? "text-[#FF3318]"
                   : ""
             )}
           >
-            {action}
+            {side as string}
           </span>
         );
       }
@@ -130,62 +148,55 @@ const TradeData = () => {
       accessorKey: "size",
       header: () => <span>Size</span>,
       cell: ({ row }) => {
-        // const size = formatUnits(row.getValue("size") as bigint, 18);
-        const action = row.getValue("action") as string;
-        if (action == "Open Long Position")
-          return (
-            <span>
-              {longTokenBalance}
-            </span>
-          );
-        else if (action == "Open Short Position")
-          return (
-            <span>
-              {shortTokenBalance}
-            </span>
-          );
-        return <span>-</span>;
+        const { tokenSize } = row.original;
+        return (
+          <span>
+            {toUnits(
+              getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals!),
+              4
+            )}
+          </span>
+        );
       }
     },
-    // {
-    //   accessorKey: "entry",
-    //   header: () => <span>Entry</span>,
-    //   cell: ({ row }) => {
-    //     // const value = parseFloat(row.getValue("value"));
-    //     // const formatted = toDollarUnits(value, 2);
-    //     return <span>-</span>;
-    //   }
-    // },
-    // {
-    //   accessorKey: "open_time",
-    //   header: () => <span>Open Time</span>,
-    //   cell: ({ row }) => {
-    //     // const value = parseFloat(row.getValue("value"));
-    //     // const formatted = toDollarUnits(value, 2);
-    //     return <span>-</span>;
-    //   }
-    // },
     {
       accessorKey: "pnl",
       header: () => <span>P&L</span>,
       cell: ({ row }) => {
-        // const pnlValue = parseFloat(row.getValue("pnl"));
-        // const formatted = toDollarUnits(pnlValue, 2);
-        const isGrowth = false;
-        return <span className={cn(isGrowth && "text-[#07AE3B]")}>-</span>;
+        const pAndLAmt = parseFloat(row.original.PAndLAmt ?? "0");
+        const pAndLPercent = parseFloat(row.original.PAndLPercent ?? "0");
+        return (
+          <p className="flex flex-col gap-1 items-start">
+            <span
+              className={cn(
+                 pAndLPercent == 0 ? "text-gray-200" : pAndLPercent > 0 ? "text-[#0AFC5C]" : "text-[#FF3318]"
+              )}
+            >
+              {toUnits(pAndLAmt, 4)}
+            </span>
+            <span
+              className={cn(
+                "font-normal text-xs/4",
+                pAndLPercent > 0 ? "text-[#07AE3B]" : "text-[#F23645]"
+              )}
+            >
+              {toUnits(pAndLPercent, 4)}%
+            </span>
+          </p>
+        );
       }
     },
     {
       accessorKey: "action",
       header: () => <span className="sr-only">Action</span>,
       cell: ({ row }) => {
-        const action = row.original.action;
+        const action = row.original;
         return (
           <ClosePositionPopover
             positions={positions}
             isLong={selectedPosType == "Open Long Position" ? true : false}
             onClickTrigger={() => {
-              setSelectedPosType(action);
+              // setSelectedPosType(action);
             }}
           >
             <button
@@ -363,7 +374,7 @@ const TradeData = () => {
           <OpenPositionsTable
             columns={positionColumns}
             data={openPositions}
-            isLoading={isTxLoading}
+            isLoading={loadingOpenOrders}
           />
         </TabsContent>
         {/* --- Transactions History Table --- */}
