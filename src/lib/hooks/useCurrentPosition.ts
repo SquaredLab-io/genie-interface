@@ -25,7 +25,7 @@ const getParsedJson = (pos: string | undefined) => {
   if (pos) {
     try {
       const parsedJson = JSON.parse(pos);
-      console.log("parsedJson", parsedJson);
+      // console.log("parsedJson", parsedJson);
       return parsedJson;
     } catch (error) {
       console.error("Failed to parse JSON:", error);

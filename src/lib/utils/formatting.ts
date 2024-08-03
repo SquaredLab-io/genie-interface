@@ -42,5 +42,6 @@ export function shortenHash(hash: string): string {
 }
 
 export function getDecimalAdjusted(value: string, decimals: number): number {
+  if (!value) return 0;
   return parseFloat(value ?? "0") / 10 ** (decimals ?? 18);
 }

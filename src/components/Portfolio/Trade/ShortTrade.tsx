@@ -29,6 +29,8 @@ import { CONFIRMATION } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
 import { Address } from "viem";
 import { getTokenAddress } from "@lib/utils/getTokenAddress";
+import { useOpenOrders } from "@lib/hooks/useOpenOrders";
+import { useTxHistory } from "@lib/hooks/useTxHistory";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -66,11 +68,20 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     isPending: isApprovePending
   } = useWriteContract();
 
+  // Both hooks paused, Refetch method to be used on Successful tx
+  const { refetch: refetchOpenOrders } = useOpenOrders({
+    poolAddress: selectedPool()?.poolAddr!,
+    paused: true
+  });
+
+  const { refetch: refetchTxHistory } = useTxHistory(true);
+
   /**
    * This handler method approves signers TOKEN_ADDR tokens to be spent on Potentia Protocol
    */
   const approveHandler = async () => {
-    const _amount = parseFloat(quantity) * 10 ** (selectedPool()?.underlyingDecimals ?? 18);
+    const _amount =
+      parseFloat(quantity) * 10 ** 18;
     try {
       await writeApproveToken({
         abi: WethABi,
@@ -170,6 +181,8 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     } else if (isSuccess) {
       refetchBalance();
       refetchPosition();
+      refetchOpenOrders();
+      refetchTxHistory();
       notification.success({
         title: "Long position successfully opened!"
       });
@@ -198,7 +211,11 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
           <span>Fetching...</span>
         ) : (
           <span className="font-medium">
-            {toUnits(parseFloat(positionData?.shortToken?.balance ?? "0") / 10 ** (selectedPool()?.underlyingDecimals ?? 18), 4)}
+            {toUnits(
+              parseFloat(positionData?.shortToken?.balance ?? "0") /
+                10 ** 18,
+              4
+            )}
           </span>
         )}
       </p>

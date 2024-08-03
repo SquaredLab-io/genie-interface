@@ -27,6 +27,8 @@ import toUnits from "@lib/utils/formatting";
 import { CONFIRMATION } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
 import { Address } from "viem";
+import { useOpenOrders } from "@lib/hooks/useOpenOrders";
+import { useTxHistory } from "@lib/hooks/useTxHistory";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -52,12 +54,20 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     token: selectedPool()?.underlyingAddress! as Address
   });
 
-  // Current Open Long Position
+  // All current positions
   const {
     data: positionData,
     isFetching: isPositionFetching,
     refetch: refetchPosition
   } = useCurrentPosition(selectedPool()?.poolAddr as Address);
+
+  // Both hooks paused, Refetch method to be used on Successful tx
+  const { refetch: refetchOpenOrders } = useOpenOrders({
+    poolAddress: selectedPool()?.poolAddr!,
+    paused: true
+  });
+
+  const { refetch: refetchTxHistory } = useTxHistory(true);
 
   // Write Hook => Token Approval
   const {
@@ -125,7 +135,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       // set txHash in a state
       if (hash) {
         setTxHash(hash as `0x${string}`);
-        console.log("txnHash", hash);
+        // console.log("txnHash", hash);
       }
     } catch (e) {
       // notification.error({
@@ -180,6 +190,8 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     } else if (isSuccess) {
       refetchBalance();
       refetchPosition();
+      refetchOpenOrders();
+      refetchTxHistory();
       notification.success({
         title: "Long position successfully opened!"
       });
@@ -200,7 +212,11 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
           <span>Fetching...</span>
         ) : (
           <span className="font-medium">
-            {toUnits(parseFloat(positionData?.longToken?.balance ?? "0") / 10 ** (selectedPool()?.underlyingDecimals ?? 18), 4)}
+            {toUnits(
+              parseFloat(positionData?.longToken?.balance ?? "0") /
+                10 ** 18,
+              4
+            )}
           </span>
         )}
       </p>

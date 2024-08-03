@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
-import { toDollarUnits } from "@lib/utils/formatting";
+import toUnits, { toDollarUnits } from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
 import { Button } from "@components/ui/button";
 import { PoolInfo } from "@squaredlab-io/sdk/src";
@@ -82,7 +82,7 @@ export function allPoolsColumnDef(): ColumnDef<PoolInfo>[] {
         const { tvl, underlying, underlyingDecimals } = row.original;
         return (
           <span className="pl-[18px]">
-            {parseFloat(tvl ?? "0") / 10 ** underlyingDecimals} {underlying}
+            {toUnits(parseFloat(tvl ?? "0") / 10 ** underlyingDecimals, 4)} {underlying}
           </span>
         );
       }

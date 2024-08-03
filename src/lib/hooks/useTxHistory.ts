@@ -15,7 +15,7 @@ type ReturnTxHistory = {
  * Hook that fetches connected user's Transaction history in the current Pool
  * @returns data, isLoading, refetch
  */
-export function useTxHistory(): ReturnTxHistory {
+export function useTxHistory(paused = false): ReturnTxHistory {
   const [txHistory, setTxHistory] = useState<Tx[]>();
   const [isLoadingTxH, setIsLoadingTxH] = useState<boolean>(false);
   const { selectedPool } = usePoolsStore();
@@ -44,7 +44,7 @@ export function useTxHistory(): ReturnTxHistory {
   }
 
   useEffect(() => {
-    if (address && potentia && selectedPool()) {
+    if (address && potentia && selectedPool() && !paused) {
       refetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -41,9 +41,7 @@ const TradeData = () => {
     openOrders,
     isFetching: loadingOpenOrders,
     refetch
-  } = useOpenOrders(selectedPool()?.poolAddr!);
-
-  useEffect(() => console.log("openOrders in Tradedata", openOrders), [openOrders]);
+  } = useOpenOrders({ poolAddress: selectedPool()?.poolAddr! });
 
   // User's Current Open Positions -- Long and Short
   // const openPositions = useMemo((): Tx[] => {
@@ -53,10 +51,12 @@ const TradeData = () => {
   const openPositions = getOpenTransactions(openOrders);
   const closedPositions = getClosedTransactions(txHistory);
 
+  // useEffect(() => console.log("openPositions in Tradedata", openPositions), [openPositions]);
+
   const longTokenBalance = toUnits(
     getDecimalAdjusted(
       positions?.longToken?.balance,
-      selectedPool()?.underlyingDecimals!
+      18
     ),
     3
   );
@@ -64,7 +64,7 @@ const TradeData = () => {
   const shortTokenBalance = toUnits(
     getDecimalAdjusted(
       positions?.shortToken?.balance,
-      selectedPool()?.underlyingDecimals!
+      18
     ),
     3
   );
@@ -78,12 +78,14 @@ const TradeData = () => {
         </div>
       ),
       cell: ({ row }) => {
-        const { power, pool } = selectedPool()!;
-        const assets = pool.split(" / ").map((asset) => asset.trim());
+        // const { power, pool } = selectedPool()!;
+        const assets = selectedPool()
+          ?.pool.split(" / ")
+          .map((asset) => asset.trim());
         return (
           <div className="whitespace-nowrap flex flex-row gap-2 text-left font-medium pl-[18px] py-6">
             <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-2">
-              {assets.map((asset) => (
+              {assets?.map((asset) => (
                 <div
                   key={asset}
                   className="z-0 flex overflow-hidden ring-1 ring-white rounded-full bg-neutral-800"
@@ -100,7 +102,7 @@ const TradeData = () => {
             <div className="flex flex-col gap-1 text-left">
               <div className="inline-flex gap-2">
                 <p className="font-bold text-sm/5">
-                  {assets.map((asset, index) => (
+                  {assets?.map((asset, index) => (
                     <>
                       <span key={index}>{asset}</span>
                       {assets.length !== index + 1 && (
@@ -110,7 +112,7 @@ const TradeData = () => {
                   ))}
                 </p>
                 <p className="font-medium text-xs/3 bg-[#49AFE9] py-1 px-[10px] rounded-md">
-                  p = {power}
+                  p = {selectedPool()?.power}
                 </p>
               </div>
               <div className="font-normal text-sm/5 text-[#9299AA]">
@@ -169,7 +171,11 @@ const TradeData = () => {
           <p className="flex flex-col gap-1 items-start">
             <span
               className={cn(
-                 pAndLPercent == 0 ? "text-gray-200" : pAndLPercent > 0 ? "text-[#0AFC5C]" : "text-[#FF3318]"
+                pAndLPercent == 0
+                  ? "text-gray-200"
+                  : pAndLPercent > 0
+                    ? "text-[#0AFC5C]"
+                    : "text-[#FF3318]"
               )}
             >
               {toUnits(pAndLAmt, 4)}
@@ -190,21 +196,16 @@ const TradeData = () => {
       accessorKey: "action",
       header: () => <span className="sr-only">Action</span>,
       cell: ({ row }) => {
-        const action = row.original;
+        const side = row.original.side;
         return (
           <ClosePositionPopover
             positions={positions}
-            isLong={selectedPosType == "Open Long Position" ? true : false}
-            onClickTrigger={() => {
-              // setSelectedPosType(action);
-            }}
+            isLong={side === "Long" ? true : false}
+            // onClickTrigger={() => {
+            //   // setSelectedPosType(action);
+            // }}
           >
-            <button
-              className="py-1 px-[22px] text-white bg-[#32120D] font-normal text-[14px]/5 rounded-sm"
-              // onClick={() => {
-              //   setIsPopoverOpen(true);
-              // }}
-            >
+            <button className="py-1 px-[22px] text-white bg-[#32120D] font-normal text-[14px]/5 rounded-sm">
               Close
             </button>
           </ClosePositionPopover>
