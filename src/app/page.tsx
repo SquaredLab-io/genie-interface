@@ -17,9 +17,9 @@ const Portfolio = dynamic(() =>
  * Trade Interface - Currently set as the Homepage of Genie
  */
 export default function Home() {
-  const [notFound, setNotFound] = useState(false);
+  // const [notFound, setNotFound] = useState(false);
 
-  const { pools, isFetching, refetch } = usePools();
+  const { pools, isFetching } = usePools();
   const { isMounted } = useIsMounted();
 
   const { poolsData, updatePoolsData } = usePoolsStore();
@@ -30,7 +30,6 @@ export default function Home() {
       return poolsData;
     } else if (pools.length) {
       // 2. if not, re/fetch pools
-      // refetch();
       return pools;
     } else {
       return undefined;
@@ -46,9 +45,7 @@ export default function Home() {
 
   useEffect(() => {
     if (pools.length) {
-      // Pools are fetched, update it globally
       updatePoolsData(pools);
-      // console.log("pools updated", pools);
     }
   }, [pools]);
 
@@ -59,12 +56,13 @@ export default function Home() {
         <span>preparing...</span>
       </main>
     );
-  else if (notFound)
-    return (
-      <main className="page-center size-full flex-col-center gap-5 font-sans-ibm-plex">
-        <h3 className="text-2xl">No pools found</h3>
-      </main>
-    );
+
+  // else if (notFound)
+  //   return (
+  //     <main className="page-center size-full flex-col-center gap-5 font-sans-ibm-plex">
+  //       <h3 className="text-2xl">No pools found</h3>
+  //     </main>
+  //   );
 
   return (
     <main className="border-t border-secondary-gray page-center">

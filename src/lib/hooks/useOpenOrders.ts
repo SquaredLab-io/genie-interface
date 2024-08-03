@@ -2,6 +2,13 @@ import { useEffect, useState } from "react";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import notification from "@components/common/notification";
 import { PositionTab } from "@squaredlab-io/sdk/src";
+import { useLocalStorage } from "usehooks-ts";
+import { useAccount } from "wagmi";
+
+interface PropsType {
+  poolAddress: string;
+  paused?: boolean;
+}
 
 interface ReturnType {
   openOrders: PositionTab | undefined;
@@ -9,10 +16,20 @@ interface ReturnType {
   refetch: () => Promise<void>;
 }
 
-export function useOpenOrders(poolAddress: string, paused = false) {
+/**
+ *
+ * @param poolAddress
+ * @param paused Pause the auto fetching
+ * @returns openOrders, isFetching, refetch
+ */
+export function useOpenOrders({ poolAddress, paused = false }: PropsType): ReturnType {
   const [orders, setOrders] = useState<PositionTab>();
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
+  const { address } = useAccount();
+
+  // using local-storage api for caching
+  const [value, setValue] = useLocalStorage(`genie:open-order:${address}`, "");
 
   const { potentia } = usePotentiaSdk();
 
@@ -20,8 +37,11 @@ export function useOpenOrders(poolAddress: string, paused = false) {
     try {
       setIsFetching(true);
       const openOrders = await potentia?.openOrders(poolAddress);
-      console.log("openOrders", openOrders);
-      setOrders(openOrders);
+      // console.log("openOrders", openOrders);
+      if (openOrders) {
+        setOrders(openOrders);
+        setValue(JSON.stringify(openOrders));
+      }
     } catch (error) {
       notification.error({
         title: "Failed to fetch Open Orders",
@@ -36,10 +56,12 @@ export function useOpenOrders(poolAddress: string, paused = false) {
 
   useEffect(() => {
     if (potentia && !paused) {
+      if (value !== "") {
+        setOrders(JSON.parse(value));
+      }
       refetch();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [potentia]);
+  }, [potentia, value, address]);
 
   return {
     openOrders: orders,
