@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import notification from "@components/common/notification";
 import { FundingInfo } from "@squaredlab-io/sdk/src/pool";
+import { useLocalStorage } from "usehooks-ts";
+import { usePoolsStore } from "@store/poolsStore";
 
 interface PropsType {
   poolAddress: string | undefined;
@@ -36,8 +38,14 @@ export function useTokenPrice({ poolAddress, paused = false }: PropsType): Retur
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
 
+  // store
+  const { selectedPool } = usePoolsStore();
+
   // using local-storage api for caching
-  // const [value, setValue] = useLocalStorage(`genie:open-order:${address}`, "");
+  const [value, setValue] = useLocalStorage(
+    `genie:token-prices:${selectedPool()?.underlyingAddress}`,
+    ""
+  );
 
   const { potentia } = usePotentiaSdk();
 
@@ -48,6 +56,7 @@ export function useTokenPrice({ poolAddress, paused = false }: PropsType): Retur
       const tokenprice = await potentia?.fetchTokenPrice(poolAddress!);
       console.log("tokenprice", tokenprice);
       setTokenPrices(tokenprice);
+      setValue(JSON.stringify(tokenprice));
       // setValue(JSON.stringify(openOrders));
     } catch (error) {
       notification.error({
@@ -62,14 +71,12 @@ export function useTokenPrice({ poolAddress, paused = false }: PropsType): Retur
   };
 
   useEffect(() => {
-    if (potentia && !paused) {
-      if (poolAddress) {
-        refetch();
-      } else {
-        notification.error({
-          title: "Pool is not available"
-        });
+    if (potentia && !paused && poolAddress) {
+      if (value !== "") {
+        const parsedValue = JSON.parse(value);
+        setTokenPrices(parsedValue);
       }
+      refetch();
     }
   }, [potentia, poolAddress]);
 

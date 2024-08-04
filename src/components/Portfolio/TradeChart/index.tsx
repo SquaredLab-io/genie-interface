@@ -20,9 +20,9 @@ const TradeChart = ({ potentia, widgetProps }: PropsType) => {
   const [isChartReady, setIsChartReady] = useState(false);
   const { selectedPool } = usePoolsStore();
 
-  console.log("potentia status in tradechart", !!potentia);
+  // console.log("potentia status in tradechart", !!potentia);
   const Datafeed = getPotentiaDataFeed(potentia);
-  console.log("datafeed in tradechart", Datafeed);
+  // console.log("datafeed in tradechart", Datafeed);
 
   const chartContainerRef =
     useRef<HTMLDivElement>() as MutableRefObject<HTMLInputElement>;

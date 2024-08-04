@@ -55,13 +55,13 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
   };
 
   useEffect(() => {
-    if (potentia && !paused) {
+    if (potentia && !paused && poolAddress && address) {
       if (value !== "") {
         setOrders(JSON.parse(value));
       }
       refetch();
     }
-  }, [potentia, value, address]);
+  }, [potentia, value, address, poolAddress]);
 
   return {
     openOrders: orders,

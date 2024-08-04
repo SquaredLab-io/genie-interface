@@ -1,29 +1,39 @@
+import { cn } from "@lib/utils";
+
+interface MarkerProps {
+  label: string;
+  value: string;
+  fetching: boolean;
+  showChange?: boolean;
+}
+
+function Marker({ label, value, fetching, showChange = false }: MarkerProps) {
+  return (
+    <p className={"inline-flex items-center justify-between w-full"}>
+      <span className="text-[#757B80]">{label}</span>
+      <span
+        className={cn(
+          "font-medium",
+          showChange && parseFloat(value ?? "0") > 0
+            ? "text-positive-green"
+            : "text-negative-red"
+        )}
+      >
+        {fetching ? "-" : value}
+      </span>
+    </p>
+  );
+}
+
 const MarketData = () => {
-  const rowStyle = "inline-flex items-center justify-between w-full";
   return (
     <div className="px-4 pb-4">
-      <h3 className="font-medium text-sm/[54px]">Market Data</h3>
+      <h3 className="font-medium text-sm/[54px]">Underlying Market Data</h3>
       <div className="flex flex-col gap-2 font-normal text-xs/[14px]">
-        <p className={rowStyle}>
-          <span className="text-[#757B80]">Price</span>
-          <span className="font-medium">$0.482</span>
-        </p>
-        <p className={rowStyle}>
-          <span className="text-[#757B80]">Market Cap</span>
-          <span className="font-medium">$482M</span>
-        </p>
-        <p className={rowStyle}>
-          <span className="text-[#757B80]">Volume (24h)</span>
-          <span className="font-medium">$291M</span>
-        </p>
-        <p className={rowStyle}>
-          <span className="text-[#757B80]">Day Change</span>
-          <span className="font-medium">-0.54%</span>
-        </p>
-        <p className={rowStyle}>
-          <span className="text-[#757B80]">Max Total Supply</span>
-          <span className="font-medium">$1.5 billion</span>
-        </p>
+        <Marker label={"Market Cap"} value={"$482M"} fetching={false} />
+        <Marker label={"Volume (24h)"} value={"$291M"} fetching={false} />
+        <Marker label={"Day Change"} value={"-0.54%"} fetching={false} showChange={true} />
+        <Marker label={"Max Total Supply"} value={"$1.5B"} fetching={false} />
       </div>
     </div>
   );
