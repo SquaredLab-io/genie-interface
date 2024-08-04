@@ -27,7 +27,7 @@ const PoolsData = () => {
   
   const { pools, isFetching, refetch } = usePools();
   const { updatePoolsData, poolsData } = usePoolsStore();
-  const { updateSelectedPool } = usePoolsStore();
+  // const { updateSelectedPool } = usePoolsStore();
 
   const _pools = useMemo(() => {
     if (poolsData) {
@@ -52,13 +52,13 @@ const PoolsData = () => {
 
   const poolsColumns = allPoolsColumnDef();
   // const userColumns = userPoolsColumnDef();
+  // const txColumns = txColumnDef();
 
   const activeTabStyle =
     "py-2 px-4 data-[state=active]:border data-[state=active]:border-[#00A0FC] rounded-lg data-[state=active]:bg-[#0A344D]";
 
   return (
     <div className="py-10">
-      <Button onClick={refetch} variant={"secondary"}>Fetch Pools</Button>
       <Tabs defaultValue={TableOptions.all}>
         <div className="inline-flex items-center justify-between w-full font-medium text-sm/5 py-4 border-t border-b border-secondary-gray">
           <TabsList className="inline-flex">

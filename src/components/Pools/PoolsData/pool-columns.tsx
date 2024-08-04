@@ -96,8 +96,7 @@ export function allPoolsColumnDef(): ColumnDef<PoolInfo>[] {
         const growth = parseFloat("0");
         return (
           <div className="pl-[18px] inline-flex gap-1">
-            <span>{parseFloat(vol ?? "0") / 10 ** underlyingDecimals}</span> {underlying}
-            {/* {growth !== 0 && ( */}
+            <span>{toUnits(parseFloat(vol ?? "0") / 10 ** underlyingDecimals, 4)}</span> {underlying}
             <span
               className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
             >

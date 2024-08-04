@@ -18,11 +18,11 @@ const Portfolio = dynamic(() =>
  */
 export default function Home() {
   // const [notFound, setNotFound] = useState(false);
+  const { poolsData, updatePoolsData, selectedPool } = usePoolsStore();
 
   const { pools, isFetching } = usePools();
-  const { isMounted } = useIsMounted();
 
-  const { poolsData, updatePoolsData } = usePoolsStore();
+  const { isMounted } = useIsMounted();
 
   const _pools: PoolInfo[] | undefined = useMemo(() => {
     if (poolsData?.length) {
@@ -49,7 +49,7 @@ export default function Home() {
     }
   }, [pools]);
 
-  if (!isMounted || ( isFetching && !_pools))
+  if (!isMounted || (isFetching && !_pools))
     return (
       <main className="page-center size-full flex-col-center gap-5 font-sans-ibm-plex">
         <SpinnerIcon stroke="#01A1FF" />
