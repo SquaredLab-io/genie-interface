@@ -10,12 +10,14 @@ import TradeData from "@components/Portfolio/TradeData";
 import ChartLoader from "./TradeChart/loader";
 import TradeFlow from "./TradeFlow";
 import { defaultWidgetProps } from "./helper";
+import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 
 // Trading Chart Container imported dynamically
 const TradeChart = dynamic(() => import("./TradeChart").then((mod) => mod.default));
 
 const Portfolio = () => {
   const [isScriptReady, setIsScriptReady] = useState(false);
+  const { potentia } = usePotentiaSdk();
 
   // TODO: To be removed
   useEffect(() => console.log("isScriptReady", isScriptReady), [isScriptReady]);
@@ -35,7 +37,11 @@ const Portfolio = () => {
         <div className="flex-1 flex flex-col w-full border-r border-secondary-gray">
           <AssetStatsBar />
           <div className="grid grid-cols-4 w-full h-[calc(100vh-135px)]">
-            {isScriptReady ? <TradeChart {...defaultWidgetProps} /> : <ChartLoader />}
+            {isScriptReady && potentia ? (
+              <TradeChart widgetProps={defaultWidgetProps} potentia={potentia} />
+            ) : (
+              <ChartLoader />
+            )}
             <TradeFlow />
             <TradeData />
           </div>
