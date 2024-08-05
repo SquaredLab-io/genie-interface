@@ -13,23 +13,21 @@ import { PoolInfo } from "@squaredlab-io/sdk/src";
 // import { transformTimeseries } from "./helper";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
 
-const PoolChart = (
-  {
-    overviewPool
-    // timeseries,
-    // isLoadingData
-  }: {
-    overviewPool: PoolInfo
-    // timeseries: Timeseries[];
-    // isLoadingData: boolean;
-  }
-) => {
+const CLChart = ({
+  overviewPool
+  // timeseries,
+  // isLoadingData
+}: {
+  overviewPool: PoolInfo;
+  // timeseries: Timeseries[];
+  // isLoadingData: boolean;
+}) => {
   const chartContainerRef = useRef(null);
   const [isLoadingChart, setIsLoadingChart] = useState(false);
 
   // A useEffect that creates the chart based on configuration on load
   useEffect(() => {
-    const ethArray = [
+    const currentArray = [
       [
         { time: "2024-06-25", value: 1.025029e22 },
         { time: "2024-06-26", value: 1.0258792135962638e22 },
@@ -50,31 +48,6 @@ const PoolChart = (
       ]
     ];
 
-    const btcArray = [
-      [
-        {
-          time: "2024-06-30",
-          value: 1.0025e22
-        },
-        {
-          time: "2024-07-01",
-          value: 1.0044417800435319e22
-        }
-      ],
-      [
-        {
-          time: "2024-06-30",
-          value: 673829413523105000000
-        },
-        {
-          time: "2024-07-01",
-          value: 1.7424589014307454e21
-        }
-      ]
-    ];
-
-    const currentArray = ethArray;
-
     const colors = {
       backgroundColor: "#16191F",
       lineColorOne: "#FF7300",
@@ -94,10 +67,10 @@ const PoolChart = (
       autoSize: true,
       grid: {
         vertLines: {
-          visible: false
+          visible: true
         },
         horzLines: {
-          visible: false
+          visible: true
         }
       }
     };
@@ -155,13 +128,10 @@ const PoolChart = (
           <span>preparing chart...</span>
         </div>
       ) : (
-        <div
-          className="h-[calc(100%-20px)]"
-          ref={chartContainerRef}
-        />
+        <div className="h-[calc(100%-20px)]" ref={chartContainerRef} />
       )}
     </>
   );
 };
 
-export default PoolChart;
+export default CLChart;

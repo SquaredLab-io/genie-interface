@@ -37,7 +37,6 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
     try {
       setIsFetching(true);
       const openOrders = await potentia?.openOrders(poolAddress);
-      // console.log("openOrders", openOrders);
       if (openOrders) {
         setOrders(openOrders);
         setValue(JSON.stringify(openOrders));

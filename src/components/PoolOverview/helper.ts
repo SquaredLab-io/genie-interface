@@ -1,7 +1,9 @@
+import { DailyInfo } from "@squaredlab-io/sdk/src/subgraph";
+
 export enum GraphOptions {
   volume = "volume",
   tvl = "tvl",
-  crossbook = "crossbook",
+  // crossbook = "crossbook",
   counterpart = "counterpart"
 }
 
@@ -42,7 +44,7 @@ export type Timeseries = {
 
 // Function to convert timestamp to yyyy-mm-dd format
 export const formatDate = (timestamp: number) => {
-  const date = new Date(timestamp * 1000);
+  const date = new Date(timestamp);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
@@ -78,4 +80,26 @@ export const transformTimeseries = (timeseries: Timeseries[]) => {
   const array2 = removeDuplicateDates(_array2);
 
   return { array1, array2 };
+};
+
+export const getVolumeTimeseries = (dailyData: DailyInfo[] | undefined) => {
+  if (!dailyData) return [];
+  return dailyData.map((data) => {
+    return {
+      time: formatDate(parseInt(data.date)),
+      value: parseFloat(data.volume) / 10 ** 18
+      // value: parseFloat(data.volume) / 10 ** 18
+    };
+  }).reverse();
+};
+
+export const getTvlTimeseries = (dailyData: DailyInfo[] | undefined) => {
+  if (!dailyData) return [];
+  return dailyData.map((data) => {
+    return {
+      time: formatDate(parseInt(data.date)),
+      value: parseFloat(data.lastTvl) / 10 ** 18
+      // value: parseFloat(data.volume) / 10 ** 18
+    };
+  }).reverse();
 };

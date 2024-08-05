@@ -8,6 +8,8 @@ import { usePoolsStore } from "@store/poolsStore";
 // import PoolOverview from "@components/PoolOverview";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
 import dynamic from "next/dynamic";
+import { useDailyData } from "@lib/hooks/useDailyData";
+import { Address } from "viem";
 
 // PoolOverview imported dynamically
 const PoolOverview = dynamic(() =>
@@ -19,7 +21,7 @@ export default function Overview() {
 
   const { id } = useParams();
   const isMounted = useIsMounted();
-  const { poolsData, updatePoolsData } = usePoolsStore(); 
+  const { poolsData, updatePoolsData } = usePoolsStore();
 
   // get Pools
   const { pools, isFetching } = usePools();
@@ -49,12 +51,12 @@ export default function Overview() {
   }, [pools]);
 
   // Set to 404 if nothing fetched for 10 secs
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!currentPool) setNotFound(true);
-    }, 10000);
-    return () => clearTimeout(timeout);
-  }, []);
+  // useEffect(() => {
+  //   const timeout = setTimeout(() => {
+  //     if (!currentPool) setNotFound(true);
+  //   }, 10000);
+  //   return () => clearTimeout(timeout);
+  // }, []);
 
   if (!isMounted)
     return (

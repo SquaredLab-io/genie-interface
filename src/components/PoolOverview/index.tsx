@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { useAccount } from "wagmi";
+import { Address } from "viem";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import DropDownIcon from "@components/icons/DropDownIcon";
 import { cn } from "@lib/utils";
@@ -10,19 +11,21 @@ import Label from "./Label";
 import AddLiquidity from "./AddLiquidity";
 import RemoveLiquidity from "./RemoveLiquidity";
 import { GraphOptions } from "./helper";
-import PoolChart from "./PoolChart";
-import { getCurrentDateTime } from "@lib/utils/getCurrentTime";
+// Charts
+import VolumeChart from "./VolumeChart";
+import CLChart from "./CLChart";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
 import { LpTradeOptions } from "@lib/types/enums";
 import SelectLpTrade from "./SelectLpTrade";
 import { Separator } from "@components/ui/separator";
 import { PoolInfo } from "@squaredlab-io/sdk/src";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
-import { Address } from "viem";
+import { useDailyData } from "@lib/hooks/useDailyData";
+import TVLChart from "./TVLChart";
 
 const PoolHeader = ({ assets, power }: { assets: string[]; power: number }) => {
   return (
-    <TokenSelectPopover size="wide">
+    <TokenSelectPopover size="compact">
       <div className="whitespace-nowrap flex flex-row items-center gap-3 text-left font-medium rounded-full max-w-fit p-2 cursor-pointer">
         <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-3">
           {assets.map((asset, index) => (
@@ -67,39 +70,15 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
     "data-[state=active]:bg-white data-[state=active]:text-black" // active state
   );
 
+  const { dailyData, isFetching: isFetchingDailyData } = useDailyData({
+    poolAddress: overviewPool?.poolAddr as Address
+  });
   // Current Open Long Position
   const {
     data: position,
     isFetching: isPositionFetching,
     refetch: refetchPosition
   } = useCurrentPosition(overviewPool?.poolAddr! as Address);
-
-  // const tradeTabStyle = cn(
-  //   "w-1/2 py-3 text-center px-3",
-  //   "data-[state=active]:border border-primary-blue data-[state=active]:bg-gradient-to-r data-[state=active]:text-transparent data-[state=active]:bg-clip-text data-[state=active]:from-pure-cyan data-[state=active]:to-primary-blue"
-  // );
-
-  // TODO: Activate this fetching function
-  // Fetch the timeseries if after Potentia SDK is established
-  // useEffect(() => {
-  //   if (potentia) {
-  //     (async () => {
-  //       if (overviewPool) {
-  //         try {
-  //           // setIsLoading(true);
-  //           const data = await potentia?.getTimeseries(overviewPool.poolAddr as Address);
-  //           // console.log("timeseries data", data);
-  //           // setTimeseries(data == undefined ? [] : data);
-  //         } catch (error) {
-  //           console.error("error", error);
-  //         } finally {
-  //           // setIsLoading(false);
-  //         }
-  //       }
-  //     })();
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [potentia]);
 
   if (!overviewPool) return <main></main>;
 
@@ -127,18 +106,30 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
               <TabsTrigger value={GraphOptions.tvl} className={graphTabStyle}>
                 TVL
               </TabsTrigger>
-              <TabsTrigger value={GraphOptions.crossbook} className={graphTabStyle}>
+              {/* <TabsTrigger value={GraphOptions.crossbook} className={graphTabStyle}>
                 Cross Book
-              </TabsTrigger>
+              </TabsTrigger> */}
               <TabsTrigger value={GraphOptions.counterpart} className={graphTabStyle}>
                 Counterpart Liquidity
               </TabsTrigger>
             </TabsList>
-            <TabsContent value={GraphOptions.volume}>Volume</TabsContent>
-            <TabsContent value={GraphOptions.tvl}>TVL</TabsContent>
-            <TabsContent value={GraphOptions.crossbook}>Cross Book</TabsContent>
+            <TabsContent value={GraphOptions.volume}>
+              <VolumeChart
+                overviewPool={overviewPool}
+                dailyData={dailyData}
+                loading={isFetchingDailyData}
+              />
+            </TabsContent>
+            <TabsContent value={GraphOptions.tvl}>
+              <TVLChart
+                overviewPool={overviewPool}
+                dailyData={dailyData}
+                loading={isFetchingDailyData}
+              />
+            </TabsContent>
+            {/* <TabsContent value={GraphOptions.crossbook}>Cross Book</TabsContent> */}
             <TabsContent value={GraphOptions.counterpart} className="h-[calc(100%-36px)]">
-              <PoolChart overviewPool={overviewPool} />
+              <CLChart overviewPool={overviewPool} />
             </TabsContent>
           </Tabs>
         </div>
@@ -152,27 +143,19 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
             </header>
             <Separator className="mb-3" />
             {lpTrade === LpTradeOptions.supply ? (
-              <AddLiquidity overviewPool={overviewPool} lpBalance={position.lpToken.balance} isFetchingBal={isPositionFetching} />
+              <AddLiquidity
+                overviewPool={overviewPool}
+                lpBalance={position?.lpToken?.balance}
+                isFetchingBal={isPositionFetching}
+              />
             ) : (
-              <RemoveLiquidity overviewPool={overviewPool} lpBalance={position.lpToken.balance} isFetchingBal={isPositionFetching} />
+              <RemoveLiquidity
+                overviewPool={overviewPool}
+                lpBalance={position?.lpToken?.balance}
+                isFetchingBal={isPositionFetching}
+              />
             )}
           </div>
-          {/* <Tabs defaultValue={LiquidityOptions.add}>
-            <TabsList className="inline-flex font-semibold text-sm/5 w-full bg-gray-800 mb-1">
-              <TabsTrigger value={LiquidityOptions.add} className={tradeTabStyle}>
-                Add Liquidity
-              </TabsTrigger>
-              <TabsTrigger value={LiquidityOptions.remove} className={tradeTabStyle}>
-                Remove Liquidity
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value={LiquidityOptions.add}>
-              <AddLiquidity />
-            </TabsContent>
-            <TabsContent value={LiquidityOptions.remove}>
-              <RemoveLiquidity />
-            </TabsContent>
-          </Tabs> */}
         </div>
       </div>
     </div>

@@ -134,7 +134,7 @@ const AddLiquidity = ({
           </p>
           <div className="inline-flex-between">
             <div className="max-w-fit inline-flex gap-2 items-center">
-              <Image src={""} alt="token" width={24} height={24} />
+              <Image src={`/tokens/${overviewPool?.underlying.toLowerCase()}.svg`} alt="token" width={24} height={24} />
               <span className="font-medium text-base/5">{underlying}</span>
             </div>
             <input

@@ -14,7 +14,8 @@ export const usePotentiaSdk = () => {
 
   const { address, chainId } = useAccount();
   const { data: walletClient, status } = useWalletClient();
-  const publicClient: any = createPublicClient({
+
+ const publicClient: any = createPublicClient({
     chain: baseSepolia,
     transport: http()
   });
