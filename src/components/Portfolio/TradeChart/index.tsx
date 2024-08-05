@@ -47,14 +47,17 @@ const TradeChart = ({ potentia, widgetProps }: PropsType) => {
       autosize: widgetProps.autosize,
       theme: widgetProps.theme,
       debug: false,
-      favorites: {
-        intervals: ["1S", "1", "1D"] as ResolutionString[],
-        chartTypes: ["Area", "Candles"]
-      },
+      // favorites: {
+      //   intervals: ["1S", "1", "1D"] as ResolutionString[],
+      //   chartTypes: ["Area", "Candles"]
+      // },
       symbol_search_request_delay: widgetProps.symbol_search_request_delay,
       auto_save_delay: widgetProps.auto_save_delay,
-      toolbar_bg: widgetProps.toolbar_bg,
-      time_frames: widgetProps.time_frames
+      toolbar_bg: widgetProps.toolbar_bg
+      // time_frames: props.time_frames
+      // time_scale: {
+      //   min_bar_spacing: 10
+      // }
     };
 
     const tvWidget = new widget(widgetOptions);

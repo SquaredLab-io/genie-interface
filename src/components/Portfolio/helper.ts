@@ -8,7 +8,11 @@ export const underlyingTokens = ["WETH", "BTC", "USDT", "USDC"];
 // Chart widget props
 export const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
   // symbol: "Kraken:USDC/USDT",
-  interval: "1D" as ResolutionString,
+  interval: "5" as ResolutionString,
+  timeframe: "1D",
+  // time_scale: {
+  //   min_bar_spacing: 10
+  // },
   library_path: "/static/charting_library/",
   timezone: "Etc/UTC",
   locale: "en",
@@ -21,32 +25,32 @@ export const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
   symbol_search_request_delay: 2000,
   auto_save_delay: 5,
   theme: "dark",
-  toolbar_bg: "#16191F",
-  time_frames: [
-    {
-      text: "1d",
-      resolution: "5" as ResolutionString,
-      description: "1 Day",
-      title: "1D"
-    },
-    {
-      text: "5D",
-      resolution: "60" as ResolutionString,
-      description: "5 Days",
-      title: "5D"
-    },
-    { text: "1M", resolution: "240" as ResolutionString, description: "1 Month" },
-    { text: "3M", resolution: "3D" as ResolutionString, description: "3 Months" },
-    { text: "6M", resolution: "1D" as ResolutionString, description: "6 Months" },
-    { text: "1Y", resolution: "1D" as ResolutionString, description: "1 Year" },
-    { text: "5Y", resolution: "5D" as ResolutionString, description: "5 Years" },
-    {
-      text: "1000y",
-      resolution: "1D" as ResolutionString,
-      description: "All",
-      title: "All"
-    }
-  ]
+  toolbar_bg: "#16191F"
+  // time_frames: [
+  //   {
+  //     text: "1d",
+  //     resolution: "5" as ResolutionString,
+  //     description: "1 Day",
+  //     title: "1D"
+  //   },
+  //   {
+  //     text: "5D",
+  //     resolution: "60" as ResolutionString,
+  //     description: "5 Days",
+  //     title: "5D"
+  //   },
+  //   { text: "1M", resolution: "240" as ResolutionString, description: "1 Month" },
+  //   { text: "3M", resolution: "3D" as ResolutionString, description: "3 Months" },
+  //   { text: "6M", resolution: "1D" as ResolutionString, description: "6 Months" },
+  //   { text: "1Y", resolution: "1D" as ResolutionString, description: "1 Year" },
+  //   { text: "5Y", resolution: "5D" as ResolutionString, description: "5 Years" },
+  //   {
+  //     text: "1000y",
+  //     resolution: "1D" as ResolutionString,
+  //     description: "All",
+  //     title: "All"
+  //   }
+  // ]
 };
 
 export const token_price = {
