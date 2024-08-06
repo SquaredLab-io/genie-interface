@@ -8,7 +8,7 @@ import { PlusIcon, Table } from "lucide-react";
 import { Button } from "@components/ui/button";
 import { Tabs, TabsContent, TabsTrigger } from "@components/ui/tabs";
 import PoolsTable from "./PoolsTable";
-import { allPoolsColumnDef } from "./pool-columns";
+import { allPoolsColumnDef, userPoolsColumnDef } from "./pool-columns";
 import SearchInput from "./SearchInput";
 import CreatePoolModal from "../create-pool-modal";
 import ManagePoolModal from "../manage-pool-modal";
@@ -59,7 +59,7 @@ const PoolsData = () => {
   }, [pools]);
 
   const poolsColumns = allPoolsColumnDef();
-  // const userColumns = userPoolsColumnDef();
+  const userColumns = userPoolsColumnDef();
   // const txColumns = txColumnDef();
 
   const activeTabStyle =
@@ -110,8 +110,9 @@ const PoolsData = () => {
         </TabsContent>
         <TabsContent value={TableOptions.my}>
           <PoolsTable
-            columns={poolsColumns}
-            data={pools.filter((pool) => pool.poolAddr === address)}
+            columns={userColumns}
+            data={filteredMyPools.filter((pool) => pool.poolOp === address)}
+            // data={pools.filter((pool) => pool.poolAddr === address)}
             loading={isFetching}
           />
         </TabsContent>

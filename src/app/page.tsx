@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
-import SpinnerIcon from "@components/icons/SpinnerIcon";
 import { useIsMounted } from "@lib/hooks/useIsMounted";
 import { usePools } from "@lib/hooks/usePools";
 import { usePoolsStore } from "@store/poolsStore";
