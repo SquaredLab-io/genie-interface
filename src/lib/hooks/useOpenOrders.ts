@@ -29,7 +29,7 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
   const { address } = useAccount();
 
   // using local-storage api for caching
-  const [value, setValue] = useLocalStorage(`genie:open-order:${address}`, "");
+  // const [value, setValue] = useLocalStorage(`genie:open-order:${address}`, "");
 
   const { potentia } = usePotentiaSdk();
 
@@ -39,7 +39,8 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
       const openOrders = await potentia?.openOrders(poolAddress);
       if (openOrders) {
         setOrders(openOrders);
-        setValue(JSON.stringify(openOrders));
+        console.log('openorders', openOrders);
+        // setValue(JSON.stringify(openOrders));
       }
     } catch (error) {
       notification.error({
@@ -55,12 +56,13 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
 
   useEffect(() => {
     if (potentia && !paused && poolAddress && address) {
-      if (value !== "") {
-        setOrders(JSON.parse(value));
-      }
+      // if (value !== "") {
+      //   setOrders(JSON.parse(value));
+      // }
       refetch();
     }
-  }, [potentia, value, address, poolAddress]);
+  }, [potentia, address, poolAddress]);
+  // }, [potentia, value, address, poolAddress]);
 
   return {
     openOrders: orders,

@@ -4,6 +4,7 @@ import notification from "@components/common/notification";
 import { FundingInfo } from "@squaredlab-io/sdk/src/pool";
 import { useLocalStorage } from "usehooks-ts";
 import { usePoolsStore } from "@store/poolsStore";
+import { usePricesStore } from "@store/tradeStore";
 
 interface PropsType {
   poolAddress: string | undefined;
@@ -34,9 +35,12 @@ export interface ReturnType {
  * @returns openOrders, isFetching, refetch
  */
 export function useTokenPrice({ poolAddress, paused = false }: PropsType): ReturnType {
-  const [tokenPrices, setTokenPrices] = useState<TokenPrice | undefined>(undefined);
-  const [isFetching, setIsFetching] = useState<boolean>(false);
+  // const [isFetching, setIsFetching] = useState<boolean>(false);
+  // const [tokenPrices, setTokenPrices] = useState<TokenPrice | undefined>(undefined);
   const [isError, setIsError] = useState<boolean>(false);
+
+  const { tokenPrice: tokenPrices, setTokenPrice: setTokenPrices } = usePricesStore();
+  const { isFetchingPrice: isFetching, setIsFetchingPrice: setIsFetching } = usePricesStore();
 
   // store
   const { selectedPool } = usePoolsStore();
@@ -55,7 +59,8 @@ export function useTokenPrice({ poolAddress, paused = false }: PropsType): Retur
       console.log("pooladdress", poolAddress);
       const tokenprice = await potentia?.fetchTokenPrice(poolAddress!);
       console.log("tokenprice", tokenprice);
-      setTokenPrices(tokenprice);
+      setTokenPrices(tokenprice as TokenPrice);
+      // setGTokenPrice(tokenprice as TokenPrice);
       setValue(JSON.stringify(tokenprice));
       // setValue(JSON.stringify(openOrders));
     } catch (error) {
