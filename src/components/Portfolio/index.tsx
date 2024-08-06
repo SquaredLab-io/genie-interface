@@ -9,8 +9,9 @@ import Trade from "@components/Portfolio/Trade";
 import TradeData from "@components/Portfolio/TradeData";
 import ChartLoader from "./TradeChart/loader";
 import TradeFlow from "./TradeFlow";
-import { defaultWidgetProps } from "./helper";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
+import { usePoolsStore } from "@store/poolsStore";
+import { useTokenPrice } from "@lib/hooks/useTokenPrice";
 
 // Trading Chart Container imported dynamically
 const TradeChart = dynamic(() => import("./TradeChart").then((mod) => mod.default));
@@ -22,9 +23,16 @@ const Portfolio = () => {
   // TODO: To be removed
   useEffect(() => console.log("isScriptReady", isScriptReady), [isScriptReady]);
 
+  const { selectedPool } = usePoolsStore();
+
+  const { tokenPrices, isFetching: isTokenPricesFetching } = useTokenPrice({
+    poolAddress: selectedPool()?.poolAddr,
+    paused: !selectedPool()?.poolAddr
+  });
+
   return (
     <>
-      <Script
+      <Script 
         src="/static/datafeeds/udf/dist/bundle.js"
         strategy="lazyOnload"
         onReady={() => {
@@ -38,7 +46,7 @@ const Portfolio = () => {
           <AssetStatsBar />
           <div className="grid grid-cols-4 w-full h-[calc(100vh-135px)]">
             {isScriptReady && potentia ? (
-              <TradeChart widgetProps={defaultWidgetProps} potentia={potentia} />
+              <TradeChart potentia={potentia} />
             ) : (
               <ChartLoader />
             )}

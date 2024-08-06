@@ -14,9 +14,6 @@ export default function TokenSelector({ selectedPool }: { selectedPool: PoolInfo
         <div className="inline-flex items-center gap-1">
           <span className="text-base/5 font-medium text-nowrap">
             {selectedPool?.pool}
-            {/* {selectedPool.underlyingTokens.map((asset) => (
-              <span key={asset.address}>{asset.symbol}</span>
-            ))} */}
           </span>
           <span className="text-nowrap font-normal text-2xs/[14px] rounded-sm py-px px-[4.5px] text-white bg-text-grad bg-gradient-blue">
             {/* Fix this, get Power from SDK */}p = {selectedPool?.power}

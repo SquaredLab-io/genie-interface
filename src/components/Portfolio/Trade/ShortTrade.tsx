@@ -11,7 +11,7 @@ import {
 import { BiSolidDownArrow } from "react-icons/bi";
 import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
 // Component, Util Imports
-import { selected_token } from "../helper";
+import {  } from "../TradeChart/defaultWidgetProps";
 import SliderBar from "../../common/SliderBar";
 import { getAccountBalance } from "@lib/utils/getAccountBalance";
 import { WethABi } from "@lib/abis";

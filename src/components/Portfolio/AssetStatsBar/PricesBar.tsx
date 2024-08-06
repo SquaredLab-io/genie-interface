@@ -4,6 +4,8 @@ import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import { useTokenPrice } from "@lib/hooks/useTokenPrice";
 import toUnits from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
+import { usePricesStore, useTradeStore } from "@store/tradeStore";
+import { TradeOptions } from "@lib/types/enums";
 
 interface MarkerProps {
   label: string;
@@ -37,12 +39,20 @@ function Marker({ label, value, fetching, showChange = false }: MarkerProps) {
 export default function PricesBar({ selectedPool }: PricesBarProps) {
   const underlying = selectedPool?.underlying;
   const { price, isLoading: isPriceLoading } = useCurrencyPrice(underlying);
+  const { tradeType } = useTradeStore();
 
-  const { tokenPrices, isFetching: isTokenPricesFetching } = useTokenPrice({
-    poolAddress: selectedPool?.poolAddr
-  });
+  // const { tokenPrices, isFetching: isTokenPricesFetching } = useTokenPrice({
+  //   poolAddress: selectedPool?.poolAddr
+  // });
+  const { tokenPrice: tokenPrices, isFetchingPrice: isTokenPricesFetching } =
+    usePricesStore();
 
-  const fundingRate = parseFloat(tokenPrices?.fundingInfo.longF.toFixed(3) ?? "0");
+  const fundingRate =
+    tradeType === TradeOptions.long
+      ? tokenPrices?.fundingInfo.longF
+      : tokenPrices?.fundingInfo.shortF;
+
+  console.log("global tokenprices @pricesbar", tokenPrices);
 
   return (
     <div className="flex flex-row items-center justify-start gap-6 h-full w-full px-8 xl:px-10 font-normal text-xs/4 overflow-x-auto z-50">
@@ -70,7 +80,8 @@ export default function PricesBar({ selectedPool }: PricesBarProps) {
         />
         <Marker
           label="Funding Rate"
-          value={`${fundingRate > 0 ? "+" : "-"}${fundingRate}%`}
+          value={`${tokenPrices?.fundingInfo ? parseFloat(fundingRate?.toFixed(3) ?? "0") : "-"}%`}
+          // value={`${fundingRate !== 0 && fundingRate > 0 ? "+" : "-"}${fundingRate}%`}
           fetching={isTokenPricesFetching}
           showChange
         />

@@ -11,7 +11,6 @@ import {
 } from "wagmi";
 import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
 // Component, Util Imports
-import { selected_token } from "../helper";
 import SliderBar from "../../common/SliderBar";
 import { getAccountBalance } from "@lib/utils/getAccountBalance";
 import { WethABi } from "@lib/abis";
