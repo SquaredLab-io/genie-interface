@@ -42,10 +42,10 @@ const PoolMenu = ({ pool }: { pool: PoolInfo }) => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          // onClick={() => {;
-          //   // TODO: Update this with original pool later
-          //   router.push(`/pool/${underlying}`);
-          // }}
+        // onClick={() => {;
+        //   // TODO: Update this with original pool later
+        //   router.push(`/pool/${underlying}`);
+        // }}
         >
           <Link className="inline-flex gap-2 items-center w-full" href="/pool">
             <Image src="/icons/StatsIcon.svg" width={16} height={16} alt="stats icon" />
@@ -53,9 +53,7 @@ const PoolMenu = ({ pool }: { pool: PoolInfo }) => {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem
-          // onClick={() => {
-          //   const symbol = pool.underlyingTokens[0].symbol;
-          // }}
+        // onClick={() => {}}
         >
           <Link className="inline-flex gap-2 items-center w-full" href="/pool">
             <Image src="/icons/PlusIcon.svg" width={16} height={16} alt="add icon" />

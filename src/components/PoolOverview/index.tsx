@@ -12,8 +12,7 @@ import AddLiquidity from "./AddLiquidity";
 import RemoveLiquidity from "./RemoveLiquidity";
 import { GraphOptions } from "./helper";
 // Charts
-import VolumeChart from "./VolumeChart";
-import CLChart from "./CLChart";
+import LPChart from "./lp-charts";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
 import { LpTradeOptions } from "@lib/types/enums";
 import SelectLpTrade from "./SelectLpTrade";
@@ -21,7 +20,6 @@ import { Separator } from "@components/ui/separator";
 import { PoolInfo } from "@squaredlab-io/sdk/src";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { useDailyData } from "@lib/hooks/useDailyData";
-import TVLChart from "./TVLChart";
 
 const PoolHeader = ({ assets, power }: { assets: string[]; power: number }) => {
   return (
@@ -114,22 +112,20 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
               </TabsTrigger>
             </TabsList>
             <TabsContent value={GraphOptions.volume}>
-              <VolumeChart
-                overviewPool={overviewPool}
+              <LPChart.Vol
                 dailyData={dailyData}
                 loading={isFetchingDailyData}
               />
             </TabsContent>
             <TabsContent value={GraphOptions.tvl}>
-              <TVLChart
-                overviewPool={overviewPool}
+              <LPChart.TVL
                 dailyData={dailyData}
                 loading={isFetchingDailyData}
               />
             </TabsContent>
             {/* <TabsContent value={GraphOptions.crossbook}>Cross Book</TabsContent> */}
             <TabsContent value={GraphOptions.counterpart} className="h-[calc(100%-36px)]">
-              <CLChart overviewPool={overviewPool} />
+              <LPChart.Counterpart overviewPool={overviewPool} />
             </TabsContent>
           </Tabs>
         </div>

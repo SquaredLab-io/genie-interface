@@ -1,22 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  ChartOptions,
-  ColorType,
-  createChart,
-  DeepPartial,
-  LineStyle
-} from "lightweight-charts";
-import { PoolInfo } from "@squaredlab-io/sdk/src";
-import SpinnerIcon from "@components/icons/SpinnerIcon";
+import { createChart } from "lightweight-charts";
 import { DailyInfo } from "@squaredlab-io/sdk/src/subgraph";
-import { getVolumeTimeseries } from "./helper";
+import SpinnerIcon from "@components/icons/SpinnerIcon";
+import { getVolumeTimeseries } from "../helper";
+import { chartOptionsConfig, colors } from "./configs";
 
 const VolumeChart = ({
-  overviewPool,
   dailyData,
   loading
 }: {
-  overviewPool: PoolInfo;
   dailyData: DailyInfo[] | undefined;
   loading: boolean;
 }) => {
@@ -30,33 +22,7 @@ const VolumeChart = ({
 
   // A useEffect that creates the chart based on configuration on load
   useEffect(() => {
-    const colors = {
-      backgroundColor: "#16191F",
-      lineColorOne: "#FF7300",
-      lineColorTwo: "#0099FF",
-      textColor: "white",
-      barColor: "#0099FF"
-      // areaTopColor: "#2962FF",
-      // areaBottomColor: "rgba(41, 98, 255, 0.28)"
-    };
-
-    const chartOptions: DeepPartial<ChartOptions> = {
-      layout: {
-        background: { type: ColorType.Solid, color: colors.backgroundColor },
-        textColor: colors.textColor
-      },
-      width: (chartContainerRef.current as any)?.clientWidth,
-      height: 417,
-      autoSize: true,
-      grid: {
-        vertLines: {
-          visible: false
-        },
-        horzLines: {
-          visible: false
-        }
-      }
-    };
+    const chartOptions = chartOptionsConfig(chartContainerRef);
 
     if (chartContainerRef.current !== null) {
       // chart prep start
@@ -77,25 +43,6 @@ const VolumeChart = ({
       });
       series.setData(timeseries);
 
-      // Series 1
-      // const newSeries1 = chart.addBarSeries({
-      //   upColor: colors.barColor,
-      //   priceLineColor: colors.lineColorOne,
-      //   baseLineStyle: LineStyle.Solid,
-      //   baseLineWidth: 3
-      // });
-      // console.log("array1", currentArray[0]);
-      // newSeries1.setData(timeseries);
-
-      // // Series 2
-      // const newSeries2 = chart.addLineSeries({
-      //   color: colors.lineColorTwo,
-      //   priceLineColor: colors.lineColorTwo,
-      //   baseLineStyle: LineStyle.Solid,
-      //   baseLineWidth: 3
-      // });
-      // newSeries2.setData(currentArray[1]);
-
       window.addEventListener("resize", handleResize);
 
       setIsLoadingChart(false);
@@ -112,7 +59,7 @@ const VolumeChart = ({
     <>
       {isLoadingChart || loading ? (
         <div className="size-full flex-col-center">
-          <SpinnerIcon stroke="#01A1FF" />
+          <SpinnerIcon stroke={colors.spinnerColor} />
           <span>preparing chart...</span>
         </div>
       ) : (

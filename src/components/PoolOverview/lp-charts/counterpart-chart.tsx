@@ -12,6 +12,7 @@ import { PoolInfo } from "@squaredlab-io/sdk/src";
 // import { useTradeStore } from "@store/tradeStore";
 // import { transformTimeseries } from "./helper";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
+import { chartOptionsConfig, colors } from "./configs";
 
 const CLChart = ({
   overviewPool
@@ -48,32 +49,7 @@ const CLChart = ({
       ]
     ];
 
-    const colors = {
-      backgroundColor: "#16191F",
-      lineColorOne: "#FF7300",
-      lineColorTwo: "#0099FF",
-      textColor: "white"
-      // areaTopColor: "#2962FF",
-      // areaBottomColor: "rgba(41, 98, 255, 0.28)"
-    };
-
-    const chartOptions: DeepPartial<ChartOptions> = {
-      layout: {
-        background: { type: ColorType.Solid, color: colors.backgroundColor },
-        textColor: colors.textColor
-      },
-      width: (chartContainerRef.current as any)?.clientWidth,
-      height: 417,
-      autoSize: true,
-      grid: {
-        vertLines: {
-          visible: true
-        },
-        horzLines: {
-          visible: true
-        }
-      }
-    };
+    const chartOptions = chartOptionsConfig(chartContainerRef);
 
     if (chartContainerRef.current !== null) {
       // chart prep start
@@ -95,7 +71,6 @@ const CLChart = ({
         baseLineStyle: LineStyle.Solid,
         baseLineWidth: 3
       });
-      // console.log("array1", currentArray[0]);
       newSeries1.setData(currentArray[0]);
 
       // Series 2
@@ -105,7 +80,6 @@ const CLChart = ({
         baseLineStyle: LineStyle.Solid,
         baseLineWidth: 3
       });
-      // console.log("array2", currentArray[1]);
       newSeries2.setData(currentArray[1]);
 
       window.addEventListener("resize", handleResize);
