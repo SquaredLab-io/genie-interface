@@ -79,7 +79,7 @@ const PoolsList = <TData, TValue>({
         ) : (
           <TableRow>
             <TableCell colSpan={columns.length} className="h-72 text-center">
-              {loading ? "Loading Pools..." : "No pools found"}
+              {loading ? "Loading Pools..." : "You have no pools."}
             </TableCell>
           </TableRow>
         )}

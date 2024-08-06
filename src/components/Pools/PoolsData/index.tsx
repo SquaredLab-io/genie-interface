@@ -3,7 +3,7 @@
 // Library Imports
 import { useEffect, useMemo, useState } from "react";
 import { TabsList } from "@radix-ui/react-tabs";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, Table } from "lucide-react";
 // Component Imports
 import { Button } from "@components/ui/button";
 import { Tabs, TabsContent, TabsTrigger } from "@components/ui/tabs";
@@ -18,13 +18,19 @@ import { usePools } from "@lib/hooks/usePools";
 import { TableOptions } from "./helper";
 import { usePoolsStore } from "@store/poolsStore";
 import { useFilteredPools } from "@lib/hooks/useFilteredPools";
+import { useAccount } from "wagmi";
 
 const PoolsData = () => {
   const [showSearch, setShowSearch] = useState(false);
-  const [term, setTerm] = useState("");
+  const [allTerm, setAllTerm] = useState("");
+  const [myTerm, setMyTerm] = useState("");
+  const [txTerm, setTxTerm] = useState("");
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openManageModal, setOpenManageModal] = useState(false);
-  
+  const { address } = useAccount();
+
+  const [currentTab, setCurrentTab] = useState(TableOptions.all);
+
   const { pools, isFetching, refetch } = usePools();
   const { updatePoolsData, poolsData } = usePoolsStore();
   // const { updateSelectedPool } = usePoolsStore();
@@ -40,7 +46,9 @@ const PoolsData = () => {
     return [];
   }, [poolsData, pools]);
 
-  const { pools: filteredPools } = useFilteredPools(_pools, term);
+  const { pools: filteredAllPools } = useFilteredPools(_pools, allTerm);
+  const { pools: filteredMyPools } = useFilteredPools(_pools, myTerm);
+  const { pools: filteredTxPools } = useFilteredPools(_pools, txTerm);
 
   useEffect(() => {
     if (pools.length) {
@@ -59,7 +67,7 @@ const PoolsData = () => {
 
   return (
     <div className="py-10">
-      <Tabs defaultValue={TableOptions.all}>
+      <Tabs value={currentTab} onValueChange={setCurrentTab as (value: string) => void}>
         <div className="inline-flex items-center justify-between w-full font-medium text-sm/5 py-4 border-t border-b border-secondary-gray">
           <TabsList className="inline-flex">
             <TabsTrigger value={TableOptions.all} className={cn(activeTabStyle)}>
@@ -86,25 +94,37 @@ const PoolsData = () => {
               <PlusIcon size={16} /> Create Pool
             </button>
             <SearchInput
-              term={term}
-              setTerm={setTerm}
+              term={allTerm}
+              setTerm={setAllTerm}
               showSearch={showSearch}
               setShowSearch={setShowSearch}
             />
           </div>
         </div>
         <TabsContent value={TableOptions.all}>
-          <PoolsTable columns={poolsColumns} data={filteredPools} loading={isFetching} />
+          <PoolsTable
+            columns={poolsColumns}
+            data={filteredAllPools}
+            loading={isFetching}
+          />
         </TabsContent>
-        {/* <TabsContent value={TableOptions.my}>
-          <PoolsTable columns={userPoolsColumnDef} data={pools} />
+        <TabsContent value={TableOptions.my}>
+          <PoolsTable
+            columns={poolsColumns}
+            data={pools.filter((pool) => pool.poolAddr === address)}
+            loading={isFetching}
+          />
         </TabsContent>
-        <TabsContent value={TableOptions.trxn}>
+        {/*<TabsContent value={TableOptions.trxn}>
           <PoolsTable columns={transactionsColumnDef} data={potentiaPoolsList} />
         </TabsContent> */}
       </Tabs>
-      {openCreateModal && <CreatePoolModal open={openCreateModal} setOpen={setOpenCreateModal} />}
-      {openManageModal && <ManagePoolModal open={openManageModal} setOpen={setOpenManageModal} />}
+      {openCreateModal && (
+        <CreatePoolModal open={openCreateModal} setOpen={setOpenCreateModal} />
+      )}
+      {openManageModal && (
+        <ManagePoolModal open={openManageModal} setOpen={setOpenManageModal} />
+      )}
     </div>
   );
 };
