@@ -7,6 +7,7 @@ import { useIsMounted } from "@lib/hooks/useIsMounted";
 import { usePools } from "@lib/hooks/usePools";
 import { usePoolsStore } from "@store/poolsStore";
 import { PoolInfo } from "@squaredlab-io/sdk/src";
+import LoadingScreen from "@components/common/loading-screen";
 
 // Portfolio imported dynamically
 const Portfolio = dynamic(() =>
@@ -49,13 +50,7 @@ export default function Home() {
     }
   }, [pools]);
 
-  if (!isMounted || (isFetching && !_pools))
-    return (
-      <main className="page-center size-full flex-col-center gap-5 font-sans-ibm-plex">
-        <SpinnerIcon stroke="#01A1FF" />
-        <span>preparing...</span>
-      </main>
-    );
+  if (!isMounted || (isFetching && !_pools)) return <LoadingScreen />;
 
   // else if (notFound)
   //   return (
