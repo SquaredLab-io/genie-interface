@@ -6,6 +6,7 @@ import toUnits from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
 import { usePricesStore, useTradeStore } from "@store/tradeStore";
 import { TradeOptions } from "@lib/types/enums";
+import BigNumber from "bignumber.js";
 
 interface MarkerProps {
   label: string;
@@ -47,10 +48,12 @@ export default function PricesBar({ selectedPool }: PricesBarProps) {
   const { tokenPrice: tokenPrices, isFetchingPrice: isTokenPricesFetching } =
     usePricesStore();
 
-  const fundingRate =
+  const fundingInfo =
     tradeType === TradeOptions.long
       ? tokenPrices?.fundingInfo.longF
       : tokenPrices?.fundingInfo.shortF;
+
+  const fundingRate = parseFloat(new BigNumber(fundingInfo ?? 0)?.toFixed(3) ?? "0");
 
   console.log("global tokenprices @pricesbar", tokenPrices);
 
@@ -80,8 +83,8 @@ export default function PricesBar({ selectedPool }: PricesBarProps) {
         />
         <Marker
           label="Funding Rate"
-          value={`${tokenPrices?.fundingInfo ? parseFloat(fundingRate?.toFixed(3) ?? "0") : "-"}%`}
-          // value={`${fundingRate !== 0 && fundingRate > 0 ? "+" : "-"}${fundingRate}%`}
+          // value={`${tokenPrices?.fundingInfo ? fundingRate : "-"}%`}
+          value={`${fundingRate > 0 ? "+" : ""}${fundingRate}%`}
           fetching={isTokenPricesFetching}
           showChange
         />

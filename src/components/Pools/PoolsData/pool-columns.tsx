@@ -119,14 +119,13 @@ export function allPoolsColumnDef(): ColumnDef<PoolInfo>[] {
         const growth = parseFloat("0");
         return (
           <div className="pl-10 inline-flex gap-1">
-            <span>{parseFloat(fee ?? "0") / 10 ** underlyingDecimals}</span> {underlying}
-            {/* {growth !== 0 && ( */}
+            <span>{toUnits(parseFloat(fee ?? "0") / 10 ** underlyingDecimals, 4)}</span>{" "}
+            {underlying}
             <span
               className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
             >
               {growth}%
             </span>
-            {/* )} */}
           </div>
         );
       }
@@ -231,7 +230,10 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
         const growth = parseFloat("0");
         return (
           <div className="inline-flex gap-1">
-            <span>{parseFloat(fee ?? "0") / 10 ** underlyingDecimals}</span> {underlying}
+            <span className="border border-red-500">
+              {toUnits(parseFloat(fee ?? "0") / 10 ** underlyingDecimals, 4)}
+            </span>{" "}
+            {underlying}
             {/* {growth !== 0 && ( */}
             <span
               className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
