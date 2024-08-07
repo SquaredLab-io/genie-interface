@@ -1,16 +1,19 @@
-import Image from "next/image";
+import animationData from "@components/icons/loading-logo-lottie.json";
+import Lottie from "react-lottie";
 
 const LoadingScreen = () => {
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice"
+    }
+  };
+
   return (
     <main className="page-center size-full flex-col-center gap-5 font-sans-ibm-plex border-t border-secondary-gray">
-      <Image
-        // src="/hello.webp"
-        src="/images/genie-loading-icon.gif"
-        alt="Genie DEX loading..."
-        width={67}
-        height={78}
-        className="animate-pulse"
-      />
+      <Lottie options={defaultOptions} height={78} width={67} />
     </main>
   );
 };
