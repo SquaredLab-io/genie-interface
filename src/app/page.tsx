@@ -7,6 +7,8 @@ import { usePools } from "@lib/hooks/usePools";
 import { usePoolsStore } from "@store/poolsStore";
 import { PoolInfo } from "@squaredlab-io/sdk/src";
 import LoadingScreen from "@components/common/loading-screen";
+import { useAccount } from "wagmi";
+import ConnectWallet from "@components/common/ConnectWallet";
 
 // Portfolio imported dynamically
 const Portfolio = dynamic(() =>
@@ -21,6 +23,7 @@ export default function Home() {
   const { poolsData, updatePoolsData, selectedPool } = usePoolsStore();
 
   const { pools, isFetching } = usePools();
+  const { address } = useAccount();
 
   const { isMounted } = useIsMounted();
 
@@ -44,12 +47,22 @@ export default function Home() {
   // }, []);
 
   useEffect(() => {
-    if (pools.length) {
-      updatePoolsData(pools);
+    if (_pools && _pools.length > 0) {
+      updatePoolsData(_pools);
     }
-  }, [pools]);
+    console.log("_pools @app/page", _pools);
+  }, [_pools]);
 
-  if (!isMounted || (isFetching && !_pools)) return <LoadingScreen />;
+  if (!isMounted) return <LoadingScreen />;
+  else if (!address)
+    return (
+      <main className="page-center size-full flex-col-center gap-5 font-sans-ibm-plex">
+        <h3 className="text-2xl">Please Connect Wallet</h3>
+        <ConnectWallet />
+      </main>
+    );
+
+  if (isFetching && !_pools) return <LoadingScreen />;
 
   // else if (notFound)
   //   return (
