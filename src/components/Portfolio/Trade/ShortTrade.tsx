@@ -28,7 +28,6 @@ import toUnits from "@lib/utils/formatting";
 import { CONFIRMATION } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
 import { Address } from "viem";
-import { getTokenAddress } from "@lib/utils/getTokenAddress";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
 

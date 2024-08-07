@@ -8,7 +8,7 @@ export default function TokenSelector({ selectedPool }: { selectedPool: PoolInfo
       <button className="group flex flex-row justify-normal items-center text-left py-3 px-5 gap-2">
         {/* Tokens Images */}
         <div className="z-0 flex overflow-hidden ring-1 ring-primary-gray rounded-full bg-neutral-800">
-          <Image src={`/tokens/${selectedPool?.underlying}.svg`} alt="token icon" width={32} height={32} />
+          <Image src={`/tokens/${selectedPool?.underlying.toLowerCase()}.svg`} alt="token icon" width={32} height={32} />
         </div>
         {/* Tokens Symbols */}
         <div className="inline-flex items-center gap-1">

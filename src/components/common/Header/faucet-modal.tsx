@@ -1,7 +1,8 @@
 "use client";
 
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import Image from "next/image";
+import { Address } from "viem";
 import Modal from "@components/common/Modal";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import { useIsMounted } from "@lib/hooks/useIsMounted";
@@ -12,13 +13,15 @@ import {
   SelectTrigger,
   SelectValue
 } from "@components/ui/select";
-import ButtonCTA from "../button-cta";
+import ButtonCTA from "@components/common/button-cta";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
-import { SUPPORTED_NETWORKS, SUPPORTED_TOKENS } from "@lib/constants";
+import { CONFIRMATION, SUPPORTED_NETWORKS, SUPPORTED_TOKENS } from "@lib/constants";
 import { Input } from "@components/ui/input";
 import { DialogDescription, DialogHeader, DialogTitle } from "@components/ui/dialog";
 import { isValidAddress } from "@lib/utils/checkVadility";
 import { cn } from "@lib/utils";
+import { useWaitForTransactionReceipt } from "wagmi";
+import notification from "../notification";
 
 const FaucetModal = ({
   open,
@@ -31,33 +34,55 @@ const FaucetModal = ({
 }) => {
   const { potentia } = usePotentiaSdk();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const { isMounted } = useIsMounted();
+  const [isTxLoading, setIsTxLoading] = useState(false);
+  // const { isMounted } = useIsMounted();
 
   const [selectedNetwork, setSelectedNetwork] = useState(SUPPORTED_NETWORKS[0]);
   const [selectedToken, setSelectedToken] = useState(SUPPORTED_TOKENS[0]);
-  const [userAddress, setUserAddress] = useState<string>("");
+  const [inputAddress, setInputAddress] = useState<string>("");
+  const [txHash, setTxHash] = useState<Address>();
 
-  const isValidInput = isValidAddress(userAddress);
+  const isValidInput = isValidAddress(inputAddress);
 
-  async function getFaucet(tokenAddress: string) {
+  async function getFaucet(tokenAddress: string, userAddress: string) {
     try {
-      setIsLoading(true);
+      setIsTxLoading(true);
       // Default and only Network: Base Sepolia
       const hash = await potentia?.pool.callFaucet(tokenAddress, userAddress);
       if (hash) {
-        setIsLoading(false);
+        setTxHash(hash as Address);
+        setIsTxLoading(false);
       }
     } catch (error) {
       console.error("error", error);
     } finally {
-      setIsLoading(false);
+      setIsTxLoading(false);
     }
   }
 
-  if (!isMounted) {
-    return <></>;
-  }
+  // wait for openPosition transaction
+  const { isSuccess, isLoading, isPending, isError, error } =
+    useWaitForTransactionReceipt({
+      hash: txHash,
+      confirmations: CONFIRMATION
+    });
+
+  // Notifications based on Transaction status
+  useEffect(() => {if (isError) {
+      notification.error({
+        title: "Faucet Transaction failed",
+        description: `${error.message}`
+      });
+    } else if (isSuccess) {
+      // refetchBalance();
+      // refetchPosition();
+      // refetchOpenOrders();
+      // refetchTxHistory();
+      notification.success({
+        title: "Faucet transferred Successfully"
+      });
+    }
+  }, [isSuccess, isError]);
 
   return (
     <Modal
@@ -160,17 +185,31 @@ const FaucetModal = ({
           <Input
             placeholder="0xxxxxxxxx..."
             type="type"
-            value={userAddress}
-            onChange={(e) => setUserAddress(e.target.value)}
+            value={inputAddress}
+            onChange={(e) => setInputAddress(e.target.value)}
             className={cn(
               "placeholder:text-[#404950]",
-              !isValidInput && userAddress !== "" && "border-negative-red"
+              !isValidInput && inputAddress !== "" && "border-negative-red"
             )}
           />
         </div>
         {/* CTA */}
-        <ButtonCTA disabled={isLoading || !isValidInput} className="w-full rounded-[4px]">
-          {isLoading ? <SpinnerIcon className="size-[22px]" /> : <span>GET TOKENS</span>}
+        <ButtonCTA
+          disabled={isTxLoading || (isPending && isLoading) || !isValidInput}
+          className="w-full rounded-[4px]"
+          onClick={() => {
+            console.log("args", {
+              tokenAdd: selectedToken.address,
+              userAddr: inputAddress
+            });
+            getFaucet(selectedToken.address, inputAddress);
+          }}
+        >
+          {isTxLoading || isLoading ? (
+            <SpinnerIcon className="size-[22px]" />
+          ) : (
+            <span>GET TOKENS</span>
+          )}
         </ButtonCTA>
       </div>
     </Modal>

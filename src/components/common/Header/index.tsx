@@ -75,8 +75,8 @@ const Header = () => {
         {/* <CoinbaseCreateWallet /> */}
         <ConnectWallet />
       </div>
-      <FaucetModal open={isFaucetOpen} setOpen={setIsFaucetOpen} />
-      <FeedbackModal open={isModalOpen} setOpen={setIsModalOpen} />
+      {isFaucetOpen && <FaucetModal open={isFaucetOpen} setOpen={setIsFaucetOpen} />}
+      {isModalOpen && <FeedbackModal open={isModalOpen} setOpen={setIsModalOpen} />}
     </header>
   );
 };

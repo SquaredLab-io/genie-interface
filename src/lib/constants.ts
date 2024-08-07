@@ -66,30 +66,25 @@ export const CONFIRMATION = 5;
 export const SUPPORTED_TOKENS = [
   {
     token: "WETH",
-    address: "0x212cfa035c6707331adeDe61c35d4E0C9e0b4007",
+    address: "0x023f4Ef5A1AA177b07990B9B964BCbAc2Bd29d85",
     logo: "/tokens/weth.svg"
   },
-  // {
-  //   token: "WBTC",
-  //   address: "",
-  //   logo: "/tokens/wbtc.svg"
-  // },
-  // {
-  //   token: "USDC",
-  //   address: "",
-  //   logo: "/tokens/usdc.svg"
-  // }
+  {
+    token: "WBTC",
+    address: "0x023f4Ef5A1AA177b07990B9B964BCbAc2Bd29d85",
+    logo: "/tokens/wbtc.svg"
+  }
 ];
 
 export const TOKENS: {
   [key: string]: `0x${string}`
 } = {
-  WETH: "0x212cfa035c6707331adeDe61c35d4E0C9e0b4007" as Address
+  WETH: "0x023f4Ef5A1AA177b07990B9B964BCbAc2Bd29d85" as Address
 }
 
 export const CONTRACT_ADDRESSES = {
   POTENTIA_FACTORY_ADDR: "0xB7CEb18E71291A03810D589851066A7eA0E87C2F" as Address,
-  WETH_ADDR: "0x212cfa035c6707331adeDe61c35d4E0C9e0b4007" as Address,
+  WETH_ADDR: "0x023f4Ef5A1AA177b07990B9B964BCbAc2Bd29d85" as Address,
   WETH_POOL_ADDR: "0xe6b3e196bdfA012B20B5EdA6dB9396a61963C117" as Address,
   PTOKEN_ADDR: "0x56169607c23501d4ad5ffd16a5a164d007de57f8" as Address,
   WBTC_ADDR: "0xa74ca0170ad066881d6413e3cef5a2dbafde5bdf" as Address,
