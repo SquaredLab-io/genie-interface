@@ -3,6 +3,7 @@ import { useAccount } from "wagmi";
 import { Address } from "viem";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import notification from "@components/common/notification";
+import { useBalanceStore } from "@store/tradeStore";
 
 export interface Token {
   address: string;
@@ -43,44 +44,64 @@ const getParsedJson = (pos: string | undefined) => {
  *
  * @returns Position data, isFetching, refetch method
  */
-export function useCurrentPosition(poolAddress: Address | undefined): ReturnType {
-  const [position, setPosition] = useState<string | undefined>("");
-  const [isFetching, setIsFetching] = useState<boolean>(false);
+export function useCurrentPosition({
+  poolAddress,
+  paused = false
+}: {
+  poolAddress: Address | undefined;
+  paused?: boolean
+}): ReturnType {
+  // const [position, setPosition] = useState<string | undefined>("");
+  // const [isFetching, setIsFetching] = useState<boolean>(false);
+
+  const {
+    currentPosition,
+    updateCurrentPosition,
+    isFetchingPosition,
+    updateFetchingPosition
+  } = useBalanceStore();
 
   const { potentia } = usePotentiaSdk();
   const { address } = useAccount();
 
   const refetch = async () => {
     try {
-      setIsFetching(true);
+      // setIsFetching(true);
+      updateFetchingPosition(true);
 
       const currPos = await potentia?.getTokenBalance(
         poolAddress as Address, // poolAddress
         address as Address // userAddress
       );
-      setPosition(currPos);
+      if (currPos !== undefined) {
+        console.log("updated currentPosition", getParsedJson(currPos));
+        // setPosition(currPos);
+        updateCurrentPosition(getParsedJson(currPos));
+      }
     } catch (error) {
       // notification.error({
       //   title: "Error while fetching positions",
       //   description: "Please try again"
       // });
       console.error("Error while fetching positions");
-      setIsFetching(false);
+      // setIsFetching(false);
+      updateFetchingPosition(false);
     } finally {
-      setIsFetching(false);
+      // setIsFetching(false);
+      updateFetchingPosition(false);
     }
   };
 
   useEffect(() => {
-    if (potentia && poolAddress) {
+    if (potentia && poolAddress && !paused) {
       refetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [potentia, address, poolAddress]);
 
   return {
-    data: getParsedJson(position),
-    isFetching,
+    data: currentPosition!,
+    isFetching: isFetchingPosition,
     refetch
   } satisfies ReturnType;
 }

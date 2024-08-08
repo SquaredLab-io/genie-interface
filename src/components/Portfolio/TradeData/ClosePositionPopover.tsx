@@ -6,7 +6,7 @@ import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import SliderBar from "../../common/SliderBar";
 import { usePoolsStore } from "@store/poolsStore";
 import { Address } from "viem";
-import { TokenBalances } from "@lib/hooks/useCurrentPosition";
+import { TokenBalances, useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { getDecimalAdjusted } from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
 import { useWaitForTransactionReceipt } from "wagmi";
@@ -53,13 +53,19 @@ const ClosePositionPopover: FC<PropsType> = ({
   // Current user balance of Long / Short Token
   const balance = isLong ? longTokenBalance : shortTokenBalance;
 
-    // Both hooks paused, Refetch method to be used on Successful tx
-    const { refetch: refetchOpenOrders } = useOpenOrders({
-      poolAddress: selectedPool()?.poolAddr!,
-      paused: true
-    });
-  
-    const { refetch: refetchTxHistory } = useTxHistory(true);
+  // Both hooks paused, Refetch method to be used on Successful tx
+  const { refetch: refetchOpenOrders } = useOpenOrders({
+    poolAddress: selectedPool()?.poolAddr!,
+    paused: true
+  });
+
+  const { refetch: refetchTxHistory } = useTxHistory(true);
+
+  // All current positions
+  const { refetch: refetchPosition } = useCurrentPosition({
+    poolAddress: selectedPool()?.poolAddr as Address,
+    paused: true
+  });
 
   /**
    * Handler for closePosition from SDK
@@ -76,40 +82,52 @@ const ClosePositionPopover: FC<PropsType> = ({
         isLong
       );
       setTxHash(hash as Address);
+      setIsHandlerLoading(false);
       // console.log("closePosition hash", hash);
     } catch (error) {
       notification.error({
         title: "Attempt to Close Position failed",
         description: "Please try again"
       });
+      setIsHandlerLoading(false);
       console.error("closePosition Error", error);
     } finally {
       setIsHandlerLoading(false);
     }
   }
 
+  
   // wait for openPosition transaction
   const { isSuccess, isLoading, isPending, isError, error } =
-    useWaitForTransactionReceipt({
-      hash: txHash,
-      confirmations: CONFIRMATION
-    });
+  useWaitForTransactionReceipt({
+    hash: txHash,
+    confirmations: CONFIRMATION
+  });
+  
+  console.log("isHandlerLoading", isHandlerLoading);
+  console.log("isLoading", isLoading);
+  console.log("isError", isError);
 
   // Notifications based on Transaction status
+  useEffect(() => {
+    if (isSuccess) {
+      refetchOpenOrders();
+      refetchTxHistory();
+      refetchPosition();
+      notification.success({
+        title: "Position successfully closed"
+      });
+    }
+  }, [isSuccess]);
+
   useEffect(() => {
     if (isError) {
       notification.error({
         title: "Closing position failed",
         description: `${error.message}`
       });
-    } else if (isSuccess) {
-      refetchOpenOrders();
-      refetchTxHistory();
-      notification.success({
-        title: "Position successfully closed"
-      });
     }
-  }, [isSuccess, isError]);
+  }, [isError]);
 
   // Slider value updater
   useEffect(() => {
@@ -200,8 +218,8 @@ const ClosePositionPopover: FC<PropsType> = ({
               isLoading
             }
           >
-            {isHandlerLoading || isLoading ? (
-              <SpinnerIcon className="size-[16px]" />
+            {(isHandlerLoading || isLoading) && !isError ? (
+              <SpinnerIcon className="size-[16px] mx-auto" />
             ) : (
               <span>CLOSE POSITION</span>
             )}

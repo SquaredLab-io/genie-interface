@@ -1,7 +1,7 @@
 "use client";
 
 // Library Imports
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, memo, useEffect, useMemo, useState } from "react";
 import {
   useAccount,
   useBalance,
@@ -11,7 +11,7 @@ import {
 import { BiSolidDownArrow } from "react-icons/bi";
 import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
 // Component, Util Imports
-import {  } from "../TradeChart/defaultWidgetProps";
+import {} from "../TradeChart/defaultWidgetProps";
 import SliderBar from "../../common/SliderBar";
 import { getAccountBalance } from "@lib/utils/getAccountBalance";
 import { WethABi } from "@lib/abis";
@@ -30,6 +30,7 @@ import { usePoolsStore } from "@store/poolsStore";
 import { Address } from "viem";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
+import { useBalanceStore } from "@store/tradeStore";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -53,11 +54,19 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     token: selectedPool()?.underlyingAddress as Address
   });
 
-  const {
-    data: positionData,
-    isFetching: isPositionFetching,
-    refetch: refetchPosition
-  } = useCurrentPosition(selectedPool()?.poolAddr as Address);
+  // const {
+  //   data: positionData,
+  //   isFetching: isPositionFetching,
+  //   refetch: refetchPosition
+  // } = useCurrentPosition(selectedPool()?.poolAddr as Address);
+
+  // All current positions
+  const { refetch: refetchPosition } = useCurrentPosition({
+    poolAddress: selectedPool()?.poolAddr as Address
+  });
+
+  const { currentPosition: positionData, isFetchingPosition: isPositionFetching } =
+    useBalanceStore();
 
   // Write Hook => Token Approval
   const {
@@ -79,8 +88,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
    * This handler method approves signers TOKEN_ADDR tokens to be spent on Potentia Protocol
    */
   const approveHandler = async () => {
-    const _amount =
-      parseFloat(quantity) * 10 ** 18;
+    const _amount = parseFloat(quantity) * 10 ** 18;
     try {
       await writeApproveToken({
         abi: WethABi,
@@ -210,11 +218,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
           <span>Fetching...</span>
         ) : (
           <span className="font-medium">
-            {toUnits(
-              parseFloat(positionData?.shortToken?.balance ?? "0") /
-                10 ** 18,
-              4
-            )}
+            {toUnits(parseFloat(positionData?.shortToken?.balance ?? "0") / 10 ** 18, 4)}
           </span>
         )}
       </p>
@@ -299,4 +303,4 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
   );
 };
 
-export default ShortTrade;
+export default memo(ShortTrade);

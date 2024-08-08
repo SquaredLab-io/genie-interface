@@ -12,6 +12,8 @@ import TradeFlow from "./TradeFlow";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import { usePoolsStore } from "@store/poolsStore";
 import { useTokenPrice } from "@lib/hooks/useTokenPrice";
+// import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
+// import { Address } from "viem";
 
 // Trading Chart Container imported dynamically
 const TradeChart = dynamic(() => import("./TradeChart").then((mod) => mod.default));
@@ -25,14 +27,18 @@ const Portfolio = () => {
 
   const { selectedPool } = usePoolsStore();
 
+  // Updated Token prices globally
   const { tokenPrices, isFetching: isTokenPricesFetching } = useTokenPrice({
     poolAddress: selectedPool()?.poolAddr,
     paused: !selectedPool()?.poolAddr
   });
 
+  // Update current positions globally
+  // const { data: positionData } = useCurrentPosition(selectedPool()?.poolAddr as Address);
+
   return (
     <>
-      <Script 
+      <Script
         src="/static/datafeeds/udf/dist/bundle.js"
         strategy="lazyOnload"
         onReady={() => {

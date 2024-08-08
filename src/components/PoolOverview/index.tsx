@@ -76,7 +76,7 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
     data: position,
     isFetching: isPositionFetching,
     refetch: refetchPosition
-  } = useCurrentPosition(overviewPool?.poolAddr! as Address);
+  } = useCurrentPosition({ poolAddress: overviewPool?.poolAddr! as Address });
 
   if (!overviewPool) return <main></main>;
 
@@ -112,16 +112,10 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
               </TabsTrigger>
             </TabsList>
             <TabsContent value={GraphOptions.volume}>
-              <LPChart.Vol
-                dailyData={dailyData}
-                loading={isFetchingDailyData}
-              />
+              <LPChart.Vol dailyData={dailyData} loading={isFetchingDailyData} />
             </TabsContent>
             <TabsContent value={GraphOptions.tvl}>
-              <LPChart.TVL
-                dailyData={dailyData}
-                loading={isFetchingDailyData}
-              />
+              <LPChart.TVL dailyData={dailyData} loading={isFetchingDailyData} />
             </TabsContent>
             {/* <TabsContent value={GraphOptions.crossbook}>Cross Book</TabsContent> */}
             <TabsContent value={GraphOptions.counterpart} className="h-[calc(100%-36px)]">

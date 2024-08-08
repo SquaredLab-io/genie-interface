@@ -1,7 +1,7 @@
 "use client";
 
 // Library Imports
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, memo, useEffect, useMemo, useState } from "react";
 import { BiSolidDownArrow } from "react-icons/bi";
 import {
   useAccount,
@@ -28,6 +28,7 @@ import { usePoolsStore } from "@store/poolsStore";
 import { Address } from "viem";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
+import { useBalanceStore } from "@store/tradeStore";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -36,8 +37,9 @@ interface PropsType {
 const LongTrade: FC<PropsType> = ({ potentia }) => {
   const [quantity, setQuantity] = useState<string>("");
   const [sliderValue, setSliderValue] = useState<number[]>([25]);
-
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
+
+  useEffect(() => console.log("LongTrade component re-rendering"), []);
 
   const { selectedPool } = usePoolsStore();
 
@@ -58,7 +60,10 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     data: positionData,
     isFetching: isPositionFetching,
     refetch: refetchPosition
-  } = useCurrentPosition(selectedPool()?.poolAddr as Address);
+  } = useCurrentPosition({ poolAddress: selectedPool()?.poolAddr as Address });
+
+  // const { currentPosition: positionData, isFetchingPosition: isPositionFetching } =
+  //   useBalanceStore();
 
   // Both hooks paused, Refetch method to be used on Successful tx
   const { refetch: refetchOpenOrders } = useOpenOrders({
@@ -100,8 +105,6 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     }
   };
 
-  console.log("ApproveError", approveError);
-
   // wait for approval transaction
   const {
     isSuccess: isApproveSuccess,
@@ -134,7 +137,6 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       // set txHash in a state
       if (hash) {
         setTxHash(hash as `0x${string}`);
-        // console.log("txnHash", hash);
       }
     } catch (e) {
       // notification.error({
@@ -142,7 +144,11 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       //   description: `${error}`
       // });
     } finally {
-      console.log("open_long_position _amount", _amount);
+      console.log("Open Long Position args", {
+        poolAddr: selectedPool()?.poolAddr!, // poolAddress
+        amount: _amount.toString(), // amt
+        isLong: true // isLong
+      });
     }
   };
 
@@ -154,9 +160,9 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
 
   // Executes if Approve Successful
   useEffect(() => {
-    console.log("approve txn final status", isApproveSuccess);
+    console.log("Approve Tx status:", isApproveSuccess);
     if (isApproveSuccess) {
-      console.log("Token is approved for the selected amount!");
+      console.log(`Token is approved for ${quantity}`);
       openLongPositionHandler();
       notification.success({
         title: "Token Approved",
@@ -211,11 +217,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
           <span>Fetching...</span>
         ) : (
           <span className="font-medium">
-            {toUnits(
-              parseFloat(positionData?.longToken?.balance ?? "0") /
-                10 ** 18,
-              4
-            )}
+            {toUnits(parseFloat(positionData?.longToken?.balance ?? "0") / 10 ** 18, 4)}
           </span>
         )}
       </p>
@@ -286,12 +288,9 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
           isLoading ||
           (isApproveSuccess && isPending)
         } // conditions to Long Button
-        onClick={approveHandler}
+        onClick={() => approveHandler()}
       >
-        {isApproveLoading ||
-        isApprovePending ||
-        isLoading ||
-        (isApproveSuccess && isPending) ? (
+        {isApproveLoading || isLoading ? (
           <SpinnerIcon className="size-[22px]" />
         ) : (
           <span>BUY</span>
@@ -303,4 +302,4 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   );
 };
 
-export default LongTrade;
+export default memo(LongTrade);

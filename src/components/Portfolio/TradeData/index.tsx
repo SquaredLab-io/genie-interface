@@ -1,27 +1,23 @@
 "use client";
 
-import { useMemo, useEffect, useState, memo } from "react";
+import { memo } from "react";
 import Image from "next/image";
-import { Address, formatUnits } from "viem";
+import { formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import toUnits, { getDecimalAdjusted } from "@lib/utils/formatting";
-import {
-  getClosedTransactions,
-  getLatestTransactions,
-  getOpenTransactions
-} from "./helper";
+import { getClosedTransactions, getOpenTransactions } from "./helper";
 import OpenPositionsTable from "./OpenPositionsTable";
 import TradeHistoryTable from "./TradeHistoryTable";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
-import { Tx } from "@lib/types/portfolio";
+import { Tx } from "@squaredlab-io/sdk";
 import { cn } from "@lib/utils";
-import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import ClosePositionPopover from "./ClosePositionPopover";
 import { BASE_SEPOLIA } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { OpenPositionInfo } from "@squaredlab-io/sdk/src";
+import { useBalanceStore } from "@store/tradeStore";
 
 enum Tab {
   position = "position",
@@ -31,9 +27,13 @@ enum Tab {
 const TradeData = () => {
   const { selectedPool } = usePoolsStore();
 
-  const [selectedPosType, setSelectedPosType] = useState("");
+  // const [selectedPosType, setSelectedPosType] = useState("");
 
-  const { data: positions } = useCurrentPosition(selectedPool()?.poolAddr as Address);
+  // const { data: positions } = useCurrentPosition(selectedPool()?.poolAddr as Address);
+  // All current positions
+
+  const { currentPosition: positions } = useBalanceStore();
+
   // All Transactions -- LP, Open Long/Short, Close Long/Short
   const { data: txHistory, isLoading: isTxLoading } = useTxHistory();
 
@@ -54,18 +54,12 @@ const TradeData = () => {
   // useEffect(() => console.log("openPositions in Tradedata", openPositions), [openPositions]);
 
   const longTokenBalance = toUnits(
-    getDecimalAdjusted(
-      positions?.longToken?.balance,
-      18
-    ),
+    getDecimalAdjusted(positions?.longToken?.balance, 18),
     3
   );
 
   const shortTokenBalance = toUnits(
-    getDecimalAdjusted(
-      positions?.shortToken?.balance,
-      18
-    ),
+    getDecimalAdjusted(positions?.shortToken?.balance, 18),
     3
   );
 
@@ -199,11 +193,8 @@ const TradeData = () => {
         const side = row.original.side;
         return (
           <ClosePositionPopover
-            positions={positions}
+            positions={positions!}
             isLong={side === "Long" ? true : false}
-            // onClickTrigger={() => {
-            //   // setSelectedPosType(action);
-            // }}
           >
             <button className="py-1 px-[22px] text-white bg-[#32120D] font-normal text-[14px]/5 rounded-sm">
               Close
