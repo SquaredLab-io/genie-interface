@@ -1,4 +1,4 @@
-import { TradeflowLayout } from "@lib/types/portfolio";
+import { TradeflowLayout } from "@lib/types/enums";
 
 export function getTradeflowData(layout: TradeflowLayout, data: TradeflowDataType[]) {
   switch (layout) {

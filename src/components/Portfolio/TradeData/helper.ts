@@ -1,5 +1,5 @@
-import { Tx } from "@lib/types/portfolio";
-import { OpenPositionInfo, PositionTab } from "@squaredlab-io/sdk/src";
+
+import { OpenPositionInfo, PositionTab, Tx } from "@squaredlab-io/sdk/src";
 
 /**
  * TODO: Remove as deprecated

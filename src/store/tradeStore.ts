@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { TradeOptions } from "@lib/types/enums";
 import { TokenPrice } from "@lib/hooks/useTokenPrice";
+import { TokenBalances } from "@lib/hooks/useCurrentPosition";
 
 interface iTrade {
   isPositionModalOpen: boolean;
@@ -16,6 +17,13 @@ interface iPrices {
   setIsFetchingPrice: (value: boolean) => void;
 }
 
+interface iBalances {
+  currentPosition: TokenBalances | undefined;
+  updateCurrentPosition: (value: TokenBalances) => void;
+  isFetchingPosition: boolean;
+  updateFetchingPosition: (value: boolean) => void;
+}
+
 export const usePricesStore = create<iPrices>((set, get) => ({
   tokenPrice: undefined,
   setTokenPrice: (updatedPrice: TokenPrice) =>
@@ -26,6 +34,19 @@ export const usePricesStore = create<iPrices>((set, get) => ({
   setIsFetchingPrice: (update: boolean) =>
     set(() => ({
       isFetchingPrice: update
+    }))
+}));
+
+export const useBalanceStore = create<iBalances>((set, get) => ({
+  currentPosition: undefined,
+  updateCurrentPosition: (newPosition: TokenBalances) =>
+    set(() => ({
+      currentPosition: newPosition
+    })),
+  isFetchingPosition: false,
+  updateFetchingPosition: (fetching: boolean) =>
+    set(() => ({
+      isFetchingPosition: fetching
     }))
 }));
 

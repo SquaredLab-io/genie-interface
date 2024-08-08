@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import notification from "@components/common/notification";
 import { PositionTab } from "@squaredlab-io/sdk/src";
-import { useLocalStorage } from "usehooks-ts";
+// import { useLocalStorage } from "usehooks-ts";
 import { useAccount } from "wagmi";
 
 interface PropsType {

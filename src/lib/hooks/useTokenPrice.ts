@@ -39,8 +39,12 @@ export function useTokenPrice({ poolAddress, paused = false }: PropsType): Retur
   // const [tokenPrices, setTokenPrices] = useState<TokenPrice | undefined>(undefined);
   const [isError, setIsError] = useState<boolean>(false);
 
-  const { tokenPrice: tokenPrices, setTokenPrice: setTokenPrices } = usePricesStore();
-  const { isFetchingPrice: isFetching, setIsFetchingPrice: setIsFetching } = usePricesStore();
+  const {
+    tokenPrice: tokenPrices,
+    setTokenPrice: setTokenPrices,
+    isFetchingPrice: isFetching,
+    setIsFetchingPrice: setIsFetching
+  } = usePricesStore();
 
   // store
   const { selectedPool } = usePoolsStore();
@@ -60,9 +64,7 @@ export function useTokenPrice({ poolAddress, paused = false }: PropsType): Retur
       const tokenprice = await potentia?.fetchTokenPrice(poolAddress!);
       console.log("tokenprice", tokenprice);
       setTokenPrices(tokenprice as TokenPrice);
-      // setGTokenPrice(tokenprice as TokenPrice);
       setValue(JSON.stringify(tokenprice));
-      // setValue(JSON.stringify(openOrders));
     } catch (error) {
       notification.error({
         title: "Failed to fetch Token Prices",

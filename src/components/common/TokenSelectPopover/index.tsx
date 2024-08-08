@@ -6,7 +6,7 @@ import { Separator } from "@components/ui/separator";
 import { useFilteredPools } from "../../../lib/hooks/useFilteredPools";
 import SearchInput from "./SearchInput";
 import PoolsList from "./PoolsList";
-import { PopoverSizes } from "@lib/types/pools";
+import { PopoverSizes } from "@lib/types/common";
 import { usePoolsStore } from "@store/poolsStore";
 
 enum PoolSelectTypes {

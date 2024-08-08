@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow
 } from "@components/ui/table";
-import { TradeflowLayout } from "@lib/types/portfolio";
+import { TradeflowLayout } from "@lib/types/enums";
 import { getTradeflowData, tradeFlowData } from "./helper";
 
 const LayoutSelector = ({

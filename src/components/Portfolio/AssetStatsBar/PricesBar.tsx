@@ -1,12 +1,12 @@
 import { PoolInfo } from "@squaredlab-io/sdk/src";
 import { Separator } from "@components/ui/separator";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
-import { useTokenPrice } from "@lib/hooks/useTokenPrice";
 import toUnits from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
 import { usePricesStore, useTradeStore } from "@store/tradeStore";
 import { TradeOptions } from "@lib/types/enums";
 import BigNumber from "bignumber.js";
+import { memo } from "react";
 
 interface MarkerProps {
   label: string;
@@ -37,7 +37,7 @@ function Marker({ label, value, fetching, showChange = false }: MarkerProps) {
   );
 }
 
-export default function PricesBar({ selectedPool }: PricesBarProps) {
+const PricesBar = ({ selectedPool }: PricesBarProps) => {
   const underlying = selectedPool?.underlying;
   const { price, isLoading: isPriceLoading } = useCurrencyPrice(underlying);
   const { tradeType } = useTradeStore();
@@ -106,3 +106,5 @@ export default function PricesBar({ selectedPool }: PricesBarProps) {
     </div>
   );
 }
+
+export default memo(PricesBar);

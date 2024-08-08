@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { Address } from "viem";
-import { Tx } from "@lib/types/portfolio";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { usePoolsStore } from "@store/poolsStore";
+import { Tx } from "@squaredlab-io/sdk";
 
 type ReturnTxHistory = {
   data: Tx[] | undefined;

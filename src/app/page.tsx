@@ -61,15 +61,7 @@ export default function Home() {
         <ConnectWallet />
       </main>
     );
-
-  if (isFetching && !_pools) return <LoadingScreen />;
-
-  // else if (notFound)
-  //   return (
-  //     <main className="page-center size-full flex-col-center gap-5 font-sans-ibm-plex">
-  //       <h3 className="text-2xl">No pools found</h3>
-  //     </main>
-  //   );
+  else if (isFetching && !_pools) return <LoadingScreen />;
 
   return (
     <main className="border-t border-secondary-gray page-center">

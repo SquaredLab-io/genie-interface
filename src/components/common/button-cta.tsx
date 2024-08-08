@@ -1,8 +1,7 @@
 "use client";
 
-import { cn } from "@lib/utils";
-import clsx from "clsx";
 import React, { forwardRef, ReactNode } from "react";
+import clsx from "clsx";
 
 interface PropsType {
   children: string | ReactNode;

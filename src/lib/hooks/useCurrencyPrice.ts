@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { makeApiRequest } from "@lib/datafeed/helpers";
-import { getTokenSymbol } from "@lib/pools";
+import { getTokenSymbol } from "@lib/utils/pools";
 
 interface ReturnType {
   price: number;
