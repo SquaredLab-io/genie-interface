@@ -3,9 +3,11 @@
 import { memo, useEffect, useState } from "react";
 import Image from "next/image";
 import { Address } from "viem";
+import { useAccount, useWaitForTransactionReceipt } from "wagmi";
+import CopyToClipboard from "react-copy-to-clipboard";
+import { PiCopy } from "react-icons/pi";
 import Modal from "@components/common/Modal";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
-import { useIsMounted } from "@lib/hooks/useIsMounted";
 import {
   Select,
   SelectContent,
@@ -16,12 +18,10 @@ import {
 import ButtonCTA from "@components/common/button-cta";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
 import { CONFIRMATION, SUPPORTED_NETWORKS, SUPPORTED_TOKENS } from "@lib/constants";
-import { Input } from "@components/ui/input";
 import { DialogDescription, DialogHeader, DialogTitle } from "@components/ui/dialog";
 import { isValidAddress } from "@lib/utils/checkVadility";
-import { cn } from "@lib/utils";
-import { useWaitForTransactionReceipt } from "wagmi";
 import notification from "../notification";
+import { shortenHash } from "@lib/utils/formatting";
 
 const FaucetModal = ({
   open,
@@ -33,6 +33,7 @@ const FaucetModal = ({
   trigger?: React.ReactNode;
 }) => {
   const { potentia } = usePotentiaSdk();
+  const { isConnected, address } = useAccount();
 
   const [isTxLoading, setIsTxLoading] = useState(false);
   // const { isMounted } = useIsMounted();
@@ -48,7 +49,7 @@ const FaucetModal = ({
     try {
       setIsTxLoading(true);
       // Default and only Network: Base Sepolia
-      const hash = await potentia?.pool.callFaucet(tokenAddress, userAddress);
+      const hash = await potentia?.poolWrite.callFaucet(tokenAddress, userAddress);
       if (hash) {
         setTxHash(hash as Address);
         setIsTxLoading(false);
@@ -68,7 +69,8 @@ const FaucetModal = ({
     });
 
   // Notifications based on Transaction status
-  useEffect(() => {if (isError) {
+  useEffect(() => {
+    if (isError) {
       notification.error({
         title: "Faucet Transaction failed",
         description: `${error.message}`
@@ -180,9 +182,35 @@ const FaucetModal = ({
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-3 w-full">
-          <label>Wallet Address</label>
-          <Input
+        {/* ADDRESS */}
+        <div className="flex flex-col space-y-3 w-full mt-6">
+          <label htmlFor="user-address">Wallet Address</label>
+          {isConnected ? (
+            <div
+              id="user-address"
+              className="font-normal text-left text-sm text-[#cdd7df] inline-flex items-center gap-x-2"
+            >
+              {shortenHash(address)}
+              <CopyToClipboard
+                text={address!}
+                onCopy={() => {
+                  notification.success({
+                    title: "User Address copied",
+                    duration: 2000
+                  });
+                }}
+              >
+                <button aria-label="button to copy vault address">
+                  <PiCopy className="text-white" />
+                </button>
+              </CopyToClipboard>
+            </div>
+          ) : (
+            <span className="font-normal text-left text-sm text-[#a2adb5]">
+              No connected account found
+            </span>
+          )}
+          {/* <Input
             placeholder="0xxxxxxxxx..."
             type="type"
             value={inputAddress}
@@ -191,11 +219,11 @@ const FaucetModal = ({
               "placeholder:text-[#404950]",
               !isValidInput && inputAddress !== "" && "border-negative-red"
             )}
-          />
+          /> */}
         </div>
         {/* CTA */}
         <ButtonCTA
-          disabled={isTxLoading || (isPending && isLoading) || !isValidInput}
+          disabled={isTxLoading || (isPending && isLoading) || !isConnected}
           className="w-full rounded-[4px]"
           onClick={() => {
             console.log("args", {
@@ -207,8 +235,10 @@ const FaucetModal = ({
         >
           {isTxLoading || isLoading ? (
             <SpinnerIcon className="size-[22px]" />
-          ) : (
+          ) : isConnected ? (
             <span>GET TOKENS</span>
+          ) : (
+            <span>Please Connect Wallet</span>
           )}
         </ButtonCTA>
       </div>

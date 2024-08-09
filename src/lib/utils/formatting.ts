@@ -1,3 +1,5 @@
+import { Address } from "viem";
+
 export const formatDollarUnits = (amount: number) => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -36,7 +38,7 @@ export default function toUnits(num: number, decimals: number): string {
   return Number(num.toFixed(decimals)).toLocaleString("en-US");
 }
 
-export function shortenHash(hash: string): string {
+export function shortenHash(hash: string | undefined): string {
   if (!hash) return "N/A";
   return hash.slice(0, 8) + "..." + hash.slice(-6);
 }
