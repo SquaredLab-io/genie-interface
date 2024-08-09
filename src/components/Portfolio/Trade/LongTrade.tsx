@@ -286,7 +286,8 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
           isApproveLoading ||
           isApprovePending ||
           isLoading ||
-          (isApproveSuccess && isPending)
+          (isApproveSuccess && isPending) ||
+          parseFloat(quantity ?? "0") < 0.01
         } // conditions to Long Button
         onClick={() => approveHandler()}
       >

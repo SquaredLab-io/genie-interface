@@ -34,7 +34,7 @@ export const meta = {
   TELEGRAM: "https://t.me/squaredlabs",
   DOCS: "https://squaredlabs-io.gitbook.io/squaredlabs.io",
   LOGO: "/images/logo.svg",
-  SUPPORT_MAIL: "support@squaredlabs.io"
+  SUPPORT_MAIL: "genie@squaredlabs.io"
 };
 
 // Header navigation links
@@ -44,12 +44,7 @@ export const navigation: {
   target: string;
 }[] = [
   { name: "Portfolio", href: "/", target: "" },
-  { name: "Pools", href: "/pools", target: "" },
-  {
-    name: "Blog & Research",
-    href: meta.DOCS,
-    target: "_blank"
-  }
+  { name: "Pools", href: "/pools", target: "" }
 ];
 
 export const SUPPORTED_NETWORKS = [

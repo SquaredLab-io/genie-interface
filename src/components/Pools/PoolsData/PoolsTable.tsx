@@ -1,3 +1,4 @@
+import { useAccount } from "wagmi";
 import ConnectWallet from "@components/common/ConnectWallet";
 import {
   Table,
@@ -13,7 +14,6 @@ import {
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
-import { useAccount } from "wagmi";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
