@@ -4,7 +4,7 @@ import { memo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@lib/utils";
-import { navigation } from "@lib/constants";
+import { meta, navigation } from "@lib/constants";
 import FeedbackModal from "./feedback-modal";
 import ConnectWallet from "../ConnectWallet";
 // import { CoinbaseCreateWallet } from "../ConnectWallet/CoinbaseCreateWallet";
@@ -24,8 +24,8 @@ const Header = () => {
           <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Genie | SquaredLabs</span>
             <NextImage
-              src="/images/logo_text.svg"
-              altText="genie logo"
+              src="/images/logo-wide.svg"
+              altText={`${meta.APP_NAME} logo`}
               className="w-[72px]"
             />
           </Link>

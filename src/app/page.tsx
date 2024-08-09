@@ -2,16 +2,16 @@
 
 import { useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
+import { useAccount } from "wagmi";
+import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useIsMounted } from "@lib/hooks/useIsMounted";
 import { usePools } from "@lib/hooks/usePools";
 import { usePoolsStore } from "@store/poolsStore";
 import LoadingScreen from "@components/common/loading-screen";
-import { useAccount } from "wagmi";
-import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 
-// Portfolio imported dynamically
-const Portfolio = dynamic(() =>
-  import("@components/Portfolio").then((mod) => mod.default)
+// Trade Interface imported dynamically
+const Trade = dynamic(() =>
+  import("@components/Trade").then((mod) => mod.default)
 );
 
 /**
@@ -64,7 +64,7 @@ export default function Home() {
 
   return (
     <main className="border-t border-secondary-gray page-center">
-      <Portfolio />
+      <Trade />
     </main>
   );
 }

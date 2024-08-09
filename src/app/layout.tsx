@@ -7,16 +7,16 @@ import Providers from "@components/common/providers";
 import { Toaster } from "@components/ui/sonner";
 import "./globals.css";
 
-const { APP_NAME, DESCRIPTION, KEYWORDS, URL, IMAGE, SITE_NAME, USERNAME } = meta;
+const { APP_NAME, DESCRIPTION, KEYWORDS, URL, LOGO, IMAGE, SITE_NAME, USERNAME } = meta;
 
 export const metadata: Metadata = {
   title: {
     template: `%s | ${APP_NAME}`,
     default: APP_NAME
   },
-  description: "Derivatives without liquidation.",
+  description: "Derivatives without liquidation",
   icons: {
-    icon: "/images/logo.svg",
+    icon: LOGO,
     apple: "apple-touch-icon-precomposed"
   },
   keywords: KEYWORDS,

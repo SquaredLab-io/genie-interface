@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Script from "next/script";
 // Component, Util Imports
-import AssetStatsBar from "@components/Portfolio/AssetStatsBar";
-import MarketData from "@components/Portfolio/MarketData";
-import Trade from "@components/Portfolio/Trade";
-import TradeData from "@components/Portfolio/TradeData";
+import AssetStatsBar from "@components/Trade/AssetStatsBar";
+import MarketData from "@components/Trade/MarketData";
+import TradeSection from "@components/Trade/TradeSection";
+import TradeData from "@components/Trade/TradeData";
 import ChartLoader from "./TradeChart/loader";
 import TradeFlow from "./TradeFlow";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
@@ -18,7 +18,7 @@ import { useTokenPrice } from "@lib/hooks/useTokenPrice";
 // Trading Chart Container imported dynamically
 const TradeChart = dynamic(() => import("./TradeChart").then((mod) => mod.default));
 
-const Portfolio = () => {
+const Trade = () => {
   const [isScriptReady, setIsScriptReady] = useState(false);
   const { potentia } = usePotentiaSdk();
 
@@ -38,14 +38,14 @@ const Portfolio = () => {
 
   return (
     <>
-      <Script
+      {/* <Script
         src="/static/datafeeds/udf/dist/bundle.js"
         strategy="lazyOnload"
         onReady={() => {
           console.log("Chart script is ready!");
           setIsScriptReady(true);
         }}
-      />
+      /> */}
       <div className="flex flex-row h-full">
         {/* Left Side */}
         <div className="flex-1 flex flex-col w-full border-r border-secondary-gray">
@@ -62,7 +62,7 @@ const Portfolio = () => {
         </div>
         {/* Right Side */}
         <div className="flex-1 flex flex-col w-full min-w-64 max-w-[346px]">
-          <Trade />
+          <TradeSection />
           <MarketData />
         </div>
       </div>
@@ -70,4 +70,4 @@ const Portfolio = () => {
   );
 };
 
-export default Portfolio;
+export default Trade;
