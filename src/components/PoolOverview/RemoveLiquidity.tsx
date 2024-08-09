@@ -10,8 +10,8 @@ import { cn } from "@lib/utils";
 import ButtonCTA from "@components/common/button-cta";
 import toUnits from "@lib/utils/formatting";
 import { Info } from "lucide-react";
-import { PoolInfo } from "@squaredlab-io/sdk/src";
 import { Address } from "viem";
+import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 
 const RemoveLiquidity = ({
   overviewPool,
@@ -43,7 +43,7 @@ const RemoveLiquidity = ({
     setIsLoading(true);
 
     try {
-      const txnHash = await potentia?.pool.removeLiquidity(
+      const txnHash = await potentia?.poolWrite.removeLiquidity(
         overviewPool.poolAddr as Address,
         BigInt(shares).toString()
       );

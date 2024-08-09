@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger
 } from "@components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
-import { PoolInfo } from "@squaredlab-io/sdk/src";
+import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 
 const PoolMenu = ({ pool }: { pool: PoolInfo }) => {
   const router = useRouter();

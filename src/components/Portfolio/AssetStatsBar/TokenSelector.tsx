@@ -1,6 +1,6 @@
 import Image from "next/image";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
-import { PoolInfo } from "@squaredlab-io/sdk/src";
+import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 
 const TokenSelector = ({ selectedPool }: { selectedPool: PoolInfo | undefined }) => {
   return (

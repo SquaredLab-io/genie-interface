@@ -76,7 +76,7 @@ const ClosePositionPopover: FC<PropsType> = ({
     console.log("Amount", amount);
     setIsHandlerLoading(true);
     try {
-      const hash = await potentia?.pool.closePosition(
+      const hash = await potentia?.poolWrite.closePosition(
         selectedPool()?.poolAddr! as Address,
         BigInt(amount).toString(),
         isLong
@@ -103,10 +103,6 @@ const ClosePositionPopover: FC<PropsType> = ({
     hash: txHash,
     confirmations: CONFIRMATION
   });
-  
-  console.log("isHandlerLoading", isHandlerLoading);
-  console.log("isLoading", isLoading);
-  console.log("isError", isError);
 
   // Notifications based on Transaction status
   useEffect(() => {

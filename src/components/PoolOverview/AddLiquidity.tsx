@@ -18,8 +18,8 @@ import ButtonCTA from "@components/common/button-cta";
 import { Info } from "lucide-react";
 import notification from "@components/common/notification";
 import { CONFIRMATION } from "@lib/constants";
-import { PoolInfo } from "@squaredlab-io/sdk/src";
 import { Address } from "viem";
+import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 
 const AddLiquidity = ({
   overviewPool,
@@ -84,7 +84,7 @@ const AddLiquidity = ({
     const _amount = parseFloat(amount) * 10 ** 18;
     console.log("_amount", _amount);
 
-    const hash = await potentia?.pool.addLiquidity(
+    const hash = await potentia?.poolWrite.addLiquidity(
       overviewPool.poolAddr,
       BigInt(_amount).toString()
     );

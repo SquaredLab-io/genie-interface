@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { usePotentiaSdk } from "./usePotentiaSdk";
-import notification from "@components/common/notification";
-import { PoolInfo } from "@squaredlab-io/sdk/src";
+// import notification from "@components/common/notification";
+import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
+// import { getWalletClient } from "@wagmi/core";
 
 interface ReturnType {
   pools: PoolInfo[];

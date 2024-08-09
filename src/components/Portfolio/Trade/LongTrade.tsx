@@ -129,7 +129,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   const openLongPositionHandler = async () => {
     const _amount = parseFloat(quantity) * 10 ** 18;
     try {
-      const hash = await potentia?.pool.openPosition(
+      const hash = await potentia?.poolWrite.openPosition(
         selectedPool()?.poolAddr!, // poolAddress
         BigInt(_amount).toString(), // amt
         true // isLong

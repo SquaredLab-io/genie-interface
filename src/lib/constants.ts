@@ -68,19 +68,14 @@ export const SUPPORTED_TOKENS = [
     token: "WETH",
     address: "0x023f4Ef5A1AA177b07990B9B964BCbAc2Bd29d85",
     logo: "/tokens/weth.svg"
-  },
-  {
-    token: "WBTC",
-    address: "0x023f4Ef5A1AA177b07990B9B964BCbAc2Bd29d85",
-    logo: "/tokens/wbtc.svg"
   }
 ];
 
 export const TOKENS: {
-  [key: string]: `0x${string}`
+  [key: string]: `0x${string}`;
 } = {
   WETH: "0x023f4Ef5A1AA177b07990B9B964BCbAc2Bd29d85" as Address
-}
+};
 
 export const CONTRACT_ADDRESSES = {
   POTENTIA_FACTORY_ADDR: "0xB7CEb18E71291A03810D589851066A7eA0E87C2F" as Address,

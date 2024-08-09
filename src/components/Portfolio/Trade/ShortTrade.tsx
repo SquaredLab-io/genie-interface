@@ -132,7 +132,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
   const openShortPositionHandler = async () => {
     const _amount = parseFloat(quantity) * 10 ** 18;
     try {
-      const hash = await potentia?.pool.openPosition(
+      const hash = await potentia?.poolWrite.openPosition(
         selectedPool()?.poolAddr as Address, // poolAddress
         BigInt(_amount).toString(), // amt
         false // isLong

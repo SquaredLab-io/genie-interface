@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import toUnits, { toDollarUnits } from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
 import { Button } from "@components/ui/button";
-import { PoolInfo } from "@squaredlab-io/sdk/src";
+import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { BASE_SEPOLIA } from "@lib/constants";
 import { calculatePoolAge } from "@lib/utils/calculatePoolAge";
 

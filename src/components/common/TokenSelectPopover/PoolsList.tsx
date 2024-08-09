@@ -1,7 +1,7 @@
 import { memo } from "react";
 import Image from "next/image";
 import { PopoverSizes } from "@lib/types/common";
-import { PoolInfo } from "@squaredlab-io/sdk/src";
+import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 
 interface PoolsListProps {
   pools: PoolInfo[];

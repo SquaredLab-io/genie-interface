@@ -1,6 +1,5 @@
 import { create } from "zustand";
-import { PoolInfo } from "@squaredlab-io/sdk/src";
-
+import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 
 interface iPools {
   poolsData: PoolInfo[];

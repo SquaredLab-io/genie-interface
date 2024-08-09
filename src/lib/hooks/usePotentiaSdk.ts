@@ -12,7 +12,7 @@ import { PONDER_URL, SUBGRAPH_URL } from "@lib/keys";
 export const usePotentiaSdk = () => {
   const [potentia, setPotentia] = useState<PotentiaSdk | undefined>(undefined);
 
-  const { address, chainId } = useAccount();
+  // const { address, chainId } = useAccount();
   const { data: walletClient, status } = useWalletClient();
 
   const publicClient: any = createPublicClient({
@@ -21,21 +21,27 @@ export const usePotentiaSdk = () => {
   });
 
   async function userConnected() {
-    if (address && chainId && status == "success") {
-      const potentia = new PotentiaSdk(
-        publicClient,
-        walletClient,
-        SUBGRAPH_URL,
-        PONDER_URL
-      );
-      setPotentia(potentia);
-    }
+    // if (address && chainId && status == "success") {
+    // Now Potentia doesn't need user to be connected to initiate
+    const potentia = new PotentiaSdk(
+      publicClient,
+      // walletClient,
+      SUBGRAPH_URL,
+      PONDER_URL
+    );
+    setPotentia(potentia);
   }
 
   useEffect(() => {
     userConnected();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletClient, address]);
+  }, []);
+  // }, [walletClient, address]);
+
+  useEffect(() => {
+    if (potentia !== undefined && status == "success") {
+      potentia.initialiseSDK(walletClient);
+    }
+  }, [potentia, walletClient]);
 
   return {
     potentia

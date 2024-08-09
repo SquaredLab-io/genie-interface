@@ -17,7 +17,7 @@ import TokenSelectPopover from "@components/common/TokenSelectPopover";
 import { LpTradeOptions } from "@lib/types/enums";
 import SelectLpTrade from "./SelectLpTrade";
 import { Separator } from "@components/ui/separator";
-import { PoolInfo } from "@squaredlab-io/sdk/src";
+import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { useDailyData } from "@lib/hooks/useDailyData";
 

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import notification from "@components/common/notification";
-import { FundingInfo } from "@squaredlab-io/sdk/src/pool";
 import { useLocalStorage } from "usehooks-ts";
 import { usePoolsStore } from "@store/poolsStore";
 import { usePricesStore } from "@store/tradeStore";
+import { FundingInfo } from "@squaredlab-io/sdk/src/interfaces/pool.interface";
 
 interface PropsType {
   poolAddress: string | undefined;

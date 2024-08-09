@@ -1,4 +1,4 @@
-import { PoolInfo } from "@squaredlab-io/sdk/src";
+import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { Separator } from "@components/ui/separator";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import toUnits from "@lib/utils/formatting";

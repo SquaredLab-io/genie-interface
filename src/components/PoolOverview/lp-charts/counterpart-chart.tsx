@@ -6,7 +6,7 @@ import {
   DeepPartial,
   LineStyle
 } from "lightweight-charts";
-import { PoolInfo } from "@squaredlab-io/sdk/src";
+import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 // import { Timeseries, transformTimeseries } from "./helper";
 // import { generateRandomData } from "./helper";
 // import { useTradeStore } from "@store/tradeStore";
