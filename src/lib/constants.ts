@@ -12,7 +12,7 @@ export const BASE_SEPOLIA_RPC = "https://base-sepolia-rpc.publicnode.com";
 // App's Metadata all at one place
 //
 export const meta = {
-  APP_NAME: "Genie | SquaredLabs",
+  APP_NAME: "Genie DEX",
   DESCRIPTION:
     "Genie is an entire derivatives ecosystem without liquidation! Powered by Potentia Protocol.",
   KEYWORDS: [
@@ -43,7 +43,7 @@ export const navigation: {
   href: string;
   target: string;
 }[] = [
-  { name: "Portfolio", href: "/", target: "" },
+  { name: "Trades", href: "/", target: "" },
   { name: "Pools", href: "/pools", target: "" }
 ];
 
