@@ -207,7 +207,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       <p className="inline-flex items-start gap-1 w-full">
         <span className="text-[#757B80]">Balance:</span>
         <span className="font-medium">
-          {getAccountBalance(userBalance, isBalLoading)}{" "}
+          {getAccountBalance(userBalance, isBalLoading)} {selectedPool()?.underlying}
         </span>
       </p>
       <p className="inline-flex items-start gap-1 w-full">

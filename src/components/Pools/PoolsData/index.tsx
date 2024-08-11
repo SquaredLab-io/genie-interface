@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { TabsList } from "@radix-ui/react-tabs";
 import { PlusIcon, Table } from "lucide-react";
 // Component Imports
-import { Button } from "@components/ui/button";
+// import { Button } from "@components/ui/button";
 import { Tabs, TabsContent, TabsTrigger } from "@components/ui/tabs";
 import PoolsTable from "./PoolsTable";
 import { allPoolsColumnDef, userPoolsColumnDef } from "./pool-columns";
@@ -16,9 +16,10 @@ import ManagePoolModal from "../manage-pool-modal";
 import { cn } from "@lib/utils";
 import { usePools } from "@lib/hooks/usePools";
 import { TableOptions } from "./helper";
-import { usePoolsStore } from "@store/poolsStore";
+// import { usePoolsStore } from "@store/poolsStore";
 import { useFilteredPools } from "@lib/hooks/useFilteredPools";
 import { useAccount } from "wagmi";
+import MyPoolsTable from "./MyPoolsTable";
 
 const PoolsData = () => {
   const [showSearch, setShowSearch] = useState(false);
@@ -32,31 +33,10 @@ const PoolsData = () => {
   const [currentTab, setCurrentTab] = useState(TableOptions.all);
 
   const { pools, isFetching, refetch } = usePools();
-  const { updatePoolsData, poolsData } = usePoolsStore();
-  // const { updateSelectedPool } = usePoolsStore();
 
-  const _pools = useMemo(() => {
-    if (poolsData) {
-      // 1. checking if pools exists globally
-      return poolsData;
-    } else if (pools) {
-      // 2. if not pools, fetch them
-      return pools;
-    }
-    return [];
-  }, [poolsData, pools]);
-
-  const { pools: filteredAllPools } = useFilteredPools(_pools, allTerm);
-  const { pools: filteredMyPools } = useFilteredPools(_pools, myTerm);
-  const { pools: filteredTxPools } = useFilteredPools(_pools, txTerm);
-
-  useEffect(() => {
-    if (pools.length) {
-      // If there're pools, update it globally
-      updatePoolsData(pools);
-      console.log("pools updated", pools);
-    }
-  }, [pools]);
+  const { pools: filteredAllPools } = useFilteredPools(pools, allTerm);
+  const { pools: filteredMyPools } = useFilteredPools(pools, myTerm);
+  const { pools: filteredTxPools } = useFilteredPools(pools, txTerm);
 
   const poolsColumns = allPoolsColumnDef();
   const userColumns = userPoolsColumnDef();
@@ -109,7 +89,7 @@ const PoolsData = () => {
           />
         </TabsContent>
         <TabsContent value={TableOptions.my}>
-          <PoolsTable
+          <MyPoolsTable
             columns={userColumns}
             data={filteredMyPools.filter((pool) => pool.poolOp === address)}
             // data={pools.filter((pool) => pool.poolAddr === address)}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useIsMounted } from "@lib/hooks/useIsMounted";
 import { usePools } from "@lib/hooks/usePools";
@@ -8,8 +8,6 @@ import { usePoolsStore } from "@store/poolsStore";
 // import PoolOverview from "@components/PoolOverview";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
 import dynamic from "next/dynamic";
-import { useDailyData } from "@lib/hooks/useDailyData";
-import { Address } from "viem";
 
 // PoolOverview imported dynamically
 const PoolOverview = dynamic(() =>
@@ -25,38 +23,7 @@ export default function Overview() {
 
   // get Pools
   const { pools, isFetching } = usePools();
-  console.log("poolsdata", poolsData);
-
-  const currentPool = useMemo(() => {
-    if (poolsData?.length) {
-      // 1. checking if pools exists globally
-      const symbol = (id as string).toLowerCase();
-      const pool = poolsData.filter((pool) => pool.underlying.toLowerCase() === symbol);
-      return pool[0];
-    } else if (pools.length) {
-      // 2. if not pools, fetch them
-      const symbol = (id as string).toLowerCase();
-      const pool = pools.filter((pool) => pool.underlying.toLowerCase() === symbol);
-      return pool[0];
-    }
-    return undefined;
-  }, [poolsData, pools]);
-
-  // If there're pools, update it globally
-  useEffect(() => {
-    if (pools.length) {
-      updatePoolsData(pools);
-      console.log("pools updated", pools);
-    }
-  }, [pools]);
-
-  // Set to 404 if nothing fetched for 10 secs
-  // useEffect(() => {
-  //   const timeout = setTimeout(() => {
-  //     if (!currentPool) setNotFound(true);
-  //   }, 10000);
-  //   return () => clearTimeout(timeout);
-  // }, []);
+  const currentPool = pools && pools[pools.length - 1];
 
   if (!isMounted)
     return (
