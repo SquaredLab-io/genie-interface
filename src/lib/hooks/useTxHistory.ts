@@ -3,7 +3,7 @@ import { useAccount } from "wagmi";
 import { Address } from "viem";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { usePoolsStore } from "@store/poolsStore";
-import { Tx } from "@squaredlab-io/sdk";
+import { Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 
 type ReturnTxHistory = {
   data: Tx[] | undefined;
@@ -25,16 +25,16 @@ export function useTxHistory(paused = false): ReturnTxHistory {
 
   async function refetch() {
     try {
-      console.log("fetching txHistory...", {
-        address,
-        poolAddress: selectedPool()?.poolAddr
-      });
+      // console.log("fetching txHistory...", {
+      //   address,
+      //   poolAddress: selectedPool()?.poolAddr
+      // });
       setIsLoadingTxH(true);
-      const result = await potentia?.getUserTxHistory(
-        address as Address, // user
-        selectedPool()?.poolAddr! as Address // pool
+      const result = await potentia?.getUserTxHistory( // (pool, user)
+        selectedPool()?.poolAddr! as Address, // pool
+        address as Address // user
       );
-      console.log('txHistory', result);
+      // console.log('txHistory', result);
       setTxHistory(result);
     } catch (error) {
       console.error("Error -- fetching transaction history", error);

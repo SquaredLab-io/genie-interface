@@ -18,7 +18,7 @@ const TokenSelector = ({ selectedPool }: { selectedPool: PoolInfo | undefined })
         {/* Tokens Symbols */}
         <div className="inline-flex items-center gap-1">
           <span className="text-base/5 font-medium text-nowrap">
-            {selectedPool?.pool}
+            {selectedPool?.pool.split(" / ").join("")}
           </span>
           <span className="text-nowrap font-normal text-2xs/[14px] rounded-sm py-px px-[4.5px] text-white bg-text-grad bg-gradient-blue">
             p = {selectedPool?.power}

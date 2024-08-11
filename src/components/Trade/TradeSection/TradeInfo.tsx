@@ -1,3 +1,4 @@
+import { useTokenPrice } from "@lib/hooks/useTokenPrice";
 import { cn } from "@lib/utils";
 import toUnits from "@lib/utils/formatting";
 import { usePoolsStore } from "@store/poolsStore";
@@ -22,15 +23,19 @@ function Marker({ label, value, fetching = false, showChange = false }: MarkerPr
             : "text-negative-red" : "text-white"
         )}
       >
-        {fetching ? "-" : value}
+        {fetching && !value ? "-" : value}
       </span>
     </p>
   );
 }
 
 export default function TradeInfo() {
-  const { tokenPrice, isFetchingPrice } = usePricesStore();
   const { selectedPool } = usePoolsStore();
+
+  const { tokenPrices: tokenPrice, isFetching: isFetchingPrice } = useTokenPrice({
+    poolAddress: selectedPool()?.poolAddr
+  });
+
   return (
     <div className="flex flex-col gap-2 mt-5 font-normal text-xs/[14px]">
       <Marker label={"Fee"} value={"0.25%"} />

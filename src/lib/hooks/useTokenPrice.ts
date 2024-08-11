@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
+import { QueryStatus, useQuery } from "@tanstack/react-query";
+import { FundingInfo } from "@squaredlab-io/sdk/src/interfaces/pool.interface";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import notification from "@components/common/notification";
-import { useLocalStorage } from "usehooks-ts";
-import { usePoolsStore } from "@store/poolsStore";
-import { usePricesStore } from "@store/tradeStore";
-import { FundingInfo } from "@squaredlab-io/sdk/src/interfaces/pool.interface";
+import { REFETCH_INTERVAL } from "@lib/constants";
 
 interface PropsType {
   poolAddress: string | undefined;
@@ -25,71 +23,48 @@ export interface TokenPrice {
 export interface ReturnType {
   tokenPrices: TokenPrice | undefined;
   isFetching: boolean;
-  refetch: () => Promise<void>;
+  status: QueryStatus;
 }
 
 /**
  *
  * @param poolAddress
- * @param paused Pause the auto fetching
- * @returns openOrders, isFetching, refetch
+ * @param paused Pause the auto-fetching
+ * @returns openOrders, isFetching, status
  */
 export function useTokenPrice({ poolAddress, paused = false }: PropsType): ReturnType {
-  // const [isFetching, setIsFetching] = useState<boolean>(false);
-  // const [tokenPrices, setTokenPrices] = useState<TokenPrice | undefined>(undefined);
-  const [isError, setIsError] = useState<boolean>(false);
-
-  const {
-    tokenPrice: tokenPrices,
-    setTokenPrice: setTokenPrices,
-    isFetchingPrice: isFetching,
-    setIsFetchingPrice: setIsFetching
-  } = usePricesStore();
-
-  // store
-  const { selectedPool } = usePoolsStore();
-
-  // using local-storage api for caching
-  const [value, setValue] = useLocalStorage(
-    `genie:token-prices:${selectedPool()?.underlyingAddress}`,
-    ""
-  );
-
   const { potentia } = usePotentiaSdk();
 
-  const refetch = async () => {
+  const fetchTokenPrice = async () => {
     try {
-      setIsFetching(true);
-      console.log("pooladdress", poolAddress);
       const tokenprice = await potentia?.fetchTokenPrice(poolAddress!);
       console.log("tokenprice", tokenprice);
-      setTokenPrices(tokenprice as TokenPrice);
-      setValue(JSON.stringify(tokenprice));
+      return tokenprice;
     } catch (error) {
       notification.error({
         title: "Failed to fetch Token Prices",
         description: `${error}`
       });
-      setIsError(true);
-      setIsFetching(false);
-    } finally {
-      setIsFetching(false);
     }
   };
 
-  useEffect(() => {
-    if (potentia && !paused && poolAddress) {
-      if (value !== "") {
-        const parsedValue = JSON.parse(value);
-        setTokenPrices(parsedValue);
-      }
-      refetch();
-    }
-  }, [potentia, poolAddress]);
+  const {
+    data,
+    status,
+    error,
+    isError,
+    isFetching: fetchingPrice,
+    refetch
+  } = useQuery({
+    queryKey: ["tokenPrice"],
+    queryFn: fetchTokenPrice,
+    refetchInterval: REFETCH_INTERVAL,
+    enabled: !paused && !!potentia && !!poolAddress
+  });
 
   return {
-    tokenPrices,
-    isFetching,
-    refetch
+    tokenPrices: data,
+    isFetching: fetchingPrice,
+    status
   } satisfies ReturnType;
 }

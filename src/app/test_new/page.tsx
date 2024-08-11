@@ -1,19 +1,64 @@
 "use client";
 
-import { useAccount, useWalletClient } from "wagmi";
+import { useAccount } from "wagmi";
 import { useIsClient } from "usehooks-ts";
-import { Button } from "@components/ui/button";
 import { usePools } from "@lib/hooks/usePools";
-import { Client, serializeAccessList } from "viem";
+import { usePoolsStore } from "@store/poolsStore";
+import { useTokenPrice } from "@lib/hooks/useTokenPrice";
+import { useEffect, useState } from "react";
+import toUnits, { toDollarUnits } from "@lib/utils/formatting";
+import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
+import { Button } from "@components/ui/button";
 import notification from "@components/common/notification";
+import { getAddress } from "viem";
 
 export default function TestNew() {
   const isClient = useIsClient();
+  const { isConnected, address } = useAccount();
 
-  const { pools, isFetching, refetch } = usePools(true);
+  // const { potentia } = usePotentiaSdk();
+  const { pools, isFetching } = usePools();
+  const [isF, setIsF] = useState(false);
+  const { selectedPool, updatePoolsData } = usePoolsStore();
 
-  const { address, isConnected } = useAccount();
-  const { data: walletClient, status } = useWalletClient();
+  const { potentia } = usePotentiaSdk();
+
+  const refetch = async () => {
+    try {
+      setIsF(true);
+      const longPos = await potentia?.ponderClient.getCurrentLongPositions(
+        getAddress(selectedPool()?.poolAddr!),
+        address!
+      );
+
+      console.log("longPositions @hook", longPos);
+      // setOrders(openOrders);
+      // console.log("fetched -- openorders\n", openOrders);
+      // setValue(JSON.stringify(openOrders));
+    } catch (error) {
+      notification.error({
+        title: "Failed to fetch long position",
+        description: `${error}`
+        // description: "Please try again"
+      });
+      // setIsError(true);
+      setIsF(false);
+    } finally {
+      setIsF(false);
+      console.log("poolAddress @testing", selectedPool()?.poolAddr, address);
+    }
+  };
+
+  // updating the pool globally
+  useEffect(() => {
+    if (pools && pools.length > 0) {
+      updatePoolsData(pools);
+    }
+  }, [pools]);
+
+  // const { tokenPrices, isFetching: fetchingTokenPrices } = useTokenPrice({
+  //   poolAddress: selectedPool()?.poolAddr
+  // });
 
   if (!isClient) {
     return (
@@ -23,44 +68,22 @@ export default function TestNew() {
     );
   }
 
-  async function addToken() {
-    try {
-      const success = await walletClient?.watchAsset({
-        type: "ERC20",
-        options: {
-          address: "0x023f4Ef5A1AA177b07990B9B964BCbAc2Bd29d85",
-          decimals: 18,
-          symbol: "WETH"
-        }
-      });
-      notification.success({
-        title: "WETH added in the wallet",
-        description: "Please check in the wallet"
-      });
-    } catch (error) {
-      notification.error({
-        title: "Sorry mate, it didn't workout!",
-        description: `${error}`
-      });
-    }
-  }
-
   return (
     <main className="flex-col-center gap-3">
-      <p>{!address ? "Connect wallet first!" : `Connected: ${address}`}</p>
-      <Button onClick={refetch}>Fetch pools</Button>
-
-      <Button variant="secondary" disabled={!isConnected} onClick={addToken}>
-        Add WETH to Wallet
+      <span>{isConnected ? "Connected" : "Not Connected"}</span>
+      <span>{isFetching && pools.length === 0 ? "fetching..." : "fetched"}</span>
+      {<span>Selected Pool: {selectedPool()?.pool}</span>}
+      {/* <span>{fetchingTokenPrices ? "token prices..." : ""}</span>
+      <span>
+        {" "}
+        {tokenPrices
+          ? `${toDollarUnits(parseFloat(tokenPrices.dollarVol), 3)}`
+          : "token prices unavailable"}
+      </span> */}
+      <Button disabled={!isConnected || !selectedPool()} onClick={refetch}>
+        Long position
       </Button>
-
-      <h4>
-        {isFetching
-          ? "fetching pools..."
-          : pools.length > 0
-            ? `${pools[0].pool} fetched`
-            : "not fetching"}
-      </h4>
+      <span>{isF ? "fetching..." : "not fetching"}</span>
     </main>
   );
 }
