@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { Address } from "viem";
+import { Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { usePoolsStore } from "@store/poolsStore";
-import { Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 
 type ReturnTxHistory = {
   data: Tx[] | undefined;
@@ -12,7 +12,7 @@ type ReturnTxHistory = {
 };
 
 /**
- * Hook that fetches connected user's Transaction history in the current Pool
+ * useTxHistory fetches connected user's Transaction history in the current Pool
  * @returns data, isLoading, refetch
  */
 export function useTxHistory(paused = false): ReturnTxHistory {
@@ -25,16 +25,12 @@ export function useTxHistory(paused = false): ReturnTxHistory {
 
   async function refetch() {
     try {
-      // console.log("fetching txHistory...", {
-      //   address,
-      //   poolAddress: selectedPool()?.poolAddr
-      // });
       setIsLoadingTxH(true);
-      const result = await potentia?.getUserTxHistory( // (pool, user)
+      const result = await potentia?.getUserTxHistory(
         selectedPool()?.poolAddr! as Address, // pool
         address as Address // user
       );
-      // console.log('txHistory', result);
+      // console.log("txHistory", result);
       setTxHistory(result);
     } catch (error) {
       console.error("Error -- fetching transaction history", error);
@@ -47,7 +43,6 @@ export function useTxHistory(paused = false): ReturnTxHistory {
     if (address && potentia && selectedPool() && !paused) {
       refetch();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, potentia, selectedPool]);
 
   return { data: txHistory, isLoading: isLoadingTxH, refetch };

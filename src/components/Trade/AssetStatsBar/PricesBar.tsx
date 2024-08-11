@@ -51,7 +51,13 @@ function Marker({ label, value, fetching, subValue, showChange = false }: Marker
 
 const PricesBar = ({ selectedPool }: PricesBarProps) => {
   const underlying = selectedPool?.underlying;
-  const { price, isLoading: isPriceLoading } = useCurrencyPrice(underlying);
+  const {
+    price,
+    isFetching: isPriceLoading,
+    daily,
+    isDailyFetching,
+    dailyChange
+  } = useCurrencyPrice(underlying);
 
   const { tokenPrices, isFetching, status } = useTokenPrice({
     poolAddress: selectedPool?.poolAddr
@@ -71,13 +77,27 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
       <div className="inline-flex items-center gap-6">
         <p className="flex flex-col items-start justify-center gap-1 -mb-1 h-full">
           <span className="font-bold text-lg/[8px] text-white">
-            {isPriceLoading ? "loading..." : price ?? "-"}
+            {isPriceLoading && price === 0 ? "loading..." : price ?? "-"}
           </span>
           {/* TODO: Calculate and replace original price's 24h change  */}
-          <span className="text-[#07AE3B]">+2.73%</span>
+          <span
+            className={!!dailyChange && dailyChange > 0 ? "text-positive-green" : "text-negative-red"}
+          >
+            {(isDailyFetching || isPriceLoading) && dailyChange === 0
+              ? "..."
+              : `${dailyChange.toPrecision(3)}%`}
+          </span>
         </p>
-        <Marker label="24h High" value={"62362.8"} fetching={isPriceLoading} />
-        <Marker label="24h Low" value={"59523.0"} fetching={isPriceLoading} />
+        <Marker
+          label="24h High"
+          value={daily ? (daily.high ?? 0).toString() : "-"}
+          fetching={isPriceLoading}
+        />
+        <Marker
+          label="24h Low"
+          value={daily ? (daily.low ?? 0).toString() : "-"}
+          fetching={isPriceLoading}
+        />
       </div>
       <Separator orientation="vertical" />
       <div className="inline-flex gap-6">

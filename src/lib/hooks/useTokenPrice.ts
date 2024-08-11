@@ -38,7 +38,7 @@ export function useTokenPrice({ poolAddress, paused = false }: PropsType): Retur
   const fetchTokenPrice = async () => {
     try {
       const tokenprice = await potentia?.fetchTokenPrice(poolAddress!);
-      console.log("tokenprice", tokenprice);
+      // console.log("tokenprice", tokenprice);
       return tokenprice;
     } catch (error) {
       notification.error({
