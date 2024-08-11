@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
-import { useAccount } from "wagmi";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useIsMounted } from "@lib/hooks/useIsMounted";
 import { usePools } from "@lib/hooks/usePools";
@@ -18,14 +17,13 @@ const Trade = dynamic(() =>
  * Trade Interface - Currently set as the Homepage of Genie
  */
 export default function Home() {
-  // const [notFound, setNotFound] = useState(false);
-  const { poolsData, updatePoolsData } = usePoolsStore();
-
   const { pools, isFetching } = usePools();
-  const { address } = useAccount();
-
+  const { poolsData, updatePoolsData } = usePoolsStore();
+  
   const { isMounted } = useIsMounted();
+  // const [notFound, setNotFound] = useState(false);
 
+  // setting the pools if exists globally
   const _pools: PoolInfo[] | undefined = useMemo(() => {
     if (poolsData?.length) {
       // 1. checking if pools exists already
@@ -45,21 +43,15 @@ export default function Home() {
   //   return () => clearTimeout(timeout);
   // }, []);
 
+  // updating the pool globally
   useEffect(() => {
     if (_pools && _pools.length > 0) {
       updatePoolsData(_pools);
     }
-    // console.log("_pools @app/page", _pools);
   }, [_pools]);
 
   if (!isMounted) return <LoadingScreen />;
-  // else if (!address)
-  //   return (
-  //     <main className="page-center size-full flex-col-center gap-5 font-sans-ibm-plex">
-  //       <h3 className="text-2xl">Please Connect Wallet</h3>
-  //       <ConnectWallet />
-  //     </main>
-  //   );
+
   else if (isFetching && !_pools) return <LoadingScreen />;
 
   return (

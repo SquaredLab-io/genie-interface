@@ -10,14 +10,13 @@ import { getClosedTransactions, getOpenTransactions } from "./helper";
 import OpenPositionsTable from "./OpenPositionsTable";
 import TradeHistoryTable from "./TradeHistoryTable";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
-import { Tx } from "@squaredlab-io/sdk";
 import { cn } from "@lib/utils";
 import ClosePositionPopover from "./ClosePositionPopover";
 import { BASE_SEPOLIA } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
-import { OpenPositionInfo } from "@squaredlab-io/sdk/src";
 import { useBalanceStore } from "@store/tradeStore";
+import { OpenPositionInfo, Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 
 enum Tab {
   position = "position",
@@ -27,11 +26,8 @@ enum Tab {
 const TradeData = () => {
   const { selectedPool } = usePoolsStore();
 
-  // const [selectedPosType, setSelectedPosType] = useState("");
-
-  // const { data: positions } = useCurrentPosition(selectedPool()?.poolAddr as Address);
   // All current positions
-
+  // const { data: positions } = useCurrentPosition(selectedPool()?.poolAddr as Address);
   const { currentPosition: positions } = useBalanceStore();
 
   // All Transactions -- LP, Open Long/Short, Close Long/Short
@@ -43,15 +39,8 @@ const TradeData = () => {
     refetch
   } = useOpenOrders({ poolAddress: selectedPool()?.poolAddr! });
 
-  // User's Current Open Positions -- Long and Short
-  // const openPositions = useMemo((): Tx[] => {
-  //   return getLatestTransactions(txHistory);
-  // }, [txHistory]);
-
   const openPositions = getOpenTransactions(openOrders);
   const closedPositions = getClosedTransactions(txHistory);
-
-  // useEffect(() => console.log("openPositions in Tradedata", openPositions), [openPositions]);
 
   const longTokenBalance = toUnits(
     getDecimalAdjusted(positions?.longToken?.balance, 18),
@@ -72,7 +61,6 @@ const TradeData = () => {
         </div>
       ),
       cell: ({ row }) => {
-        // const { power, pool } = selectedPool()!;
         const assets = selectedPool()
           ?.pool.split(" / ")
           .map((asset) => asset.trim());
@@ -159,7 +147,7 @@ const TradeData = () => {
       accessorKey: "pnl",
       header: () => <span>P&L</span>,
       cell: ({ row }) => {
-        const pAndLAmt = parseFloat(row.original.PAndLAmt ?? "0");
+        const pAndLAmt = parseFloat(row.original.PAndLAmtInDollars ?? "0");
         const pAndLPercent = parseFloat(row.original.PAndLPercent ?? "0");
         return (
           <p className="flex flex-col gap-1 items-start">
@@ -357,7 +345,7 @@ const TradeData = () => {
             Open Positions ({openPositions.length})
           </TabsTrigger>
           <TabsTrigger value={Tab.history} className={tabStyle}>
-            Order & Trade History
+            History
           </TabsTrigger>
         </TabsList>
         {/* Tab Content */}

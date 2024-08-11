@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { usePotentiaSdk } from "./usePotentiaSdk";
-import notification from "@components/common/notification";
-import { PositionTab } from "@squaredlab-io/sdk/src";
 // import { useLocalStorage } from "usehooks-ts";
-import { useAccount } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
+import { PositionTab } from "@squaredlab-io/sdk/src/interfaces/index.interface";
+import notification from "@components/common/notification";
+import { usePotentiaSdk } from "./usePotentiaSdk";
+import { getAddress } from "viem";
 
 interface PropsType {
   poolAddress: string;
@@ -26,7 +27,8 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
   const [orders, setOrders] = useState<PositionTab>();
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
-  const { address } = useAccount();
+  // const { address } = useAccount();
+  const { status } = useWalletClient();
 
   // using local-storage api for caching
   // const [value, setValue] = useLocalStorage(`genie:open-order:${address}`, "");
@@ -36,32 +38,35 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
   const refetch = async () => {
     try {
       setIsFetching(true);
-      const openOrders = await potentia?.openOrders(poolAddress);
+      const openOrders = await potentia?.openOrders(getAddress(poolAddress));
       if (openOrders) {
+        console.log("openOrders @hook", openOrders);
         setOrders(openOrders);
-        console.log('openorders', openOrders);
+        // console.log("fetched -- openorders\n", openOrders);
         // setValue(JSON.stringify(openOrders));
       }
     } catch (error) {
       notification.error({
         title: "Failed to fetch Open Orders",
-        description: "Please try again"
+        description: `${error}`
+        // description: "Please try again"
       });
       setIsError(true);
       setIsFetching(false);
     } finally {
       setIsFetching(false);
+      console.log("poolAddress @OO", poolAddress);
     }
   };
 
   useEffect(() => {
-    if (potentia && !paused && poolAddress && address) {
+    if (potentia && !paused && poolAddress && status === "success") {
       // if (value !== "") {
       //   setOrders(JSON.parse(value));
       // }
       refetch();
     }
-  }, [potentia, address, poolAddress]);
+  }, [potentia, status, poolAddress]);
   // }, [potentia, value, address, poolAddress]);
 
   return {

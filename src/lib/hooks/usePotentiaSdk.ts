@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAccount, useWalletClient } from "wagmi";
+import { useWalletClient } from "wagmi";
 import { createPublicClient, http } from "viem";
 import { baseSepolia } from "viem/chains";
 import { PotentiaSdk } from "@squaredlab-io/sdk/src";
@@ -12,7 +12,6 @@ import { PONDER_URL, SUBGRAPH_URL } from "@lib/keys";
 export const usePotentiaSdk = () => {
   const [potentia, setPotentia] = useState<PotentiaSdk | undefined>(undefined);
 
-  // const { address, chainId } = useAccount();
   const { data: walletClient, status } = useWalletClient();
 
   const publicClient: any = createPublicClient({
@@ -21,24 +20,16 @@ export const usePotentiaSdk = () => {
   });
 
   async function userConnected() {
-    // if (address && chainId && status == "success") {
-    // Now Potentia doesn't need user to be connected to initiate
-    const potentia = new PotentiaSdk(
-      publicClient,
-      // walletClient,
-      SUBGRAPH_URL,
-      PONDER_URL
-    );
+    const potentia = new PotentiaSdk(publicClient, SUBGRAPH_URL, PONDER_URL);
     setPotentia(potentia);
   }
 
   useEffect(() => {
     userConnected();
   }, []);
-  // }, [walletClient, address]);
 
   useEffect(() => {
-    if (potentia !== undefined && status == "success") {
+    if (potentia !== undefined && status === "success") {
       potentia.initialiseSDK(walletClient);
     }
   }, [potentia, walletClient]);

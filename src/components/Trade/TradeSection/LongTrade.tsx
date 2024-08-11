@@ -160,7 +160,6 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
 
   // Executes if Approve Successful
   useEffect(() => {
-    console.log("Approve Tx status:", isApproveSuccess);
     if (isApproveSuccess) {
       console.log(`Token is approved for ${quantity}`);
       openLongPositionHandler();

@@ -45,6 +45,7 @@ export const navigation: {
 }[] = [
   { name: "Trades", href: "/", target: "" },
   { name: "Pools", href: "/pools", target: "" }
+  // { name: "Test", href: "/test_new", target: "" }
 ];
 
 export const SUPPORTED_NETWORKS = [
@@ -58,27 +59,32 @@ export const BASE_SEPOLIA = SUPPORTED_NETWORKS[0];
 
 export const CONFIRMATION = 5;
 
-export const SUPPORTED_TOKENS = [
-  {
-    token: "WETH",
-    address: "0x023f4Ef5A1AA177b07990B9B964BCbAc2Bd29d85",
-    logo: "/tokens/weth.svg"
-  }
-];
+export const REFETCH_INTERVAL = 10 * 1000; // 10 seconds
 
 export const TOKENS: {
   [key: string]: `0x${string}`;
 } = {
-  WETH: "0x023f4Ef5A1AA177b07990B9B964BCbAc2Bd29d85" as Address
+  WETH: "0x023f4Ef5A1AA177b07990B9B964BCbAc2Bd29d85" as Address,
+  USDC: "0x653cfb1cDAC92aa4d954ac06084B510c5ED9AEA9" as Address
 };
 
+export const SUPPORTED_TOKENS = [
+  {
+    token: "WETH",
+    address: TOKENS.WETH,
+    logo: "/tokens/weth.svg"
+  },
+  {
+    token: "USDC",
+    address: TOKENS.USDC,
+    logo: "/tokens/usdc.svg"
+  }
+];
+
 export const CONTRACT_ADDRESSES = {
-  POTENTIA_FACTORY_ADDR: "0xB7CEb18E71291A03810D589851066A7eA0E87C2F" as Address,
-  WETH_ADDR: "0x023f4Ef5A1AA177b07990B9B964BCbAc2Bd29d85" as Address,
-  WETH_POOL_ADDR: "0xe6b3e196bdfA012B20B5EdA6dB9396a61963C117" as Address,
-  PTOKEN_ADDR: "0x56169607c23501d4ad5ffd16a5a164d007de57f8" as Address,
-  WBTC_ADDR: "0xa74ca0170ad066881d6413e3cef5a2dbafde5bdf" as Address,
-  WBTC_POOL_ADDR: "0x73d705ff0fc884315a61afd3fde3646fb0a949e6" as Address,
-  USDC_ADDR: "0xEA5f22bc4A620b01D48e74B6B69e74F3b2299654" as Address,
-  USDC_POOL: "0x390e5b479b9c743f933a4fe50cd0a4fae742fdb0" as Address
+  POTENTIA_FACTORY_ADDR: "0x7c6Df75398aFDd677E1576bC4EBAAC2ff92c102d" as Address,
+  WETH_ADDR: TOKENS.WETH,
+  WETH_POOL_ADDR: "0x4765D8b39E73e20943Ff81E00b56b2B3AA5FfAa5" as Address,
+  USDC_ADDR: TOKENS.USDC,
+  USDC_POOL_ADDR: "0x668f40dADca1c641ef687bee8949a5b4304aaBfB" as Address
 };

@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import { usePotentiaSdk } from "./usePotentiaSdk";
-// import notification from "@components/common/notification";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
-// import { getWalletClient } from "@wagmi/core";
+import { usePotentiaSdk } from "./usePotentiaSdk";
 
 interface ReturnType {
   pools: PoolInfo[];
@@ -28,10 +26,6 @@ export function usePools(paused = false) {
       setPools(data ?? []);
       setValue(JSON.stringify(data ?? []));
     } catch (error) {
-      // notification.error({
-      //   title: "Failed to fetch pools!",
-      //   description: "Please try again"
-      // });
       console.error("Failed to fetch pools.");
       setIsError(true);
       setIsFetching(false);

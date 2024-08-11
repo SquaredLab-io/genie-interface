@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAccount } from "wagmi";
 import { Address } from "viem";
 import { usePotentiaSdk } from "./usePotentiaSdk";
-import notification from "@components/common/notification";
 import { useBalanceStore } from "@store/tradeStore";
 
 export interface Token {
@@ -21,23 +20,6 @@ interface ReturnType {
   isFetching: boolean;
   refetch: () => Promise<void>;
 }
-
-const getParsedJson = (pos: string | undefined) => {
-  if (pos) {
-    try {
-      const parsedJson = JSON.parse(pos);
-      // console.log("parsedJson", parsedJson);
-      return parsedJson;
-    } catch (error) {
-      console.error("Failed to parse JSON:", error);
-      notification.error({
-        title: `Failed to parse JSON: ${error}`
-      });
-      return {};
-    }
-  }
-  return {};
-};
 
 /**
  * useCurrentPosition - A hook to fetch the current LP, Long and Short position of a user in the Potentia Protocol
@@ -69,20 +51,17 @@ export function useCurrentPosition({
       // setIsFetching(true);
       updateFetchingPosition(true);
 
-      const currPos = await potentia?.getTokenBalance(
+      const currPos = await potentia?.poolRead.getTokenBalance(
         poolAddress as Address, // poolAddress
         address as Address // userAddress
       );
+
       if (currPos !== undefined) {
-        console.log("updated currentPosition", getParsedJson(currPos));
+        console.log("updated currentPosition", currPos);
         // setPosition(currPos);
-        updateCurrentPosition(getParsedJson(currPos));
+        updateCurrentPosition(currPos);
       }
     } catch (error) {
-      // notification.error({
-      //   title: "Error while fetching positions",
-      //   description: "Please try again"
-      // });
       console.error("Error while fetching positions");
       // setIsFetching(false);
       updateFetchingPosition(false);

@@ -1,46 +1,29 @@
-
-import { OpenPositionInfo, PositionTab, Tx } from "@squaredlab-io/sdk/src";
-
-/**
- * TODO: Remove as deprecated
- * Get your latest Trade History aggregated into Open Long/Short Positions.
- */
-export function getLatestTransactions(transactions?: Tx[]): Tx[] {
-  if (!transactions) return new Array<Tx>();
-
-  let latestLongTx: Tx | null = null;
-  let latestShortTx: Tx | null = null;
-
-  for (const tx of transactions) {
-    if (
-      tx.action === "Open Long Position" &&
-      (!latestLongTx || Number(tx.dateTime) > Number(latestLongTx.dateTime))
-    ) {
-      latestLongTx = tx;
-    } else if (
-      tx.action === "Open Short Position" &&
-      (!latestShortTx || Number(tx.dateTime) > Number(latestShortTx.dateTime))
-    ) {
-      latestShortTx = tx;
-    }
-  }
-
-  return [latestLongTx, latestShortTx].filter((tx) => tx !== null) as Tx[];
-}
+import {
+  OpenPositionInfo,
+  PositionTab,
+  Tx
+} from "@squaredlab-io/sdk/src/interfaces/index.interface";
 
 export function getOpenTransactions(openOrders?: PositionTab): OpenPositionInfo[] {
   if (!openOrders) return new Array<OpenPositionInfo>();
-  const data = [openOrders.longPositionTab, openOrders.shortPositionTab]
+  const longPos = openOrders.longPositionTab;
+  const shortPos = openOrders.shortPositionTab;
+  const data =
+    longPos && shortPos
+      ? [longPos, shortPos]
+      : longPos && !shortPos
+        ? [longPos]
+        : !longPos && shortPos
+          ? [shortPos]
+          : [];
+  console.log("getOpenTransactions", data);
   return data;
 }
 
 export function getClosedTransactions(transactions?: Tx[]): Tx[] {
+  console.log("closed transactions", transactions);
   if (!transactions) return new Array<Tx>();
-  return transactions.filter(
-    (tx) =>
-      (tx.action === "Close Long Position" || tx.action === "Close Short Position") &&
-      tx !== null
-  ) as Tx[];
+  return transactions;
 }
 
 export function getDateTime(blockTimestamp: string) {

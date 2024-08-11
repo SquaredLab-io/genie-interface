@@ -38,14 +38,14 @@ const Trade = () => {
 
   return (
     <>
-      {/* <Script
+      <Script
         src="/static/datafeeds/udf/dist/bundle.js"
         strategy="lazyOnload"
         onReady={() => {
           console.log("Chart script is ready!");
           setIsScriptReady(true);
         }}
-      /> */}
+      />
       <div className="flex flex-row h-full">
         {/* Left Side */}
         <div className="flex-1 flex flex-col w-full border-r border-secondary-gray">
