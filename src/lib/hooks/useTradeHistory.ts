@@ -26,7 +26,7 @@ export function useTradeHistory(paused = false): ReturnTxHistory {
       const result = await potentia?.getTradeHistory(
         getAddress(selectedPool()?.poolAddr!) // pool
       ); 
-      console.log("trade history --\n", result);
+      // console.log("trade history --\n", result);
       return result;
     } catch (error) {
       console.error("Error -- fetching trade history", error);

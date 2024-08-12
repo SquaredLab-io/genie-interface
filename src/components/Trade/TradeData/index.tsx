@@ -342,7 +342,7 @@ const TradeData = () => {
       <Tabs defaultValue={Tab.position}>
         <TabsList className="flex flex-row justify-start rounded-none font-medium text-sm/6 font-sans-ibm-plex border-b border-secondary-gray">
           <TabsTrigger value={Tab.position} className={tabStyle}>
-            Open Positions ({openPositions.length})
+            Open Positions{loadingOpenOrders ? "..." : ""} ({openPositions.length})
           </TabsTrigger>
           <TabsTrigger value={Tab.history} className={tabStyle}>
             History

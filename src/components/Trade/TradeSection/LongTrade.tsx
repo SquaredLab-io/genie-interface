@@ -10,6 +10,7 @@ import {
   useWriteContract
 } from "wagmi";
 import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
+import { Address } from "viem";
 // Component, Util Imports
 import SliderBar from "../../common/SliderBar";
 import { getAccountBalance } from "@lib/utils/getAccountBalance";
@@ -25,10 +26,8 @@ import TradeInfo from "./TradeInfo";
 import toUnits from "@lib/utils/formatting";
 import { CONFIRMATION } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
-import { Address } from "viem";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
-import { useBalanceStore } from "@store/tradeStore";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -67,7 +66,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
 
   // Both hooks paused, Refetch method to be used on Successful tx
   const { refetch: refetchOpenOrders } = useOpenOrders({
-    poolAddress: selectedPool()?.poolAddr!,
+    poolAddress: selectedPool()?.poolAddr! as Address,
     paused: true
   });
 
@@ -198,6 +197,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       refetchTxHistory();
       notification.success({
         title: "Long position successfully opened!"
+        // description: "Balance, Position, OpenOrders and txHistory must be updating."
       });
     }
   }, [isSuccess, isError, isApproveError]);
@@ -207,7 +207,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       <p className="inline-flex items-start gap-1 w-full">
         <span className="text-[#757B80]">Balance:</span>
         <span className="font-medium">
-          {getAccountBalance(userBalance, isBalLoading)} {selectedPool()?.underlying}
+          {getAccountBalance(userBalance, isBalLoading)}
         </span>
       </p>
       <p className="inline-flex items-start gap-1 w-full">

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, memo, MutableRefObject } from "react";
 import { PotentiaSdk } from "@squaredlab-io/sdk/src";
-import datafeed from "@squaredlab-io/sdk/src/datafeed";
+import { getPotentiaDataFeed } from "@squaredlab-io/sdk";
 import {
   ChartingLibraryWidgetOptions,
   LanguageCode,
@@ -22,8 +22,6 @@ const TradeChart = ({ potentia }: PropsType) => {
   const { selectedPool } = usePoolsStore();
   const { tradeType } = useTradeStore();
 
-  // const Datafeed = getPotentiaDataFeed(potentia);
-
   const chartContainerRef =
     useRef<HTMLDivElement>() as MutableRefObject<HTMLInputElement>;
 
@@ -31,10 +29,12 @@ const TradeChart = ({ potentia }: PropsType) => {
     async function fetchData() {
       if (!potentia) return;
 
+      const Datafeed = await getPotentiaDataFeed(potentia, true);
+
       const widgetOptions: ChartingLibraryWidgetOptions = {
         symbol: `${selectedPool()?.underlying}^${selectedPool()?.power} ${tradeType.toUpperCase()}`,
         // BEWARE: no trailing slash is expected in feed URL
-        datafeed: await datafeed.getPotentiaDataFeed(potentia, true),
+        datafeed: Datafeed,
         timezone: widgetProps.timezone,
         interval: widgetProps.interval as ResolutionString,
         container: chartContainerRef.current,

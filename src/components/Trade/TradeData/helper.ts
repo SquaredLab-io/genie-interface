@@ -16,12 +16,12 @@ export function getOpenTransactions(openOrders?: PositionTab): OpenPositionInfo[
         : !longPos && shortPos
           ? [shortPos]
           : [];
-  console.log("getOpenTransactions", data);
+  // console.log("getOpenTransactions", data);
   return data;
 }
 
 export function getClosedTransactions(transactions?: Tx[]): Tx[] {
-  console.log("closed transactions", transactions);
+  // console.log("closed transactions", transactions);
   if (!transactions) return new Array<Tx>();
   return transactions;
 }

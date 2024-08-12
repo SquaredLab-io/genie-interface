@@ -54,12 +54,6 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     token: selectedPool()?.underlyingAddress as Address
   });
 
-  // const {
-  //   data: positionData,
-  //   isFetching: isPositionFetching,
-  //   refetch: refetchPosition
-  // } = useCurrentPosition(selectedPool()?.poolAddr as Address);
-
   // All current positions
   const { refetch: refetchPosition } = useCurrentPosition({
     poolAddress: selectedPool()?.poolAddr as Address
@@ -191,7 +185,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       refetchOpenOrders();
       refetchTxHistory();
       notification.success({
-        title: "Long position successfully opened!"
+        title: "Short position successfully opened"
       });
     }
   }, [isSuccess, isError, isApproveError]);
