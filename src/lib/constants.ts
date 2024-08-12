@@ -1,5 +1,5 @@
-import { Address } from "viem";
-import { ALCHEMY_KEY } from "./keys";
+import { Address, getAddress } from "viem";
+// import { ALCHEMY_KEY } from "./keys";
 
 // App State
 export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION === "production";
@@ -65,8 +65,8 @@ export const REFETCH_INTERVAL = 10 * 1000; // 10 seconds
 export const TOKENS: {
   [key: string]: `0x${string}`;
 } = {
-  WETH: "0x023f4Ef5A1AA177b07990B9B964BCbAc2Bd29d85" as Address,
-  USDC: "0x653cfb1cDAC92aa4d954ac06084B510c5ED9AEA9" as Address
+  WETH: getAddress("0x023f4Ef5A1AA177b07990B9B964BCbAc2Bd29d85"),
+  USDC: getAddress("0x653cfb1cDAC92aa4d954ac06084B510c5ED9AEA9")
 };
 
 export const SUPPORTED_TOKENS = [

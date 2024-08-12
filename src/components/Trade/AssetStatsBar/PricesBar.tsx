@@ -114,29 +114,24 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
           fetching={isFetching}
         />
         <Marker
-          label="Funding Rate Long"
+          label="Long Funding Rate"
           value={`${fundingRateLong > 0 ? "+" : ""}${fundingRateLong ?? "-"}%`}
           fetching={isFetching}
           showChange
         />
-        {/* <Marker
-          label="Funding Rate Short"
-          value={`${fundingRateShort > 0 ? "+" : ""}${fundingRateShort}%`}
-          fetching={isTokenPricesFetching}
-          showChange
-        /> */}
         <Marker
-          label={`24h Volume (${underlying})`}
+          label="Short Funding Rate"
+          value={`${fundingRateShort > 0 ? "+" : ""}${fundingRateShort}%`}
+          fetching={isFetching}
+          showChange
+        />
+        <Marker
+          label={`24h Volume`}
           value={toUnits(
             parseFloat(tokenPrices?.volume!) /
               10 ** (selectedPool?.underlyingDecimals ?? 18),
             3
           )}
-          fetching={isFetching}
-        />
-        <Marker
-          label="24h Volume (USDC)"
-          value={toUnits(parseFloat(tokenPrices?.dollarVol!), 3)}
           fetching={isFetching}
         />
       </div>

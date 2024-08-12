@@ -5,8 +5,7 @@ import {
 
 // Chart widget props
 export const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
-  // symbol: "Kraken:USDC/USDT",
-  interval: "5" as ResolutionString,
+  interval: "60" as ResolutionString,
   timeframe: "1D",
   // time_scale: {
   //   min_bar_spacing: 10
