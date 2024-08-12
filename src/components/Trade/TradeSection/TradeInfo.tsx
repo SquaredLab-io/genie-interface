@@ -38,7 +38,7 @@ export default function TradeInfo() {
 
   return (
     <div className="flex flex-col gap-2 mt-5 font-normal text-xs/[14px]">
-      <Marker label={"Fee"} value={"0.25%"} />
+      <Marker label={"Fee"} value={"-"} />
       <Marker
         label={"TVL"}
         value={`${toUnits(parseFloat(tokenPrice?.tvl ?? "0") / 10 ** (selectedPool()?.underlyingDecimals ?? 18), 4)}`}

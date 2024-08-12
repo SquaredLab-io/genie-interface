@@ -1,5 +1,3 @@
-import { Address } from "viem";
-
 export const formatDollarUnits = (amount: number) => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -32,9 +30,10 @@ export default function toUnits(num: number, decimals: number): string {
   if (!num) return "0";
   else if (num >= 1000000) {
     return Number((num / 1000000).toFixed(decimals)).toLocaleString("en-US") + "M";
-  } else if (num >= 1000 && num < 1000000) {
-    return Number((num / 1000).toFixed(decimals)).toLocaleString("en-US") + "K";
   }
+  // else if (num >= 1000 && num < 1000000) {
+  //   return Number((num / 1000).toFixed(decimals)).toLocaleString("en-US") + "K";
+  // }
   return Number(num.toFixed(decimals)).toLocaleString("en-US");
 }
 
@@ -46,4 +45,9 @@ export function shortenHash(hash: string | undefined): string {
 export function getDecimalAdjusted(value: string | undefined, decimals: number): number {
   if (!value) return 0;
   return parseFloat(value ?? "0") / 10 ** (decimals ?? 18);
+}
+
+// eg. used in Trade Flow
+export function formatOraclePrice(price: bigint, tokenDecimals: number | undefined) {
+  return toUnits(parseInt(price.toString()) / 10 ** (tokenDecimals ?? 18), 2);
 }

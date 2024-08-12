@@ -11,7 +11,10 @@ import {
   TableRow
 } from "@components/ui/table";
 import { TradeflowLayout } from "@lib/types/enums";
-import { getTradeflowData, tradeFlowData } from "./helper";
+import { getTradeflowData } from "./helper";
+import { useTradeHistory } from "@lib/hooks/useTradeHistory";
+import { usePoolsStore } from "@store/poolsStore";
+import { formatOraclePrice } from "@lib/utils/formatting";
 
 const LayoutSelector = ({
   layout,
@@ -51,11 +54,16 @@ const TradeFlow = () => {
     TradeflowLayout.all // default show all
   );
 
-  const data = getTradeflowData(tradeflowLayout, tradeFlowData);
+  const { selectedPool } = usePoolsStore();
+
+  const { data, isFetching, refetch } = useTradeHistory();
+
+  const tradeHistory = getTradeflowData(tradeflowLayout, data);
 
   return (
-    <div className="hidden col-span-1 xl:flex flex-col border-l border-secondary-gray overflow-auto">
-      <h1 className="font-medium text-sm/5 p-4">Trade Flow</h1>
+    <div className="hidden col-span-1 xl:flex flex-col overflow-hidden border-l border-secondary-gray h-full min-h-[426px]">
+      {/* <div className="hidden col-span-1 xl:flex flex-col border-l border-secondary-gray overflow-auto border"> */}
+      <h1 className="font-medium text-sm/5 p-4">Trade Flow {isFetching && "..."}</h1>
       <Separator />
       <div className="flex flex-col pt-3 pl-3">
         {/* Layout Selections */}
@@ -64,31 +72,42 @@ const TradeFlow = () => {
         <Table>
           <TableHeader>
             <TableRow className="text-[#6A6A6D] text-xs/4">
-              <TableHead className="font-normal pb-1">Price (USDT)</TableHead>
-              <TableHead className="font-normal pb-1">Amount (BTC)</TableHead>
-              <TableHead className="font-normal pb-1">Total</TableHead>
+              <TableHead className="font-normal pb-1">Price (USDC)</TableHead>
+              <TableHead className="font-normal pb-1">
+                Amount ({selectedPool()?.underlying.toUpperCase()})
+              </TableHead>
+              {/* <TableHead className="font-normal pb-1">Total</TableHead> */}
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((data, index) => (
-              <TableRow
-                key={`${data.amount}_${index}`}
-                className="font-normal text-[11px]/4"
-              >
-                <TableCell
-                  className={cn(
-                    "py-[2px]",
-                    index !== 0 && data.amount < tradeFlowData[index - 1].amount
-                      ? "text-[#FC0A52]"
-                      : "text-[#07AE3B]"
-                  )}
+            {tradeHistory.length > 0 ? (
+              tradeHistory.map((tHistory, index) => (
+                <TableRow
+                  key={`${tHistory.size}_${index}`}
+                  className="font-normal text-[11px]/4"
                 >
-                  {data.price}
-                </TableCell>
-                <TableCell className="py-[2px]">{data.amount}</TableCell>
-                <TableCell className="py-[2px]">{data.total}</TableCell>
+                  <TableCell
+                    className={cn(
+                      "py-[2px]",
+                      tHistory.action == "OL" ? "text-[#07AE3B]" : "text-[#FC0A52]"
+                    )}
+                  >
+                    $
+                    {formatOraclePrice(
+                      tHistory.oraclePrice,
+                      selectedPool()?.underlyingDecimals
+                    )}
+                  </TableCell>
+                  <TableCell className="py-[2px]">
+                    {formatOraclePrice(tHistory.size, selectedPool()?.underlyingDecimals)}
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow className="font-normal text-[11px]/4">
+                {isFetching ? <span>...</span> : <span>No Data available</span>}
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>
