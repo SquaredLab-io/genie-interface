@@ -28,6 +28,7 @@ import { CONFIRMATION } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
+import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -69,6 +70,11 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     poolAddress: selectedPool()?.poolAddr! as Address,
     paused: true
   });
+
+  // getting underlying token's price
+  const { price, isFetching: isPriceFetching } = useCurrencyPrice(
+    selectedPool()?.underlying
+  );
 
   const { refetch: refetchTxHistory } = useTxHistory(true);
 
@@ -240,7 +246,9 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
           )}
         >
           <div className="flex flex-col gap-1 items-start w-full max-w-full">
-            <label htmlFor="quantity">Size</label>
+            <label htmlFor="quantity" className="text-[#404950]">
+              Size
+            </label>
             <input
               type="number"
               value={quantity}
@@ -249,12 +257,14 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
               id="quantity"
               className="bg-transparent py-2 w-full placeholder:text-[#6D6D6D] text-white font-noemal text-sm/4 focus:outline-none"
             />
+            <span className="text-[#404950]">
+              {isPriceFetching && !price && !isValidPositiveNumber(quantity)
+                ? "..."
+                : `$${price * parseFloat(quantity !== "" ? quantity : "0")}`}
+            </span>
           </div>
           <TokenSelectPopover size="compact">
-            <button
-              // variant="ghost"
-              className="hover:bg-transparent px-0 flex h-10 items-center justify-between gap-0 font-normal text-sm/4 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
-            >
+            <button className="hover:bg-transparent px-0 flex h-10 items-center justify-between gap-0 font-normal text-sm/4 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1">
               <span className="text-nowrap">{selectedPool()?.underlying}</span>
               <BiSolidDownArrow className="h-3 w-3 ml-4" color="#9D9D9D" />
             </button>

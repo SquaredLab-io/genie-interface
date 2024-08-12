@@ -8,6 +8,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract
 } from "wagmi";
+import { Address } from "viem";
 import { BiSolidDownArrow } from "react-icons/bi";
 import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
 // Component, Util Imports
@@ -16,7 +17,6 @@ import SliderBar from "../../common/SliderBar";
 import { getAccountBalance } from "@lib/utils/getAccountBalance";
 import { WethABi } from "@lib/abis";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
-import { PositionType } from "@lib/types/enums";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
 import { cn } from "@lib/utils";
@@ -27,10 +27,10 @@ import notification from "@components/common/notification";
 import toUnits from "@lib/utils/formatting";
 import { CONFIRMATION } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
-import { Address } from "viem";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
 import { useBalanceStore } from "@store/tradeStore";
+import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -61,6 +61,11 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
 
   const { currentPosition: positionData, isFetchingPosition: isPositionFetching } =
     useBalanceStore();
+
+  // getting underlying token's price
+  const { price, isFetching: isPriceFetching } = useCurrencyPrice(
+    selectedPool()?.underlying
+  );
 
   // Write Hook => Token Approval
   const {
@@ -245,6 +250,11 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
               id="quantity"
               className="bg-transparent py-2 w-full placeholder:text-[#6D6D6D] text-white font-noemal text-sm/4 focus:outline-none"
             />
+            <span className="text-[#404950]">
+              {isPriceFetching && !price && !isValidPositiveNumber(quantity)
+                ? "..."
+                : `$${price * parseFloat(quantity !== "" ? quantity : "0")}`}
+          </span>
           </div>
           <TokenSelectPopover size="compact">
             <button className="hover:bg-transparent px-0 flex h-10 items-center justify-between gap-0 font-normal text-sm/4 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1">
