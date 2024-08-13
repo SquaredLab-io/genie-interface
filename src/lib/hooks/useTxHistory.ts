@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
-import { Address } from "viem";
+import { Address, getAddress } from "viem";
 import { Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { usePoolsStore } from "@store/poolsStore";
@@ -27,10 +27,10 @@ export function useTxHistory(paused = false): ReturnTxHistory {
     try {
       setIsLoadingTxH(true);
       const result = await potentia?.getUserTxHistory(
-        selectedPool()?.poolAddr! as Address, // pool
+        getAddress(selectedPool()?.poolAddr!), // pool
         address as Address // user
       );
-      // console.log("txHistory", result);
+      console.log("txHistory", result);
       setTxHistory(result);
     } catch (error) {
       console.error("Error -- fetching transaction history", error);

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
-import toUnits, { getDecimalAdjusted } from "@lib/utils/formatting";
+import toUnits, { formatOraclePrice, getDecimalAdjusted } from "@lib/utils/formatting";
 import { getClosedTransactions, getOpenTransactions } from "./helper";
 import OpenPositionsTable from "./OpenPositionsTable";
 import TradeHistoryTable from "./TradeHistoryTable";
@@ -41,6 +41,8 @@ const TradeData = () => {
 
   const openPositions = getOpenTransactions(openOrders);
   const closedPositions = getClosedTransactions(txHistory);
+
+  console.log('openpositions in tradedata', openPositions);
 
   const longTokenBalance = toUnits(
     getDecimalAdjusted(positions?.longToken?.balance, 18),
@@ -137,7 +139,7 @@ const TradeData = () => {
           <span>
             {toUnits(
               getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals!),
-              4
+              3
             )}
           </span>
         );
@@ -160,15 +162,15 @@ const TradeData = () => {
                     : "text-[#FF3318]"
               )}
             >
-              {toUnits(pAndLAmt, 4)}
+              ${toUnits(pAndLAmt, 3)}
             </span>
             <span
               className={cn(
                 "font-normal text-xs/4",
                 pAndLPercent > 0 ? "text-[#07AE3B]" : "text-[#F23645]"
-              )}
+            )}
             >
-              {toUnits(pAndLPercent, 4)}%
+              {pAndLPercent.toFixed(3)}%
             </span>
           </p>
         );
@@ -252,7 +254,8 @@ const TradeData = () => {
       accessorKey: "action",
       header: () => <span className="ml-10">Side</span>,
       cell: ({ row }) => {
-        const action = (row.getValue("action") as string).split(" ")[1];
+        // const action = (row.getValue("action") as string).split(" ")[1];
+        const action = row.original.action === "CL" ? "Long" : "Short";
         return (
           <span
             className={cn(
@@ -273,34 +276,46 @@ const TradeData = () => {
       accessorKey: "size",
       header: () => <span>Size</span>,
       cell: ({ row }) => {
-        const action = row.getValue("action") as string;
-        if (action == "Close Long Position") return <span>{longTokenBalance}</span>;
-        else if (action == "Close Short Position")
-          return <span>{shortTokenBalance}</span>;
+        const { action, oraclePrice, underlying } = row.original;
+        const tokenPrice = formatOraclePrice(
+          oraclePrice,
+          underlying.decimals
+        );
+
+        console.log('oraclePrice on close long', oraclePrice);
+        if (action === "CL")
+          return (
+            <p className="flex flex-col items-start">
+              <span>
+                {longTokenBalance} {underlying.symbol}
+              </span>
+              <span className="text-[#9299AA] text-xs">
+                {parseFloat(tokenPrice) * parseFloat(longTokenBalance)}
+              </span>
+            </p>
+          );
+        else if (action === "CS")
+          return (
+            <p className="flex flex-col items-start">
+              <span>{shortTokenBalance}</span>
+              <span className="text-[#9299AA] text-xs">$60,000</span>
+            </p>
+          );
         return <span>-</span>;
       }
     },
+    // {
+    //   accessorKey: "entry",
+    //   header: () => <span>Entry</span>,
+    //   cell: ({ row }) => {
+    //     // const value = parseFloat(row.getValue("value"));
+    //     // const formatted = toDollarUnits(value, 2);
+    //     return <span>-</span>;
+    //   }
+    // },
     {
-      accessorKey: "entry",
-      header: () => <span>Entry</span>,
-      cell: ({ row }) => {
-        // const value = parseFloat(row.getValue("value"));
-        // const formatted = toDollarUnits(value, 2);
-        return <span>-</span>;
-      }
-    },
-    {
-      accessorKey: "open_time",
-      header: () => <span>Open Time</span>,
-      cell: ({ row }) => {
-        // const value = parseFloat(row.getValue("value"));
-        // const formatted = toDollarUnits(value, 2);
-        return <span>-</span>;
-      }
-    },
-    {
-      accessorKey: "close_time",
-      header: () => <span>Close Time</span>,
+      accessorKey: "time",
+      header: () => <span>Time</span>,
       cell: ({ row }) => {
         // const value = parseFloat(row.getValue("value"));
         // const formatted = toDollarUnits(value, 2);
@@ -317,20 +332,6 @@ const TradeData = () => {
         return <span className={cn(isGrowth && "border text-[#07AE3B]")}>-</span>;
       }
     }
-    // {
-    //   accessorKey: "action",
-    //   header: () => <span className="sr-only">Action</span>,
-    //   cell: ({ row }) => {
-    //     const action = row.original.action;
-    //     return (
-    //       <div className="bg-[#757B80] px-4 py-1 rounded-sm max-w-fit">
-    //         <span className="font-medium text-sm/5 text-white uppercase font-sans-ibm-plex">
-    //           CLOSED
-    //         </span>
-    //       </div>
-    //     );
-    //   }
-    // }
   ];
 
   const tabStyle =

@@ -26,7 +26,7 @@ export function toDollarUnits(num: number, decimals: number): string {
  * @param decimals Number of decimals to round to
  * @returns Converted amounts in shortned Units
  */
-export default function toUnits(num: number, decimals: number): string {
+export default function toUnits(num: number, decimals: 0 | 1 | 2 | 3): string {
   if (!num) return "0";
   else if (num >= 1000000) {
     return Number((num / 1000000).toFixed(decimals)).toLocaleString("en-US") + "M";
@@ -42,12 +42,18 @@ export function shortenHash(hash: string | undefined): string {
   return hash.slice(0, 8) + "..." + hash.slice(-6);
 }
 
-export function getDecimalAdjusted(value: string | undefined, decimals: number): number {
+export function getDecimalAdjusted(
+  value: string | undefined,
+  decimals: number | undefined
+): number {
   if (!value) return 0;
   return parseFloat(value ?? "0") / 10 ** (decimals ?? 18);
 }
 
 // eg. used in Trade Flow
-export function formatOraclePrice(price: bigint, tokenDecimals: number | undefined) {
-  return toUnits(parseInt(price.toString()) / 10 ** (tokenDecimals ?? 18), 2);
+export function formatOraclePrice(
+  price: bigint | undefined,
+  tokenDecimals: number | undefined
+) {
+  return toUnits(parseInt((price ?? 0).toString()) / 10 ** (tokenDecimals ?? 18), 2);
 }

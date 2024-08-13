@@ -32,15 +32,18 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
 
   const getOpenOrders = async () => {
     try {
-      return await potentia?.openOrders(getAddress(poolAddress));
+      const oo = await potentia?.openOrders(getAddress(poolAddress));
+      console.log('openorders from sdk', oo);
+      return oo;
     } catch (error) {
       notification.error({
         title: "Failed to fetch Open Orders",
         description: `${error}`
       });
-    } finally {
-      console.log("poolAddress @OO", poolAddress);
-    }
+    } 
+    // finally {
+    //   console.log("poolAddress @OO", poolAddress);
+    // }
   };
 
   const { data: orders, isFetching, refetch, isError, error } = useQuery({

@@ -7,7 +7,7 @@ export function getTradeflowData(layout: TradeflowLayout, data: Tx[] | undefined
   const _data = data
     .filter((d) => d.action === "OL" || d.action === "OS")
     .sort((a, b) => parseInt(b.dateTime) - parseInt(a.dateTime));
-  console.log('trade-history-sorted', _data);
+  // console.log('trade-history-sorted', _data);
   switch (layout) {
     case TradeflowLayout.all:
       return _data;
