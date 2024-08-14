@@ -10,6 +10,5 @@ export default function LoadingLogo() {
       preserveAspectRatio: "xMidYMid slice"
     }
   };
-
-  return <Lottie options={defaultOptions} height={78} width={67} />;
+  return <Lottie options={defaultOptions} height={120} width={120} />;
 }

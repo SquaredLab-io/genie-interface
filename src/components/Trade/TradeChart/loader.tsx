@@ -1,4 +1,4 @@
-import LoadingLogo from "@components/common/loading-logo";
+import LoadingLogo from "@components/icons/loading-logo";
 import Image from "next/image";
 
 const ChartLoader = () => (

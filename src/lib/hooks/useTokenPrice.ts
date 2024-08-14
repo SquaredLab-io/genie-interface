@@ -30,7 +30,7 @@ export interface ReturnType {
  *
  * @param poolAddress
  * @param paused Pause the auto-fetching
- * @returns openOrders, isFetching, status
+ * @returns tokenPrices, isFetching, status
  */
 export function useTokenPrice({ poolAddress, paused = false }: PropsType): ReturnType {
   const { potentia } = usePotentiaSdk();
@@ -38,7 +38,6 @@ export function useTokenPrice({ poolAddress, paused = false }: PropsType): Retur
   const fetchTokenPrice = async () => {
     try {
       const tokenprice = await potentia?.fetchTokenPrice(poolAddress!);
-      // console.log("tokenprice", tokenprice);
       return tokenprice;
     } catch (error) {
       notification.error({
