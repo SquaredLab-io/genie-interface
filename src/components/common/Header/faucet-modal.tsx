@@ -15,10 +15,11 @@ import {
 } from "@components/ui/select";
 import ButtonCTA from "@components/common/button-cta";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
-import { CONFIRMATION, SUPPORTED_NETWORKS, SUPPORTED_TOKENS } from "@lib/constants";
+import { CONFIRMATION, meta, SUPPORTED_NETWORKS, SUPPORTED_TOKENS } from "@lib/constants";
 import { DialogDescription, DialogHeader, DialogTitle } from "@components/ui/dialog";
 import notification from "../notification";
 import { shortenHash } from "@lib/utils/formatting";
+import Link from "next/link";
 
 const FaucetModal = ({
   open,
@@ -62,7 +63,7 @@ const FaucetModal = ({
       });
     } catch (error) {
       notification.error({
-        title: "Sorry mate, it didn't workout!",
+        title: ` Failed to add ${selectedToken.token} in the wallet`,
         description: `${error}`
       });
     }
@@ -99,9 +100,10 @@ const FaucetModal = ({
         description: `${error.message}`
       });
     } else if (isSuccess) {
+      // TODO:
       // refetchBalance();
       notification.success({
-        title: "Faucet transferred Successfully"
+        title: "Facuet transferred succeesfull to your account"
       });
       // prompt to add token into the wallet
       addToken();
@@ -117,9 +119,12 @@ const FaucetModal = ({
     >
       <DialogHeader className="mb-[26px]">
         <DialogTitle className="text-[22px]/[27px]">Get Test Tokens</DialogTitle>
-        <DialogDescription className="text-xs/[14px] text-[#CACACC]">
-          Ready to boost your balance? Experience the simplicity of Genie — just click the
-          button below to receive your testnet tokens.
+        <DialogDescription className="text-sm/[19px] text-[#CACACC]">
+          Click the button below to receive your test net tokens. Need more?{" "}
+          <Link href={meta.DISCORD} className="text-primary-blue hover:underline underline-offset-2">
+            Join our Discord
+          </Link>{" "}
+          for exclusive access to additional tokens.
         </DialogDescription>
       </DialogHeader>
       <div className="flex flex-col items-start text-left gap-y-5 font-medium text-base/[14px]">
@@ -229,7 +234,7 @@ const FaucetModal = ({
         {/* CTA */}
         <ButtonCTA
           disabled={isTxLoading || (isPending && isLoading) || !isConnected}
-          className="w-full rounded-[4px]"
+          className="w-full rounded-[4px] font-sans-ibm-plex"
           onClick={() => {
             getFaucet(selectedToken.address, address!);
           }}
