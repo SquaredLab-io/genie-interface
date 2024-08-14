@@ -1,8 +1,8 @@
-import { WALLET_CONNECT_PROJECT_ID } from "@lib/keys";
+import { BASE_SEPOLIA_RPC, WALLET_CONNECT_PROJECT_ID } from "@lib/keys";
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { http } from "wagmi";
 import { baseSepolia } from "wagmi/chains";
-import { BASE_SEPOLIA_RPC, meta } from "./constants";
+import { meta } from "./constants";
 import {
   metaMaskWallet,
   coinbaseWallet,
@@ -22,9 +22,8 @@ export const config = getDefaultConfig({
       wallets: [metaMaskWallet, walletConnectWallet, coinbaseWallet]
     }
   ],
-  ssr: false, // deafult
+  ssr: false, // default
   cacheTime: 4_000, // default
-  // REQUIRED WALLET CONNECT API KEY
   projectId: WALLET_CONNECT_PROJECT_ID,
   // APP INFO
   appName: meta.APP_NAME,

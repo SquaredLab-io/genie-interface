@@ -16,5 +16,5 @@ export const getAccountBalance = (
 ): string => {
   if (!data) return "0";
   else if (isLoading) return "loading...";
-  return `${toUnits(parseFloat(data?.formatted), 4)} ${data?.symbol}`;
+  return `${toUnits(parseFloat(data?.formatted), 3)} ${data?.symbol}`;
 };

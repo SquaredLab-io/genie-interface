@@ -5,8 +5,7 @@ import { Address, getAddress } from "viem";
 export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION === "production";
 
 // Base Sepolia RPC URL
-export const BASE_SEPOLIA_RPC = "https://base-sepolia-rpc.publicnode.com";
-// export const BASE_SEPOLIA_RPC = `https://base-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}`;
+// Moved to environment variables
 
 //
 // App's Metadata all at one place

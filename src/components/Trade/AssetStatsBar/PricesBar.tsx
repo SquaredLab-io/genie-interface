@@ -5,7 +5,6 @@ import { Separator } from "@components/ui/separator";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import toUnits from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
-import { usePricesStore } from "@store/tradeStore";
 import { useTokenPrice } from "@lib/hooks/useTokenPrice";
 
 interface MarkerProps {

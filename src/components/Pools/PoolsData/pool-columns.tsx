@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
-import toUnits, { toDollarUnits } from "@lib/utils/formatting";
+import toUnits from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
 import { Button } from "@components/ui/button";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
@@ -82,7 +82,7 @@ export function allPoolsColumnDef(): ColumnDef<PoolInfo>[] {
         const { tvl, underlying, underlyingDecimals } = row.original;
         return (
           <span className="pl-[18px]">
-            {toUnits(parseFloat(tvl ?? "0") / 10 ** underlyingDecimals, 4)} {underlying}
+            {toUnits(parseFloat(tvl ?? "0") / 10 ** underlyingDecimals, 3)} {underlying}
           </span>
         );
       }
@@ -96,7 +96,7 @@ export function allPoolsColumnDef(): ColumnDef<PoolInfo>[] {
         const growth = parseFloat("0");
         return (
           <div className="pl-[18px] inline-flex gap-1">
-            <span>{toUnits(parseFloat(vol ?? "0") / 10 ** underlyingDecimals, 4)}</span>{" "}
+            <span>{toUnits(parseFloat(vol ?? "0") / 10 ** underlyingDecimals, 3)}</span>{" "}
             {underlying}
             <span
               className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
@@ -119,7 +119,7 @@ export function allPoolsColumnDef(): ColumnDef<PoolInfo>[] {
         const growth = parseFloat("0");
         return (
           <div className="pl-10 inline-flex gap-1">
-            <span>{toUnits(parseFloat(fee ?? "0") / 10 ** underlyingDecimals, 4)}</span>{" "}
+            <span>{toUnits(parseFloat(fee ?? "0") / 10 ** underlyingDecimals, 3)}</span>{" "}
             {underlying}
             <span
               className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
@@ -231,7 +231,7 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
         return (
           <div className="inline-flex gap-1">
             <span className="border border-red-500">
-              {toUnits(parseFloat(fee ?? "0") / 10 ** underlyingDecimals, 4)}
+              {toUnits(parseFloat(fee ?? "0") / 10 ** underlyingDecimals, 3)}
             </span>{" "}
             {underlying}
             {/* {growth !== 0 && ( */}
