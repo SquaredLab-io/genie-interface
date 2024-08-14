@@ -51,6 +51,11 @@ const config = {
         "off-white": "#C9C9C9",
         "coinbase-theme": "#0052FF"
       },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+        "toast-progress": "progress 5s linear forwards"
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -59,11 +64,12 @@ const config = {
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" }
+        },
+        progress: {
+          "100%": {
+            width: "0%"
+          }
         }
-      },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out"
       }
     }
   },
