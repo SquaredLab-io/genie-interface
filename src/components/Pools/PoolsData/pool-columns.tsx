@@ -230,7 +230,7 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
         const growth = parseFloat("0");
         return (
           <div className="inline-flex gap-1">
-            <span className="border border-red-500">
+            <span>
               {toUnits(parseFloat(fee ?? "0") / 10 ** underlyingDecimals, 3)}
             </span>{" "}
             {underlying}

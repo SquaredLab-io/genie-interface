@@ -16,10 +16,14 @@ const config = {
         md: "768px",
         lg: "1024px",
         xl: "1280px",
-        "2xl": "1400px"
+        "2xl": "1536px"
       }
     },
     extend: {
+      screens: {
+        "3xl": "1792px",
+        "4xl": "2048px"
+      },
       fontFamily: {
         "sans-ibm-plex": ["var(--font-ibm-plex-sans)"],
         "helvetica-neue": ["var(--font-helvetica-neue)"]

@@ -61,11 +61,10 @@ const TradeFlow = () => {
   const tradeHistory = getTradeflowData(tradeflowLayout, data);
 
   return (
-    <div className="hidden col-span-1 xl:flex flex-col overflow-hidden border-l border-secondary-gray h-full min-h-[426px]">
-      {/* <div className="hidden col-span-1 xl:flex flex-col border-l border-secondary-gray overflow-auto border"> */}
+    <div className="hidden col-span-1 xl:flex flex-col border-l border-secondary-gray h-fit">
       <h1 className="font-medium text-sm/5 p-4">Trade Flow {isFetching && "..."}</h1>
       <Separator />
-      <div className="flex flex-col pt-3 pl-3">
+      <div className="flex flex-col pt-3 pl-3 min-h-[373px] h-[373px] overflow-hidden">
         {/* Layout Selections */}
         <LayoutSelector layout={tradeflowLayout} setLayout={setTradeflowLayout} />
         {/* TradeFlow table */}

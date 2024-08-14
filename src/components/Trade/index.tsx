@@ -35,7 +35,8 @@ const Trade = () => {
         {/* Left Side */}
         <div className="flex-1 flex flex-col w-full border-r border-secondary-gray">
           <AssetStatsBar />
-          <div className="grid grid-cols-4 w-full h-[calc(100vh-135px)]">
+          <div className="grid grid-cols-4 w-full">
+            {/* <div className="grid grid-cols-4 w-full h-[calc(100vh-135px)]"> */}
             {isScriptReady && potentia ? (
               <TradeChart potentia={potentia} />
             ) : (
@@ -45,8 +46,8 @@ const Trade = () => {
             <TradeData />
           </div>
         </div>
-        {/* Right Side */}
-        <div className="flex-1 flex flex-col w-full min-w-64 max-w-[346px]">
+        {/* Right Side -- Fixed width for Right section */}
+        <div className="flex-1 flex flex-col min-w-[346px] w-[346px] max-w-[346px]">
           <TradeSection />
           <MarketData />
         </div>

@@ -72,8 +72,8 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
   );
 
   return (
-    <div className="flex flex-row items-center justify-start gap-6 h-full w-full px-2 xl:px-8 font-normal text-xs/4 overflow-x-auto z-50">
-      <div className="inline-flex items-center gap-6">
+    <div className="flex flex-row items-center justify-start gap-6 h-full w-full px-2 xl:px-6 2xl:px-8 font-normal text-xs/4 overflow-x-auto z-50">
+      <div className="inline-flex items-center gap-6 2xl:gap-8 3xl:gap-12">
         <p className="flex flex-col items-start justify-center gap-1 -mb-1 h-full">
           <span className="font-bold text-lg/[8px] text-white">
             {isPriceLoading && price === 0 ? "loading..." : price ?? "-"}
@@ -99,7 +99,7 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
         />
       </div>
       <Separator orientation="vertical" />
-      <div className="inline-flex gap-6">
+      <div className="inline-flex gap-6 2xl:gap-8 3xl:gap-12">
         <Marker
           label="Long Price"
           value={toUnits(parseFloat(tokenPrices?.lastLongP!), 2)}
