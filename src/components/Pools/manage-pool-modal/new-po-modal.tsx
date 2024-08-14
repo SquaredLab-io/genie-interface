@@ -26,7 +26,7 @@ const NewPoModal = ({
       onOpenChange={setOpen}
       title="New Pool Operator"
       description="Create a new pool or create a liquidity position on an existing pool."
-      className="w-full max-w-[698px] p-6 flex flex-col gap-10"
+      className="w-full max-w-[698px] p-6 flex flex-col gap-10 sm:rounded-lg"
       closable={true}
     >
       <div className="flex flex-row items-start justify-between">

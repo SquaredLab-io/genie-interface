@@ -64,7 +64,7 @@ const CreatePoolModal = ({
     <Modal
       open={open}
       onOpenChange={setOpen}
-      className="w-full max-w-[698px]"
+      className="w-full max-w-[698px] sm:rounded-lg"
       closable={true}
     >
       <DialogHeader className="pt-11 pb-14 px-6">

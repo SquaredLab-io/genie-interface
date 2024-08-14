@@ -4,6 +4,7 @@ import ModalWrapper from "@components/common/Modal";
 import { Textarea } from "@components/ui/textarea";
 import { cn } from "@lib/utils";
 import { meta } from "@lib/constants";
+import { DialogDescription, DialogHeader, DialogTitle } from "@components/ui/dialog";
 
 enum Feedback {
   que = "Question",
@@ -46,29 +47,29 @@ const FeedbackModal = ({
 
   return (
     <ModalWrapper
-      open={open}
+      open={true}
+      // open={open}
       onOpenChange={setOpen}
-      title="Contact SquaredLabs Team"
       trigger={trigger}
-      className="max-w-5xl px-7 py-6"
+      className="max-w-fit px-7 py-6 rounded-[20px]"
       footer={
-        <div className="inline-flex items-center justify-between w-full mt-6">
+        <div className="inline-flex items-center justify-between w-full mt-5 text-xs/6">
           <p>
             You can also email us at{" "}
             <a
-              className="text-gradient-blue"
+              className="text-primary-blue"
               href="mailto:support@squaredlabs.io"
               target="_blank"
             >
               {meta.SUPPORT_MAIL}
             </a>
           </p>
-          <div className="font-medium text-xl/6">
-            <button className="py-[10px] px-6 bg-transparent text-white border border-secondary-gray rounded-2xl mr-6">
+          <div className="font-medium text-xs/6">
+            <button className="px-7 py-1 bg-transparent text-white border border-secondary-gray rounded-base mr-6 leading-6">
               Help Center
             </button>
             <a
-              className="py-[10px] px-6 bg-white text-black rounded-2xl"
+              className="py-2 px-7 bg-white text-black border border-white rounded-base leading-6"
               href={mailToLink()}
               target="_blank"
             >
@@ -77,20 +78,24 @@ const FeedbackModal = ({
           </div>
         </div>
       }
-      closable
     >
-      <div className="flex flex-row gap-3 my-4">
+      <DialogHeader>
+        <DialogTitle className="font-normal text-lg/6">
+          Contact SquaredLabs Team
+        </DialogTitle>
+      </DialogHeader>
+      <div className="flex flex-row gap-3 mt-4 mb-5">
         {/* Feedback type option selector */}
         {options.map((option) => (
           <button
             key={option.title}
             className={cn(
-              "inline-flex rounded-full border border-[#ECECEC] hover:bg-white/10 py-[6px] px-3 gap-3 transition-colors font-medium text-xl/6",
+              "inline-flex items-center text-[#C9C9C9] rounded-full border border-secondary-gray hover:bg-white/10 py-[5px] px-5 gap-1 transition-colors font-normal text-xs/6",
               selectedFeedback === option.title && "bg-white/10"
             )}
             onClick={() => setSelectedFeedback(option.title)}
           >
-            <Image src={option.icon} width={26} height={26} alt={option.title} />
+            <Image src={option.icon} width={16} height={16} alt={option.title} />
             {option.title}
           </button>
         ))}
@@ -101,7 +106,7 @@ const FeedbackModal = ({
           setFeedback(event.target.value);
         }}
         value={feedback}
-        className="min-w-[954px] h-[228px]"
+        className="min-w-[954px] h-[228px] border border-secondary-gray max-w-[694px]"
       />
     </ModalWrapper>
   );

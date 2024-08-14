@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { TradeOptions } from "@lib/types/enums";
 import { TokenPrice } from "@lib/hooks/useTokenPrice";
-import { TokenBalances } from "@lib/hooks/useCurrentPosition";
+import { TokenBalance } from "@squaredlab-io/sdk";
 
 interface iTrade {
   isPositionModalOpen: boolean;
@@ -18,8 +18,8 @@ interface iPrices {
 }
 
 interface iBalances {
-  currentPosition: TokenBalances | undefined;
-  updateCurrentPosition: (value: TokenBalances) => void;
+  currentPosition: TokenBalance | undefined;
+  updateCurrentPosition: (value: TokenBalance) => void;
   isFetchingPosition: boolean;
   updateFetchingPosition: (value: boolean) => void;
 }
@@ -39,7 +39,7 @@ export const usePricesStore = create<iPrices>((set, get) => ({
 
 export const useBalanceStore = create<iBalances>((set, get) => ({
   currentPosition: undefined,
-  updateCurrentPosition: (newPosition: TokenBalances) =>
+  updateCurrentPosition: (newPosition: TokenBalance) =>
     set(() => ({
       currentPosition: newPosition
     })),

@@ -115,7 +115,7 @@ const FaucetModal = ({
       open={open}
       onOpenChange={setOpen}
       trigger={trigger}
-      className="p-5 w-full max-w-[337px]"
+      className="p-5 w-full max-w-[337px] sm:rounded-lg"
     >
       <DialogHeader className="mb-[26px]">
         <DialogTitle className="text-[22px]/[27px]">Get Test Tokens</DialogTitle>
