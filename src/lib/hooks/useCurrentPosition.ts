@@ -1,24 +1,16 @@
-import { useEffect } from "react";
 import { useAccount } from "wagmi";
 import { Address } from "viem";
+import { useQuery, QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
+import { TokenBalance } from "@squaredlab-io/sdk";
 import { usePotentiaSdk } from "./usePotentiaSdk";
-import { useBalanceStore } from "@store/tradeStore";
-
-export interface Token {
-  address: string;
-  balance: string;
-}
-
-export interface TokenBalances {
-  lpToken: Token; // 0
-  longToken: Token; // 1
-  shortToken: Token; // 2
-}
+// import { useBalanceStore } from "@store/tradeStore";
 
 interface ReturnType {
-  data: TokenBalances;
+  data: TokenBalance | undefined;
   isFetching: boolean;
-  refetch: () => Promise<void>;
+  refetch: (
+    options?: RefetchOptions
+  ) => Promise<QueryObserverResult<TokenBalance | undefined, Error>>;
 }
 
 /**
@@ -31,56 +23,44 @@ export function useCurrentPosition({
   paused = false
 }: {
   poolAddress: Address | undefined;
-  paused?: boolean
+  paused?: boolean;
 }): ReturnType {
   // const [position, setPosition] = useState<string | undefined>("");
   // const [isFetching, setIsFetching] = useState<boolean>(false);
 
-  const {
-    currentPosition,
-    updateCurrentPosition,
-    isFetchingPosition,
-    updateFetchingPosition
-  } = useBalanceStore();
+  // const {
+  //   currentPosition,
+  //   updateCurrentPosition,
+  //   isFetchingPosition,
+  //   updateFetchingPosition
+  // } = useBalanceStore();
 
   const { potentia } = usePotentiaSdk();
   const { address } = useAccount();
 
-  const refetch = async () => {
+  const getCurrentPosition = async (): Promise<TokenBalance | undefined> => {
     try {
-      // setIsFetching(true);
-      updateFetchingPosition(true);
-
       const currPos = await potentia?.poolRead.getTokenBalance(
         poolAddress as Address, // poolAddress
         address as Address // userAddress
       );
-
-      if (currPos !== undefined) {
-        console.log("updated currentPosition", currPos);
-        // setPosition(currPos);
-        updateCurrentPosition(currPos);
-      }
+      console.log("fetched current position", currPos);
+      return currPos;
     } catch (error) {
       console.error("Error while fetching positions");
-      // setIsFetching(false);
-      updateFetchingPosition(false);
-    } finally {
-      // setIsFetching(false);
-      updateFetchingPosition(false);
     }
   };
 
-  useEffect(() => {
-    if (potentia && poolAddress && !paused) {
-      refetch();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [potentia, address, poolAddress]);
+  const { data, isFetching, refetch, isError, error } = useQuery({
+    queryKey: ["currentPosition"],
+    queryFn: getCurrentPosition,
+    refetchInterval: false,
+    enabled: !!potentia && !!poolAddress && !paused && !!address
+  });
 
   return {
-    data: currentPosition!,
-    isFetching: isFetchingPosition,
+    data,
+    isFetching,
     refetch
   } satisfies ReturnType;
 }

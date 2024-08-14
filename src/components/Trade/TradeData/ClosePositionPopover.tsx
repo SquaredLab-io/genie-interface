@@ -6,7 +6,7 @@ import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import SliderBar from "../../common/SliderBar";
 import { usePoolsStore } from "@store/poolsStore";
 import { Address } from "viem";
-import { TokenBalances, useCurrentPosition } from "@lib/hooks/useCurrentPosition";
+import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { getDecimalAdjusted } from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
 import { useWaitForTransactionReceipt } from "wagmi";
@@ -16,10 +16,11 @@ import SpinnerIcon from "@components/icons/SpinnerIcon";
 import notification from "@components/common/notification";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
+import { TokenBalance } from "@squaredlab-io/sdk";
 
 interface PropsType {
   children: ReactNode;
-  positions: TokenBalances;
+  positions: TokenBalance;
   isLong: boolean;
   onClickTrigger?: () => void;
   isOpen?: boolean;
@@ -110,6 +111,7 @@ const ClosePositionPopover: FC<PropsType> = ({
       refetchOpenOrders();
       refetchTxHistory();
       refetchPosition();
+      // refetchBalance();
       notification.success({
         title: "Position successfully closed"
       });

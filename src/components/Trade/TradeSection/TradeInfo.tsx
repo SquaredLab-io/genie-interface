@@ -41,7 +41,7 @@ export default function TradeInfo() {
       <Marker label={"Fee"} value={"-"} />
       <Marker
         label={"TVL"}
-        value={`${toUnits(parseFloat(tokenPrice?.tvl ?? "0") / 10 ** (selectedPool()?.underlyingDecimals ?? 18), 4)}`}
+        value={`${toUnits(parseFloat(tokenPrice?.tvl ?? "0") / 10 ** (selectedPool()?.underlyingDecimals ?? 18), 3)}`}
         fetching={isFetchingPrice}
       />
       <Marker
@@ -49,7 +49,7 @@ export default function TradeInfo() {
         value={toUnits(
           parseFloat(tokenPrice?.volume!) /
             10 ** (selectedPool()?.underlyingDecimals ?? 18),
-          4
+          3
         )}
         fetching={isFetchingPrice}
       />

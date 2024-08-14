@@ -55,12 +55,16 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
   });
 
   // All current positions
-  const { refetch: refetchPosition } = useCurrentPosition({
+  const {
+    data: positionData,
+    isFetching: isPositionFetching,
+    refetch: refetchPosition
+  } = useCurrentPosition({
     poolAddress: selectedPool()?.poolAddr as Address
   });
 
-  const { currentPosition: positionData, isFetchingPosition: isPositionFetching } =
-    useBalanceStore();
+  // const { currentPosition: positionData, isFetchingPosition: isPositionFetching } =
+  //   useBalanceStore();
 
   // getting underlying token's price
   const { price, isFetching: isPriceFetching } = useCurrencyPrice(
@@ -213,11 +217,11 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       </p>
       <p className="inline-flex items-start gap-1 w-full">
         <span className="text-[#757B80]">Current Position:</span>
-        {isPositionFetching ? (
-          <span>Fetching...</span>
+        {isPositionFetching && !positionData ? (
+          <span>...</span>
         ) : (
           <span className="font-medium">
-            {toUnits(parseFloat(positionData?.shortToken?.balance ?? "0") / 10 ** 18, 4)}
+            {toUnits(parseFloat(positionData?.shortToken?.balance ?? "0") / 10 ** 18, 3)}
           </span>
         )}
       </p>
@@ -254,7 +258,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
               {isPriceFetching && !price && !isValidPositiveNumber(quantity)
                 ? "..."
                 : `$${price * parseFloat(quantity !== "" ? quantity : "0")}`}
-          </span>
+            </span>
           </div>
           <TokenSelectPopover size="compact">
             <button className="hover:bg-transparent px-0 flex h-10 items-center justify-between gap-0 font-normal text-sm/4 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1">

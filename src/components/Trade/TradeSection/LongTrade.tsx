@@ -163,6 +163,14 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     [userBalance, quantity]
   );
 
+  // Slider value updater
+  useEffect(() => {
+    if (userBalance?.value) {
+      const amount = (parseFloat(userBalance?.formatted) * sliderValue[0]) / 100;
+      setQuantity(amount.toString());
+    }
+  }, [userBalance, sliderValue]);
+
   // Executes if Approve Successful
   useEffect(() => {
     if (isApproveSuccess) {
@@ -176,14 +184,6 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isApproveSuccess]);
 
-  // Slider value updater
-  useEffect(() => {
-    if (userBalance?.value) {
-      const amount = (parseFloat(userBalance?.formatted) * sliderValue[0]) / 100;
-      setQuantity(amount.toString());
-    }
-  }, [userBalance, sliderValue]);
-
   // Notifications based on Transaction status
   useEffect(() => {
     if (isApproveError) {
@@ -193,7 +193,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       });
     } else if (isError) {
       notification.error({
-        title: "Opening long position failed",
+        title: "Opening Long Position failed",
         description: `${error.message}`
       });
     } else if (isSuccess) {
@@ -218,11 +218,11 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       </p>
       <p className="inline-flex items-start gap-1 w-full">
         <span className="text-[#757B80]">Current Position:</span>
-        {isPositionFetching ? (
-          <span>Fetching...</span>
+        {isPositionFetching && !positionData ? (
+          <span>...</span>
         ) : (
           <span className="font-medium">
-            {toUnits(parseFloat(positionData?.longToken?.balance ?? "0") / 10 ** 18, 4)}
+            {toUnits(parseFloat(positionData?.longToken?.balance ?? "0") / 10 ** 18, 3)}
           </span>
         )}
       </p>
