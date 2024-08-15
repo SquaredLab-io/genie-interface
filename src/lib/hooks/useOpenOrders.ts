@@ -1,4 +1,4 @@
-import { useWalletClient } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
 import { getAddress } from "viem";
 import { QueryObserverResult, RefetchOptions, useQuery } from "@tanstack/react-query";
 import { PositionTab } from "@squaredlab-io/sdk/src/interfaces/index.interface";
@@ -27,30 +27,34 @@ interface ReturnType {
  */
 export function useOpenOrders({ poolAddress, paused = false }: PropsType): ReturnType {
   const { status } = useWalletClient();
+  const { address } = useAccount();
 
   const { potentia } = usePotentiaSdk();
 
   const getOpenOrders = async () => {
     try {
       const oo = await potentia?.openOrders(getAddress(poolAddress));
-      console.log('openorders from sdk', oo);
+      console.log("openorders from sdk", oo);
       return oo;
     } catch (error) {
       notification.error({
         title: "Failed to fetch Open Orders",
         description: `${error}`
       });
-    } 
-    // finally {
-    //   console.log("poolAddress @OO", poolAddress);
-    // }
+    }
   };
 
-  const { data: orders, isFetching, refetch, isError, error } = useQuery({
+  const {
+    data: orders,
+    isFetching,
+    refetch,
+    isError,
+    error
+  } = useQuery({
     queryKey: ["openOrders"],
     queryFn: getOpenOrders,
     refetchInterval: REFETCH_INTERVAL,
-    enabled: !paused && !!poolAddress && status === "success" && !!potentia
+    enabled: !paused && !!poolAddress && status === "success" && !!potentia && !!address
   });
 
   return {

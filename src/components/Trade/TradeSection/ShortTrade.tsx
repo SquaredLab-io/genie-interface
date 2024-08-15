@@ -63,6 +63,12 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     poolAddress: selectedPool()?.poolAddr as Address
   });
 
+  // useEffect(() => {
+  //   if (address) {
+  //     refetchPosition();
+  //   }
+  // }, [address]);
+
   // const { currentPosition: positionData, isFetchingPosition: isPositionFetching } =
   //   useBalanceStore();
 
@@ -217,7 +223,9 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       </p>
       <p className="inline-flex items-start gap-1 w-full">
         <span className="text-[#757B80]">Current Position:</span>
-        {isPositionFetching && !positionData ? (
+        {!isConnected ? (
+          <span>0</span>
+        ) : isPositionFetching && !positionData ? (
           <span>...</span>
         ) : (
           <span className="font-medium">

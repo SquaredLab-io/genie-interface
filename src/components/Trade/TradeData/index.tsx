@@ -17,6 +17,7 @@ import { usePoolsStore } from "@store/poolsStore";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { useBalanceStore } from "@store/tradeStore";
 import { OpenPositionInfo, Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
+import { useAccount } from "wagmi";
 
 enum Tab {
   position = "position",
@@ -25,6 +26,7 @@ enum Tab {
 
 const TradeData = () => {
   const { selectedPool } = usePoolsStore();
+  const { isConnected } = useAccount();
 
   // All current positions
   // const { data: positions } = useCurrentPosition(selectedPool()?.poolAddr as Address);
@@ -36,13 +38,11 @@ const TradeData = () => {
   const {
     openOrders,
     isFetching: loadingOpenOrders,
-    refetch
+    refetch: refetchOpenOrders
   } = useOpenOrders({ poolAddress: selectedPool()?.poolAddr! });
 
   const openPositions = getOpenTransactions(openOrders);
   const closedPositions = getClosedTransactions(txHistory);
-
-  console.log('openpositions in tradedata', openPositions);
 
   const longTokenBalance = toUnits(
     getDecimalAdjusted(positions?.longToken?.balance, 18),
@@ -168,7 +168,7 @@ const TradeData = () => {
               className={cn(
                 "font-normal text-xs/4",
                 pAndLPercent > 0 ? "text-[#07AE3B]" : "text-[#F23645]"
-            )}
+              )}
             >
               {pAndLPercent.toFixed(3)}%
             </span>
@@ -277,12 +277,7 @@ const TradeData = () => {
       header: () => <span>Size</span>,
       cell: ({ row }) => {
         const { action, oraclePrice, underlying } = row.original;
-        const tokenPrice = formatOraclePrice(
-          oraclePrice,
-          underlying.decimals
-        );
-
-        console.log('oraclePrice on close long', oraclePrice);
+        const tokenPrice = formatOraclePrice(oraclePrice, underlying.decimals);
         if (action === "CL")
           return (
             <p className="flex flex-col items-start">
@@ -343,7 +338,7 @@ const TradeData = () => {
       <Tabs defaultValue={Tab.position}>
         <TabsList className="flex flex-row justify-start rounded-none font-medium text-sm/6 font-sans-ibm-plex border-b border-secondary-gray">
           <TabsTrigger value={Tab.position} className={tabStyle}>
-            Open Positions{loadingOpenOrders ? "..." : ""} ({openPositions.length})
+            Open Positions{loadingOpenOrders ? "..." : ""} ({ isConnected ? openPositions.length : "0"})
           </TabsTrigger>
           <TabsTrigger value={Tab.history} className={tabStyle}>
             History

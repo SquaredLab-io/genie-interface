@@ -32,8 +32,6 @@ const PoolsTable = <TData, TValue>({
     getCoreRowModel: getCoreRowModel()
   });
 
-  const { isConnected } = useAccount();
-
   return (
     <Table>
       <TableHeader className="font-sans-ibm-plex">

@@ -3,7 +3,6 @@ import { Address } from "viem";
 import { useQuery, QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 import { TokenBalance } from "@squaredlab-io/sdk";
 import { usePotentiaSdk } from "./usePotentiaSdk";
-// import { useBalanceStore } from "@store/tradeStore";
 
 interface ReturnType {
   data: TokenBalance | undefined;
