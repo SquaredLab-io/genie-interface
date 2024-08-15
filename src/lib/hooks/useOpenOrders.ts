@@ -51,7 +51,7 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
     isError,
     error
   } = useQuery({
-    queryKey: ["openOrders"],
+    queryKey: ["openOrders", poolAddress, address],
     queryFn: getOpenOrders,
     refetchInterval: REFETCH_INTERVAL,
     enabled: !paused && !!poolAddress && status === "success" && !!potentia && !!address

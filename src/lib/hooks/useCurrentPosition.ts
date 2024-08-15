@@ -51,7 +51,7 @@ export function useCurrentPosition({
   };
 
   const { data, isFetching, refetch, isError, error } = useQuery({
-    queryKey: ["currentPosition"],
+    queryKey: ["currentPosition", poolAddress, address],
     queryFn: getCurrentPosition,
     refetchInterval: false,
     enabled: !!potentia && !!poolAddress && !paused && !!address
