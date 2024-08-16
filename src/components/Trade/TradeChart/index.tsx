@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef, memo, MutableRefObject } from "react";
-import { PotentiaSdk } from "@squaredlab-io/sdk/src";
-import { getPotentiaDataFeed } from "@squaredlab-io/sdk";
+import {
+  ConfigurationData,
+  PotentiaSdk,
+  getPotentiaDataFeed
+} from "@squaredlab-io/sdk/src";
 import {
   ChartingLibraryWidgetOptions,
   LanguageCode,
@@ -29,7 +32,7 @@ const TradeChart = ({ potentia }: PropsType) => {
     async function fetchData() {
       if (!potentia) return;
 
-      const Datafeed = await getPotentiaDataFeed(potentia, true);
+      const Datafeed = await getPotentiaDataFeed(potentia, ConfigurationData);
 
       const widgetOptions: ChartingLibraryWidgetOptions = {
         symbol: `${selectedPool()?.underlying}^${selectedPool()?.power} ${tradeType.toUpperCase()}`,
