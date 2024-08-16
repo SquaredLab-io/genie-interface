@@ -227,28 +227,20 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
         )}
       </p>
       <form
-        className="flex flex-col w-full gap-2 mt-3"
+        className="flex flex-col w-full gap-2 mt-5"
         autoComplete="off"
         autoCapitalize="off"
         name="token-quantity"
       >
-        <p className="inline-flex items-start gap-1 w-full">
-          <span className="text-[#757B80]">Available:</span>
-          <span className="font-medium">
-            {"0.00"} {selectedPool()?.underlying}
-          </span>
-        </p>
+        <label className="text-[#757B80]">Size:</label>
         {/* Input Box: Token Input and Selection */}
         <div
           className={cn(
-            "inline-flex w-full justify-between items-center border p-3 bg-transparent",
+            "inline-flex w-full justify-between items-center border py-2 px-3 bg-transparent",
             balanceExceedError ? "border-[#FF615C]" : "border-[#1F2D3F]"
           )}
         >
           <div className="flex flex-col gap-1 items-start w-full max-w-full">
-            <label htmlFor="quantity" className="text-[#404950]">
-              Size
-            </label>
             <input
               type="number"
               value={quantity}
@@ -285,7 +277,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
           isPerc={true}
         />
       </div>
-      {/* CTA: BUY LONG TRADE BUTTON */}
+      {/* CTA: OPEN LONG TRADE BUTTON */}
       <ButtonCTA
         disabled={
           !isConnected ||
@@ -303,7 +295,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
         {isApproveLoading || isLoading ? (
           <SpinnerIcon className="size-[22px]" />
         ) : (
-          <span>BUY</span>
+          <span>OPEN</span>
         )}
       </ButtonCTA>
       {/* Iterate this data after calculating/fetching */}

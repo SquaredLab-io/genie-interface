@@ -19,7 +19,7 @@ export default function Home() {
   else if (isFetching && !pools) return <LoadingScreen />;
 
   return (
-    <main className="border-t border-secondary-gray page-center">
+    <main className="page-center">
       <Trade />
     </main>
   );
