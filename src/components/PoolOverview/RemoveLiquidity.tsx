@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
-import { useAccount } from "wagmi";
+import { useAccount, useBalance, useWaitForTransactionReceipt } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import { cn } from "@lib/utils";
@@ -12,48 +12,98 @@ import toUnits from "@lib/utils/formatting";
 import { Info } from "lucide-react";
 import { Address } from "viem";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
+import { CONFIRMATION } from "@lib/constants";
+import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
+import notification from "@components/common/notification";
 
-const RemoveLiquidity = ({
-  overviewPool,
-  lpBalance,
-  isFetchingBal
-}: {
-  overviewPool: PoolInfo;
-  lpBalance: string;
-  isFetchingBal: boolean;
-}) => {
-  const { underlying } = overviewPool;
-
+const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   // Amount to remove
   const [amount, setAmount] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
   const [showInfo, setShowInfo] = useState<boolean>(true);
+  const [txHash, setTxHash] = useState<Address | undefined>(undefined);
 
   const { potentia } = usePotentiaSdk();
-  const { isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
 
+  const { underlying, poolAddr, underlyingAddress, underlyingDecimals } = overviewPool;
+
+  // Contract Hooks
+  const { address, isConnected } = useAccount();
+  const {
+    data: userBalance,
+    isLoading: isBalLoading,
+    refetch: refetchBalance
+  } = useBalance({
+    address,
+    token: underlyingAddress! as Address
+  });
+
+  // Current positions
+  const {
+    data: positionData,
+    isFetching: isPositionFetching,
+    refetch: refetchPosition
+  } = useCurrentPosition({ poolAddress: poolAddr as Address });
+  const lpBalance =
+    parseFloat(positionData?.lpToken.balance ?? "0") /
+    10 ** overviewPool.underlyingDecimals;
+
   /**
-   * Handler for RemoveLiquidity from SDK
+   * Handler for RemoveLiquidity Function
    */
   async function removeLiquidityHandlerSdk() {
     const shares = parseFloat(amount) * 10 ** 18;
     console.log("Amount", shares);
-    setIsLoading(true);
 
     try {
-      const txnHash = await potentia?.poolWrite.removeLiquidity(
+      const hash = await potentia?.poolWrite.removeLiquidity(
         overviewPool.poolAddr as Address,
         BigInt(shares).toString()
       );
-      console.log("removeliquidity hash", txnHash);
+      if (hash) {
+        setTxHash(hash as Address);
+        console.log("removeliquidity hash", hash);
+      }
     } catch (error) {
       console.error("RemoveLiquidity Error", error);
-    } finally {
-      setIsLoading(false);
     }
   }
+
+  // wait for add liquidity transaction
+  const { isSuccess, isLoading, isPending, isError, error } =
+    useWaitForTransactionReceipt({
+      hash: txHash,
+      confirmations: CONFIRMATION
+    });
+
+  const balanceExceedError = useMemo(() => {
+    console.log(
+      "parseFloat(amount) > lpBalance",
+      parseFloat(amount),
+      lpBalance,
+      parseFloat(amount) > lpBalance
+    );
+    return parseFloat(amount) > lpBalance;
+  }, [lpBalance, amount]);
+
+  // TODO: Update actual data from SDK
+  const receiveQuantity = 0;
+
+  // Notifications based on Transaction status
+  useEffect(() => {
+    if (isError) {
+      notification.error({
+        title: "Adding liquidity failed",
+        description: `${error.message}`
+      });
+    } else if (isSuccess) {
+      refetchBalance();
+      refetchPosition();
+      notification.success({
+        title: "Liquidity successfully removed!"
+      });
+    }
+  }, [isSuccess, isError]);
 
   return (
     <div className="flex flex-col justify-between py-4 h-full">
@@ -69,7 +119,6 @@ const RemoveLiquidity = ({
             <input
               className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right"
               placeholder="0"
-              disabled={lpBalance == undefined}
               type="number"
               value={amount}
               onChange={(event) => {
@@ -79,40 +128,20 @@ const RemoveLiquidity = ({
           </div>
           <div className="inline-flex items-end justify-between font-normal text-xs/3">
             <span className="text-[#5F7183]">
-              Your balance:{" "}
-              {isFetchingBal
-                ? "loading balance..."
-                : toUnits(
-                    parseFloat(lpBalance ?? "0") / 10 ** overviewPool.underlyingDecimals,
-                    3
-                  )}
+              Your LP balance:{" "}
+              {isPositionFetching && !lpBalance ? "loading..." : lpBalance.toFixed(5)}
             </span>
             <div className="inline-flex gap-2">
               <button
                 className="py-[5.5px] px-[6px] rounded-[4px] bg-[#212C42] hover:bg-[#283751] transition-colors disabled:opacity-50 disabled:pointer-events-none"
-                onClick={() =>
-                  setAmount(
-                    (
-                      (parseFloat(lpBalance ?? "0") /
-                        10 ** overviewPool.underlyingDecimals) *
-                      0.5
-                    ).toString()
-                  )
-                }
+                onClick={() => setAmount((lpBalance * 0.5).toString())}
                 disabled={!isConnected || !lpBalance}
               >
                 Half
               </button>
               <button
                 className="py-[5.5px] px-[6px] rounded-[4px] bg-[#212C42] hover:bg-[#283751] transition-colors disabled:opacity-50 disabled:pointer-events-none"
-                onClick={() =>
-                  setAmount(
-                    (
-                      parseFloat(lpBalance ?? "0") /
-                      10 ** overviewPool.underlyingDecimals
-                    ).toString()
-                  )
-                }
+                onClick={() => setAmount(lpBalance.toString())}
                 disabled={!isConnected || !lpBalance}
               >
                 Max
@@ -128,15 +157,25 @@ const RemoveLiquidity = ({
           </p>
           <div className="inline-flex-between">
             <div className="max-w-fit inline-flex gap-2 items-center">
-              <Image src={`/tokens/${underlying}`} alt="token" width={24} height={24} />
+              <Image
+                src={`/tokens/${underlying}.svg`}
+                alt="token"
+                width={24}
+                height={24}
+              />
               <span className="font-medium text-base/5">{underlying}</span>
             </div>
             <span className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right">
-              0
+              {receiveQuantity > 0 ? receiveQuantity : "-"}
             </span>
           </div>
           <div className="font-normal text-xs/3 mt-1">
-            <span className="text-[#5F7183]">Your LP balance: 0</span>
+            <span className="text-[#5F7183]">
+              Your balance:{" "}
+              {isBalLoading && !userBalance
+                ? "loading..."
+                : toUnits(parseFloat(userBalance?.formatted ?? "0"), 3)}
+            </span>
           </div>
         </div>
         {showInfo && (
@@ -152,14 +191,17 @@ const RemoveLiquidity = ({
       <div className="flex flex-col gap-4 mt-3">
         <div className="inline-flex-between text-xs/[14px]">
           <span className="font-normal text-[#757B80]">Conversion Fee</span>
-          <span className="font-medium">0.000 BTC</span>
+          <span className="font-medium">0.000 {underlying}</span>
         </div>
         <ButtonCTA
-          className={cn(
-            "w-full font-bold text-[14px] leading-6 text-center py-[14px]",
-            "bg-[#202832] hover:bg-[#475B72] text-[#3D85C6] transition-colors duration-200",
-            "disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-[#202832]"
-          )}
+          disabled={
+            !isConnected ||
+            !userBalance ||
+            balanceExceedError ||
+            !positionData ||
+            isLoading ||
+            !isValidPositiveNumber(amount)
+          }
           onClick={() => {
             if (isConnected) {
               console.log("amount", amount);
@@ -168,7 +210,12 @@ const RemoveLiquidity = ({
               openConnectModal?.();
             }
           }}
-          disabled={isConnected && (isLoading || !isValidPositiveNumber(amount))}
+          isLoading={isLoading}
+          className={cn(
+            "w-full font-bold text-[14px] leading-6 text-center py-[14px]",
+            "bg-[#202832] hover:bg-[#475B72] text-[#3D85C6] transition-colors duration-200",
+            "disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-[#202832]"
+          )}
         >
           {isConnected ? <span>Remove Liquidity</span> : <span>Connect Wallet</span>}
         </ButtonCTA>

@@ -20,11 +20,12 @@ import { CONFIRMATION } from "@lib/constants";
 import { Address } from "viem";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
+import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 
 const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const [amount, setAmount] = useState<string>("");
   const [showInfo, setShowInfo] = useState<boolean>(true);
-  const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
+  const [txHash, setTxHash] = useState<Address | undefined>(undefined);
 
   const { potentia } = usePotentiaSdk();
   const { openConnectModal } = useConnectModal();
@@ -82,22 +83,24 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   };
 
   /**
-   * Handler for Addliquidity from SDK
+   * Handler for Addliquidity Function
    */
   async function addLiquidityHandlerSdk() {
     const _amount = parseFloat(amount) * 10 ** 18;
     console.log("_amount", _amount);
 
-    const hash = await potentia?.poolWrite.addLiquidity(
-      overviewPool.poolAddr,
-      BigInt(_amount).toString()
-    );
-
-    if (hash) {
-      setTxHash(hash as `0x${string}`);
+    try {
+      const hash = await potentia?.poolWrite.addLiquidity(
+        overviewPool.poolAddr,
+        BigInt(_amount).toString()
+      );
+      if (hash) {
+        setTxHash(hash as Address);
+        console.log("addliquiditytxn return", hash);
+      }
+    } catch (error) {
+      console.error("Error while Adding liquidity");
     }
-    console.log("addliquiditytxn return", hash);
-    return hash;
   }
 
   // wait for approval transaction
@@ -118,6 +121,9 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       confirmations: CONFIRMATION
     });
 
+  // getting underlying token's price
+  const { price, isFetching: isPriceFetching } = useCurrencyPrice(underlying);
+
   const balanceExceedError = useMemo(
     () => !!userBalance?.value && parseFloat(amount) > parseFloat(userBalance?.formatted),
     [userBalance, amount]
@@ -130,12 +136,12 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     // Executes Add Liquidity handlers if Approval Txn is successful
     if (isApproveSuccess) {
       console.log("Token is approved for the selected amount!");
+      notification.success({
+        title: "Token Approved",
+        description: "You may now process to Add Liquidity"
+      });
       addLiquidityHandlerSdk();
     }
-    notification.success({
-      title: "Token Approved",
-      description: "You may now process to Add Liquidity"
-    });
   }, [isApproveSuccess]);
 
   // Notifications based on Transaction status
@@ -166,7 +172,11 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
         <div className="rounded-[4px] flex flex-col gap-y-2 border border-secondary-gray p-4">
           <p className="w-full inline-flex justify-between font-medium text-xs/3 text-[#5F7183] mb-1">
             <span>You Supply</span>
-            <span>~$0.00</span>
+            <span>
+              {isPriceFetching && !price && !isValidPositiveNumber(amount)
+                ? "..."
+                : `$${price * parseFloat(amount !== "" ? amount : "0")}`}
+            </span>
           </p>
           <div className="inline-flex-between">
             <label
@@ -196,7 +206,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
             <span className="text-[#5F7183]">
               Your balance:{" "}
               {isBalLoading && !userBalance
-                ? "loading balance..."
+                ? "loading..."
                 : toUnits(parseFloat(userBalance?.formatted ?? "0"), 3)}
             </span>
             <div className="inline-flex gap-2">
@@ -237,7 +247,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
             <span className="text-[#5F7183]">
               Your LP balance:{" "}
               {isPositionFetching && !lpBalance
-                ? "loading"
+                ? "loading..."
                 : (parseFloat(lpBalance ?? "0") / 10 ** underlyingDecimals).toFixed(5)}
             </span>
           </div>
@@ -261,6 +271,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           disabled={
             !isConnected ||
             !userBalance ||
+            !lpBalance ||
             balanceExceedError ||
             isApproveLoading ||
             isApprovePending ||

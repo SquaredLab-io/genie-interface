@@ -137,11 +137,7 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
             {lpTrade === LpTradeOptions.supply ? (
               <AddLiquidity overviewPool={overviewPool} />
             ) : (
-              <RemoveLiquidity
-                overviewPool={overviewPool}
-                lpBalance={position?.lpToken?.balance!}
-                isFetchingBal={isPositionFetching}
-              />
+              <RemoveLiquidity overviewPool={overviewPool} />
             )}
           </div>
         </div>
