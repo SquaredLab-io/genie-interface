@@ -7,6 +7,7 @@ import { Button } from "@components/ui/button";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { BASE_SEPOLIA } from "@lib/constants";
 import { calculatePoolAge } from "@lib/utils/calculatePoolAge";
+import PoolMenu from "./PoolMenu";
 
 export function allPoolsColumnDef(): ColumnDef<PoolInfo>[] {
   // updateSelectedPool: (value: Pool) => void
@@ -82,7 +83,7 @@ export function allPoolsColumnDef(): ColumnDef<PoolInfo>[] {
         const { tvl, underlying, underlyingDecimals } = row.original;
         return (
           <span className="pl-[18px]">
-            {toUnits(parseFloat(tvl ?? "0") / 10 ** underlyingDecimals, 3)} {underlying}
+            {toUnits(parseFloat(tvl ?? "0") / 10 ** underlyingDecimals, 2)} {underlying}
           </span>
         );
       }
@@ -103,7 +104,6 @@ export function allPoolsColumnDef(): ColumnDef<PoolInfo>[] {
             >
               {growth}%
             </span>
-            {/* )} */}
           </div>
         );
       }
@@ -230,17 +230,13 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
         const growth = parseFloat("0");
         return (
           <div className="inline-flex gap-1">
-            <span>
-              {toUnits(parseFloat(fee ?? "0") / 10 ** underlyingDecimals, 3)}
-            </span>{" "}
+            <span>{toUnits(parseFloat(fee ?? "0") / 10 ** underlyingDecimals, 3)}</span>{" "}
             {underlying}
-            {/* {growth !== 0 && ( */}
             <span
               className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
             >
               {growth}%
             </span>
-            {/* )} */}
           </div>
         );
       }
@@ -249,14 +245,19 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       accessorKey: "action",
       header: () => <span className="sr-only">Action</span>,
       cell: ({ row }) => {
+        const { underlying } = row.original;
         return (
           <div className="inline-flex justify-end gap-2 max-w-fit float-right mr-5">
-            <Button size="lg" variant="default">
-              Deposit
-            </Button>
-            <Button size="sm" variant="secondary">
-              More
-            </Button>
+            <Link href={`/pool/${underlying}`}>
+              <Button size="lg" variant="default">
+                Deposit
+              </Button>
+            </Link>
+            <PoolMenu underlying={underlying}>
+              <Button size="sm" variant="secondary">
+                More
+              </Button>
+            </PoolMenu>
           </div>
         );
       }

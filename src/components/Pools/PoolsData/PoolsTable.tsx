@@ -14,6 +14,7 @@ import {
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
+import { useEffect } from "react";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -55,7 +56,7 @@ const PoolsTable = <TData, TValue>({
       <TableBody className="divide-y divide-[#292B31]">
         {table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id} className="hover:bg-[#232730]">
+            <TableRow key={row.id} className="hover:bg-[#19242C] transition-colors duration-200">
               {row.getVisibleCells().map((cell) => (
                 <TableCell key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}

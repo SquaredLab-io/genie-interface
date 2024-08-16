@@ -1,11 +1,10 @@
 "use client";
 
 // Library Imports
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { TabsList } from "@radix-ui/react-tabs";
-import { PlusIcon, Table } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 // Component Imports
-// import { Button } from "@components/ui/button";
 import { Tabs, TabsContent, TabsTrigger } from "@components/ui/tabs";
 import PoolsTable from "./PoolsTable";
 import { allPoolsColumnDef, userPoolsColumnDef } from "./pool-columns";
@@ -20,23 +19,34 @@ import { TableOptions } from "./helper";
 import { useFilteredPools } from "@lib/hooks/useFilteredPools";
 import { useAccount } from "wagmi";
 import MyPoolsTable from "./MyPoolsTable";
+import { useIsMounted } from "@lib/hooks/useIsMounted";
+import LoadingScreen from "@components/common/loading-screen";
+import { useModalStore } from "@store/poolsStore";
 
 const PoolsData = () => {
+  const { isMounted } = useIsMounted();
+  const { address } = useAccount();
+  const { pools, isFetching } = usePools();
+
+  console.log("pools @poolsdata", pools);
+  console.log("loading @poolsdata", isFetching);
+
+  // const [openCreateModal, setOpenCreateModal] = useState(false);
+  // const [openManageModal, setOpenManageModal] = useState(false);
+
+  const { openCreateModal, setOpenCreateModal, openManageModal, setOpenManageModal } =
+    useModalStore();
+
+  const [currentTab, setCurrentTab] = useState(TableOptions.all);
+
+  // pools search and filtering
   const [showSearch, setShowSearch] = useState(false);
   const [allTerm, setAllTerm] = useState("");
   const [myTerm, setMyTerm] = useState("");
   const [txTerm, setTxTerm] = useState("");
-  const [openCreateModal, setOpenCreateModal] = useState(false);
-  const [openManageModal, setOpenManageModal] = useState(false);
-  const { address } = useAccount();
-
-  const [currentTab, setCurrentTab] = useState(TableOptions.all);
-
-  const { pools, isFetching, refetch } = usePools();
-
   const { pools: filteredAllPools } = useFilteredPools(pools, allTerm);
   const { pools: filteredMyPools } = useFilteredPools(pools, myTerm);
-  const { pools: filteredTxPools } = useFilteredPools(pools, txTerm);
+  // const { pools: filteredTxPools } = useFilteredPools(pools, txTerm);
 
   const poolsColumns = allPoolsColumnDef();
   const userColumns = userPoolsColumnDef();
@@ -44,6 +54,8 @@ const PoolsData = () => {
 
   const activeTabStyle =
     "py-2 px-4 data-[state=active]:border data-[state=active]:border-[#00A0FC] rounded-lg data-[state=active]:bg-[#0A344D]";
+
+  if (!isMounted) return <LoadingScreen />;
 
   return (
     <div className="py-10">
@@ -61,12 +73,12 @@ const PoolsData = () => {
             </TabsTrigger>
           </TabsList>
           <div className="inline-flex items-center gap-6">
-            <button
+            {/* <button
               className="inline-flex items-center py-2 px-3 gap-1 text-[#49AFE9] hover:bg-[#0A344D] transition-colors font-medium text-sm/5 rounded-lg font-sans-ibm-plex"
               onClick={() => setOpenManageModal(true)}
             >
               <PlusIcon size={16} /> Manage Pool
-            </button>
+            </button> */}
             <button
               className="inline-flex items-center py-2 px-3 gap-1 text-[#49AFE9] hover:bg-[#0A344D] transition-colors font-medium text-sm/5 rounded-lg font-sans-ibm-plex"
               onClick={() => setOpenCreateModal(true)}
@@ -91,8 +103,9 @@ const PoolsData = () => {
         <TabsContent value={TableOptions.my}>
           <MyPoolsTable
             columns={userColumns}
-            data={filteredMyPools.filter((pool) => pool.poolOp === address)}
-            // data={pools.filter((pool) => pool.poolAddr === address)}
+            data={filteredMyPools.filter((pool) => true)}
+            pool={filteredMyPools[filteredMyPools.length - 1]} // passes the first pool as default
+            // setOpenCreateModal={setOpenCreateModal}
             loading={isFetching}
           />
         </TabsContent>

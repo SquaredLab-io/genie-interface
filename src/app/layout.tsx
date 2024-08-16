@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { ibm_plex_sans, helvetica_neue } from "@lib/fonts";
+import { ibm_plex_sans, helvetica_neue, manrope } from "@lib/fonts";
 import { cn } from "@lib/utils";
 import Header from "@components/common/Header";
 import { meta } from "@lib/constants";
@@ -70,7 +70,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(ibm_plex_sans.variable, helvetica_neue.variable)}>
+      <body
+        className={cn(ibm_plex_sans.variable, helvetica_neue.variable, manrope.variable)}
+      >
         <Providers>
           <Header />
           {children}

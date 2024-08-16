@@ -26,10 +26,20 @@ const config = {
       },
       fontFamily: {
         "sans-ibm-plex": ["var(--font-ibm-plex-sans)"],
-        "helvetica-neue": ["var(--font-helvetica-neue)"]
+        "helvetica-neue": ["var(--font-helvetica-neue)"],
+        "sans-manrope": ["var(--manrope-sans)"]
       },
       fontSize: {
-        "2xs": "8px"
+        "2xs": "8px",
+        xs: ".75rem",
+        sm: ".875rem",
+        base: "1rem",
+        lg: "1.125rem",
+        xl: "1.25rem",
+        "2xl": "1.5rem",
+        "3xl": "1.875rem",
+        "4xl": "2.25rem",
+        "5xl": "3rem"
       },
       borderRadius: {
         base: "4px"

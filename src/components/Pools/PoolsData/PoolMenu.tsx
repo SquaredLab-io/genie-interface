@@ -1,74 +1,53 @@
-/**
- * Status: Deprecated
- */
-
+import { memo, ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { HiEllipsisHorizontal } from "react-icons/hi2";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
+  // DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@components/ui/dropdown-menu";
-import { useRouter } from "next/navigation";
-import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
+import { useModalStore } from "@store/poolsStore";
 
-const PoolMenu = ({ pool }: { pool: PoolInfo }) => {
-  const router = useRouter();
-
-  const { underlying, pool: assets, power } = pool;
-  const underlyingAssets = assets.split("/").map((p) => p.trim());
+const PoolMenu = ({
+  underlying,
+  children
+}: {
+  underlying: string;
+  children: ReactNode;
+}) => {
+  const { setOpenManageModal } = useModalStore();
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <HiEllipsisHorizontal size={32} color="#6D6D6D" />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="min-w-48 text-white">
-        <DropdownMenuLabel>
-          <>
-            {underlyingAssets.map((asset, index) => (
-              <span key={index} className="font-bold text-sm/5">
-                {asset}
-                {underlyingAssets.length !== index + 1 && <span className="mx-1">/</span>}
-              </span>
-            ))}
-            <span className="font-bold text-xs/5 bg-[#22C9FF24] text-[#0091FF] px-2 rounded-lg">
-              p = {power}
-            </span>
-          </>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-        // onClick={() => {;
-        //   // TODO: Update this with original pool later
-        //   router.push(`/pool/${underlying}`);
-        // }}
-        >
-          <Link className="inline-flex gap-2 items-center w-full" href="/pool">
-            <Image src="/icons/StatsIcon.svg" width={16} height={16} alt="stats icon" />
-            <span>View Stats</span>
+      <DropdownMenuTrigger>{children}</DropdownMenuTrigger>
+      <DropdownMenuContent className="min-w-48 text-white p-4 bg-[#0D1921] border-secondary-gray">
+        <DropdownMenuLabel className="p-0 mb-2">Actions</DropdownMenuLabel>
+        {/* <DropdownMenuSeparator /> */}
+        <DropdownMenuItem className="p-0 mb-4 focus:bg-[#0D1921]">
+          <Link
+            className="inline-flex gap-2 items-center w-full"
+            href={`/pool/${underlying}`}
+          >
+            <Image src="/icons/MinusIcon.svg" width={14} height={14} alt="add icon" />
+            <span>Withdraw</span>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem
-        // onClick={() => {}}
-        >
-          <Link className="inline-flex gap-2 items-center w-full" href="/pool">
-            <Image src="/icons/PlusIcon.svg" width={16} height={16} alt="add icon" />
-            <span>Add Liquidity</span>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link className="inline-flex gap-2 items-center w-full" href="/">
+        <DropdownMenuItem className="p-0 focus:bg-[#0D1921]">
+          <div
+            className="inline-flex gap-2 items-center w-full cursor-pointer"
+            onClick={() => {
+              setOpenManageModal(true);
+            }}
+          >
             <Image src="/icons/TradeIcon.svg" width={16} height={16} alt="trade icon" />
-            <span>Trade</span>
-          </Link>
+            <span>Manage Pool</span>
+          </div>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
 
-export default PoolMenu;
+export default memo(PoolMenu);

@@ -31,6 +31,28 @@ export const usePoolsStore = create<iPools>((set, get) => ({
   updateIsFetchingPools: (isFetching) => {
     set(() => ({
       isFetchingPools: isFetching
-    }))
+    }));
+  }
+}));
+
+interface iPoolModalStore {
+  openCreateModal: boolean;
+  setOpenCreateModal: (value: boolean) => void;
+  openManageModal: boolean;
+  setOpenManageModal: (value: boolean) => void;
+}
+
+export const useModalStore = create<iPoolModalStore>((set, get) => ({
+  openCreateModal: false,
+  setOpenCreateModal: (value) => {
+    set(() => ({
+      openCreateModal: value
+    }));
+  },
+  openManageModal: false,
+  setOpenManageModal: (value: boolean) => {
+    set(() => ({
+      openManageModal: value
+    }));
   }
 }));

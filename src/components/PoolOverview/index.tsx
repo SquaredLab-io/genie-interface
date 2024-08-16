@@ -20,6 +20,7 @@ import { Separator } from "@components/ui/separator";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { useDailyData } from "@lib/hooks/useDailyData";
+import { POOL_FEE } from "./constants";
 
 const PoolHeader = ({ assets, power }: { assets: string[]; power: number }) => {
   return (
@@ -83,14 +84,17 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
   const { pool, power } = overviewPool;
   const [token0, token1] = pool.split("/").map((p) => p.trim());
 
+  // TODO: Get this from SDK
+  const POOL_APR = 2.61;
+
   return (
     <div className="overflow-auto pl-11 pt-11 h-full">
       {/* Header */}
       <PoolHeader assets={[token0, token1]} power={power} />
       {/* Labels of Pool Information */}
       <div className="inline-flex items-center mt-3 gap-1">
-        <Label text="APR : 2.61%" />
-        <Label text="Fee : 0.3%" />
+        <Label text={`APR : ${POOL_APR}%`} />
+        <Label text={`Fee : ${POOL_FEE}%`} />
         {chain && <Label text={`Network : Base Sepolia`} />}
       </div>
       {/* Graph and Add/Remove Liquidity Box */}
