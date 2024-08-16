@@ -63,7 +63,8 @@ const config = {
         "secondary-blue": "#0099FF",
         "primary-cyan": "#00CCFF",
         "off-white": "#C9C9C9",
-        "coinbase-theme": "#0052FF"
+        "coinbase-theme": "#0052FF",
+        "error-red": "#FF0000"
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",

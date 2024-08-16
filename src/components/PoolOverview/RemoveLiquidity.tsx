@@ -15,6 +15,7 @@ import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { CONFIRMATION } from "@lib/constants";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import notification from "@components/common/notification";
+import { InfoBox } from "./info-box";
 
 const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   // Amount to remove
@@ -100,7 +101,7 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       refetchBalance();
       refetchPosition();
       notification.success({
-        title: "Liquidity successfully removed!"
+        title: "Liquidity withdrawn successfully"
       });
     }
   }, [isSuccess, isError]);
@@ -109,7 +110,12 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     <div className="flex flex-col justify-between py-4 h-full">
       <div className="w-full space-y-3">
         {/* SUPPLY */}
-        <div className="rounded-[4px] border-x-secondary-gray flex flex-col gap-y-2 border border-secondary-gray p-4">
+        <div
+          className={cn(
+            "rounded-[4px] flex flex-col gap-y-2 border p-4",
+            balanceExceedError ? "border-error-red" : "border-secondary-gray"
+          )}
+        >
           <p className="w-full inline-flex justify-between font-medium text-xs/3 text-[#5F7183] mb-1">
             <span>You Supply</span>
             <span>~$0.00</span>
@@ -127,7 +133,9 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
             />
           </div>
           <div className="inline-flex items-end justify-between font-normal text-xs/3">
-            <span className="text-[#5F7183]">
+            <span
+              className={cn(balanceExceedError ? "text-error-red" : "text-[#5F7183]")}
+            >
               Your LP balance:{" "}
               {isPositionFetching && !lpBalance ? "loading..." : lpBalance.toFixed(5)}
             </span>
@@ -179,13 +187,14 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           </div>
         </div>
         {showInfo && (
-          <div className="flex flex-row items-center justify-between mt-2 bg-[#00456D14] bg-opacity-10 py-4 px-6 gap-4 rounded-[4px] border border-[#01A1FF] w-full">
-            <Info size={22} color="#01A1FF" />
-            <p className="font-normal text-sm/[18px] max-w-72">
-              The tokens in your wallet are being converted automatically by Genie for a
-              small fee.
-            </p>
-          </div>
+          <InfoBox
+            isError={balanceExceedError}
+            message={
+              balanceExceedError
+                ? "Insufficient funds. Please deposit more tokens to add the required liquidity."
+                : undefined
+            }
+          />
         )}
       </div>
       <div className="flex flex-col gap-4 mt-3">

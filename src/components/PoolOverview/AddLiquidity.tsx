@@ -14,13 +14,14 @@ import toUnits from "@lib/utils/formatting";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import ButtonCTA from "@components/common/button-cta";
-import { Info } from "lucide-react";
 import notification from "@components/common/notification";
 import { CONFIRMATION } from "@lib/constants";
 import { Address } from "viem";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
+import { InfoBox } from "./info-box";
+import { cn } from "@lib/utils";
 
 const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const [amount, setAmount] = useState<string>("");
@@ -160,7 +161,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       refetchBalance();
       refetchPosition();
       notification.success({
-        title: "Long position successfully opened!"
+        title: "Liquidity Added Successfully"
       });
     }
   }, [isSuccess, isError, isApproveError]);
@@ -169,7 +170,12 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     <div className="flex flex-col justify-between py-4 h-full">
       <div className="w-full space-y-3">
         {/* SUPPLY */}
-        <div className="rounded-[4px] flex flex-col gap-y-2 border border-secondary-gray p-4">
+        <div
+          className={cn(
+            "rounded-[4px] flex flex-col gap-y-2 border p-4",
+            balanceExceedError ? "border-error-red" : "border-secondary-gray"
+          )}
+        >
           <p className="w-full inline-flex justify-between font-medium text-xs/3 text-[#5F7183] mb-1">
             <span>You Supply</span>
             <span>
@@ -203,7 +209,9 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
             />
           </div>
           <div className="inline-flex items-end justify-between font-normal text-xs/3">
-            <span className="text-[#5F7183]">
+            <span
+              className={cn(balanceExceedError ? "text-error-red" : "text-[#5F7183]")}
+            >
               Your balance:{" "}
               {isBalLoading && !userBalance
                 ? "loading..."
@@ -253,13 +261,14 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           </div>
         </div>
         {showInfo && (
-          <div className="flex flex-row items-center justify-between mt-2 bg-[#00456D14] bg-opacity-10 py-4 px-6 gap-4 rounded-[4px] border border-[#01A1FF] w-full">
-            <Info size={22} color="#01A1FF" />
-            <p className="font-normal text-sm/[18px] max-w-72">
-              The tokens in your wallet are being converted automatically by Genie for a
-              small fee.
-            </p>
-          </div>
+          <InfoBox
+            isError={balanceExceedError}
+            message={
+              balanceExceedError
+                ? "Insufficient funds. Please deposit more tokens to add the required liquidity."
+                : undefined
+            }
+          />
         )}
       </div>
       <div className="flex flex-col gap-4 mt-3">

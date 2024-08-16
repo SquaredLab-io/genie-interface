@@ -13,6 +13,7 @@ import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 // import { transformTimeseries } from "./helper";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
 import { chartOptionsConfig, colors } from "./configs";
+import LoadingLogo from "@components/icons/loading-logo";
 
 const CLChart = ({
   overviewPool
@@ -98,8 +99,7 @@ const CLChart = ({
     <>
       {isLoadingChart ? (
         <div className="size-full flex-col-center">
-          <SpinnerIcon stroke="#01A1FF" />
-          <span>preparing chart...</span>
+          <LoadingLogo size={80} />
         </div>
       ) : (
         <div className="h-[calc(100%-20px)]" ref={chartContainerRef} />
