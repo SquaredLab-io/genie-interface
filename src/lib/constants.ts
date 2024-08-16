@@ -58,8 +58,8 @@ export const BASE_SEPOLIA = SUPPORTED_NETWORKS[0];
 
 export const CONFIRMATION = 5;
 
-export const REFETCH_INTERVAL = false; // disabled
-// export const REFETCH_INTERVAL = 10 * 1000; // 10 seconds
+// export const REFETCH_INTERVAL = false; // disabled
+export const REFETCH_INTERVAL = 10 * 1000; // 10 seconds
 
 export const TOKENS: {
   [key: string]: `0x${string}`;
@@ -71,11 +71,13 @@ export const TOKENS: {
 export const SUPPORTED_TOKENS = [
   {
     token: "WETH",
+    name: "Wrapped Ether",
     address: TOKENS.WETH,
     logo: "/tokens/weth.svg"
   },
   {
     token: "USDC",
+    name: "USD Coin",
     address: TOKENS.USDC,
     logo: "/tokens/usdc.svg"
   }

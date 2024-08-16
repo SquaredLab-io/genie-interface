@@ -13,7 +13,6 @@ import RemoveLiquidity from "./RemoveLiquidity";
 import { GraphOptions } from "./helper";
 // Charts
 import LPChart from "./lp-charts";
-import TokenSelectPopover from "@components/common/TokenSelectPopover";
 import { LpTradeOptions } from "@lib/types/enums";
 import LpTradeSelector from "./lp-trade-selector";
 import { Separator } from "@components/ui/separator";
@@ -21,37 +20,41 @@ import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { useDailyData } from "@lib/hooks/useDailyData";
 import { POOL_FEE } from "./constants";
+import OverviewTokenModal from "./OverviewTokenModal";
+import { useModalStore } from "@store/poolsStore";
 
 const PoolHeader = ({ assets, power }: { assets: string[]; power: number }) => {
+  const { setOpenOverviewModal } = useModalStore();
   return (
-    <TokenSelectPopover size="compact">
-      <div className="whitespace-nowrap flex flex-row items-center gap-3 text-left font-medium rounded-full max-w-fit p-2 cursor-pointer">
-        <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-3">
-          {assets.map((asset, index) => (
-            <div
-              key={`${asset}_${index}`}
-              className="z-0 flex overflow-hidden ring-2 ring-white rounded-full bg-neutral-800"
-            >
-              <Image
-                src={`/tokens/${asset.toLowerCase()}.svg`}
-                alt={asset}
-                width={42}
-                height={42}
-              />
-            </div>
-          ))}
-        </div>
-        <p className="font-extrabold text-[32px]/5 text-nowrap">
-          {assets[0]}
-          <span className="text-[#9299AA] mx-2">/</span>
-          {assets[1]}
-        </p>
-        <p className="font-medium text-xs/3 bg-[#49AFE9] pt-[4.5px] pb-[5.5px] px-3 rounded-md">
-          p = {power}
-        </p>
-        <DropDownIcon className="ml-2" />
+    <div
+      className="whitespace-nowrap flex flex-row items-center gap-3 text-left font-medium rounded-full max-w-fit p-2 cursor-pointer"
+      onClick={() => setOpenOverviewModal(true)}
+    >
+      <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-3">
+        {assets.map((asset, index) => (
+          <div
+            key={`${asset}_${index}`}
+            className="z-0 flex overflow-hidden ring-2 ring-white rounded-full bg-neutral-800"
+          >
+            <Image
+              src={`/tokens/${asset.toLowerCase()}.svg`}
+              alt={asset}
+              width={42}
+              height={42}
+            />
+          </div>
+        ))}
       </div>
-    </TokenSelectPopover>
+      <p className="font-extrabold text-[32px]/5 text-nowrap">
+        {assets[0]}
+        <span className="text-[#9299AA] mx-2">/</span>
+        {assets[1]}
+      </p>
+      <p className="font-medium text-xs/3 bg-[#49AFE9] pt-[4.5px] pb-[5.5px] px-3 rounded-md">
+        p = {power}
+      </p>
+      <DropDownIcon className="ml-2" />
+    </div>
   );
 };
 
@@ -65,12 +68,7 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
     poolAddress: overviewPool?.poolAddr as Address
   });
 
-  // Current Open Long Position
-  const {
-    data: position,
-    isFetching: isPositionFetching,
-    refetch: refetchPosition
-  } = useCurrentPosition({ poolAddress: overviewPool?.poolAddr! as Address });
+  const { openOverviewModal, setOpenOverviewModal } = useModalStore();
 
   if (!overviewPool) return <main></main>;
 
@@ -142,6 +140,7 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
           </div>
         </div>
       </div>
+      <OverviewTokenModal open={openOverviewModal} setOpen={setOpenOverviewModal} />
     </div>
   );
 };

@@ -10,7 +10,7 @@ export function useFilteredPools(pools: PoolInfo[] | undefined, term: string): R
   else if (term == "") return { pools, noPools: false };
   const searchTerm = term.toLowerCase();
   const filtered = pools.filter((pool) => {
-    const matchTerm = `${pool.pool}`.toLowerCase();
+    const matchTerm = `${pool.underlying}`.toLowerCase();
     if (matchTerm.indexOf(searchTerm) >= 0) return true;
     return false;
   });

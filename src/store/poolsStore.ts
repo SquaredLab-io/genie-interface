@@ -40,6 +40,8 @@ interface iPoolModalStore {
   setOpenCreateModal: (value: boolean) => void;
   openManageModal: boolean;
   setOpenManageModal: (value: boolean) => void;
+  openOverviewModal: boolean;
+  setOpenOverviewModal: (value: boolean) => void;
 }
 
 export const useModalStore = create<iPoolModalStore>((set, get) => ({
@@ -53,6 +55,12 @@ export const useModalStore = create<iPoolModalStore>((set, get) => ({
   setOpenManageModal: (value: boolean) => {
     set(() => ({
       openManageModal: value
+    }));
+  },
+  openOverviewModal: false,
+  setOpenOverviewModal: (value: boolean) => {
+    set(() => ({
+      openOverviewModal: value
     }));
   }
 }));
