@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { Check, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { BiSolidDownArrow } from "react-icons/bi";
 
 import { cn } from "@lib/utils";
@@ -27,7 +27,7 @@ const SelectTrigger = React.forwardRef<
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <BiSolidDownArrow className="h-3 w-3 ml-2" color="#F1F1F1" />
+      <ChevronDown className="h-3 w-3 ml-2" color="#FFFFFF" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));

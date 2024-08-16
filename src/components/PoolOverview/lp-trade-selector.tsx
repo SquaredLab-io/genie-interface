@@ -8,7 +8,7 @@ import {
 import { LpTradeOptions } from "@lib/types/enums";
 import { MinusIcon, PlusIcon } from "lucide-react";
 
-export default function SelectLpTrade({
+export default function LpTradeSelector({
   lpTrade,
   setLpTrade
 }: {

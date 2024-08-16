@@ -15,7 +15,7 @@ import { GraphOptions } from "./helper";
 import LPChart from "./lp-charts";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
 import { LpTradeOptions } from "@lib/types/enums";
-import SelectLpTrade from "./SelectLpTrade";
+import LpTradeSelector from "./lp-trade-selector";
 import { Separator } from "@components/ui/separator";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
@@ -131,15 +131,11 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
               <h2 className="font-medium text-lg/6">
                 {lpTrade === LpTradeOptions.supply ? "Add Liquidity" : "Remove Liquidity"}
               </h2>
-              <SelectLpTrade lpTrade={lpTrade} setLpTrade={setLpTrade} />
+              <LpTradeSelector lpTrade={lpTrade} setLpTrade={setLpTrade} />
             </header>
             <Separator className="mb-3" />
             {lpTrade === LpTradeOptions.supply ? (
-              <AddLiquidity
-                overviewPool={overviewPool}
-                lpBalance={position?.lpToken?.balance!}
-                isFetchingBal={isPositionFetching}
-              />
+              <AddLiquidity overviewPool={overviewPool} />
             ) : (
               <RemoveLiquidity
                 overviewPool={overviewPool}

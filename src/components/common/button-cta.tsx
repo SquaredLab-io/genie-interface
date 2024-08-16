@@ -2,16 +2,21 @@
 
 import React, { forwardRef, ReactNode } from "react";
 import clsx from "clsx";
+import SpinnerIcon from "@components/icons/SpinnerIcon";
 
 interface PropsType {
   children: string | ReactNode;
   disabled?: boolean;
+  isLoading?: boolean;
   onClick?: () => void;
   className?: string;
 }
 
 const ButtonCTA = forwardRef<HTMLButtonElement, PropsType>(
-  ({ children, className, disabled = false, onClick, ...props }, ref) => {
+  (
+    { children, className, disabled = false, isLoading = false, onClick, ...props },
+    ref
+  ) => {
     return (
       <button
         ref={ref}
@@ -23,7 +28,7 @@ const ButtonCTA = forwardRef<HTMLButtonElement, PropsType>(
         onClick={onClick}
         {...props}
       >
-        {children}
+        {isLoading ? <SpinnerIcon className="size-[22px]" /> : children}
       </button>
     );
   }

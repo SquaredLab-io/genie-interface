@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import {
   useBalance,
@@ -9,7 +9,6 @@ import {
   useWaitForTransactionReceipt
 } from "wagmi";
 import { WethABi } from "@lib/abis";
-import { cn } from "@lib/utils";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import toUnits from "@lib/utils/formatting";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -20,16 +19,9 @@ import notification from "@components/common/notification";
 import { CONFIRMATION } from "@lib/constants";
 import { Address } from "viem";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
+import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 
-const AddLiquidity = ({
-  overviewPool,
-  lpBalance,
-  isFetchingBal
-}: {
-  overviewPool: PoolInfo;
-  lpBalance: string;
-  isFetchingBal: boolean;
-}) => {
+const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const [amount, setAmount] = useState<string>("");
   const [showInfo, setShowInfo] = useState<boolean>(true);
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
@@ -41,10 +33,22 @@ const AddLiquidity = ({
 
   // Contract Hooks
   const { address, isConnected } = useAccount();
-  const { data: userBalance, isLoading: isBalLoading } = useBalance({
+  const {
+    data: userBalance,
+    isLoading: isBalLoading,
+    refetch: refetchBalance
+  } = useBalance({
     address,
     token: underlyingAddress! as Address
   });
+
+  // Current positions
+  const {
+    data: positionData,
+    isFetching: isPositionFetching,
+    refetch: refetchPosition
+  } = useCurrentPosition({ poolAddress: poolAddr as Address });
+  const lpBalance = positionData?.lpToken.balance;
 
   // Write Hook => Token Approval
   const {
@@ -100,7 +104,8 @@ const AddLiquidity = ({
   const {
     isSuccess: isApproveSuccess,
     isLoading: isApproveLoading,
-    isError: isApproveError
+    isError: isApproveError,
+    error: approvalError
   } = useWaitForTransactionReceipt({
     hash: approvalData,
     confirmations: CONFIRMATION
@@ -113,15 +118,46 @@ const AddLiquidity = ({
       confirmations: CONFIRMATION
     });
 
+  const balanceExceedError = useMemo(
+    () => !!userBalance?.value && parseFloat(amount) > parseFloat(userBalance?.formatted),
+    [userBalance, amount]
+  );
+
+  // TODO: Update actual data from SDK
+  const receiveQuantity = 0;
+
   useEffect(() => {
     // Executes Add Liquidity handlers if Approval Txn is successful
-    console.log("approve txn final status", isApproveSuccess);
     if (isApproveSuccess) {
       console.log("Token is approved for the selected amount!");
       addLiquidityHandlerSdk();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    notification.success({
+      title: "Token Approved",
+      description: "You may now process to Add Liquidity"
+    });
   }, [isApproveSuccess]);
+
+  // Notifications based on Transaction status
+  useEffect(() => {
+    if (isApproveError) {
+      notification.error({
+        title: "Approval failed",
+        description: `${approvalError.message}`
+      });
+    } else if (isError) {
+      notification.error({
+        title: "Adding liquidity failed",
+        description: `${error.message}`
+      });
+    } else if (isSuccess) {
+      refetchBalance();
+      refetchPosition();
+      notification.success({
+        title: "Long position successfully opened!"
+      });
+    }
+  }, [isSuccess, isError, isApproveError]);
 
   return (
     <div className="flex flex-col justify-between py-4 h-full">
@@ -133,25 +169,33 @@ const AddLiquidity = ({
             <span>~$0.00</span>
           </p>
           <div className="inline-flex-between">
-            <div className="max-w-fit inline-flex gap-2 items-center">
-              <Image src={`/tokens/${overviewPool?.underlying.toLowerCase()}.svg`} alt="token" width={24} height={24} />
+            <label
+              className="max-w-fit inline-flex gap-2 items-center"
+              htmlFor="add_liquidity_quantity"
+            >
+              <Image
+                src={`/tokens/${overviewPool?.underlying.toLowerCase()}.svg`}
+                alt="token"
+                width={24}
+                height={24}
+              />
               <span className="font-medium text-base/5">{underlying}</span>
-            </div>
+            </label>
             <input
-              className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right"
-              placeholder="0"
-              disabled={userBalance == undefined}
               type="number"
               value={amount}
+              placeholder="0"
               onChange={(event) => {
                 setAmount(event.target.value);
               }}
+              id="add_liquidity_quantity"
+              className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right"
             />
           </div>
           <div className="inline-flex items-end justify-between font-normal text-xs/3">
             <span className="text-[#5F7183]">
               Your balance:{" "}
-              {isBalLoading
+              {isBalLoading && !userBalance
                 ? "loading balance..."
                 : toUnits(parseFloat(userBalance?.formatted ?? "0"), 3)}
             </span>
@@ -181,21 +225,20 @@ const AddLiquidity = ({
         <div className="rounded-[4px] border-x-secondary-gray flex flex-col gap-y-2 border border-secondary-gray p-4">
           <p className="w-full inline-flex justify-between font-medium text-xs/3 text-[#5F7183]">
             <span>You Receive</span>
-            <span>-</span>
-            {/* <span>~$0.00</span> */}
+            <span>~$0.00</span>
           </p>
           <div className="inline-flex-between">
             <h4 className="font-medium text-base/5">LP Tokens</h4>
             <span className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right">
-              0
+              {receiveQuantity > 0 ? receiveQuantity : "-"}
             </span>
           </div>
           <div className="font-normal text-xs/3 mt-1">
             <span className="text-[#5F7183]">
               Your LP balance:{" "}
-              {isFetchingBal
-                ? "loading..."
-                : parseFloat(lpBalance ?? "0") / 10 ** underlyingDecimals}
+              {isPositionFetching && !lpBalance
+                ? "loading"
+                : (parseFloat(lpBalance ?? "0") / 10 ** underlyingDecimals).toFixed(5)}
             </span>
           </div>
         </div>
@@ -212,14 +255,20 @@ const AddLiquidity = ({
       <div className="flex flex-col gap-4 mt-3">
         <div className="inline-flex-between text-xs/[14px]">
           <span className="font-normal text-[#757B80]">Conversion Fee</span>
-          <span className="font-medium">0 {overviewPool?.underlying}</span>
+          <span className="font-medium">0.00 {underlying}</span>
         </div>
         <ButtonCTA
-          className={cn(
-            "w-full font-bold text-[14px] leading-6 text-center py-[14px]",
-            "bg-[#202832] hover:bg-[#475B72] text-[#3D85C6] transition-colors duration-200",
-            "disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-[#202832]"
-          )}
+          disabled={
+            !isConnected ||
+            !userBalance ||
+            balanceExceedError ||
+            isApproveLoading ||
+            isApprovePending ||
+            isLoading ||
+            (isApproveSuccess && isPending) ||
+            !isValidPositiveNumber(amount)
+          }
+          isLoading={isApproveLoading || isLoading}
           onClick={() => {
             if (isConnected) {
               console.log("amount", amount);
@@ -228,13 +277,6 @@ const AddLiquidity = ({
               openConnectModal?.();
             }
           }}
-          disabled={
-            isConnected &&
-            (isApproveLoading ||
-              isApprovePending ||
-              // isEmpty(amount) ||
-              !isValidPositiveNumber(amount))
-          }
         >
           {isConnected ? <span>Add Liquidity</span> : <span>Connect Wallet</span>}
         </ButtonCTA>

@@ -232,7 +232,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
         autoCapitalize="off"
         name="token-quantity"
       >
-        <label className="text-[#757B80]">Size:</label>
+        <label htmlFor="quantity" className="text-[#757B80]">Size:</label>
         {/* Input Box: Token Input and Selection */}
         <div
           className={cn(
@@ -291,12 +291,9 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
           parseFloat(quantity ?? "0") < 0.01
         } // conditions to Long Button
         onClick={() => approveHandler()}
+        isLoading={isApproveLoading || isLoading}
       >
-        {isApproveLoading || isLoading ? (
-          <SpinnerIcon className="size-[22px]" />
-        ) : (
-          <span>OPEN</span>
-        )}
+        <span>OPEN</span>
       </ButtonCTA>
       {/* Iterate this data after calculating/fetching */}
       <TradeInfo />
