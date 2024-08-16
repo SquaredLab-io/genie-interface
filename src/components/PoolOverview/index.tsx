@@ -56,22 +56,15 @@ const PoolHeader = ({ assets, power }: { assets: string[]; power: number }) => {
 };
 
 const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) => {
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [timeseries, setTimeseries] = useState<Timeseries[]>([]);
-
+  // LP Tab: Supply and Withdraw
   const [lpTrade, setLpTrade] = useState<LpTradeOptions>(LpTradeOptions.supply);
 
-  // const { potentia } = usePotentiaSdk();
   const { chain } = useAccount();
-
-  const graphTabStyle = cn(
-    "p-2 rounded-none bg-primary-gray", // base state
-    "data-[state=active]:bg-white data-[state=active]:text-black" // active state
-  );
 
   const { dailyData, isFetching: isFetchingDailyData } = useDailyData({
     poolAddress: overviewPool?.poolAddr as Address
   });
+
   // Current Open Long Position
   const {
     data: position,
@@ -83,6 +76,11 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
 
   const { pool, power } = overviewPool;
   const [token0, token1] = pool.split("/").map((p) => p.trim());
+
+  const graphTabStyle = cn(
+    "p-2 rounded-none bg-primary-gray", // base state
+    "data-[state=active]:bg-white data-[state=active]:text-black" // active state
+  );
 
   // TODO: Get this from SDK
   const POOL_APR = 2.61;
@@ -115,10 +113,10 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) 
                 Counterpart Liquidity
               </TabsTrigger>
             </TabsList>
-            <TabsContent value={GraphOptions.volume}>
+            <TabsContent value={GraphOptions.volume} className="h-[calc(100%-36px)]">
               <LPChart.Vol dailyData={dailyData} loading={isFetchingDailyData} />
             </TabsContent>
-            <TabsContent value={GraphOptions.tvl}>
+            <TabsContent value={GraphOptions.tvl} className="h-[calc(100%-36px)]">
               <LPChart.TVL dailyData={dailyData} loading={isFetchingDailyData} />
             </TabsContent>
             {/* <TabsContent value={GraphOptions.crossbook}>Cross Book</TabsContent> */}

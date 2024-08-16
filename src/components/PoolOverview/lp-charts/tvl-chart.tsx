@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { createChart } from "lightweight-charts";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
 import { DailyInfo } from "@squaredlab-io/sdk/src/subgraph";
@@ -71,4 +71,4 @@ const TVLChart = ({
   );
 };
 
-export default TVLChart;
+export default memo(TVLChart);

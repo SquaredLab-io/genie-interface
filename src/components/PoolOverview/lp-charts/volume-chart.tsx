@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { createChart } from "lightweight-charts";
 import { DailyInfo } from "@squaredlab-io/sdk/src/subgraph";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
@@ -69,4 +69,4 @@ const VolumeChart = ({
   );
 };
 
-export default VolumeChart;
+export default memo(VolumeChart);

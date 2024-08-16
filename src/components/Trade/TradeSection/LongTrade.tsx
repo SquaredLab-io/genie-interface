@@ -209,7 +209,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   }, [isSuccess, isError, isApproveError]);
 
   return (
-    <div className="flex flex-col font-normal text-xs/[14px] gap-2 pt-4 pb-6 px-4">
+    <div className="flex flex-col font-normal text-xs/[14px] gap-2 py-6 px-4">
       <p className="inline-flex items-start gap-1 w-full">
         <span className="text-[#757B80]">Balance:</span>
         <span className="font-medium">

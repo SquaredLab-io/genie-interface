@@ -15,24 +15,19 @@ import ManagePoolModal from "../manage-pool-modal";
 import { cn } from "@lib/utils";
 import { usePools } from "@lib/hooks/usePools";
 import { TableOptions } from "./helper";
-// import { usePoolsStore } from "@store/poolsStore";
 import { useFilteredPools } from "@lib/hooks/useFilteredPools";
-import { useAccount } from "wagmi";
 import MyPoolsTable from "./MyPoolsTable";
 import { useIsMounted } from "@lib/hooks/useIsMounted";
 import LoadingScreen from "@components/common/loading-screen";
-import { useModalStore } from "@store/poolsStore";
+import { useModalStore, usePoolsStore } from "@store/poolsStore";
 
 const PoolsData = () => {
   const { isMounted } = useIsMounted();
-  const { address } = useAccount();
   const { pools, isFetching } = usePools();
 
+  // to be removed
   console.log("pools @poolsdata", pools);
   console.log("loading @poolsdata", isFetching);
-
-  // const [openCreateModal, setOpenCreateModal] = useState(false);
-  // const [openManageModal, setOpenManageModal] = useState(false);
 
   const { openCreateModal, setOpenCreateModal, openManageModal, setOpenManageModal } =
     useModalStore();
@@ -47,8 +42,9 @@ const PoolsData = () => {
   const { pools: filteredAllPools } = useFilteredPools(pools, allTerm);
   const { pools: filteredMyPools } = useFilteredPools(pools, myTerm);
   // const { pools: filteredTxPools } = useFilteredPools(pools, txTerm);
+  const { updateSelectedPool } = usePoolsStore();
 
-  const poolsColumns = allPoolsColumnDef();
+  const poolsColumns = allPoolsColumnDef(updateSelectedPool);
   const userColumns = userPoolsColumnDef();
   // const txColumns = txColumnDef();
 

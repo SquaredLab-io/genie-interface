@@ -1,7 +1,7 @@
 import animationData from "@components/icons/loading-logo-lottie.json";
 import Lottie from "react-lottie";
 
-export default function LoadingLogo() {
+export default function LoadingLogo({ size = 120 }: { size?: number }) {
   const defaultOptions = {
     loop: true,
     autoplay: true,
@@ -10,5 +10,5 @@ export default function LoadingLogo() {
       preserveAspectRatio: "xMidYMid slice"
     }
   };
-  return <Lottie options={defaultOptions} height={120} width={120} />;
+  return <Lottie options={defaultOptions} height={size} width={size} />;
 }

@@ -8,9 +8,11 @@ import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { BASE_SEPOLIA } from "@lib/constants";
 import { calculatePoolAge } from "@lib/utils/calculatePoolAge";
 import PoolMenu from "./PoolMenu";
+import { useState } from "react";
 
-export function allPoolsColumnDef(): ColumnDef<PoolInfo>[] {
-  // updateSelectedPool: (value: Pool) => void
+export function allPoolsColumnDef(
+  updateSelectedPool: (value: PoolInfo) => void
+): ColumnDef<PoolInfo>[] {
   return [
     {
       id: "assets",
@@ -135,23 +137,25 @@ export function allPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       accessorKey: "action",
       header: () => <span className="opacity-0">Action</span>,
       cell: ({ row }) => {
-        const { pool, underlying } = row.original;
+        const pool = row.original;
         return (
           <div className="inline-flex items-center justify-end max-w-fit float-right mr-5 w-full gap-2">
-            <Link href={`/pool/${underlying}`}>
+            <Link href={`/pool/${pool.underlying}`}>
               <Button variant="default" size="sm">
                 Add Liquidity
               </Button>
             </Link>
-            <Button
-              variant="secondary"
-              size="sm"
-              // onClick={() => {
-              //   updateSelectedPool(pool);
-              // }}
-            >
-              <Link href="/">Trade</Link>
-            </Button>
+            <Link href="/">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  updateSelectedPool(pool);
+                }}
+              >
+                Trade
+              </Button>
+            </Link>
           </div>
         );
       }
