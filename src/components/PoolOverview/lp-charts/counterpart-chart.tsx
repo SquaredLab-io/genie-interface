@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import {
   ChartOptions,
   ColorType,
@@ -108,4 +108,4 @@ const CLChart = ({
   );
 };
 
-export default CLChart;
+export default memo(CLChart);

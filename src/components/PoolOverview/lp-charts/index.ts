@@ -1,4 +1,3 @@
-import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import CLChart from "./counterpart-chart";
 import TVLChart from "./tvl-chart";
 import VolumeChart from "./volume-chart";

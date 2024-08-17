@@ -1,6 +1,9 @@
 import { ChartOptions, ColorType, DeepPartial, LineStyle } from "lightweight-charts";
 import { MutableRefObject } from "react";
 
+// lp chart ranges
+export const intervals = ["1m", "5m", "30m", "1h", "12h", "1d"];
+
 export const colors = {
   backgroundColor: "#0C1820",
   lineColorOne: "#FF7300",

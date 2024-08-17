@@ -1,17 +1,16 @@
 import { memo } from "react";
 import Image from "next/image";
-import { PopoverSizes } from "@lib/types/common";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { SUPPORTED_TOKENS } from "@lib/constants";
 import Link from "next/link";
 
 interface PoolsListProps {
   pools: PoolInfo[];
-  updateSelectedPool: (value: PoolInfo) => void;
   noPools: boolean;
+  setModalOpen: (value: boolean) => void;
 }
 
-const PoolsList = ({ pools, updateSelectedPool, noPools }: PoolsListProps) => {
+const PoolsList = ({ pools, noPools, setModalOpen }: PoolsListProps) => {
   console.log({
     pools,
     noPools
@@ -27,13 +26,9 @@ const PoolsList = ({ pools, updateSelectedPool, noPools }: PoolsListProps) => {
         const { pool, underlying, power } = _pool;
         const name = SUPPORTED_TOKENS.find((t) => t.token === underlying)?.name;
         return (
-          <Link href="/" key={underlying}>
+          <Link href={`/pool/${underlying}`} key={underlying} onClick={() => setModalOpen(false)}>
             <button
               className="flex flex-row py-2 w-full justify-between items-center gap-2"
-              onClick={() => {
-                const selectedPool = pools.find((p) => p.poolAddr === _pool.poolAddr)!;
-                // updateSelectedPool(selectedPool);
-              }}
             >
               <div className="inline-flex items-center gap-4">
                 <Image

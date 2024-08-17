@@ -4,6 +4,7 @@ import { DailyInfo } from "@squaredlab-io/sdk/src/subgraph";
 import { getTvlTimeseries } from "../helper";
 import { chartOptionsConfig, colors } from "./configs";
 import LoadingLogo from "@components/icons/loading-logo";
+import RangeToggle from "./range-toggle";
 
 const TVLChart = ({
   dailyData,
@@ -57,18 +58,20 @@ const TVLChart = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeseries]);
 
+  const intervals = ["1m", "5m", "30m", "1h", "12h", "1d"];
+
   return (
-    <>
+    <div className="relative h-[calc(100%-20px)]">
       {isLoadingChart || loading ? (
         <div className="size-full flex-col-center">
-          {/* <SpinnerIcon stroke={colors.spinnerColor} />
-          <span>preparing chart...</span> */}
           <LoadingLogo size={80} />
         </div>
       ) : (
-        <div className="h-[calc(100%-20px)]" ref={chartContainerRef} />
+        <div className="h-full" ref={chartContainerRef} />
       )}
-    </>
+      {/* Range Toggle Group */}
+      <RangeToggle />
+    </div>
   );
 };
 

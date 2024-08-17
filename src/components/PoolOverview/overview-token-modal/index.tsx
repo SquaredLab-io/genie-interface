@@ -15,8 +15,7 @@ interface PropsType {
 export default function OverviewTokenModal({ children, open, setOpen }: PropsType) {
   // Search term
   const [term, setTerm] = useState("");
-
-  const { poolsData, updateSelectedPool } = usePoolsStore((state) => state);
+  const { poolsData } = usePoolsStore((state) => state);
   const { pools, noPools } = useFilteredPools(poolsData, term);
 
   return (
@@ -37,11 +36,7 @@ export default function OverviewTokenModal({ children, open, setOpen }: PropsTyp
         />
       </div>
       <Separator />
-      <PoolsList
-        pools={pools!}
-        updateSelectedPool={updateSelectedPool}
-        noPools={noPools}
-      />
+      <PoolsList pools={pools!} noPools={noPools} setModalOpen={setOpen} />
     </Modal>
   );
 }
