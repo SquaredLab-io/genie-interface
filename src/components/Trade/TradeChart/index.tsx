@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, memo, MutableRefObject } from "react";
 import {
   ConfigurationData,
+  ExternalFeed,
   PotentiaSdk,
   getPotentiaDataFeed
 } from "@squaredlab-io/sdk/src";
@@ -32,10 +33,11 @@ const TradeChart = ({ potentia }: PropsType) => {
     async function fetchData() {
       if (!potentia) return;
 
-      const Datafeed = await getPotentiaDataFeed(potentia, ConfigurationData);
+      const Datafeed: ExternalFeed = await getPotentiaDataFeed(potentia, ConfigurationData);
+      const tokenSymbol = `${selectedPool()?.underlying}^${selectedPool()?.power} ${tradeType.toUpperCase()}`;
 
       const widgetOptions: ChartingLibraryWidgetOptions = {
-        symbol: `${selectedPool()?.underlying}^${selectedPool()?.power} ${tradeType.toUpperCase()}`,
+        symbol: tokenSymbol,
         // BEWARE: no trailing slash is expected in feed URL
         datafeed: Datafeed,
         timezone: widgetProps.timezone,
@@ -78,7 +80,7 @@ const TradeChart = ({ potentia }: PropsType) => {
       };
     }
     fetchData();
-  }, [widgetProps, selectedPool, tradeType]);
+  }, [widgetProps, selectedPool, tradeType, potentia]);
   // TODO: check here is chart is not updating on pool change
 
   return <div ref={chartContainerRef} className="col-span-4 xl:col-span-3" />;

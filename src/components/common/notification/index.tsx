@@ -85,7 +85,7 @@ const loading = ({ title, description, closable = false, duration }: ArgsType) =
 const error = ({ title, description, closable = true, duration = 5000 }: ArgsType) => {
   return toast.custom(
     (t) => (
-      <div className="relative inline-flex items-start gap-3 font-normal text-sm/4 py-5 px-3 border-b w-full">
+      <div className="relative inline-flex items-start gap-3 font-normal text-sm/4 py-5 px-3 w-full">
         <Image src="/icons/toast-error.svg" alt="toast success" height={24} width={24} />
         <div className="flex flex-col gap-2">
           <h2 className="text-[#FB3836]">{title}</h2>

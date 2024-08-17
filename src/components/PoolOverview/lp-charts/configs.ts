@@ -1,14 +1,15 @@
-import { ChartOptions, ColorType, DeepPartial } from "lightweight-charts";
+import { ChartOptions, ColorType, DeepPartial, LineStyle } from "lightweight-charts";
 import { MutableRefObject } from "react";
 
 export const colors = {
-  backgroundColor: "#16191F",
+  backgroundColor: "#0C1820",
   lineColorOne: "#FF7300",
   lineColorTwo: "#0099FF",
   textColor: "white",
   barColor: "#0099FF",
   areaColor: "#1F323D",
-  spinnerColor: "#01A1FF"
+  spinnerColor: "#01A1FF",
+  gridColor: "#1F2D3F"
 };
 
 export const chartOptionsConfig = (
@@ -24,10 +25,14 @@ export const chartOptionsConfig = (
     autoSize: true,
     grid: {
       vertLines: {
-        visible: false
+        color: colors.gridColor,
+        style: LineStyle.Solid,
+        visible: true
       },
       horzLines: {
-        visible: false
+        color: colors.gridColor,
+        style: LineStyle.Solid,
+        visible: true
       }
     }
   };

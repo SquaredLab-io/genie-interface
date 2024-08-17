@@ -1,6 +1,5 @@
 import { memo, useEffect, useRef, useState } from "react";
 import { createChart } from "lightweight-charts";
-import SpinnerIcon from "@components/icons/SpinnerIcon";
 import { DailyInfo } from "@squaredlab-io/sdk/src/subgraph";
 import { getTvlTimeseries } from "../helper";
 import { chartOptionsConfig, colors } from "./configs";
