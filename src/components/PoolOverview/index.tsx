@@ -17,10 +17,9 @@ import { LpTradeOptions } from "@lib/types/enums";
 import LpTradeSelector from "./lp-trade-selector";
 import { Separator } from "@components/ui/separator";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
-import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { useDailyData } from "@lib/hooks/useDailyData";
 import { POOL_FEE } from "./constants";
-import OverviewTokenModal from "./OverviewTokenModal";
+import OverviewTokenModal from "./overview-token-modal";
 import { useModalStore } from "@store/poolsStore";
 
 const PoolHeader = ({ assets, power }: { assets: string[]; power: number }) => {

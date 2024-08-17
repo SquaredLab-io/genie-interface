@@ -1,6 +1,5 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { Separator } from "@components/ui/separator";
-import NextImage from "@components/common/NextImage";
 import { cn } from "@lib/utils";
 import {
   Table,
@@ -15,39 +14,7 @@ import { getTradeflowData } from "./helper";
 import { useTradeHistory } from "@lib/hooks/useTradeHistory";
 import { usePoolsStore } from "@store/poolsStore";
 import { formatOraclePrice } from "@lib/utils/formatting";
-
-const LayoutSelector = ({
-  layout,
-  setLayout
-}: {
-  layout: TradeflowLayout;
-  setLayout: Dispatch<SetStateAction<TradeflowLayout>>;
-}) => {
-  return (
-    <div className="inline-flex items-center justify-start gap-1 mb-2">
-      {[TradeflowLayout.all, TradeflowLayout.positive, TradeflowLayout.negative].map(
-        (tfl) => (
-          <button
-            key={tfl}
-            className={cn(
-              tfl == layout && "bg-secondary-gray rounded-sm",
-              "hover:bg-secondary-gray"
-            )}
-            onClick={() => {
-              setLayout(tfl);
-            }}
-          >
-            <NextImage
-              src={`/icons/trade-flow-${tfl}.svg`}
-              altText={`${tfl}-layout`}
-              className="size-6 max-w-fit"
-            />
-          </button>
-        )
-      )}
-    </div>
-  );
-};
+import LayoutSelector from "./layout-selector";
 
 const TradeFlow = () => {
   const [tradeflowLayout, setTradeflowLayout] = useState<TradeflowLayout>(
