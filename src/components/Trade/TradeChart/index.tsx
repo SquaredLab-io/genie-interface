@@ -31,7 +31,7 @@ const TradeChart = ({ potentia }: PropsType) => {
 
   useEffect(() => {
     async function fetchData() {
-      if (!potentia) return;
+      if (!potentia && !selectedPool()) return;
 
       const Datafeed: ExternalFeed = await getPotentiaDataFeed(potentia, ConfigurationData);
       const tokenSymbol = `${selectedPool()?.underlying}^${selectedPool()?.power} ${tradeType.toUpperCase()}`;

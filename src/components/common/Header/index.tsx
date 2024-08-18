@@ -10,6 +10,7 @@ import ConnectWallet from "../ConnectWallet";
 // import { CoinbaseCreateWallet } from "../ConnectWallet/CoinbaseCreateWallet";
 import NextImage from "../NextImage";
 import FaucetModal from "@components/common/Header/faucet-modal";
+import Image from "next/image";
 
 const Header = () => {
   const pathname = usePathname();
@@ -18,18 +19,18 @@ const Header = () => {
 
   return (
     <header className="flex flex-row py-4 px-5 justify-between font-sans-ibm-plex">
-      <nav className="flex justify-start items-center gap-x-[60px]" aria-label="Global">
+      <nav className="flex justify-start items-center gap-12" aria-label="Global">
         {/* Brand Logo */}
-        <div className="flex lg:flex-1 max-w-fit">
-          <Link href="/" className="-m-1.5 p-1.5">
-            <span className="sr-only">Genie | SquaredLabs</span>
-            <NextImage
-              src="/images/logo-wide.svg"
-              altText={`${meta.APP_NAME} logo`}
-              className="w-[72px]"
-            />
-          </Link>
-        </div>
+        <Link href="/" className="-m-1.5 p-1.5 max-w-fit">
+          <span className="sr-only">Genie | SquaredLabs</span>
+          <Image
+            src="/images/logo-wide.svg"
+            alt={`${meta.APP_NAME} logo`}
+            width={116.37}
+            height={42.46}
+            priority
+          />
+        </Link>
         <div className="hidden sm:flex gap-x-6 lg:gap-x-11 font-medium text-[14px]/[22px] uppercase">
           {navigation.map((item) => (
             <Link

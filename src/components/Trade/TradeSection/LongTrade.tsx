@@ -15,10 +15,8 @@ import { Address } from "viem";
 import SliderBar from "../../common/SliderBar";
 import { getAccountBalance } from "@lib/utils/getAccountBalance";
 import { WethABi } from "@lib/abis";
-import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
-import SpinnerIcon from "@components/icons/SpinnerIcon";
 import { cn } from "@lib/utils";
 import ButtonCTA from "@components/common/button-cta";
 import notification from "@components/common/notification";
@@ -55,21 +53,16 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     token: selectedPool()?.underlyingAddress! as Address
   });
 
-  // All current positions
-  const {
-    data: positionData,
-    isFetching: isPositionFetching,
-    refetch: refetchPosition
-  } = useCurrentPosition({ poolAddress: selectedPool()?.poolAddr as Address });
-
-  // const { currentPosition: positionData, isFetchingPosition: isPositionFetching } =
-  //   useBalanceStore();
-
   // Both hooks paused, Refetch method to be used on Successful tx
-  const { refetch: refetchOpenOrders } = useOpenOrders({
-    poolAddress: selectedPool()?.poolAddr! as Address,
-    paused: true
+  const {
+    openOrders: positionData,
+    isFetching: isPositionFetching,
+    refetch: refetchOpenOrders
+  } = useOpenOrders({
+    poolAddress: selectedPool()?.poolAddr! as Address
   });
+
+  const longPosition = positionData?.longPositionTab?.tokenSize;
 
   // getting underlying token's price
   const { price, isFetching: isPriceFetching } = useCurrencyPrice(
@@ -198,7 +191,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       });
     } else if (isSuccess) {
       refetchBalance();
-      refetchPosition();
+      // refetchPosition();
       refetchOpenOrders();
       refetchTxHistory();
       notification.success({
@@ -222,7 +215,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
           <span>...</span>
         ) : (
           <span className="font-medium">
-            {toUnits(parseFloat(positionData?.longToken?.balance ?? "0") / 10 ** 18, 3)}
+            {toUnits(parseFloat(longPosition ?? "0") / 10 ** 18, 3)}
           </span>
         )}
       </p>
@@ -232,7 +225,9 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
         autoCapitalize="off"
         name="token-quantity"
       >
-        <label htmlFor="quantity" className="text-[#757B80]">Size:</label>
+        <label htmlFor="quantity" className="text-[#757B80]">
+          Size:
+        </label>
         {/* Input Box: Token Input and Selection */}
         <div
           className={cn(

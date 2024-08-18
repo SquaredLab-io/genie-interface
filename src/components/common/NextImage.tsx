@@ -4,6 +4,7 @@ type NextImageProps = {
   src: string;
   altText: string;
   className?: string;
+  priority?: boolean
 };
 
 /**
@@ -11,7 +12,7 @@ type NextImageProps = {
  *
  * @params `src`, `altText`, `className`
  */
-export default function NextImage({ src, altText, className }: NextImageProps) {
+export default function NextImage({ src, altText, className, priority = false }: NextImageProps) {
   return (
     <Image
       src={src}
@@ -22,6 +23,7 @@ export default function NextImage({ src, altText, className }: NextImageProps) {
       alt={altText}
       className={className}
       loading="lazy"
+      priority={priority}
     />
   );
 }

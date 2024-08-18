@@ -31,5 +31,5 @@
     "build/types/**/*.ts",
     "src/**/*"
   ],
-  "exclude": ["/node_modules"]
+  "exclude": ["/node_modules", "./node_modules/@squaredlab-io/sdk/*"]
 }

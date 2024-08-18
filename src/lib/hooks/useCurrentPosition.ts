@@ -1,8 +1,9 @@
 import { useAccount } from "wagmi";
-import { Address } from "viem";
+import { Address, getAddress } from "viem";
 import { useQuery, QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 import { TokenBalance } from "@squaredlab-io/sdk";
 import { usePotentiaSdk } from "./usePotentiaSdk";
+import { useBalanceStore } from "@store/tradeStore";
 
 interface ReturnType {
   data: TokenBalance | undefined;
@@ -27,23 +28,22 @@ export function useCurrentPosition({
   // const [position, setPosition] = useState<string | undefined>("");
   // const [isFetching, setIsFetching] = useState<boolean>(false);
 
-  // const {
-  //   currentPosition,
-  //   updateCurrentPosition,
-  //   isFetchingPosition,
-  //   updateFetchingPosition
-  // } = useBalanceStore();
+  const { updateCurrentPosition } = useBalanceStore();
 
   const { potentia } = usePotentiaSdk();
   const { address } = useAccount();
 
   const getCurrentPosition = async (): Promise<TokenBalance | undefined> => {
     try {
-      const currPos = await potentia?.poolRead.getTokenBalance(
+      const currPos = await potentia?.getTokenBalance(
         poolAddress as Address, // poolAddress
         address as Address // userAddress
       );
-      console.log("fetched current position", currPos);
+      // const currentPos = await potentia?.ponderClient.getCurrentUserPositions(
+      //   getAddress(poolAddress as string),
+      //   address! as Address
+      // );
+      console.log("fetched current position", currentPos);
       return currPos;
     } catch (error) {
       console.error("Error while fetching positions");

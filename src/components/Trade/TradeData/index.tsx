@@ -15,7 +15,6 @@ import ClosePositionPopover from "./ClosePositionPopover";
 import { BASE_SEPOLIA } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
-import { useBalanceStore } from "@store/tradeStore";
 import { OpenPositionInfo, Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useAccount } from "wagmi";
 
@@ -27,10 +26,6 @@ enum Tab {
 const TradeData = () => {
   const { selectedPool } = usePoolsStore();
   const { isConnected } = useAccount();
-
-  // All current positions
-  // const { data: positions } = useCurrentPosition(selectedPool()?.poolAddr as Address);
-  const { currentPosition: positions } = useBalanceStore();
 
   // All Transactions -- LP, Open Long/Short, Close Long/Short
   const { data: txHistory, isLoading: isTxLoading } = useTxHistory();
@@ -44,13 +39,16 @@ const TradeData = () => {
   const openPositions = getOpenTransactions(openOrders);
   const closedPositions = getClosedTransactions(txHistory);
 
+  const longPosition = openOrders?.longPositionTab?.tokenSize;
+  const shortPosition = openOrders?.shortPositionTab?.tokenSize;
+
   const longTokenBalance = toUnits(
-    getDecimalAdjusted(positions?.longToken?.balance, 18),
+    getDecimalAdjusted(longPosition, 18),
     3
   );
 
   const shortTokenBalance = toUnits(
-    getDecimalAdjusted(positions?.shortToken?.balance, 18),
+    getDecimalAdjusted(shortPosition, 18),
     3
   );
 
@@ -183,7 +181,7 @@ const TradeData = () => {
         const side = row.original.side;
         return (
           <ClosePositionPopover
-            positions={positions!}
+            positions={openOrders}
             isLong={side === "Long" ? true : false}
           >
             <button className="py-1 px-[22px] text-white bg-[#32120D] font-normal text-[14px]/5 rounded-sm">
@@ -285,7 +283,7 @@ const TradeData = () => {
                 {longTokenBalance} {underlying.symbol}
               </span>
               <span className="text-[#9299AA] text-xs">
-                {parseFloat(tokenPrice) * parseFloat(longTokenBalance)}
+                {tokenPrice * parseFloat(longTokenBalance)}
               </span>
             </p>
           );
@@ -338,7 +336,8 @@ const TradeData = () => {
       <Tabs defaultValue={Tab.position}>
         <TabsList className="flex flex-row justify-start rounded-none font-medium text-sm/6 font-sans-ibm-plex border-b border-secondary-gray">
           <TabsTrigger value={Tab.position} className={tabStyle}>
-            Open Positions{loadingOpenOrders ? "..." : ""} ({ isConnected ? openPositions.length : "0"})
+            Open Positions{loadingOpenOrders ? "..." : ""} (
+            {isConnected ? openPositions.length : "0"})
           </TabsTrigger>
           <TabsTrigger value={Tab.history} className={tabStyle}>
             History

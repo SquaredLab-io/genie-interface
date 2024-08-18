@@ -6,8 +6,7 @@ import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import SliderBar from "../../common/SliderBar";
 import { usePoolsStore } from "@store/poolsStore";
 import { Address } from "viem";
-import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
-import { getDecimalAdjusted } from "@lib/utils/formatting";
+import toUnits, { getDecimalAdjusted } from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
 import { useWaitForTransactionReceipt } from "wagmi";
 import { CONFIRMATION } from "@lib/constants";
@@ -16,11 +15,11 @@ import SpinnerIcon from "@components/icons/SpinnerIcon";
 import notification from "@components/common/notification";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
-import { TokenBalance } from "@squaredlab-io/sdk";
+import { PositionTab } from "@squaredlab-io/sdk";
 
 interface PropsType {
   children: ReactNode;
-  positions: TokenBalance;
+  positions: PositionTab | undefined;
   isLong: boolean;
   onClickTrigger?: () => void;
   isOpen?: boolean;
@@ -47,23 +46,19 @@ const ClosePositionPopover: FC<PropsType> = ({
 
   const { potentia } = usePotentiaSdk();
 
-  const longTokenBalance = getDecimalAdjusted(positions?.longToken?.balance, 18);
-
-  const shortTokenBalance = getDecimalAdjusted(positions?.shortToken?.balance, 18);
+  const longTokenBalance = getDecimalAdjusted(positions?.longPositionTab?.tokenSize, 18);
+  const shortTokenBalance = getDecimalAdjusted(
+    positions?.shortPositionTab?.tokenSize,
+    18
+  );
 
   // Current user balance of Long / Short Token
   const balance = isLong ? longTokenBalance : shortTokenBalance;
 
-  // Both hooks paused, Refetch method to be used on Successful tx
-  const { refetch: refetchOpenOrders } = useOpenOrders({
-    poolAddress: selectedPool()?.poolAddr!,
-    paused: true
-  });
-
   const { refetch: refetchTxHistory } = useTxHistory(true);
 
   // All current positions
-  const { refetch: refetchPosition } = useCurrentPosition({
+  const { refetch: refetchOpenOrders } = useOpenOrders({
     poolAddress: selectedPool()?.poolAddr as Address,
     paused: true
   });
@@ -97,21 +92,18 @@ const ClosePositionPopover: FC<PropsType> = ({
     }
   }
 
-  
   // wait for openPosition transaction
   const { isSuccess, isLoading, isPending, isError, error } =
-  useWaitForTransactionReceipt({
-    hash: txHash,
-    confirmations: CONFIRMATION
-  });
+    useWaitForTransactionReceipt({
+      hash: txHash,
+      confirmations: CONFIRMATION
+    });
 
   // Notifications based on Transaction status
   useEffect(() => {
     if (isSuccess) {
       refetchOpenOrders();
       refetchTxHistory();
-      refetchPosition();
-      // refetchBalance();
       notification.success({
         title: "Position successfully closed"
       });
@@ -169,7 +161,9 @@ const ClosePositionPopover: FC<PropsType> = ({
                 <span className="opacity-60">{isLong ? "L" : "S"}</span>
               </p>
             </div>
-            <span>Balance: {isLong ? longTokenBalance : shortTokenBalance}</span>
+            <span>
+              Balance: {toUnits(isLong ? longTokenBalance : shortTokenBalance, 3)}
+            </span>
           </div>
           <SliderBar
             value={sliderValue}

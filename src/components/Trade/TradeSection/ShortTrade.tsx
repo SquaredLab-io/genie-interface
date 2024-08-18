@@ -16,7 +16,6 @@ import {} from "../TradeChart/defaultWidgetProps";
 import SliderBar from "../../common/SliderBar";
 import { getAccountBalance } from "@lib/utils/getAccountBalance";
 import { WethABi } from "@lib/abis";
-import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
 import { cn } from "@lib/utils";
@@ -54,23 +53,16 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     token: selectedPool()?.underlyingAddress as Address
   });
 
-  // All current positions
+  // Both hooks paused, Refetch method to be used on Successful tx
   const {
-    data: positionData,
+    openOrders: positionData,
     isFetching: isPositionFetching,
-    refetch: refetchPosition
-  } = useCurrentPosition({
-    poolAddress: selectedPool()?.poolAddr as Address
+    refetch: refetchOpenOrders
+  } = useOpenOrders({
+    poolAddress: selectedPool()?.poolAddr! as Address
   });
 
-  // useEffect(() => {
-  //   if (address) {
-  //     refetchPosition();
-  //   }
-  // }, [address]);
-
-  // const { currentPosition: positionData, isFetchingPosition: isPositionFetching } =
-  //   useBalanceStore();
+  const shortPosition = positionData?.shortPositionTab?.tokenSize;
 
   // getting underlying token's price
   const { price, isFetching: isPriceFetching } = useCurrencyPrice(
@@ -84,12 +76,6 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     error: approveError,
     isPending: isApprovePending
   } = useWriteContract();
-
-  // Both hooks paused, Refetch method to be used on Successful tx
-  const { refetch: refetchOpenOrders } = useOpenOrders({
-    poolAddress: selectedPool()?.poolAddr!,
-    paused: true
-  });
 
   const { refetch: refetchTxHistory } = useTxHistory(true);
 
@@ -196,7 +182,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       });
     } else if (isSuccess) {
       refetchBalance();
-      refetchPosition();
+      // refetchPosition();
       refetchOpenOrders();
       refetchTxHistory();
       notification.success({
@@ -229,7 +215,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
           <span>...</span>
         ) : (
           <span className="font-medium">
-            {toUnits(parseFloat(positionData?.shortToken?.balance ?? "0") / 10 ** 18, 3)}
+            {toUnits(parseFloat(shortPosition ?? "0") / 10 ** 18, 3)}
           </span>
         )}
       </p>
