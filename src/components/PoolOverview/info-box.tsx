@@ -1,7 +1,7 @@
 import { cn } from "@lib/utils";
 import { Info } from "lucide-react";
 
-export function InfoBox({
+export default function InfoBox({
   isError = false,
   message = "The tokens in your wallet are being converted automatically by Genie for a small fee."
 }: {

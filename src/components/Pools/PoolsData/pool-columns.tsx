@@ -85,7 +85,7 @@ export function allPoolsColumnDef(
         const { tvl, underlying, underlyingDecimals } = row.original;
         return (
           <span className="pl-[18px]">
-            {toUnits(parseFloat(tvl ?? "0") / 10 ** underlyingDecimals, 2)} {underlying}
+            {toUnits(parseFloat(tvl ?? "0") / 10 ** 18, 3)} ETH
           </span>
         );
       }
@@ -99,8 +99,7 @@ export function allPoolsColumnDef(
         const growth = parseFloat("0");
         return (
           <div className="pl-[18px] inline-flex gap-1">
-            <span>{toUnits(parseFloat(vol ?? "0") / 10 ** underlyingDecimals, 3)}</span>{" "}
-            {underlying}
+            <span>{toUnits(parseFloat(vol ?? "0") / 10 ** underlyingDecimals, 3)}</span> {underlying}
             <span
               className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
             >

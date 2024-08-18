@@ -2,20 +2,19 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
+import { Address } from "viem";
+import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useAccount, useBalance, useWaitForTransactionReceipt } from "wagmi";
+import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import { cn } from "@lib/utils";
 import ButtonCTA from "@components/common/button-cta";
 import toUnits from "@lib/utils/formatting";
-import { Info } from "lucide-react";
-import { Address } from "viem";
-import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { CONFIRMATION } from "@lib/constants";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import notification from "@components/common/notification";
-import { InfoBox } from "./info-box";
+import InfoBox from "../info-box";
 
 const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   // Amount to remove

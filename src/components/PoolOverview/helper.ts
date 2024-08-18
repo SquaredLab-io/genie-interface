@@ -1,5 +1,17 @@
 import { DailyInfo } from "@squaredlab-io/sdk/src/subgraph";
 
+export type LPTimeseries = {
+  time: string;
+  value: number;
+};
+
+export type Timeseries = {
+  CL: string;
+  R: string;
+  pool: string;
+  timestamp: number;
+};
+
 export enum GraphOptions {
   volume = "volume",
   tvl = "tvl",
@@ -33,13 +45,6 @@ export const generateRandomData = (
   console.log("data for chart", data);
 
   return data;
-};
-
-export type Timeseries = {
-  CL: string;
-  R: string;
-  pool: string;
-  timestamp: number;
 };
 
 // Function to convert timestamp to yyyy-mm-dd format
@@ -82,24 +87,41 @@ export const transformTimeseries = (timeseries: Timeseries[]) => {
   return { array1, array2 };
 };
 
-export const getVolumeTimeseries = (dailyData: DailyInfo[] | undefined) => {
+// LP Charts data formatting
+export const getVolumeTimeseries = (
+  dailyData: DailyInfo[] | undefined
+): LPTimeseries[] => {
   if (!dailyData) return [];
-  return dailyData.map((data) => {
-    return {
-      time: formatDate(parseInt(data.date)),
-      value: parseFloat(data.volume) / 10 ** 18
-      // value: parseFloat(data.volume) / 10 ** 18
-    };
-  }).reverse();
+  return dailyData
+    .map((data) => {
+      return {
+        time: formatDate(parseInt(data.date)),
+        value: parseFloat(data.volume) / 10 ** 18
+      };
+    })
+    .reverse();
 };
 
-export const getTvlTimeseries = (dailyData: DailyInfo[] | undefined) => {
+export const getTvlTimeseries = (dailyData: DailyInfo[] | undefined): LPTimeseries[] => {
   if (!dailyData) return [];
-  return dailyData.map((data) => {
-    return {
-      time: formatDate(parseInt(data.date)),
-      value: parseFloat(data.lastTvl) / 10 ** 18
-      // value: parseFloat(data.volume) / 10 ** 18
-    };
-  }).reverse();
+  return dailyData
+    .map((data) => {
+      return {
+        time: formatDate(parseInt(data.date)),
+        value: parseFloat(data.lastTvl) / 10 ** 18
+      };
+    })
+    .reverse();
+};
+
+export const getFeesTimeseries = (dailyData: DailyInfo[] | undefined): LPTimeseries[] => {
+  if (!dailyData) return [];
+  return dailyData
+    .map((data) => {
+      return {
+        time: formatDate(parseInt(data.date)),
+        value: parseFloat(data.fee)
+      };
+    })
+    .reverse();
 };

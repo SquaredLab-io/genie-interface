@@ -20,8 +20,8 @@ import { Address } from "viem";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
-import { InfoBox } from "./info-box";
 import { cn } from "@lib/utils";
+import InfoBox from "../info-box";
 
 const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const [amount, setAmount] = useState<string>("");
