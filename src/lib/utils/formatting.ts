@@ -54,6 +54,6 @@ export function getDecimalAdjusted(
 export function formatOraclePrice(
   price: bigint | undefined,
   tokenDecimals: number | undefined
-) {
-  return toUnits(parseInt((price ?? 0).toString()) / 10 ** (tokenDecimals ?? 18), 2);
+): number {
+  return parseInt((price ?? 0).toString()) / 10 ** (tokenDecimals ?? 18);
 }

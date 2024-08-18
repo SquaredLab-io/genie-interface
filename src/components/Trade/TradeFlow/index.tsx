@@ -13,7 +13,7 @@ import { TradeflowLayout } from "@lib/types/enums";
 import { getTradeflowData } from "./helper";
 import { useTradeHistory } from "@lib/hooks/useTradeHistory";
 import { usePoolsStore } from "@store/poolsStore";
-import { formatOraclePrice } from "@lib/utils/formatting";
+import toUnits, { formatOraclePrice } from "@lib/utils/formatting";
 import LayoutSelector from "./layout-selector";
 
 const TradeFlow = () => {
@@ -47,28 +47,32 @@ const TradeFlow = () => {
           </TableHeader>
           <TableBody>
             {tradeHistory.length > 0 ? (
-              tradeHistory.map((tHistory, index) => (
-                <TableRow
-                  key={`${tHistory.size}_${index}`}
-                  className="font-normal text-[11px]/4"
-                >
-                  <TableCell
-                    className={cn(
-                      "py-[2px]",
-                      tHistory.action == "OL" ? "text-[#07AE3B]" : "text-[#FC0A52]"
-                    )}
+              tradeHistory.map((tHistory, index) => {
+                const dollarPrice = formatOraclePrice(
+                  tHistory.oraclePrice,
+                  selectedPool()?.underlyingDecimals
+                );
+                const size = formatOraclePrice(
+                  tHistory.size,
+                  selectedPool()?.underlyingDecimals
+                );
+                return (
+                  <TableRow
+                    key={`${tHistory.size}_${index}`}
+                    className="font-normal text-[11px]/4"
                   >
-                    $
-                    {formatOraclePrice(
-                      tHistory.oraclePrice,
-                      selectedPool()?.underlyingDecimals
-                    )}
-                  </TableCell>
-                  <TableCell className="py-[2px]">
-                    {formatOraclePrice(tHistory.size, selectedPool()?.underlyingDecimals)}
-                  </TableCell>
-                </TableRow>
-              ))
+                    <TableCell
+                      className={cn(
+                        "py-[2px]",
+                        tHistory.action == "OL" ? "text-[#07AE3B]" : "text-[#FC0A52]"
+                      )}
+                    >
+                      ${toUnits(dollarPrice * size, 2)}
+                    </TableCell>
+                    <TableCell className="py-[2px]">{toUnits(size, 3)}</TableCell>
+                  </TableRow>
+                );
+              })
             ) : (
               <TableRow className="font-normal text-[11px]/4">
                 {isFetching ? <span>...</span> : <span>No Data available</span>}
