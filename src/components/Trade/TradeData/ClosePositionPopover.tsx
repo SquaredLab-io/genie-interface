@@ -14,8 +14,8 @@ import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
 import notification from "@components/common/notification";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
-import { useTxHistory } from "@lib/hooks/useTxHistory";
 import { PositionTab } from "@squaredlab-io/sdk";
+import { useTradeHistory } from "@lib/hooks/useTradeHistory";
 
 interface PropsType {
   children: ReactNode;
@@ -55,7 +55,8 @@ const ClosePositionPopover: FC<PropsType> = ({
   // Current user balance of Long / Short Token
   const balance = isLong ? longTokenBalance : shortTokenBalance;
 
-  const { refetch: refetchTxHistory } = useTxHistory(true);
+  // const { refetch: refetchTxHistory } = useTxHistory(true);
+  const { refetch: refetchTxHistory } = useTradeHistory(true);
 
   // All current positions
   const { refetch: refetchOpenOrders } = useOpenOrders({

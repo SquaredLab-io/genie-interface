@@ -57,3 +57,26 @@ export function formatOraclePrice(
 ): number {
   return parseInt((price ?? 0).toString()) / 10 ** (tokenDecimals ?? 18);
 }
+
+export function formatTimestamp(timestamp: string): {
+  date: string;
+  time: string;
+} {
+  const dateObj = new Date(parseInt(timestamp) * 1000);
+
+  // Format date
+  const day = String(dateObj.getDate()).padStart(2, "0");
+  const month = String(dateObj.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
+  const year = dateObj.getFullYear();
+
+  const date = `${day}.${month}.${year}`;
+
+  // Format time
+  const hours = String(dateObj.getHours()).padStart(2, "0");
+  const minutes = String(dateObj.getMinutes()).padStart(2, "0");
+  const seconds = String(dateObj.getSeconds()).padStart(2, "0");
+
+  const time = `${hours}:${minutes}:${seconds}`;
+
+  return { date, time };
+}

@@ -27,6 +27,7 @@ import { usePoolsStore } from "@store/poolsStore";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
+import { useTradeHistory } from "@lib/hooks/useTradeHistory";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -69,7 +70,8 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     selectedPool()?.underlying
   );
 
-  const { refetch: refetchTxHistory } = useTxHistory(true);
+  // const { refetch: refetchTxHistory } = useTxHistory(true);
+  const { refetch: refetchTxHistory } = useTradeHistory(true);
 
   // Write Hook => Token Approval
   const {

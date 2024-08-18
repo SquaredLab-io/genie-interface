@@ -30,6 +30,7 @@ import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
 import { useBalanceStore } from "@store/tradeStore";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
+import { useTradeHistory } from "@lib/hooks/useTradeHistory";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -77,7 +78,8 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     isPending: isApprovePending
   } = useWriteContract();
 
-  const { refetch: refetchTxHistory } = useTxHistory(true);
+  // const { refetch: refetchTxHistory } = useTxHistory(true);
+  const { refetch: refetchTxHistory } = useTradeHistory(true);
 
   /**
    * This handler method approves signers TOKEN_ADDR tokens to be spent on Potentia Protocol

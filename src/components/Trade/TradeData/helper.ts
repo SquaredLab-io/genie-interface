@@ -23,7 +23,11 @@ export function getOpenTransactions(openOrders?: PositionTab): OpenPositionInfo[
 export function getClosedTransactions(transactions?: Tx[]): Tx[] {
   // console.log("closed transactions", transactions);
   if (!transactions) return new Array<Tx>();
-  return transactions;
+  const closedTxs = transactions
+    .filter((tx) => tx.action === "CL" || tx.action === "CS")
+    .sort((a, b) => parseInt(b.dateTime) - parseInt(a.dateTime));
+  console.log("closedTxs", closedTxs);
+  return closedTxs;
 }
 
 export function getDateTime(blockTimestamp: string) {

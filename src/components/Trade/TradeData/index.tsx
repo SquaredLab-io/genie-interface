@@ -1,11 +1,15 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import Image from "next/image";
 import { formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
-import toUnits, { formatOraclePrice, getDecimalAdjusted } from "@lib/utils/formatting";
+import toUnits, {
+  formatOraclePrice,
+  formatTimestamp,
+  getDecimalAdjusted
+} from "@lib/utils/formatting";
 import { getClosedTransactions, getOpenTransactions } from "./helper";
 import OpenPositionsTable from "./OpenPositionsTable";
 import TradeHistoryTable from "./TradeHistoryTable";
@@ -17,6 +21,7 @@ import { usePoolsStore } from "@store/poolsStore";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { OpenPositionInfo, Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useAccount } from "wagmi";
+import { useTradeHistory } from "@lib/hooks/useTradeHistory";
 
 enum Tab {
   position = "position",
@@ -29,6 +34,7 @@ const TradeData = () => {
 
   // All Transactions -- LP, Open Long/Short, Close Long/Short
   const { data: txHistory, isLoading: isTxLoading } = useTxHistory();
+  const { data: tradeHistory, isFetching: isTradeLoading } = useTradeHistory();
 
   const {
     openOrders,
@@ -36,21 +42,17 @@ const TradeData = () => {
     refetch: refetchOpenOrders
   } = useOpenOrders({ poolAddress: selectedPool()?.poolAddr! });
 
-  const openPositions = getOpenTransactions(openOrders);
-  const closedPositions = getClosedTransactions(txHistory);
+  const openPositions = useMemo(() => getOpenTransactions(openOrders), [openOrders]);
+  const closedPositions = useMemo(
+    () => getClosedTransactions(tradeHistory),
+    [tradeHistory]
+  );
 
   const longPosition = openOrders?.longPositionTab?.tokenSize;
   const shortPosition = openOrders?.shortPositionTab?.tokenSize;
 
-  const longTokenBalance = toUnits(
-    getDecimalAdjusted(longPosition, 18),
-    3
-  );
-
-  const shortTokenBalance = toUnits(
-    getDecimalAdjusted(shortPosition, 18),
-    3
-  );
+  const longTokenBalance = toUnits(getDecimalAdjusted(longPosition, 18), 3);
+  const shortTokenBalance = toUnits(getDecimalAdjusted(shortPosition, 18), 3);
 
   const positionColumns: ColumnDef<OpenPositionInfo>[] = [
     {
@@ -283,7 +285,7 @@ const TradeData = () => {
                 {longTokenBalance} {underlying.symbol}
               </span>
               <span className="text-[#9299AA] text-xs">
-                {tokenPrice * parseFloat(longTokenBalance)}
+                ${toUnits(tokenPrice * parseFloat(longTokenBalance), 3)}
               </span>
             </p>
           );
@@ -291,28 +293,25 @@ const TradeData = () => {
           return (
             <p className="flex flex-col items-start">
               <span>{shortTokenBalance}</span>
-              <span className="text-[#9299AA] text-xs">$60,000</span>
+              <span className="text-[#9299AA] text-xs">
+                ${toUnits(tokenPrice * parseFloat(shortTokenBalance), 3)}
+              </span>
             </p>
           );
         return <span>-</span>;
       }
     },
-    // {
-    //   accessorKey: "entry",
-    //   header: () => <span>Entry</span>,
-    //   cell: ({ row }) => {
-    //     // const value = parseFloat(row.getValue("value"));
-    //     // const formatted = toDollarUnits(value, 2);
-    //     return <span>-</span>;
-    //   }
-    // },
     {
       accessorKey: "time",
       header: () => <span>Time</span>,
       cell: ({ row }) => {
-        // const value = parseFloat(row.getValue("value"));
-        // const formatted = toDollarUnits(value, 2);
-        return <span>-</span>;
+        const { date, time } = formatTimestamp(row.original.dateTime);
+        return (
+          <p className="flex flex-col items-start max-w-fit">
+            <span>{date}</span>
+            <span className="font-normal text-xs/4 text-[#9299AA]">{time}</span>
+          </p>
+        );
       }
     },
     {
@@ -357,7 +356,7 @@ const TradeData = () => {
           <TradeHistoryTable
             columns={transactionsColumns}
             data={closedPositions}
-            isLoading={isTxLoading}
+            isLoading={isTradeLoading}
           />
         </TabsContent>
       </Tabs>
