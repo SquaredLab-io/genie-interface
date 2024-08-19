@@ -28,9 +28,9 @@ import { CONFIRMATION } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
-import { useBalanceStore } from "@store/tradeStore";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import { useTradeHistory } from "@lib/hooks/useTradeHistory";
+import { z } from "zod";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -152,9 +152,15 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
 
   const balanceExceedError = useMemo(
     () =>
-      !!userBalance?.value && parseFloat(quantity) > parseFloat(userBalance?.formatted),
+      !!userBalance &&
+      z.number().gt(parseFloat(userBalance?.formatted)).safeParse(parseFloat(quantity))
+        .success,
     [userBalance, quantity]
   );
+
+  const minQuantityCheck = useMemo(() => {
+    return z.number().min(0.001).safeParse(parseFloat(quantity)).success;
+  }, [quantity]);
 
   useEffect(() => {
     // Executes if Approve Successful
@@ -277,12 +283,12 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
           !isConnected ||
           !userBalance ||
           isApproveLoading ||
-          !isValidPositiveNumber(quantity) ||
-          balanceExceedError ||
           isApproveLoading ||
           isApprovePending ||
           isLoading ||
-          (isApproveSuccess && isPending)
+          (isApproveSuccess && isPending) ||
+          !minQuantityCheck ||
+          balanceExceedError
         } // conditions to Long Button
         onClick={approveHandler}
       >

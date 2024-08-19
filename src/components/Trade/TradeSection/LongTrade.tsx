@@ -10,6 +10,7 @@ import {
   useWriteContract
 } from "wagmi";
 import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
+import { z } from "zod";
 import { Address } from "viem";
 // Component, Util Imports
 import SliderBar from "../../common/SliderBar";
@@ -139,24 +140,21 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
         setTxHash(hash as `0x${string}`);
       }
     } catch (e) {
-      // notification.error({
-      //   title: "Opening Long position failed",
-      //   description: `${error}`
-      // });
-    } finally {
-      console.log("Open Long Position args", {
-        poolAddr: selectedPool()?.poolAddr!, // poolAddress
-        amount: _amount.toString(), // amt
-        isLong: true // isLong
-      });
+      console.error("Error: Opening long position failed!");
     }
   };
 
   const balanceExceedError = useMemo(
     () =>
-      !!userBalance?.value && parseFloat(quantity) > parseFloat(userBalance?.formatted),
+      !!userBalance &&
+      z.number().gt(parseFloat(userBalance?.formatted)).safeParse(parseFloat(quantity))
+        .success,
     [userBalance, quantity]
   );
+
+  const minQuantityCheck = useMemo(() => {
+    return z.number().min(0.001).safeParse(parseFloat(quantity)).success;
+  }, [quantity]);
 
   // Slider value updater
   useEffect(() => {
@@ -279,13 +277,12 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
         disabled={
           !isConnected ||
           !userBalance ||
-          !isValidPositiveNumber(quantity) ||
-          balanceExceedError ||
           isApproveLoading ||
           isApprovePending ||
           isLoading ||
           (isApproveSuccess && isPending) ||
-          parseFloat(quantity ?? "0") < 0.01
+          balanceExceedError ||
+          !minQuantityCheck
         } // conditions to Long Button
         onClick={() => approveHandler()}
         isLoading={isApproveLoading || isLoading}

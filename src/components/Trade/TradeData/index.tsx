@@ -170,7 +170,7 @@ const TradeData = () => {
                 pAndLPercent > 0 ? "text-[#07AE3B]" : "text-[#F23645]"
               )}
             >
-              {pAndLPercent.toFixed(3)}%
+              {pAndLPercent.toFixed(6)}%
             </span>
           </p>
         );

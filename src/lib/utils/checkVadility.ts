@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export function isEmpty(input: string | number): boolean {
   if (input === "" || input === "0" || input === 0) {
     return true;
@@ -12,6 +14,8 @@ export function isValidPositive(num: string): boolean {
 }
 
 export function isValidPositiveNumber(num: string): boolean {
+  const isPositive = z.number().positive();
+  return isPositive.safeParse(parseFloat(num)).success;
   // Regex for Positive Numbers greater than 0, including decimals
   const reg = /^(?!0(\.0+)?$)\d+(\.\d+)?$/;
   return reg.test(num);

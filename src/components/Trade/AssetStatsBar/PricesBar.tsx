@@ -50,6 +50,7 @@ function Marker({ label, value, fetching, subValue, showChange = false }: Marker
 
 const PricesBar = ({ selectedPool }: PricesBarProps) => {
   const underlying = selectedPool?.underlying;
+  // console.log('underlying @pricebar',underlying);
   const {
     price,
     isFetching: isPriceLoading,
@@ -65,10 +66,10 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
   //   usePricesStore();
 
   const fundingRateLong = parseFloat(
-    new BigNumber(tokenPrices?.fundingInfo.longF ?? 0)?.toFixed(3) ?? "0"
+    new BigNumber(tokenPrices?.fundingInfo.longF ?? 0)?.toFixed(6) ?? "0"
   );
   const fundingRateShort = parseFloat(
-    new BigNumber(tokenPrices?.fundingInfo.shortF ?? 0)?.toFixed(3) ?? "0"
+    new BigNumber(tokenPrices?.fundingInfo.shortF ?? 0)?.toFixed(6) ?? "0"
   );
 
   return (
