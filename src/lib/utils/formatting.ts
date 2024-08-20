@@ -1,11 +1,12 @@
-export const formatNumber = (num: number) => {
+export const formatNumber = (num: number, isDollar: boolean = false) => {
   // If the number is less than 1e-3 or greater than 1e+6, return in scientific notation
   if (num === 0) return "0";
-  else if (num < 1e-3) {
+  // number belongs to (-0.001, 0.001)
+  else if (num > -1e-3 && num < 1e-3) {
     return num.toExponential(3);
   }
   // Otherwise, format to exactly three decimal places
-  return toUnits(num, 3);
+  return isDollar ? toDollarUnits(num, 3) : toUnits(num, 3);
 };
 
 export const formatDollarUnits = (amount: number) => {
@@ -21,13 +22,29 @@ export const formatDollarUnits = (amount: number) => {
  * @param decimals Number of decimals to round to
  * @returns Converted amounts in Dollarsx
  */
-export function toDollarUnits(num: number, decimals: number): string {
-  if (num >= 1000000) {
-    return "$" + Number((num / 1000000).toFixed(decimals)).toLocaleString("en-US") + "M";
-  } else if (num >= 1000 && num < 1000000) {
-    return "$" + Number((num / 1000).toFixed(decimals)).toLocaleString("en-US") + "K";
+export function toDollarUnits(num: number | undefined, decimals: 0 | 1 | 2 | 3): string {
+  if (!num || isNaN(num)) return "$0";
+
+  const absNum = Math.abs(num);
+  const isPositive = num > 0;
+
+  if (absNum >= 1e9) {
+    return (
+      `${!isPositive ? "-" : ""}$` +
+      Number((absNum / 1e9).toFixed(decimals)).toLocaleString("en-US") +
+      "B"
+    );
+  } else if (absNum >= 1e6) {
+    return (
+      `${!isPositive ? "-" : ""}$` +
+      Number((absNum / 1e6).toFixed(decimals)).toLocaleString("en-US") +
+      "M"
+    );
   }
-  return "$" + Number(num.toFixed(decimals)).toLocaleString("en-US");
+  return (
+    `${!isPositive ? "-" : ""}$` +
+    Number(absNum.toFixed(decimals)).toLocaleString("en-US")
+  );
 }
 
 /**
@@ -41,12 +58,11 @@ export default function toUnits(
   decimals: 0 | 1 | 2 | 3
 ): string {
   if (!num || isNaN(num)) return "0";
-  else if (num >= 1000000) {
-    return Number((num / 1000000).toFixed(decimals)).toLocaleString("en-US") + "M";
+  if (num >= 1e9) {
+    return Number((num / 1e9).toFixed(decimals)).toLocaleString("en-US") + "B";
+  } else if (num >= 1e6) {
+    return Number((num / 1e6).toFixed(decimals)).toLocaleString("en-US") + "M";
   }
-  // else if (num >= 1000 && num < 1000000) {
-  //   return Number((num / 1000).toFixed(decimals)).toLocaleString("en-US") + "K";
-  // }
   return Number(num.toFixed(decimals)).toLocaleString("en-US");
 }
 

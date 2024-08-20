@@ -8,7 +8,7 @@ import {
   fetchExchange,
   createClient
 } from "@urql/next";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { WagmiProvider } from "wagmi";
 import { config } from "@lib/wagmi";

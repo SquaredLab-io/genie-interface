@@ -5,7 +5,7 @@ import Image from "next/image";
 import { formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
-import toUnits, {
+import {
   formatNumber,
   formatOraclePrice,
   formatTimestamp,
@@ -156,7 +156,7 @@ const TradeData = () => {
                     : "text-[#FF3318]"
               )}
             >
-              ${toUnits(pAndLAmt, 3)}
+              {formatNumber(pAndLAmt, true)}
             </span>
             <span
               className={cn(
@@ -282,7 +282,7 @@ const TradeData = () => {
                 {tokenSize} {underlying.symbol}
               </span>
               <span className="text-[#9299AA] text-xs">
-                ${formatNumber(tokenPrice * parseFloat(tokenSize))}
+                {formatNumber(tokenPrice * parseFloat(tokenSize), true)}
               </span>
             </p>
           );

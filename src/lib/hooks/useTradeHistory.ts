@@ -1,4 +1,4 @@
-import { Address, getAddress } from "viem";
+import { getAddress } from "viem";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { usePoolsStore } from "@store/poolsStore";
 import { Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
@@ -25,7 +25,7 @@ export function useTradeHistory(paused = false): ReturnTxHistory {
     try {
       const result = await potentia?.getTradeHistory(
         getAddress(selectedPool()?.poolAddr!) // pool
-      ); 
+      );
       // console.log("trade history --\n", result);
       return result;
     } catch (error) {
@@ -33,13 +33,14 @@ export function useTradeHistory(paused = false): ReturnTxHistory {
     }
   }
 
-  const { data, status, isFetching, refetch } = useQuery({
+  const { data, isFetching, refetch } = useQuery({
     queryKey: ["tradeHistory", selectedPool()?.underlying],
     queryFn: getTradeHistory,
     refetchInterval: REFETCH_INTERVAL,
     enabled: !!selectedPool() && !!potentia && !paused,
-    staleTime: 0
+    staleTime: 0,
+    gcTime: 0
   });
-  
+
   return { data, isFetching, refetch };
 }

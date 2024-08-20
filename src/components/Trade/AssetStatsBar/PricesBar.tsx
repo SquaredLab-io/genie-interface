@@ -65,12 +65,12 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
   // const { tokenPrice: tokenPrices, isFetchingPrice: isTokenPricesFetching } =
   //   usePricesStore();
 
-  const fundingRateLong = formatNumber(parseFloat(
+  const fundingRateLong = parseFloat(
     new BigNumber(tokenPrices?.fundingInfo.longF ?? 0).toString() ?? "0"
-  ));
-  const fundingRateShort = formatNumber(parseFloat(
+  );
+  const fundingRateShort = parseFloat(
     new BigNumber(tokenPrices?.fundingInfo.shortF ?? 0).toString() ?? "0"
-  ));
+  );
 
   return (
     <div className="flex flex-row items-center justify-start gap-6 h-full w-full px-2 xl:px-6 2xl:px-8 font-normal text-xs/4 overflow-x-auto z-50">
@@ -81,7 +81,11 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
           </span>
           {/* TODO: Calculate and replace original price's 24h change  */}
           <span
-            className={!!dailyChange && dailyChange > 0 ? "text-positive-green" : "text-negative-red"}
+            className={
+              !!dailyChange && dailyChange > 0
+                ? "text-positive-green"
+                : "text-negative-red"
+            }
           >
             {(isDailyFetching || isPriceLoading) && dailyChange === 0
               ? "..."
@@ -115,13 +119,13 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
         />
         <Marker
           label="Long Funding Rate"
-          value={`${fundingRateLong > 0 ? "+" : ""}${fundingRateLong ?? "-"}%`}
+          value={`${fundingRateLong > 0 ? "+" : ""}${fundingRateLong ? formatNumber(fundingRateLong) : "-"}%`}
           fetching={isFetching}
           showChange
         />
         <Marker
           label="Short Funding Rate"
-          value={`${fundingRateShort > 0 ? "+" : ""}${fundingRateShort}%`}
+          value={`${fundingRateShort > 0 ? "+" : ""}${fundingRateShort ? formatNumber(fundingRateShort) : "-"}%`}
           fetching={isFetching}
           showChange
         />
