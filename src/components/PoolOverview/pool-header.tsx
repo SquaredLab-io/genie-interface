@@ -3,7 +3,21 @@ import DropDownIcon from "@components/icons/DropDownIcon";
 import { useModalStore } from "@store/poolsStore";
 import { useAccount } from "wagmi";
 import { POOL_FEE } from "./constants";
-import Label from "@components/PoolOverview/Label"
+// import Label from "./Label";
+
+interface LabelProps {
+  text: string;
+  imgSrc?: string;
+}
+
+const Label = ({ text, imgSrc }: LabelProps) => {
+  return (
+    <div className="inline-flex items-center gap-[10px] p-2 text-[#EFEFF0] rounded-[4px] border border-secondary-gray text-sm/4 font-medium">
+      {imgSrc && <Image src={imgSrc} alt="token logo" width={20} height={20} />}
+      <span>{text}</span>
+    </div>
+  );
+};
 
 const PoolHeader = ({ assets, power }: { assets: string[]; power: number }) => {
   const { chain } = useAccount();

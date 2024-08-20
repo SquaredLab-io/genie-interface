@@ -26,9 +26,7 @@ interface ReturnType {
  * @returns openOrders, isFetching, getOpenOrders
  */
 export function useOpenOrders({ poolAddress, paused = false }: PropsType): ReturnType {
-  const { status } = useWalletClient();
   const { address } = useAccount();
-
   const { potentia } = usePotentiaSdk();
 
   const getOpenOrders = async () => {
@@ -54,7 +52,11 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
     queryKey: ["openOrders", poolAddress, address],
     queryFn: getOpenOrders,
     refetchInterval: REFETCH_INTERVAL,
-    enabled: !paused && !!poolAddress && status === "success" && !!potentia && !!address
+    enabled: !paused && !!poolAddress && potentia !== undefined && address !== undefined,
+    staleTime: 0, // data is treated stale immediatly after fetching
+    gcTime: 0, // cache is moved to grabage collector as soon as it's not in use
+    refetchOnReconnect: true,
+    refetchOnWindowFocus: true
   });
 
   return {

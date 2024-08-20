@@ -9,6 +9,7 @@ import {
   createClient
 } from "@urql/next";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { WagmiProvider } from "wagmi";
 import { config } from "@lib/wagmi";
 import { RainbowKitProvider, Theme } from "@rainbow-me/rainbowkit";
@@ -16,11 +17,9 @@ import "@rainbow-me/rainbowkit/styles.css";
 import { baseSepolia } from "viem/chains";
 import { SUBGRAPH_URL } from "@lib/keys";
 import { theme } from "../ConnectWallet/theme";
+import { queryClient } from "@lib/utils/query";
 
 const Providers: React.FC<PropsWithChildren> = ({ children }) => {
-  // React Query client setup
-  const queryClient = new QueryClient();
-
   // URQL Client and SSR Setup
   const [client, ssr] = useMemo(() => {
     const ssr = ssrExchange({
@@ -48,6 +47,7 @@ const Providers: React.FC<PropsWithChildren> = ({ children }) => {
             {children}
           </UrqlProvider>
         </RainbowKitProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </WagmiProvider>
   );

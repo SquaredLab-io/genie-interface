@@ -158,6 +158,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
   );
 
   const minQuantityCheck = useMemo(() => {
+    // Current min quantity: 0.001 Underlying Tokens
     return z.number().min(0.001).safeParse(parseFloat(quantity)).success;
   }, [quantity]);
 
@@ -189,7 +190,6 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       });
     } else if (isSuccess) {
       refetchBalance();
-      // refetchPosition();
       refetchOpenOrders();
       refetchTxHistory();
       notification.success({
