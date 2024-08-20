@@ -20,10 +20,9 @@ import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
 import { cn } from "@lib/utils";
 import ButtonCTA from "@components/common/button-cta";
-import SpinnerIcon from "@components/icons/SpinnerIcon";
 import TradeInfo from "./TradeInfo";
 import notification from "@components/common/notification";
-import toUnits from "@lib/utils/formatting";
+import { formatNumber, getDecimalAdjusted } from "@lib/utils/formatting";
 import { CONFIRMATION } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
@@ -223,7 +222,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
           <span>...</span>
         ) : (
           <span className="font-medium">
-            {toUnits(parseFloat(shortPosition ?? "0") / 10 ** 18, 3)}
+            {formatNumber(getDecimalAdjusted(shortPosition, 18))}
           </span>
         )}
       </p>
@@ -291,15 +290,9 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
           balanceExceedError
         } // conditions to Long Button
         onClick={approveHandler}
+        isLoading={isApproveLoading || isLoading}
       >
-        {isApproveLoading ||
-        isApprovePending ||
-        isLoading ||
-        (isApproveSuccess && isPending) ? (
-          <SpinnerIcon className="size-[22px]" />
-        ) : (
-          <span>OPEN</span>
-        )}
+        <span>OPEN</span>
       </ButtonCTA>
       {/* Iterate this data after calculating/fetching */}
       <TradeInfo />

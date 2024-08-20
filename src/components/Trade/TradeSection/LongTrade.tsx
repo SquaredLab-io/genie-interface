@@ -22,7 +22,7 @@ import { cn } from "@lib/utils";
 import ButtonCTA from "@components/common/button-cta";
 import notification from "@components/common/notification";
 import TradeInfo from "./TradeInfo";
-import toUnits from "@lib/utils/formatting";
+import { formatNumber, getDecimalAdjusted } from "@lib/utils/formatting";
 import { CONFIRMATION } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
@@ -215,7 +215,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
           <span>...</span>
         ) : (
           <span className="font-medium">
-            {toUnits(parseFloat(longPosition ?? "0") / 10 ** 18, 3)}
+            {formatNumber(getDecimalAdjusted(longPosition, 18))}
           </span>
         )}
       </p>

@@ -3,7 +3,7 @@ import DropDownIcon from "@components/icons/DropDownIcon";
 import { useModalStore } from "@store/poolsStore";
 import { useAccount } from "wagmi";
 import { POOL_FEE } from "./constants";
-import Label from "@components/PoolOverview/label";
+import Label from "@components/PoolOverview/Label"
 
 const PoolHeader = ({ assets, power }: { assets: string[]; power: number }) => {
   const { chain } = useAccount();

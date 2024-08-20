@@ -1,3 +1,13 @@
+export const formatNumber = (num: number) => {
+  // If the number is less than 1e-3 or greater than 1e+6, return in scientific notation
+  if (num === 0) return "0";
+  else if (num < 1e-3) {
+    return num.toExponential(3);
+  }
+  // Otherwise, format to exactly three decimal places
+  return toUnits(num, 3);
+};
+
 export const formatDollarUnits = (amount: number) => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -26,8 +36,11 @@ export function toDollarUnits(num: number, decimals: number): string {
  * @param decimals Number of decimals to round to
  * @returns Converted amounts in shortned Units
  */
-export default function toUnits(num: number, decimals: 0 | 1 | 2 | 3): string {
-  if (!num) return "0";
+export default function toUnits(
+  num: number | undefined,
+  decimals: 0 | 1 | 2 | 3
+): string {
+  if (!num || isNaN(num)) return "0";
   else if (num >= 1000000) {
     return Number((num / 1000000).toFixed(decimals)).toLocaleString("en-US") + "M";
   }

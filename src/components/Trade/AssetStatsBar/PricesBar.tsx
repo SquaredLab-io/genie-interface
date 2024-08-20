@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { Separator } from "@components/ui/separator";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
-import toUnits from "@lib/utils/formatting";
+import toUnits, { formatNumber } from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
 import { useTokenPrice } from "@lib/hooks/useTokenPrice";
 
@@ -65,12 +65,12 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
   // const { tokenPrice: tokenPrices, isFetchingPrice: isTokenPricesFetching } =
   //   usePricesStore();
 
-  const fundingRateLong = parseFloat(
-    new BigNumber(tokenPrices?.fundingInfo.longF ?? 0)?.toFixed(6) ?? "0"
-  );
-  const fundingRateShort = parseFloat(
-    new BigNumber(tokenPrices?.fundingInfo.shortF ?? 0)?.toFixed(6) ?? "0"
-  );
+  const fundingRateLong = formatNumber(parseFloat(
+    new BigNumber(tokenPrices?.fundingInfo.longF ?? 0).toString() ?? "0"
+  ));
+  const fundingRateShort = formatNumber(parseFloat(
+    new BigNumber(tokenPrices?.fundingInfo.shortF ?? 0).toString() ?? "0"
+  ));
 
   return (
     <div className="flex flex-row items-center justify-start gap-6 h-full w-full px-2 xl:px-6 2xl:px-8 font-normal text-xs/4 overflow-x-auto z-50">

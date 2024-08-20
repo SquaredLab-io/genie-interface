@@ -6,6 +6,7 @@ import { formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import toUnits, {
+  formatNumber,
   formatOraclePrice,
   formatTimestamp,
   getDecimalAdjusted
@@ -47,12 +48,6 @@ const TradeData = () => {
     () => getClosedTransactions(tradeHistory),
     [tradeHistory]
   );
-
-  const longPosition = openOrders?.longPositionTab?.tokenSize;
-  const shortPosition = openOrders?.shortPositionTab?.tokenSize;
-
-  const longTokenBalance = toUnits(getDecimalAdjusted(longPosition, 18), 3);
-  const shortTokenBalance = toUnits(getDecimalAdjusted(shortPosition, 18), 3);
 
   const positionColumns: ColumnDef<OpenPositionInfo>[] = [
     {
@@ -137,9 +132,8 @@ const TradeData = () => {
         const { tokenSize } = row.original;
         return (
           <span>
-            {toUnits(
-              getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals!),
-              3
+            {formatNumber(
+              getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals!)
             )}
           </span>
         );
@@ -170,7 +164,7 @@ const TradeData = () => {
                 pAndLPercent > 0 ? "text-[#07AE3B]" : "text-[#F23645]"
               )}
             >
-              {pAndLPercent.toFixed(6)}%
+              {formatNumber(pAndLPercent)}%
             </span>
           </p>
         );
@@ -276,25 +270,19 @@ const TradeData = () => {
       accessorKey: "size",
       header: () => <span>Size</span>,
       cell: ({ row }) => {
-        const { action, oraclePrice, underlying } = row.original;
+        const { action, oraclePrice, underlying, size } = row.original;
+        const tokenSize = formatNumber(
+          getDecimalAdjusted(size.toString(), selectedPool()?.underlyingDecimals!)
+        );
         const tokenPrice = formatOraclePrice(oraclePrice, underlying.decimals);
-        if (action === "CL")
+        if (action === "CL" || action === "CS")
           return (
             <p className="flex flex-col items-start">
               <span>
-                {longTokenBalance} {underlying.symbol}
+                {tokenSize} {underlying.symbol}
               </span>
               <span className="text-[#9299AA] text-xs">
-                ${toUnits(tokenPrice * parseFloat(longTokenBalance), 3)}
-              </span>
-            </p>
-          );
-        else if (action === "CS")
-          return (
-            <p className="flex flex-col items-start">
-              <span>{shortTokenBalance}</span>
-              <span className="text-[#9299AA] text-xs">
-                ${toUnits(tokenPrice * parseFloat(shortTokenBalance), 3)}
+                ${formatNumber(tokenPrice * parseFloat(tokenSize))}
               </span>
             </p>
           );
