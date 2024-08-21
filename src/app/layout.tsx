@@ -4,8 +4,7 @@ import { cn } from "@lib/utils";
 import Header from "@components/common/Header";
 import { meta } from "@lib/constants";
 import Providers from "@components/common/providers";
-import { Toaster as SonnerToaster } from "@components/ui/sonner";
-import { Toaster } from "@components/ui/toaster";
+import { Toaster } from "@components/ui/sonner";
 import "./globals.css";
 
 const { APP_NAME, DESCRIPTION, KEYWORDS, URL, LOGO, IMAGE, SITE_NAME, USERNAME } = meta;
@@ -78,8 +77,7 @@ export default function RootLayout({
           <Header />
           {children}
         </Providers>
-        <Toaster />
-        <SonnerToaster
+        <Toaster
           position="bottom-right"
           expand
           visibleToasts={4}

@@ -20,7 +20,10 @@ import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
 import { cn } from "@lib/utils";
 import ButtonCTA from "@components/common/button-cta";
+// Notification
+import { toast } from "sonner";
 import notification from "@components/common/notification";
+import { notificationId } from "../helper";
 import TradeInfo from "./TradeInfo";
 import { formatNumber, getDecimalAdjusted } from "@lib/utils/formatting";
 import { CONFIRMATION } from "@lib/constants";
@@ -39,9 +42,8 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   const [sliderValue, setSliderValue] = useState<number[]>([25]);
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
 
-  useEffect(() => console.log("LongTrade component re-rendering"), []);
-
   const { selectedPool } = usePoolsStore();
+  const { long_event } = notificationId;
 
   // Contract Hooks
   const { address, isConnected } = useAccount();
@@ -99,6 +101,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       });
     } catch (error) {
       notification.error({
+        id: long_event.default_approve,
         title: "Token approval failed!",
         description: `${approveError?.message}`
       });
@@ -123,7 +126,6 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       hash: txHash,
       confirmations: CONFIRMATION
     });
-
   /**
    * Handler for Opening Long Position
    */
@@ -164,42 +166,69 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     }
   }, [userBalance, sliderValue]);
 
+  // Notifications based on Transaction status
+  useEffect(() => {
+    if (isApproveLoading) {
+      notification.loading({
+        id: long_event.approve_loading,
+        title: "Approving tokens..."
+      });
+    } else if (isApproveError) {
+      toast.dismiss(long_event.approve_loading);
+      notification.error({
+        id: long_event.approve_error,
+        title: "Approval failed",
+        description: `${approvalError.message}`
+      });
+    }
+  }, [isApproveError, isApproveLoading]);
+
   // Executes if Approve Successful
   useEffect(() => {
     if (isApproveSuccess) {
-      console.log(`Token is approved for ${quantity}`);
+      // Executing Open Long Transaction
       openLongPositionHandler();
+      toast.dismiss(long_event.approve_loading);
       notification.success({
+        id: long_event.approve_success,
         title: "Token Approved",
         description: "You may now process to Opening a long position"
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isApproveSuccess]);
 
-  // Notifications based on Transaction status
   useEffect(() => {
-    if (isApproveError) {
-      notification.error({
-        title: "Approval failed",
-        description: `${approvalError.message}`
+    if (isLoading) {
+      notification.loading({
+        id: long_event.loading,
+        title: "Opening Long Position..."
       });
-    } else if (isError) {
+    }
+    if (isError) {
+      toast.dismiss(long_event.loading);
       notification.error({
+        id: long_event.error,
         title: "Opening Long Position failed",
         description: `${error.message}`
       });
-    } else if (isSuccess) {
+    }
+  }, [isError, isLoading]);
+
+  // executes if tx successful
+  useEffect(() => {
+    if (isSuccess) {
       refetchBalance();
-      // refetchPosition();
       refetchOpenOrders();
       refetchTxHistory();
+
+      toast.dismiss(long_event.loading);
       notification.success({
-        title: "Long position successfully opened!"
-        // description: "Balance, Position, OpenOrders and txHistory must be updating."
+        id: long_event.success,
+        title: "Long position successfully opened!",
+        description: "Yoy may see updated tokens. if not, please refresh!"
       });
     }
-  }, [isSuccess, isError, isApproveError]);
+  }, [isSuccess]);
 
   return (
     <div className="flex flex-col font-normal text-xs/[14px] gap-2 py-6 px-4">
@@ -280,7 +309,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
           isApproveLoading ||
           isApprovePending ||
           isLoading ||
-          (isApproveSuccess && isPending) ||
+          // (isApproveSuccess && isPending) ||
           balanceExceedError ||
           !minQuantityCheck
         } // conditions to Long Button

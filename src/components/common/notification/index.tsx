@@ -3,13 +3,20 @@ import { toast } from "sonner";
 import { Loader, XIcon } from "lucide-react";
 
 interface ArgsType {
+  id: string | number;
   title: string;
   description?: string;
   closable?: boolean;
   duration?: number;
 }
 
-const success = ({ title, description, closable = true, duration = 5000 }: ArgsType) => {
+const success = ({
+  id,
+  title,
+  description,
+  closable = true,
+  duration = 5000
+}: ArgsType) => {
   return toast.custom(
     (t) => (
       <div className="relative inline-flex items-start gap-3 min-w-[345px] py-5 px-3 bg-[#00081438] font-normal text-sm/4 rounded-sm">
@@ -32,12 +39,13 @@ const success = ({ title, description, closable = true, duration = 5000 }: ArgsT
       </div>
     ),
     {
+      id,
       duration
     }
   );
 };
 
-const info = ({ title, description, closable = true, duration = 5000 }: ArgsType) => {
+const info = ({ id, title, description, closable = true, duration = 5000 }: ArgsType) => {
   return toast.custom(
     (t) => (
       <div className="relative inline-flex items-start gap-3 font-normal text-sm/4 py-5 px-3 bg-[#161A1C17]/5 w-full">
@@ -55,12 +63,13 @@ const info = ({ title, description, closable = true, duration = 5000 }: ArgsType
       </div>
     ),
     {
+      id,
       duration
     }
   );
 };
 
-const loading = ({ title, description, closable = false, duration }: ArgsType) => {
+const loading = ({ id, title, description, closable = false, duration = Infinity }: ArgsType) => {
   return toast.custom(
     (t) => (
       <div className="relative inline-flex items-start gap-3 font-normal text-sm/4 py-5 px-3 bg-[#161A1C17]/5 border-b border-[#F7931A] w-full">
@@ -77,12 +86,19 @@ const loading = ({ title, description, closable = false, duration }: ArgsType) =
       </div>
     ),
     {
+      id,
       duration
     }
   );
 };
 
-const error = ({ title, description, closable = true, duration = 5000 }: ArgsType) => {
+const error = ({
+  id,
+  title,
+  description,
+  closable = true,
+  duration = 5000
+}: ArgsType) => {
   return toast.custom(
     (t) => (
       <div className="relative inline-flex items-start gap-3 font-normal text-sm/4 py-5 px-3 w-full">
@@ -100,6 +116,7 @@ const error = ({ title, description, closable = true, duration = 5000 }: ArgsTyp
       </div>
     ),
     {
+      id,
       duration
     }
   );

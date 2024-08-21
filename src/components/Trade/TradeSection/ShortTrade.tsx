@@ -21,7 +21,10 @@ import TokenSelectPopover from "@components/common/TokenSelectPopover";
 import { cn } from "@lib/utils";
 import ButtonCTA from "@components/common/button-cta";
 import TradeInfo from "./TradeInfo";
+// Notification
+import { toast } from "sonner";
 import notification from "@components/common/notification";
+import { notificationId } from "../helper";
 import { formatNumber, getDecimalAdjusted } from "@lib/utils/formatting";
 import { CONFIRMATION } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
@@ -37,6 +40,8 @@ interface PropsType {
 
 const ShortTrade: FC<PropsType> = ({ potentia }) => {
   const { selectedPool } = usePoolsStore((state) => state);
+
+  const { short_event } = notificationId;
 
   const [quantity, setQuantity] = useState("");
   const [sliderValue, setSliderValue] = useState<number[]>([25]);
@@ -97,6 +102,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       });
     } catch (error) {
       notification.error({
+        id: short_event.default_approve,
         title: "Approval failed",
         description: `${error}`
       });
@@ -162,13 +168,32 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     return z.number().min(0.001).safeParse(parseFloat(quantity)).success;
   }, [quantity]);
 
+  // Notifications based on Transaction status
   useEffect(() => {
-    // Executes if Approve Successful
-    console.log("approve txn final status", isApproveSuccess);
+    if (isApproveLoading) {
+      notification.loading({
+        id: short_event.approve_loading,
+        title: "Approving tokens..."
+      });
+    } else if (isApproveError) {
+      toast.dismiss(short_event.approve_loading);
+      notification.error({
+        id: short_event.approve_error,
+        title: "Approval failed",
+        description: `${approvalError.message}`
+      });
+    }
+  }, [isApproveError, isApproveLoading]);
+
+  // Executes if Approve Successful
+  useEffect(() => {
     if (isApproveSuccess) {
       console.log("Token is approved for the selected amount!");
       openShortPositionHandler();
+      
+      toast.dismiss(short_event.approve_loading);
       notification.success({
+        id: short_event.approve_success,
         title: "Token Approved",
         description: "You may now process to Opening a short position"
       });
@@ -176,27 +201,36 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isApproveSuccess]);
 
-  // Notifications based on Transaction status
   useEffect(() => {
-    if (isApproveError) {
-      notification.error({
-        title: "Approval failed",
-        description: `${approvalError.message}`
+    if (isLoading) {
+      notification.loading({
+        id: short_event.loading,
+        title: "Opening Short Position..."
       });
-    } else if (isError) {
+    }
+    if (isError) {
+      toast.dismiss(short_event.loading);
       notification.error({
+        id: short_event.error,
         title: "Opening short position failed",
         description: `${error.message}`
       });
-    } else if (isSuccess) {
+    }
+  }, [isError, isLoading]);
+
+  useEffect(() => {
+    if (isSuccess) {
       refetchBalance();
       refetchOpenOrders();
       refetchTxHistory();
+
+      toast.dismiss(short_event.loading);
       notification.success({
+        id: short_event.success,
         title: "Short position successfully opened"
       });
     }
-  }, [isSuccess, isError, isApproveError]);
+  }, [isSuccess]);
 
   // Slider value updater
   useEffect(() => {
@@ -285,7 +319,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
           isApproveLoading ||
           isApprovePending ||
           isLoading ||
-          (isApproveSuccess && isPending) ||
+          // (isApproveSuccess && isPending) ||
           !minQuantityCheck ||
           balanceExceedError
         } // conditions to Long Button

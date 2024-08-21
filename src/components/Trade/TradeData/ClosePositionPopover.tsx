@@ -12,7 +12,10 @@ import { useWaitForTransactionReceipt } from "wagmi";
 import { CONFIRMATION } from "@lib/constants";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
+// Notification
 import notification from "@components/common/notification";
+import { toast } from "sonner";
+import { notificationId } from "../helper";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { PositionTab } from "@squaredlab-io/sdk";
 import { useTradeHistory } from "@lib/hooks/useTradeHistory";
@@ -36,6 +39,8 @@ const ClosePositionPopover: FC<PropsType> = ({
 }) => {
   const [quantity, setQuantity] = useState<string>("");
   const [sliderValue, setSliderValue] = useState<number[]>([0]);
+
+  const { close_event } = notificationId;
 
   const [isHandlerLoading, setIsHandlerLoading] = useState(false);
 
@@ -83,6 +88,7 @@ const ClosePositionPopover: FC<PropsType> = ({
       // console.log("closePosition hash", hash);
     } catch (error) {
       notification.error({
+        id: close_event.default,
         title: "Attempt to Close Position failed",
         description: "Please try again"
       });
@@ -102,23 +108,34 @@ const ClosePositionPopover: FC<PropsType> = ({
 
   // Notifications based on Transaction status
   useEffect(() => {
-    if (isSuccess) {
-      refetchOpenOrders();
-      refetchTxHistory();
-      notification.success({
-        title: "Position successfully closed"
+    if (isLoading) {
+      notification.loading({
+        id: close_event.loading,
+        title: "Closing position in process..."
       });
-    }
-  }, [isSuccess]);
-
-  useEffect(() => {
-    if (isError) {
+    } else if (isError) {
+      toast.dismiss(close_event.loading);
       notification.error({
+        id: close_event.error,
         title: "Closing position failed",
         description: `${error.message}`
       });
     }
-  }, [isError]);
+  }, [isError, isLoading]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      refetchOpenOrders();
+      refetchTxHistory();
+      // TODO: refetchBalance();
+      
+      toast.dismiss(close_event.loading);
+      notification.success({
+        id: close_event.success,
+        title: "Position successfully closed"
+      });
+    }
+  }, [isSuccess]);
 
   // Slider value updater
   useEffect(() => {
