@@ -8,6 +8,8 @@ import { z } from "zod";
 import { Input } from "@components/ui/input";
 import { useState } from "react";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
+import { useToast } from "@components/ui/use-toast";
+import { Button } from "@components/ui/button";
 
 export default function TestNew() {
   const isClient = useIsClient();
@@ -25,6 +27,8 @@ export default function TestNew() {
   // const { selectedPool } = usePoolsStore();
   const [value, setValue] = useState("");
 
+  const { toast } = useToast();
+
   if (!isClient) {
     return (
       <main className="page-center items-center justify-center">
@@ -38,15 +42,18 @@ export default function TestNew() {
       <span>{isConnected ? "Connected" : "Not Connected"}</span>
       {/* <span>{isFetching && !pools ? "fetching..." : "fetched"}</span> */}
       {/* {<span>Selected Pool: {selectedPool()?.pool}</span>} */}
-      <span>
-        Account is {isUndefined.safeParse(address).success ? "undefined" : address}
-      </span>
-      <Input
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder="enter positive numbers"
-      />
-      <span>Number is positive: {`${isValidPositiveNumber(value)}`}</span>
+      <Button
+        variant={"default"}
+        onClick={() => {
+          toast({
+            title: "Open transaction successful",
+            description: "Kudos, you're a champ!",
+            duration: 4000,
+          });
+        }}
+      >
+        Show Toast
+      </Button>
     </main>
   );
 }
