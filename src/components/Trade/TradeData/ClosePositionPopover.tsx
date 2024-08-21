@@ -129,7 +129,12 @@ const ClosePositionPopover: FC<PropsType> = ({
   }, [balance, sliderValue]);
 
   return (
-    <Popover open={isOpen} onOpenChange={isHandlerLoading ? () => {} : setIsOpen}>
+    <Popover
+      open={isOpen}
+      onOpenChange={isHandlerLoading ? () => {} : setIsOpen}
+      modal={true}
+      defaultOpen={false}
+    >
       <PopoverTrigger className="min-w-fit z-50" onClick={onClickTrigger}>
         {children}
       </PopoverTrigger>
