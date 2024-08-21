@@ -58,11 +58,13 @@ const FaucetModal = ({
       });
       // TODO: update the title and description
       notification.success({
+        id: "facuet-success",
         title: `${selectedToken.token} added in the wallet`,
         description: "Please check in the wallet"
       });
     } catch (error) {
       notification.error({
+        id: "facuet-error",
         title: ` Failed to add ${selectedToken.token} in the wallet`,
         description: `${error}`
       });
@@ -96,6 +98,7 @@ const FaucetModal = ({
   useEffect(() => {
     if (isError) {
       notification.error({
+        id: "facuet-tx-error",
         title: "Faucet Transaction failed",
         description: `${error.message}`
       });
@@ -103,6 +106,7 @@ const FaucetModal = ({
       // TODO:
       // refetchBalance();
       notification.success({
+        id: "facuet-tx-success",
         title: "Facuet transferred succeesfull to your account"
       });
       // prompt to add token into the wallet

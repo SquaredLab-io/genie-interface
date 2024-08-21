@@ -62,6 +62,7 @@ export function useDailyData({ poolAddress, paused = false }: PropsType): Return
       return info;
     } catch (error) {
       notification.error({
+        id: "daily-data",
         title: "Failed to fetch daily data",
         description: `${error}`
       });

@@ -5,6 +5,7 @@ import { PositionTab } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import notification from "@components/common/notification";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { REFETCH_INTERVAL } from "@lib/constants";
+import { useTradeStore } from "@store/tradeStore";
 
 interface PropsType {
   poolAddress: string;
@@ -29,16 +30,26 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
   // wallet info hooks
   const { address } = useAccount();
   const { status } = useWalletClient();
+  const { tradeType } = useTradeStore();
   // initiating sdk
   const { potentia } = usePotentiaSdk();
 
   const getOpenOrders = async () => {
+    console.log(
+      `enabled @useOpenOrders for ${tradeType}`,
+      !paused &&
+        !!poolAddress &&
+        potentia !== undefined &&
+        address !== undefined &&
+        status === "success"
+    );
     try {
       const oo = await potentia?.openOrders(getAddress(poolAddress));
       console.log("openorders from sdk", oo);
       return oo;
     } catch (error) {
       notification.error({
+        id: "open-orders",
         title: "Failed to fetch Open Orders",
         description: `${error}`
       });

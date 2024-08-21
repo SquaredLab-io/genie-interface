@@ -93,6 +93,7 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   useEffect(() => {
     if (isError) {
       notification.error({
+        id: "add-error",
         title: "Adding liquidity failed",
         description: `${error.message}`
       });
@@ -100,6 +101,7 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       refetchBalance();
       refetchPosition();
       notification.success({
+        id: "add-success",
         title: "Liquidity withdrawn successfully"
       });
     }

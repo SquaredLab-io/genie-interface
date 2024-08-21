@@ -41,6 +41,7 @@ export function useTokenPrice({ poolAddress, paused = false }: PropsType): Retur
       return tokenprice;
     } catch (error) {
       notification.error({
+        id: "token-price",
         title: "Failed to fetch Token Prices",
         description: `${error}`
       });

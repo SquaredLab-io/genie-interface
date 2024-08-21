@@ -139,10 +139,10 @@ const ManagePoolModal = ({
             <CopyToClipboard
               text={VAULT_ADDRESS}
               onCopy={() => {
-                notification.success({
-                  title: "Vault Address copied!",
-                  duration: 2000
-                });
+                // notification.success({
+                //   title: "Vault Address copied!",
+                //   duration: 2000
+                // });
               }}
             >
               <button aria-label="button to copy vault address">

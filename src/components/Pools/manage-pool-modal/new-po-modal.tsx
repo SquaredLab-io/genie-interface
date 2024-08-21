@@ -58,10 +58,10 @@ const NewPoModal = ({
           className="w-1/2 rounded-lg float-right"
           onClick={() => {
             console.log("create new po!");
-            notification.info({
-              title: "Creating new Pool operator.",
-              description: "Wait for few seconds while we're processing"
-            });
+            // notification.info({
+            //   title: "Creating new Pool operator.",
+            //   description: "Wait for few seconds while we're processing"
+            // });
           }}
           disabled={!isValid || !expiryDate}
         >

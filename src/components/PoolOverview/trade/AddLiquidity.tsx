@@ -78,6 +78,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     } catch (error) {
       console.log("error while approving", approveError);
       notification.error({
+        id: "add-approve-error",
         title: "Approval confirmation failed!"
       });
     }
@@ -138,7 +139,8 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     if (isApproveSuccess) {
       console.log("Token is approved for the selected amount!");
       notification.success({
-        title: "Token Approved",
+        id: "add-approve-success",
+        title: "Tokens Approved successfully",
         description: "You may now process to Add Liquidity"
       });
       addLiquidityHandlerSdk();
@@ -149,11 +151,13 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   useEffect(() => {
     if (isApproveError) {
       notification.error({
+        id: "add-approve-error",
         title: "Approval failed",
         description: `${approvalError.message}`
       });
     } else if (isError) {
       notification.error({
+        id: "add-error",
         title: "Adding liquidity failed",
         description: `${error.message}`
       });
@@ -161,6 +165,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       refetchBalance();
       refetchPosition();
       notification.success({
+        id: "add-success",
         title: "Liquidity Added Successfully"
       });
     }
@@ -280,7 +285,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           disabled={
             !isConnected ||
             !userBalance ||
-            !lpBalance ||
+            // !lpBalance ||
             balanceExceedError ||
             isApproveLoading ||
             isApprovePending ||

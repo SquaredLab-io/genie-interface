@@ -47,10 +47,10 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
     } catch (error) {
       setIsFetching(false);
       setIsError(true);
-      notification.error({
-        title: "Failed to fetch Open Orders",
-        description: `${error}`
-      });
+      // notification.error({
+      //   title: "Failed to fetch Open Orders",
+      //   description: `${error}`
+      // });
     }
   };
 

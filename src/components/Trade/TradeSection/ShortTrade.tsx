@@ -33,6 +33,7 @@ import { useTxHistory } from "@lib/hooks/useTxHistory";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import { useTradeHistory } from "@lib/hooks/useTradeHistory";
 import { z } from "zod";
+// import { queryClient } from "@lib/utils/query";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -64,7 +65,8 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     isFetching: isPositionFetching,
     refetch: refetchOpenOrders
   } = useOpenOrders({
-    poolAddress: selectedPool()?.poolAddr! as Address
+    poolAddress: selectedPool()?.poolAddr! as Address,
+    paused: true
   });
 
   const shortPosition = positionData?.shortPositionTab?.tokenSize;
@@ -132,6 +134,9 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
    * Handler for Opening Short Position
    */
   const openShortPositionHandler = async () => {
+    // Invalidating openOrders Cache as it needs to be fetched fresh
+    // queryClient.invalidateQueries({ queryKey: ["openOrders"] });
+
     const _amount = parseFloat(quantity) * 10 ** 18;
     try {
       const hash = await potentia?.poolWrite.openPosition(
@@ -190,7 +195,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     if (isApproveSuccess) {
       console.log("Token is approved for the selected amount!");
       openShortPositionHandler();
-      
+
       toast.dismiss(short_event.approve_loading);
       notification.success({
         id: short_event.approve_success,
