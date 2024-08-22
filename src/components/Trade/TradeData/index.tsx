@@ -7,7 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import {
   formatNumber,
-  formatOraclePrice,
+  formatOraclePrice,  
   formatTimestamp,
   getDecimalAdjusted
 } from "@lib/utils/formatting";
@@ -34,6 +34,7 @@ const TradeData = () => {
   const { isConnected } = useAccount();
 
   // All Transactions -- LP, Open Long/Short, Close Long/Short
+  // TODO: Will be updated with useTxHistory, remove useTradeHistory
   const { data: txHistory, isLoading: isTxLoading } = useTxHistory();
   const { data: tradeHistory, isFetching: isTradeLoading } = useTradeHistory();
 

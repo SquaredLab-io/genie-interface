@@ -69,6 +69,8 @@ const ClosePositionPopover: FC<PropsType> = ({
     paused: true
   });
 
+  // TODO: Update the user-balance too
+
   /**
    * Handler for closePosition from SDK
    */

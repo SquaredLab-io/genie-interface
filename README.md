@@ -1,9 +1,9 @@
 <div align="center">
-  <img height="24" src="./public/images/logo.png" />
+  <img height="24" src="./public/images/logo.svg" />
   <h1>genie-interface</h1>
-    <a href="https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Ftwitter.com%2FSquaredLabs_"><img alt="Twitter" src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Fmarginfi"/></a>
+    <a href="https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Ftwitter.com%2FSquaredLabs_"><img alt="Twitter" src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Fgeniedex"/></a>
   <h4>
-    <a href="https://squaredlabs.io/">https://squaredlabs.io/</a>
+    <a href="https://genie.squaredlabs.io/">https://genie.squaredlabs.io/</a>
   </h4>
 </div>
 
@@ -18,11 +18,14 @@ git clone https://github.com/SquaredLab-io/genie-interface.git
 2. Install the dependencies:
 ```bash
 cd genie-interface
-yarn
+npm i
 ```
-3. Run the development server:
+
+3. Create `.env.local` and add environment variables.
+
+4. Run the development server:
 ```bash
-yarn dev
+npm run dev
 ```
 
 ## How to get in touch?
@@ -33,4 +36,4 @@ We welcome contributions to `genie-interface`! Please review our [contributing g
 
 <!-- ## License
 
-`mrgn-ts` is open source software licensed under the Apache 2.0 license. -->
+`genie-interface` is open source software licensed under the Apache 2.0 license. -->

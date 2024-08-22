@@ -1,8 +1,8 @@
 import { QueryStatus, useQuery } from "@tanstack/react-query";
-import { FundingInfo } from "@squaredlab-io/sdk/src/interfaces/pool.interface";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import notification from "@components/common/notification";
 import { REFETCH_INTERVAL } from "@lib/constants";
+import { FundingInfo } from "@squaredlab-io/sdk";
 
 interface PropsType {
   poolAddress: string | undefined;
@@ -40,6 +40,7 @@ export function useTokenPrice({ poolAddress, paused = false }: PropsType): Retur
       const tokenprice = await potentia?.fetchTokenPrice(poolAddress!);
       return tokenprice;
     } catch (error) {
+      console.log("poolAddress @useTokenPrice", poolAddress);
       notification.error({
         id: "token-price",
         title: "Failed to fetch Token Prices",
