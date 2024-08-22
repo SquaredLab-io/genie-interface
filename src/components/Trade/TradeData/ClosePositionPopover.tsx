@@ -1,9 +1,9 @@
-import { FC, memo, ReactNode, useEffect, useState } from "react";
+import { ChangeEvent, FC, memo, ReactNode, useEffect, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover";
 import { Separator } from "@components/ui/separator";
 import DropDownIcon from "@components/icons/DropDownIcon";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
-import SliderBar from "../../common/SliderBar";
+import SliderBar from "@components/common/slider-bar";
 import { usePoolsStore } from "@store/poolsStore";
 import { Address } from "viem";
 import toUnits, { getDecimalAdjusted } from "@lib/utils/formatting";
@@ -38,7 +38,7 @@ const ClosePositionPopover: FC<PropsType> = ({
   setIsOpen
 }) => {
   const [quantity, setQuantity] = useState<string>("");
-  const [sliderValue, setSliderValue] = useState<number[]>([0]);
+  const [sliderValue, setSliderValue] = useState<number>(0);
 
   const { close_event } = notificationId;
 
@@ -47,7 +47,6 @@ const ClosePositionPopover: FC<PropsType> = ({
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
 
   const { selectedPool } = usePoolsStore();
-  // console.log("selectedPool", selectedPool);
 
   const { potentia } = usePotentiaSdk();
 
@@ -130,7 +129,7 @@ const ClosePositionPopover: FC<PropsType> = ({
       refetchOpenOrders();
       refetchTxHistory();
       // TODO: refetchBalance();
-      
+
       toast.dismiss(close_event.loading);
       notification.success({
         id: close_event.success,
@@ -140,12 +139,30 @@ const ClosePositionPopover: FC<PropsType> = ({
   }, [isSuccess]);
 
   // Slider value updater
-  useEffect(() => {
+  // useEffect(() => {
+  //   if (balance) {
+  //     const amount = (balance * sliderValue[0]) / 100;
+  //     setQuantity(amount.toString());
+  //   }
+  // }, [balance, sliderValue]);
+  // Handler that updates Quantity and keep SliderValue in sync
+  function inputHandler(event: ChangeEvent<HTMLInputElement>) {
+    const input = event.target.value;
+    setQuantity(input);
     if (balance) {
-      const amount = (balance * sliderValue[0]) / 100;
+      const value = (parseFloat(input ?? "0") / balance) * 100;
+      setSliderValue(value);
+    }
+  }
+
+  // Handler that updates SliderValue and keep Quantity in sync
+  function sliderHandler(value: number) {
+    setSliderValue(value);
+    if (balance) {
+      const amount = (balance * value) / 100;
       setQuantity(amount.toString());
     }
-  }, [balance, sliderValue]);
+  }
 
   return (
     <Popover
@@ -174,7 +191,7 @@ const ClosePositionPopover: FC<PropsType> = ({
                 type="number"
                 value={quantity}
                 placeholder="0"
-                onChange={(event) => setQuantity(event.target.value)}
+                onChange={inputHandler}
                 id="quantity"
                 className="bg-transparent p-2 w-full placeholder:text-[#6D6D6D] text-white font-semibold text-sm/6 focus:outline-none"
               />
@@ -192,7 +209,7 @@ const ClosePositionPopover: FC<PropsType> = ({
           </div>
           <SliderBar
             value={sliderValue}
-            setValue={setSliderValue}
+            setValue={sliderHandler}
             min={0}
             max={100}
             indices={[0, 25, 50, 75, 100]}

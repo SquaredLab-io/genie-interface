@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Modal from "@components/common/Modal";
-import SliderBar from "@components/common/SliderBar";
+import SliderBar from "@components/common/slider-bar";
 import { DialogHeader, DialogDescription, DialogTitle } from "@components/ui/dialog";
 import { Input } from "@components/ui/input";
 import { PiCopy } from "react-icons/pi";
@@ -30,13 +30,13 @@ const ManagePoolModal = ({
   open: boolean;
   setOpen: (value: boolean) => void;
 }) => {
-  const [sqlDiscount, setSqlDiscount] = useState<number[]>([0]);
+  const [sqlDiscount, setSqlDiscount] = useState<number>(0);
   const [halfLife, setHalfLife] = useState<number>(0);
-  const [priceUpdateFactor, setPriceUpdateFactor] = useState<number[]>([0]);
+  const [priceUpdateFactor, setPriceUpdateFactor] = useState<number>(0);
   const VAULT_ADDRESS = "0x428084313F9dCc38e9d0cB51dBBe466c8300a35c";
 
   const [isSqlDiscValid, sqlDiscMin, sqlDiscMax] = useMemo(() => {
-    const disc = sqlDiscount[0];
+    const disc = sqlDiscount;
     if (disc > 0 && disc <= 2000) {
       return [true, false, false];
     }
@@ -46,8 +46,8 @@ const ManagePoolModal = ({
   const isValidUpdate =
     halfLife > 0 &&
     !isNaN(halfLife) &&
-    priceUpdateFactor[0] > 0 &&
-    !isNaN(priceUpdateFactor[0]) &&
+    priceUpdateFactor > 0 &&
+    !isNaN(priceUpdateFactor) &&
     !isSqlDiscValid;
 
   const [newPoOpen, setNewPoOpen] = useState<boolean>(false);
@@ -99,9 +99,9 @@ const ManagePoolModal = ({
           <div className="w-1/2">
             <Input
               placeholder="0"
-              value={sqlDiscount[0]}
+              value={sqlDiscount}
               onChange={(e) => {
-                setSqlDiscount([parseFloat(e.target.value)]);
+                setSqlDiscount(parseFloat(e.target.value));
               }}
               type="number"
               className={cn("p-4 bg-transparent", !isSqlDiscValid && "border-[#FF3318]")}
@@ -173,8 +173,8 @@ const ManagePoolModal = ({
           <div className="w-1/2">
             <Input
               placeholder="0"
-              value={priceUpdateFactor[0]}
-              onChange={(e) => setPriceUpdateFactor([parseFloat(e.target.value)])}
+              value={priceUpdateFactor}
+              onChange={(e) => setPriceUpdateFactor(parseFloat(e.target.value))}
               type="number"
               className="p-4 bg-transparent"
             />

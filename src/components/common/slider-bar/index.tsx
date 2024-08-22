@@ -1,12 +1,12 @@
 "use client";
 
-import { Dispatch, SetStateAction } from "react";
 import { Slider } from "@components/ui/slider";
 import { cn } from "@lib/utils";
+import Stepper from "./stepper";
 
 interface PropsType {
-  value: number[];
-  setValue: Dispatch<SetStateAction<number[]>>;
+  value: number;
+  setValue: (value: number) => void;
   min: number;
   max: number;
   step?: number;
@@ -34,42 +34,20 @@ const SliderBar = ({
   isPerc = false,
   className
 }: PropsType) => {
-  const Stepper = ({ index, isPerc }: { index: number; isPerc: boolean }) => {
-    return (
-      <p
-        className={cn(
-          index === 0 ? "items-start" : index === max ? "items-end" : "items-center",
-          "relative flex flex-col"
-        )}
-      >
-        <span
-          className={cn(
-            "size-[6px] rounded-full",
-            value[0] >= index ? "bg-primary-blue" : "bg-[#373C40]"
-          )}
-        />
-        <span className="absolute top-3">
-          {index}
-          {isPerc && "%"}
-        </span>
-      </p>
-    );
-  };
-
   return (
     <div className={cn("relative pb-6 z-0", className)}>
       <Slider
-        defaultValue={value}
-        value={value[0] ? value : [0]}
+        defaultValue={[value]}
+        value={value ? [value] : [0]}
         min={min}
         max={max}
         step={step}
-        onValueChange={(e) => setValue(e)}
+        onValueChange={(e) => setValue(e[0])}
       />
       {indices && (
         <div className="absolute inline-flex justify-between -top-0.5 left-0 right-0 mx-auto w-full text-xs/[18px] text-[#757B80] -z-10">
           {indices.map((i) => (
-            <Stepper index={i} key={i} isPerc={isPerc} />
+            <Stepper key={i} index={i} isPerc={isPerc} max={max} value={value} />
           ))}
         </div>
       )}

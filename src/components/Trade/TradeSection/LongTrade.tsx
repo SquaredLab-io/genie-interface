@@ -1,7 +1,7 @@
 "use client";
 
 // Library Imports
-import { FC, memo, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FC, memo, useEffect, useMemo, useState } from "react";
 import { BiSolidDownArrow } from "react-icons/bi";
 import {
   useAccount,
@@ -13,7 +13,7 @@ import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
 import { z } from "zod";
 import { Address } from "viem";
 // Component, Util Imports
-import SliderBar from "../../common/SliderBar";
+import SliderBar from "@components/common/slider-bar";
 import { getAccountBalance } from "@lib/utils/getAccountBalance";
 import { WethABi } from "@lib/abis";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
@@ -39,7 +39,8 @@ interface PropsType {
 
 const LongTrade: FC<PropsType> = ({ potentia }) => {
   const [quantity, setQuantity] = useState<string>("");
-  const [sliderValue, setSliderValue] = useState<number[]>([25]);
+  const [sliderValue, setSliderValue] = useState<number>(25);
+
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
 
   const { selectedPool } = usePoolsStore();
@@ -146,25 +147,36 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     }
   };
 
-  const balanceExceedError = useMemo(
-    () =>
+  const balanceExceedError = useMemo(() => {
+    return (
       !!userBalance &&
       z.number().gt(parseFloat(userBalance?.formatted)).safeParse(parseFloat(quantity))
-        .success,
-    [userBalance, quantity]
-  );
+        .success
+    );
+  }, [userBalance, quantity]);
 
   const minQuantityCheck = useMemo(() => {
     return z.number().min(0.001).safeParse(parseFloat(quantity)).success;
   }, [quantity]);
 
-  // Slider value updater
-  useEffect(() => {
-    if (userBalance?.value) {
-      const amount = (parseFloat(userBalance?.formatted) * sliderValue[0]) / 100;
+  // Handler that updates Quantity and keep SliderValue in sync
+  function inputHandler(event: ChangeEvent<HTMLInputElement>) {
+    const input = event.target.value;
+    setQuantity(input);
+    if (userBalance) {
+      const value = (parseFloat(input ?? "0") / parseFloat(userBalance?.formatted)) * 100;
+      setSliderValue(value);
+    }
+  }
+
+  // Handler that updates SliderValue and keep Quantity in sync
+  function sliderHandler(value: number) {
+    setSliderValue(value);
+    if (userBalance) {
+      const amount = (parseFloat(userBalance?.formatted) * value) / 100;
       setQuantity(amount.toString());
     }
-  }, [userBalance, sliderValue]);
+  }
 
   // Notifications based on Transaction status
   useEffect(() => {
@@ -269,7 +281,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
               type="number"
               value={quantity}
               placeholder={`Qty (min) is 0.001 ${selectedPool()?.underlying}`}
-              onChange={(event) => setQuantity(event.target.value)}
+              onChange={inputHandler}
               id="quantity"
               className="bg-transparent py-2 w-full placeholder:text-[#6D6D6D] text-white font-noemal text-sm/4 focus:outline-none"
             />
@@ -294,7 +306,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       <div className="w-full my-4">
         <SliderBar
           value={sliderValue}
-          setValue={setSliderValue}
+          setValue={sliderHandler}
           min={0}
           max={100}
           indices={[0, 25, 50, 75, 100]}

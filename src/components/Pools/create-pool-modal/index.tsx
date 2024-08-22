@@ -2,20 +2,12 @@
 
 import { ReactNode, useMemo, useState } from "react";
 import Modal from "@components/common/Modal";
-import SliderBar from "@components/common/SliderBar";
+import SliderBar from "@components/common/slider-bar";
 import { DialogHeader, DialogDescription, DialogTitle } from "@components/ui/dialog";
 import { Input } from "@components/ui/input";
 import notification from "@components/common/notification";
 import { Separator } from "@components/ui/separator";
 import ButtonCTA from "@components/common/button-cta";
-import { cn } from "@lib/utils";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@components/ui/select";
 
 const CreatePoolModal = ({
   open,
@@ -26,7 +18,8 @@ const CreatePoolModal = ({
 }) => {
   const [sqlDiscount, setSqlDiscount] = useState<number[]>([0]);
   const [halfLife, setHalfLife] = useState<number>(0);
-  const [priceUpdateFactor, setPriceUpdateFactor] = useState<number[]>([0]);
+  const [priceUpdateFactor, setPriceUpdateFactor] = useState<number>(0);
+
   const VAULT_ADDRESS = "0x428084313F9dCc38e9d0cB51dBBe466c8300a35c";
 
   const [isSqlDiscValid, sqlDiscMin, sqlDiscMax] = useMemo(() => {
@@ -40,8 +33,8 @@ const CreatePoolModal = ({
   const isValidUpdate =
     halfLife > 0 &&
     !isNaN(halfLife) &&
-    priceUpdateFactor[0] > 0 &&
-    !isNaN(priceUpdateFactor[0]) &&
+    priceUpdateFactor > 0 &&
+    !isNaN(priceUpdateFactor) &&
     !isSqlDiscValid;
 
   interface BoxInfo {
@@ -94,13 +87,12 @@ const CreatePoolModal = ({
         </BoxInfo>
         <BoxInfo
           title="Initial Liquidity"
-          description="Which token pair would you like to add 
-liquidity to."
+          description="Which token pair would you like to add liquidity to."
         >
           <Input
             placeholder="0"
-            value={priceUpdateFactor[0]}
-            onChange={(e) => setPriceUpdateFactor([parseFloat(e.target.value)])}
+            value={priceUpdateFactor}
+            onChange={(e) => setPriceUpdateFactor(parseFloat(e.target.value))}
             type="number"
             className="p-4 bg-transparent"
           />
@@ -120,7 +112,7 @@ liquidity to."
 liquidity to."
         >
           <SliderBar
-            value={[2]}
+            value={2}
             setValue={() => {}}
             min={2}
             max={32}
@@ -136,8 +128,8 @@ liquidity to."
         >
           <Input
             placeholder="0"
-            value={priceUpdateFactor[0]}
-            onChange={(e) => setPriceUpdateFactor([parseFloat(e.target.value)])}
+            value={priceUpdateFactor}
+            onChange={(e) => setPriceUpdateFactor(parseFloat(e.target.value))}
             type="number"
             className="p-4 bg-transparent"
           />
@@ -170,7 +162,7 @@ liquidity to."
               className="p-4 bg-transparent"
             />
             <SliderBar
-              value={[0]}
+              value={0}
               setValue={() => {}}
               min={0}
               max={1000}
@@ -185,8 +177,8 @@ liquidity to."
           <div className="w-1/2">
             <Input
               placeholder="0"
-              value={priceUpdateFactor[0]}
-              onChange={(e) => setPriceUpdateFactor([parseFloat(e.target.value)])}
+              value={priceUpdateFactor}
+              onChange={(e) => setPriceUpdateFactor(parseFloat(e.target.value))}
               type="number"
               className="p-4 bg-transparent"
             />
