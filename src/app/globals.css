@@ -60,6 +60,18 @@
 */
 }
 
+/* Trade History Scroll bar */
+.trade-history::-webkit-scrollbar {
+  display: block;
+  width: 6px;
+  height: 12px;
+}
+.trade-history::-webkit-scrollbar-thumb {
+  background: #01a1ff;
+  border-radius: 48px;
+  cursor: pointer;
+}
+
 /* Input element */
 /* For chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
@@ -70,25 +82,4 @@ input::-webkit-inner-spin-button {
 /* For firefox */
 input[type="number"] {
   -moz-appearance: textfield;
-}
-
-/* Toast */
-.ToastRoot[data-swipe="move"] {
-  transform: translateX(var(--radix-toast-swipe-move-x));
-}
-.ToastRoot[data-swipe="cancel"] {
-  transform: translateX(0);
-  transition: transform 200ms ease-out;
-}
-.ToastRoot[data-swipe="end"] {
-  animation: slideRight 100ms ease-out;
-}
-
-@keyframes slideRight {
-  from {
-    transform: translateX(var(--radix-toast-swipe-end-x));
-  }
-  to {
-    transform: translateX(100%);
-  }
 }

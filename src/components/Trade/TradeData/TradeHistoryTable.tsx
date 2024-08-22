@@ -13,7 +13,7 @@ import {
   useReactTable
 } from "@tanstack/react-table";
 import NextImage from "@components/common/NextImage";
-import { useAccount, useConnect } from "wagmi";
+import { useAccount } from "wagmi";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -31,7 +31,6 @@ const TradeHistoryTable = <TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel()
   });
-
   const { isConnected } = useAccount();
 
   return (
@@ -56,8 +55,8 @@ const TradeHistoryTable = <TData, TValue>({
       </TableHeader>
       <TableBody className="font-normal text-sm/4 max-h-64 overflow-y-auto">
         {!isConnected ? (
-          <TableRow className="border">
-            <TableCell colSpan={columns.length} className="size-36 text-center w-full">
+          <TableRow>
+            <TableCell colSpan={columns.length} className="size-36 text-center w-full"> 
               <div className="flex flex-col items-center w-full text-center gap-5">
                 <span className="font-normal text-base/7 text-[#B5B5B5]">
                   Connect Wallet to view your transactions.

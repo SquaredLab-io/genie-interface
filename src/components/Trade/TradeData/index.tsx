@@ -341,7 +341,7 @@ const TradeData = () => {
           />
         </TabsContent>
         {/* --- Transactions History Table --- */}
-        <TabsContent value={Tab.history} className="max-h-64 overflow-y-auto">
+        <TabsContent value={Tab.history} className="max-h-64 overflow-y-auto trade-history">
           <TradeHistoryTable
             columns={transactionsColumns}
             data={closedPositions}
