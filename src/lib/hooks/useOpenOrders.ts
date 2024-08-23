@@ -35,14 +35,6 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
   const { potentia } = usePotentiaSdk();
 
   const getOpenOrders = async () => {
-    console.log(
-      `enabled @useOpenOrders for ${tradeType}`,
-      !paused &&
-        !!poolAddress &&
-        potentia !== undefined &&
-        address !== undefined &&
-        status === "success"
-    );
     try {
       const oo = await potentia?.openOrders(getAddress(poolAddress));
       console.log("openorders from sdk", oo);

@@ -7,7 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import {
   formatNumber,
-  formatOraclePrice,  
+  formatOraclePrice,
   formatTimestamp,
   getDecimalAdjusted
 } from "@lib/utils/formatting";
@@ -40,8 +40,8 @@ const TradeData = () => {
 
   const {
     openOrders,
-    isFetching: loadingOpenOrders,
-    refetch: refetchOpenOrders
+    isFetching: loadingOpenOrders
+    // refetch: refetchOpenOrders
   } = useOpenOrders({ poolAddress: selectedPool()?.poolAddr! });
 
   const openPositions = useMemo(() => getOpenTransactions(openOrders), [openOrders]);
@@ -341,7 +341,10 @@ const TradeData = () => {
           />
         </TabsContent>
         {/* --- Transactions History Table --- */}
-        <TabsContent value={Tab.history} className="max-h-64 overflow-y-auto trade-history">
+        <TabsContent
+          value={Tab.history}
+          className="max-h-64 overflow-y-auto trade-history"
+        >
           <TradeHistoryTable
             columns={transactionsColumns}
             data={closedPositions}
