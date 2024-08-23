@@ -36,9 +36,7 @@ const Trade = () => {
           setIsScriptReady(true);
         }}
       />
-
       <div className="flex flex-col h-full">
-
         {/* top box */}
         <div className="flex-1 flex flex-row min-w-full border-t border-r border-secondary-gray">
           {/* left section -- (flexible) */}
