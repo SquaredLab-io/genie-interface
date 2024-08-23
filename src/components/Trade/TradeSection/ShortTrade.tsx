@@ -33,6 +33,8 @@ import { useTxHistory } from "@lib/hooks/useTxHistory";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import { useTradeHistory } from "@lib/hooks/useTradeHistory";
 import { z } from "zod";
+import useIsApprovedToken from "@lib/hooks/useIsApprovedToken";
+import useApproveToken from "@lib/hooks/useApproveToken";
 // import { queryClient } from "@lib/utils/query";
 
 interface PropsType {
@@ -50,6 +52,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
 
   // Contract Hooks
   const { address, isConnected } = useAccount();
+
   const {
     data: userBalance,
     isLoading: isBalLoading,
@@ -68,7 +71,6 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     poolAddress: selectedPool()?.poolAddr! as Address,
     paused: true
   });
-
   const shortPosition = positionData?.shortPositionTab?.tokenSize;
 
   // getting underlying token's price
@@ -76,16 +78,29 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     selectedPool()?.underlying
   );
 
-  // Write Hook => Token Approval
-  const {
-    data: approvalData,
-    writeContractAsync: writeApproveToken,
-    error: approveError,
-    isPending: isApprovePending
-  } = useWriteContract();
-
   // const { refetch: refetchTxHistory } = useTxHistory(true);
   const { refetch: refetchTxHistory } = useTradeHistory(true);
+
+  // Check approved tokens amount
+  const { isApprovedData, isApprovedLoading, isApprovedError, isApprovedSuccess } =
+    useIsApprovedToken({
+      tokenAddress: selectedPool()?.underlyingAddress as Address,
+      poolAddress: selectedPool()?.poolAddr as Address,
+      tokenBalance: userBalance,
+      input: parseFloat(quantity ?? "0")
+    });
+
+  console.log("isApprovedData", isApprovedData);
+
+  const {
+    isApproveLoading,
+    isApprovePending,
+    isApproveSuccess,
+    approveError,
+    isApproveError,
+    approvalError,
+    writeApproveToken
+  } = useApproveToken();
 
   /**
    * This handler method approves signers TOKEN_ADDR tokens to be spent on Potentia Protocol
@@ -111,17 +126,6 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       console.log("error while approving", approveError);
     }
   };
-
-  // wait for approval transaction
-  const {
-    isSuccess: isApproveSuccess,
-    isLoading: isApproveLoading,
-    isError: isApproveError,
-    error: approvalError
-  } = useWaitForTransactionReceipt({
-    hash: approvalData,
-    confirmations: CONFIRMATION
-  });
 
   // wait for open short position transaction
   const { isSuccess, isLoading, isPending, isError, error } =
@@ -150,10 +154,11 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
         console.log("txnHash", hash);
       }
     } catch (e) {
-      // notification.error({
-      //   title: "Opening Short position failed",
-      //   description: `${error?.message}`
-      // });
+      notification.error({
+        id: "",
+        title: "Opening Short Position failed",
+        description: "Please try again"
+      });
       console.log("Opening Short position failed", error);
     } finally {
       console.log("open_short_position amount", _amount);
@@ -173,70 +178,6 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     return z.number().min(0.001).safeParse(parseFloat(quantity)).success;
   }, [quantity]);
 
-  // Notifications based on Transaction status
-  useEffect(() => {
-    if (isApproveLoading) {
-      notification.loading({
-        id: short_event.approve_loading,
-        title: "Approving tokens..."
-      });
-    } else if (isApproveError) {
-      toast.dismiss(short_event.approve_loading);
-      notification.error({
-        id: short_event.approve_error,
-        title: "Approval failed",
-        description: `${approvalError.message}`
-      });
-    }
-  }, [isApproveError, isApproveLoading]);
-
-  // Executes if Approve Successful
-  useEffect(() => {
-    if (isApproveSuccess) {
-      console.log("Token is approved for the selected amount!");
-      openShortPositionHandler();
-
-      toast.dismiss(short_event.approve_loading);
-      notification.success({
-        id: short_event.approve_success,
-        title: "Token Approved",
-        description: "You may now process to Opening a short position"
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isApproveSuccess]);
-
-  useEffect(() => {
-    if (isLoading) {
-      notification.loading({
-        id: short_event.loading,
-        title: "Opening Short Position..."
-      });
-    }
-    if (isError) {
-      toast.dismiss(short_event.loading);
-      notification.error({
-        id: short_event.error,
-        title: "Opening short position failed",
-        description: `${error.message}`
-      });
-    }
-  }, [isError, isLoading]);
-
-  useEffect(() => {
-    if (isSuccess) {
-      refetchBalance();
-      refetchOpenOrders();
-      refetchTxHistory();
-
-      toast.dismiss(short_event.loading);
-      notification.success({
-        id: short_event.success,
-        title: "Short position successfully opened"
-      });
-    }
-  }, [isSuccess]);
-
   // Handler that updates Quantity and keep SliderValue in sync
   function inputHandler(event: ChangeEvent<HTMLInputElement>) {
     const input = event.target.value;
@@ -255,6 +196,79 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       setQuantity(amount.toString());
     }
   }
+
+  // setting intital quantity
+  useEffect(() => {
+    if (userBalance) {
+      setQuantity(((parseFloat(userBalance?.formatted) * sliderValue) / 100).toString());
+    }
+  }, [userBalance]);
+
+  // Approval Loading or Error Effects
+  useEffect(() => {
+    if (isApproveLoading) {
+      notification.loading({
+        id: short_event.approve_loading,
+        title: "Approving tokens..."
+      });
+    } else if (isApproveError) {
+      toast.dismiss(short_event.approve_loading);
+      notification.error({
+        id: short_event.approve_error,
+        title: "Approval failed",
+        description: `${approvalError?.message}`
+      });
+    }
+  }, [isApproveError, isApproveLoading]);
+
+  // Approval Successful Effects
+  useEffect(() => {
+    if (isApproveSuccess) {
+      console.log("Token is approved for the selected amount!");
+      openShortPositionHandler();
+
+      toast.dismiss(short_event.approve_loading);
+      notification.success({
+        id: short_event.approve_success,
+        title: "Token Approved",
+        description: "You may now process to Opening a short position"
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isApproveSuccess]);
+
+  // Tx Loading or Error Effects
+  useEffect(() => {
+    if (isLoading) {
+      notification.loading({
+        id: short_event.loading,
+        title: "Opening Short Position..."
+      });
+    }
+    if (isError) {
+      toast.dismiss(short_event.loading);
+      notification.error({
+        id: short_event.default,
+        title: "Opening Position confirmation failed",
+        description: `${error.message}`
+      });
+    }
+  }, [isError, isLoading]);
+
+  // Tx Successful Effects
+  useEffect(() => {
+    if (isSuccess) {
+      refetchBalance();
+      refetchOpenOrders();
+      refetchTxHistory();
+
+      toast.dismiss(short_event.loading);
+      notification.success({
+        id: short_event.success,
+        title: "Short position successfully opened"
+      });
+    }
+  }, [isSuccess]);
 
   return (
     <div className="flex flex-col font-normal text-xs/[14px] gap-2 py-6 px-4">
@@ -337,9 +351,12 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
           isLoading ||
           // (isApproveSuccess && isPending) ||
           !minQuantityCheck ||
-          balanceExceedError
-        } // conditions to Long Button
-        onClick={approveHandler}
+          balanceExceedError ||
+          isApprovedLoading
+        } // conditions to Short Button
+        onClick={() =>
+          isApprovedSuccess ? openShortPositionHandler() : approveHandler()
+        }
         isLoading={isApproveLoading || isLoading}
       >
         <span>OPEN</span>

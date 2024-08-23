@@ -32,6 +32,8 @@ import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import { useTradeHistory } from "@lib/hooks/useTradeHistory";
+import useIsApprovedToken from "@lib/hooks/useIsApprovedToken";
+import useApproveToken from "@lib/hooks/useApproveToken";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -64,9 +66,9 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     isFetching: isPositionFetching,
     refetch: refetchOpenOrders
   } = useOpenOrders({
-    poolAddress: selectedPool()?.poolAddr! as Address
+    poolAddress: selectedPool()?.poolAddr! as Address,
+    paused: true
   });
-
   const longPosition = positionData?.longPositionTab?.tokenSize;
 
   // getting underlying token's price
@@ -77,19 +79,33 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   // const { refetch: refetchTxHistory } = useTxHistory(true);
   const { refetch: refetchTxHistory } = useTradeHistory(true);
 
-  // Write Hook => Token Approval
+  // Check approved tokens amount
+  const { isApprovedData, isApprovedLoading, isApprovedError, isApprovedSuccess } =
+    useIsApprovedToken({
+      tokenAddress: selectedPool()?.underlyingAddress as Address,
+      poolAddress: selectedPool()?.poolAddr as Address,
+      tokenBalance: userBalance,
+      input: parseFloat(quantity ?? "0")
+    });
+
+  console.log("isApprovedData", isApprovedData);
+
   const {
-    data: approvalData,
-    writeContractAsync: writeApproveToken,
-    error: approveError,
-    isPending: isApprovePending
-  } = useWriteContract();
+    isApproveLoading,
+    isApprovePending,
+    isApproveSuccess,
+    approveError,
+    isApproveError,
+    approvalError,
+    writeApproveToken
+  } = useApproveToken();
 
   /**
-   * This handler method approves signers WETH_ADDR tokens to be spent on Potentia Protocol
+   * This handler method approves signer's underlying tokens to be spent on Potentia Protocol
    */
   const approveHandler = async () => {
-    const _amount = parseFloat(quantity) * 10 ** 18;
+    if (!selectedPool()) return;
+    const _amount = parseFloat(quantity) * 10 ** selectedPool()?.underlyingDecimals!;
     try {
       await writeApproveToken({
         abi: WethABi,
@@ -110,23 +126,13 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     }
   };
 
-  // wait for approval transaction
-  const {
-    isSuccess: isApproveSuccess,
-    isLoading: isApproveLoading,
-    isError: isApproveError,
-    error: approvalError
-  } = useWaitForTransactionReceipt({
-    hash: approvalData,
-    confirmations: CONFIRMATION
-  });
-
   // wait for openPosition transaction
   const { isSuccess, isLoading, isPending, isError, error } =
     useWaitForTransactionReceipt({
       hash: txHash,
       confirmations: CONFIRMATION
     });
+
   /**
    * Handler for Opening Long Position
    */
@@ -143,6 +149,11 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
         setTxHash(hash as `0x${string}`);
       }
     } catch (e) {
+      notification.error({
+        id: long_event.default,
+        title: "Opening Position confirmation failed",
+        description: "Please try again"
+      });
       console.error("Error: Opening long position failed!");
     }
   };
@@ -178,7 +189,14 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     }
   }
 
-  // Notifications based on Transaction status
+  // setting initial quantity
+  useEffect(() => {
+    if (userBalance) {
+      setQuantity(((parseFloat(userBalance?.formatted) * sliderValue) / 100).toString());
+    }
+  }, [userBalance]);
+
+  // Approval Loading or Error Effects
   useEffect(() => {
     if (isApproveLoading) {
       notification.loading({
@@ -190,12 +208,12 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       notification.error({
         id: long_event.approve_error,
         title: "Approval failed",
-        description: `${approvalError.message}`
+        description: `${approvalError?.message}`
       });
     }
   }, [isApproveError, isApproveLoading]);
 
-  // Executes if Approve Successful
+  // Approval Successful Effects
   useEffect(() => {
     if (isApproveSuccess) {
       // Executing Open Long Transaction
@@ -209,6 +227,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     }
   }, [isApproveSuccess]);
 
+  // Tx Loading or Error Effects
   useEffect(() => {
     if (isLoading) {
       notification.loading({
@@ -226,7 +245,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     }
   }, [isError, isLoading]);
 
-  // executes if tx successful
+  // Tx Successful Effects
   useEffect(() => {
     if (isSuccess) {
       refetchBalance();
@@ -323,9 +342,10 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
           isLoading ||
           // (isApproveSuccess && isPending) ||
           balanceExceedError ||
-          !minQuantityCheck
+          !minQuantityCheck ||
+          isApprovedLoading
         } // conditions to Long Button
-        onClick={() => approveHandler()}
+        onClick={() => (isApprovedSuccess ? openLongPositionHandler() : approveHandler())}
         isLoading={isApproveLoading || isLoading}
       >
         <span>OPEN</span>
