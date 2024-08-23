@@ -27,7 +27,7 @@ function Marker({ label, value, fetching, showChange = false }: MarkerProps) {
 
 const MarketData = () => {
   return (
-    <div className="px-4 pb-4">
+    <div className="px-4 pb-4 w-full">
       <h3 className="font-medium text-sm/[54px]">Underlying Market Data</h3>
       <div className="flex flex-col gap-2 font-normal text-xs/[14px]">
         <Marker label={"Market Cap"} value={"-"} fetching={false} />
