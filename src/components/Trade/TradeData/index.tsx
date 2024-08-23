@@ -319,7 +319,7 @@ const TradeData = () => {
     "data-[state=active]:bg-white data-[state=active]:text-black uppercase py-2 px-4";
 
   return (
-    <div className="col-span-4 w-full font-medium text-xs leading-4 h-[276px] border-t border-secondary-gray">
+    <div className="w-full font-medium text-xs leading-4 h-[276px] border-t border-secondary-gray">
       {/* Tab Row */}
       <Tabs defaultValue={Tab.position}>
         <TabsList className="flex flex-row justify-start rounded-none font-medium text-sm/6 font-sans-ibm-plex border-b border-secondary-gray">
@@ -333,7 +333,7 @@ const TradeData = () => {
         </TabsList>
         {/* Tab Content */}
         {/* --- Open Positions Table --- */}
-        <TabsContent value={Tab.position} className="max-h-64 overflow-y-auto">
+        <TabsContent value={Tab.position} className="max-h-56 overflow-y-auto">
           <OpenPositionsTable
             columns={positionColumns}
             data={openPositions}
@@ -341,10 +341,7 @@ const TradeData = () => {
           />
         </TabsContent>
         {/* --- Transactions History Table --- */}
-        <TabsContent
-          value={Tab.history}
-          className="max-h-64 overflow-y-auto trade-history"
-        >
+        <TabsContent value={Tab.history} className="max-h-56 overflow-y-auto trade-history">
           <TradeHistoryTable
             columns={transactionsColumns}
             data={closedPositions}
