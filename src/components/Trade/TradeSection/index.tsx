@@ -16,7 +16,7 @@ const Trade = () => {
   const { tradeType, setTradeType } = useTradeStore();
 
   return (
-    <div className="flex flex-col border-b border-secondary-gray">
+    <div className="flex flex-col w-full border-secondary-gray">
       {/* Long and Short Tabs and their content */}
       <Tabs value={tradeType} onValueChange={setTradeType} className="w-full">
         <TabsList className="w-full flex flex-row items-center font-semibold text-base">
