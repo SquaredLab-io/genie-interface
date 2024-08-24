@@ -64,11 +64,11 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
    * This handler method approves signers WETH_ADDR tokens to be spent on Potentia Protocol
    */
   const approveHandler = async () => {
-    const _amount = parseFloat(amount) * 10 ** 18;
+    const _amount = parseFloat(amount) * 10 ** overviewPool.underlyingDecimals;
     try {
       await writeApproveToken({
         abi: WethABi,
-        address: overviewPool.underlyingAddress! as Address,
+        address: overviewPool.underlyingAddress as Address,
         functionName: "approve",
         args: [
           overviewPool.poolAddr,
