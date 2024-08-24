@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { Address } from "viem";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
-import { useAccount, useBalance, useWaitForTransactionReceipt } from "wagmi";
+import { useAccount, useWaitForTransactionReceipt } from "wagmi";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
@@ -15,6 +15,7 @@ import { CONFIRMATION } from "@lib/constants";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import notification from "@components/common/notification";
 import InfoBox from "../info-box";
+import useTokenBalance from "@lib/hooks/useTokenBalance";
 
 const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   // Amount to remove
@@ -33,9 +34,10 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     data: userBalance,
     isLoading: isBalLoading,
     refetch: refetchBalance
-  } = useBalance({
-    address,
-    token: underlyingAddress! as Address
+  } = useTokenBalance({
+    token: underlyingAddress! as Address,
+    decimals: underlyingDecimals,
+    symbol: underlying
   });
 
   // Current positions

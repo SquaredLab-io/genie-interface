@@ -1,5 +1,10 @@
+import { formatUnits } from "viem";
+
+/**
+ * Gives expontential values if number is lesser than 1e-3 or greater than -1e-3
+ * Rest if gives in dollar expressions
+ **/
 export const formatNumber = (num: number, isDollar: boolean = false) => {
-  // If the number is less than 1e-3 or greater than 1e+6, return in scientific notation
   if (num === 0) return "0";
   // number belongs to (-0.001, 0.001)
   else if (num > -1e-3 && num < 1e-3) {
@@ -9,7 +14,7 @@ export const formatNumber = (num: number, isDollar: boolean = false) => {
   return isDollar ? toDollarUnits(num, 3) : toUnits(num, 3);
 };
 
-export const formatDollarUnits = (amount: number) => {
+export const formatDollarUnits = (amount: number): string => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD"
@@ -59,11 +64,11 @@ export default function toUnits(
 ): string {
   if (!num || isNaN(num)) return "0";
   if (num >= 1e9) {
-    return Number((num / 1e9).toFixed(decimals)).toLocaleString("en-US") + "B";
+    return Number(num / 1e9).toLocaleString("en-US") + "B";
   } else if (num >= 1e6) {
-    return Number((num / 1e6).toFixed(decimals)).toLocaleString("en-US") + "M";
+    return Number(num / 1e6).toLocaleString("en-US") + "M";
   }
-  return Number(num.toFixed(decimals)).toLocaleString("en-US");
+  return Number(num).toLocaleString("en-US");
 }
 
 export function shortenHash(hash: string | undefined): string {
@@ -77,6 +82,14 @@ export function getDecimalAdjusted(
 ): number {
   if (!value) return 0;
   return parseFloat(value ?? "0") / 10 ** (decimals ?? 18);
+}
+
+export function _getDecimalAdjusted(
+  value: string | undefined,
+  decimals: number | undefined
+): string {
+  if (!value) return "0";
+  return formatUnits(BigInt(value), 18);
 }
 
 // eg. used in Trade Flow

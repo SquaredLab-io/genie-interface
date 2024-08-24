@@ -1,9 +1,8 @@
 import { useAccount } from "wagmi";
-import { Address, getAddress } from "viem";
+import { Address } from "viem";
 import { useQuery, QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 import { TokenBalance } from "@squaredlab-io/sdk";
 import { usePotentiaSdk } from "./usePotentiaSdk";
-import { useBalanceStore } from "@store/tradeStore";
 
 interface ReturnType {
   data: TokenBalance | undefined;
@@ -25,11 +24,6 @@ export function useCurrentPosition({
   poolAddress: Address | undefined;
   paused?: boolean;
 }): ReturnType {
-  // const [position, setPosition] = useState<string | undefined>("");
-  // const [isFetching, setIsFetching] = useState<boolean>(false);
-
-  const { updateCurrentPosition } = useBalanceStore();
-
   const { potentia } = usePotentiaSdk();
   const { address } = useAccount();
 

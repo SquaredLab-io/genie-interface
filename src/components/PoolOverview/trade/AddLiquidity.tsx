@@ -2,12 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import {
-  useBalance,
-  useAccount,
-  useWriteContract,
-  useWaitForTransactionReceipt
-} from "wagmi";
+import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { WethABi } from "@lib/abis";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import toUnits from "@lib/utils/formatting";
@@ -22,6 +17,7 @@ import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import { cn } from "@lib/utils";
 import InfoBox from "../info-box";
+import useTokenBalance from "@lib/hooks/useTokenBalance";
 
 const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const [amount, setAmount] = useState<string>("");
@@ -34,14 +30,15 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const { underlying, poolAddr, underlyingAddress, underlyingDecimals } = overviewPool;
 
   // Contract Hooks
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
   const {
     data: userBalance,
     isLoading: isBalLoading,
     refetch: refetchBalance
-  } = useBalance({
-    address,
-    token: underlyingAddress! as Address
+  } = useTokenBalance({
+    token: underlyingAddress! as Address,
+    decimals: underlyingDecimals,
+    symbol: underlying
   });
 
   // Current positions

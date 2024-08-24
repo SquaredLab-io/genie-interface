@@ -2,12 +2,7 @@
 
 // Library Imports
 import { ChangeEvent, FC, memo, useEffect, useMemo, useState } from "react";
-import {
-  useAccount,
-  useBalance,
-  useWaitForTransactionReceipt,
-  useWriteContract
-} from "wagmi";
+import { useAccount, useWaitForTransactionReceipt } from "wagmi";
 import { Address } from "viem";
 import { BiSolidDownArrow } from "react-icons/bi";
 import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
@@ -35,6 +30,7 @@ import { useTradeHistory } from "@lib/hooks/useTradeHistory";
 import { z } from "zod";
 import useIsApprovedToken from "@lib/hooks/useIsApprovedToken";
 import useApproveToken from "@lib/hooks/useApproveToken";
+import useTokenBalance from "@lib/hooks/useTokenBalance";
 // import { queryClient } from "@lib/utils/query";
 
 interface PropsType {
@@ -57,9 +53,10 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     data: userBalance,
     isLoading: isBalLoading,
     refetch: refetchBalance
-  } = useBalance({
-    address,
-    token: selectedPool()?.underlyingAddress as Address
+  } = useTokenBalance({
+    token: selectedPool()?.underlyingAddress as Address,
+    decimals: selectedPool()?.underlyingDecimals!,
+    symbol: selectedPool()?.underlying!
   });
 
   // Both hooks paused, Refetch method to be used on Successful tx
@@ -89,8 +86,6 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       tokenBalance: userBalance,
       input: parseFloat(quantity ?? "0")
     });
-
-  console.log("isApprovedData", isApprovedData);
 
   const {
     isApproveLoading,
@@ -123,7 +118,6 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
         title: "Approval failed",
         description: `${error}`
       });
-      console.log("error while approving", approveError);
     }
   };
 
@@ -151,7 +145,6 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       // set txHash in a state
       if (hash) {
         setTxHash(hash as `0x${string}`);
-        console.log("txnHash", hash);
       }
     } catch (e) {
       notification.error({
@@ -159,7 +152,6 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
         title: "Opening Short Position failed",
         description: "Please try again"
       });
-      console.log("Opening Short position failed", error);
     } finally {
       console.log("open_short_position amount", _amount);
     }
@@ -224,7 +216,6 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
   // Approval Successful Effects
   useEffect(() => {
     if (isApproveSuccess) {
-      console.log("Token is approved for the selected amount!");
       openShortPositionHandler();
 
       toast.dismiss(short_event.approve_loading);

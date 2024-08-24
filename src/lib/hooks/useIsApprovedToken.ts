@@ -3,13 +3,13 @@ import { Address } from "viem";
 import { useAccount, useReadContract } from "wagmi";
 import BigNumber from "bignumber.js";
 import { WethABi } from "@lib/abis";
-import { BalanceType } from "@lib/types/common";
+import { WagmiFetchBalanceResult } from "@lib/utils/getAccountBalance";
 
 interface PropsType {
   input: number;
   tokenAddress: Address | undefined;
   poolAddress: Address | undefined;
-  tokenBalance: BalanceType | undefined;
+  tokenBalance: WagmiFetchBalanceResult | undefined;
   paused?: boolean;
 }
 

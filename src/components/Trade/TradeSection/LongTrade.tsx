@@ -3,12 +3,7 @@
 // Library Imports
 import { ChangeEvent, FC, memo, useEffect, useMemo, useState } from "react";
 import { BiSolidDownArrow } from "react-icons/bi";
-import {
-  useAccount,
-  useBalance,
-  useWaitForTransactionReceipt,
-  useWriteContract
-} from "wagmi";
+import { useAccount, useWaitForTransactionReceipt } from "wagmi";
 import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
 import { z } from "zod";
 import { Address } from "viem";
@@ -25,7 +20,11 @@ import { toast } from "sonner";
 import notification from "@components/common/notification";
 import { notificationId } from "../helper";
 import TradeInfo from "./TradeInfo";
-import { formatNumber, getDecimalAdjusted } from "@lib/utils/formatting";
+import {
+  _getDecimalAdjusted,
+  formatNumber,
+  getDecimalAdjusted
+} from "@lib/utils/formatting";
 import { CONFIRMATION } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
@@ -34,6 +33,7 @@ import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import { useTradeHistory } from "@lib/hooks/useTradeHistory";
 import useIsApprovedToken from "@lib/hooks/useIsApprovedToken";
 import useApproveToken from "@lib/hooks/useApproveToken";
+import useTokenBalance from "@lib/hooks/useTokenBalance";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -55,9 +55,10 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     data: userBalance,
     isLoading: isBalLoading,
     refetch: refetchBalance
-  } = useBalance({
-    address,
-    token: selectedPool()?.underlyingAddress! as Address
+  } = useTokenBalance({
+    token: selectedPool()?.underlyingAddress! as Address,
+    decimals: selectedPool()?.underlyingDecimals!,
+    symbol: selectedPool()?.underlying!
   });
 
   // Both hooks paused, Refetch method to be used on Successful tx
@@ -87,8 +88,6 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       tokenBalance: userBalance,
       input: parseFloat(quantity ?? "0")
     });
-
-  console.log("isApprovedData", isApprovedData);
 
   const {
     isApproveLoading,
@@ -122,7 +121,6 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
         title: "Token approval failed!",
         description: `${approveError?.message}`
       });
-      console.log("Token approval failed", error);
     }
   };
 
@@ -154,7 +152,6 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
         title: "Opening Position confirmation failed",
         description: "Please try again"
       });
-      console.error("Error: Opening long position failed!");
     }
   };
 
@@ -274,9 +271,11 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
         {isPositionFetching && !positionData ? (
           <span>...</span>
         ) : (
-          <span className="font-medium">
-            {formatNumber(getDecimalAdjusted(longPosition, 18))}
-          </span>
+          <p className="flex flex-col items-start">
+            <span className="font-medium">
+              {formatNumber(getDecimalAdjusted(longPosition, 18))}
+            </span>
+          </p>
         )}
       </p>
       <form

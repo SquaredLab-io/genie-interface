@@ -8,12 +8,10 @@ export declare const PopoverSizeOptions: {
 export type PopoverSizes = (typeof PopoverSizeOptions)[keyof typeof PopoverSizeOptions];
 export declare const PopoverSizeContext: React.Context<PopoverSizes>;
 
-/**
- * useBalance ReturnType from Wagmi
- */
-export interface BalanceType {
+// Return Type of Wagmi useBalance hook
+export type WagmiFetchBalanceResult = {
   decimals: number;
   formatted: string;
   symbol: string;
   value: bigint;
-}
+};
