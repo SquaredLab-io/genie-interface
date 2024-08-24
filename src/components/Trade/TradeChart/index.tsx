@@ -61,7 +61,11 @@ const TradeChart = ({ potentia }: PropsType) => {
         // },
         symbol_search_request_delay: widgetProps.symbol_search_request_delay,
         auto_save_delay: widgetProps.auto_save_delay,
-        toolbar_bg: widgetProps.toolbar_bg
+        toolbar_bg: widgetProps.toolbar_bg,
+        overrides : {
+          "paneProperties.background": "#0C1820",
+          "paneProperties.backgroundType": "solid",
+        }
         // time_frames: props.time_frames
         // time_scale: {
         //   min_bar_spacing: 10
@@ -72,6 +76,7 @@ const TradeChart = ({ potentia }: PropsType) => {
 
       tvWidget.onChartReady(() => {
         setIsChartReady(true);
+        tvWidget.setCSSCustomProperty('--tv-color-pane-background', '#0C1820');
         // tvWidget.headerReady().then(() => {});
       });
 
