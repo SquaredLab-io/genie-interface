@@ -22,7 +22,7 @@ export const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
   symbol_search_request_delay: 2000,
   auto_save_delay: 5,
   theme: "dark",
-  toolbar_bg: "#16191F"
+  toolbar_bg: "#0C1820",
   // time_frames: [
   //   {
   //     text: "1d",
