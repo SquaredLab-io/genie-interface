@@ -9,21 +9,21 @@ import { TradeOptions } from "@lib/types/enums";
 import { useTradeStore } from "@store/tradeStore";
 
 const tabsStyle =
-  "w-1/2 py-2 text-center font-medium text-sm/5 data-[state=active]:border-t bg-[#121F27] data-[state=active]:bg-primary-gray";
+  "w-1/2 py-2 text-center font-medium text-sm/5 border-t border-secondary-gray bg-[#121F27] data-[state=active]:bg-primary-gray";
 
 const Trade = () => {
   const { potentia } = usePotentiaSdk();
   const { tradeType, setTradeType } = useTradeStore();
 
   return (
-    <div className="flex flex-col w-full border-secondary-gray">
+    <div className="flex flex-col w-full">
       {/* Long and Short Tabs and their content */}
       <Tabs value={tradeType} onValueChange={setTradeType} className="w-full">
         <TabsList className="w-full flex flex-row items-center font-semibold text-base">
           <TabsTrigger
             value={TradeOptions.long}
             className={cn(
-              "border-[#07AD3B] text-[#07AD3B]",
+              "data-[state=active]:border-[#07AD3B] text-[#07AD3B]",
               tabsStyle
             )}
           >
@@ -32,7 +32,7 @@ const Trade = () => {
           <TabsTrigger
             value={TradeOptions.short}
             className={cn(
-              "border-[#FF3318] text-[#FF3318]",
+              "data-[state=active]:border-[#FF3318] text-[#FF3318]",
               tabsStyle
             )}
           >
