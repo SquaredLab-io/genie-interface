@@ -1,14 +1,13 @@
 "use client";
 
+// Library Imports
 import { memo, useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Address } from "viem";
-import {
-  useAccount,
-  useToken,
-  useWaitForTransactionReceipt,
-  useWalletClient
-} from "wagmi";
+import { useAccount, useWaitForTransactionReceipt, useWalletClient } from "wagmi";
+import { toast } from "sonner";
+// Component Imports
 import Modal from "@components/common/Modal";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import {
@@ -20,26 +19,27 @@ import {
 } from "@components/ui/select";
 import ButtonCTA from "@components/common/button-cta";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
-import { CONFIRMATION, meta, SUPPORTED_NETWORKS, SUPPORTED_TOKENS } from "@lib/constants";
 import { DialogDescription, DialogHeader, DialogTitle } from "@components/ui/dialog";
+import { notificationId } from "@components/Trade/helper";
+// Hook, Helper Imports
+import { CONFIRMATION, meta, SUPPORTED_NETWORKS, SUPPORTED_TOKENS } from "@lib/constants";
 import notification from "../notification";
 import { shortenHash } from "@lib/utils/formatting";
-import Link from "next/link";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
 import { usePoolsStore } from "@store/poolsStore";
 
-const FaucetModal = ({
-  open,
-  setOpen,
-  trigger
-}: {
+interface PropsType {
   open: boolean;
   setOpen: (value: boolean) => void;
   trigger?: React.ReactNode;
-}) => {
+}
+
+const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
   const { potentia } = usePotentiaSdk();
   const { isConnected, address } = useAccount();
   const { data: walletClient } = useWalletClient();
+
+  const { faucet_event } = notificationId;
 
   // form states
   const [selectedNetwork, setSelectedNetwork] = useState(SUPPORTED_NETWORKS[0]);
@@ -56,6 +56,7 @@ const FaucetModal = ({
     token: selectedPool()?.underlyingAddress as Address,
     decimals: selectedPool()?.underlyingDecimals,
     symbol: selectedPool()?.underlying
+    // paused: true,
   });
 
   // tx states
@@ -76,14 +77,14 @@ const FaucetModal = ({
 
       if (success) {
         notification.success({
-          id: "facuet-success",
+          id: "faucet-add-success",
           title: `${selectedToken.token} token added in your Account`,
           description: "Please check in the wallet"
         });
       }
     } catch (error) {
       notification.error({
-        id: "facuet-error",
+        id: "faucet-add-error",
         title: `Failed to add ${selectedToken.token} in the wallet`,
         description: `${error}`
       });
@@ -115,14 +116,24 @@ const FaucetModal = ({
 
   // Notifications based on Transaction status
   useEffect(() => {
-    if (isError) {
+    if (isLoading) {
+      notification.loading({
+        id: faucet_event.loading,
+        title: "Getting the faucet tokens..."
+      });
+    } else if (isError) {
+      toast.dismiss(faucet_event.loading);
       notification.error({
-        id: "facuet-tx-error",
+        id: faucet_event.error,
         title: "Faucet Transaction failed",
         description: `${error.message}`
       });
-    } else if (isSuccess) {
-      // TODO: refetchBalance();
+    }
+  }, [isLoading, isError]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.dismiss(faucet_event.loading);
       refetchBalance();
       notification.success({
         id: "facuet-tx-success",
@@ -131,7 +142,7 @@ const FaucetModal = ({
       // prompt to add token into the wallet
       addToken();
     }
-  }, [isSuccess, isError]);
+  }, [isSuccess]);
 
   return (
     <Modal

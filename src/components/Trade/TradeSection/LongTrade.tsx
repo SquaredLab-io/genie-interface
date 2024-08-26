@@ -53,7 +53,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
 
   const {
     data: userBalance,
-    isLoading: isBalLoading,
+    isFetching: isBalLoading,
     refetch: refetchBalance
   } = useTokenBalance({
     token: selectedPool()?.underlyingAddress! as Address,

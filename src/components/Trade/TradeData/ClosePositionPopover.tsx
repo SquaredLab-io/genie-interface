@@ -138,13 +138,6 @@ const ClosePositionPopover: FC<PropsType> = ({
     }
   }, [isSuccess]);
 
-  // Slider value updater
-  // useEffect(() => {
-  //   if (balance) {
-  //     const amount = (balance * sliderValue[0]) / 100;
-  //     setQuantity(amount.toString());
-  //   }
-  // }, [balance, sliderValue]);
   // Handler that updates Quantity and keep SliderValue in sync
   function inputHandler(event: ChangeEvent<HTMLInputElement>) {
     const input = event.target.value;

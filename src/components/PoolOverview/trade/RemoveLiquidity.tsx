@@ -32,7 +32,7 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const { address, isConnected } = useAccount();
   const {
     data: userBalance,
-    isLoading: isBalLoading,
+    isFetching: isBalLoading,
     refetch: refetchBalance
   } = useTokenBalance({
     token: underlyingAddress! as Address,

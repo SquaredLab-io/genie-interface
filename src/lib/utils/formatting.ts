@@ -8,7 +8,7 @@ export const formatNumber = (num: number, isDollar: boolean = false) => {
   if (num === 0) return "0";
   // number belongs to (-0.001, 0.001)
   else if (num > -1e-3 && num < 1e-3) {
-    return num.toExponential(3);
+    return isDollar ? `$${num.toExponential(0)}` : num.toExponential(0);
   }
   // Otherwise, format to exactly three decimal places
   return isDollar ? toDollarUnits(num, 3) : toUnits(num, 3);
@@ -18,7 +18,7 @@ export const formatDollarUnits = (amount: number): string => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD"
-  }).format(amount);
+  }).format(amount); 
 };
 
 /**

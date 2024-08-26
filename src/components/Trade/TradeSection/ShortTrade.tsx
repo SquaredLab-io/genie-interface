@@ -31,7 +31,6 @@ import { z } from "zod";
 import useIsApprovedToken from "@lib/hooks/useIsApprovedToken";
 import useApproveToken from "@lib/hooks/useApproveToken";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
-// import { queryClient } from "@lib/utils/query";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -51,7 +50,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
 
   const {
     data: userBalance,
-    isLoading: isBalLoading,
+    isFetching: isBalLoading,
     refetch: refetchBalance
   } = useTokenBalance({
     token: selectedPool()?.underlyingAddress as Address,

@@ -24,5 +24,11 @@ export const notificationId = {
     loading: "close_loading",
     error: "close_error",
     success: "close_success"
+  },
+  faucet_event: {
+    default: "faucet",
+    loading: "faucet_loading",
+    error: "faucet_error",
+    success: "faucet_success"
   }
 };

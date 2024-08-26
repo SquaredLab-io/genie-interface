@@ -1,56 +1,72 @@
 import { useEffect } from "react";
-import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
-import { ReadContractErrorType } from "@wagmi/core";
 import { Address, formatUnits } from "viem";
-import { useReadContract, useAccount } from "wagmi";
+import { useAccount } from "wagmi";
+import { useQuery, QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
+import { readContract } from "@wagmi/core";
+import BigNumber from "bignumber.js";
 import notification from "@components/common/notification";
 import { WethABi } from "@lib/abis";
+import { config } from "@lib/wagmi";
 import { WagmiFetchBalanceResult } from "@lib/types/common";
-
-interface ReturnType {
-  data: WagmiFetchBalanceResult | undefined;
-  isLoading: boolean;
-  isError: boolean;
-  error: ReadContractErrorType | null;
-  refetch: (
-    options?: RefetchOptions
-  ) => Promise<QueryObserverResult<unknown, ReadContractErrorType>>;
-}
 
 interface PropsType {
   token: Address | undefined;
   decimals: number | undefined;
   symbol: string | undefined;
+  paused?: boolean;
 }
 
-/**
- * Let's use Wagmi's latest method to get Token a balance
- */
-const useTokenBalance = ({ token, decimals, symbol }: PropsType): ReturnType => {
-  const { address } = useAccount();
+interface ReturnType {
+  data: WagmiFetchBalanceResult | undefined;
+  isFetching: boolean;
+  isError: boolean;
+  error: Error | null;
+  refetch: (
+    options?: RefetchOptions
+  ) => Promise<QueryObserverResult<BigNumber | undefined, Error>>;
+}
+
+const useTokenBalance = ({
+  token,
+  decimals,
+  symbol,
+  paused = false
+}: PropsType): ReturnType => {
+  const { address, isConnected, chainId } = useAccount();
+
+  async function getBalance() {
+    try {
+      const balance = await readContract(config, {
+        address: token!,
+        abi: WethABi,
+        functionName: "balanceOf",
+        args: [address]
+      });
+      return balance as BigNumber;
+    } catch (error) {
+      console.error("Error fetching balance:", error);
+    }
+  }
+
   const {
     data: balance,
-    isLoading,
+    isFetching,
     isError,
     error,
     refetch
-  } = useReadContract({
-    abi: WethABi,
-    address: token,
-    functionName: "balanceOf",
-    args: [address],
-    query: {
-      enabled: !!address && !!token,
-      staleTime: 60000,
-      refetchOnReconnect: true,
-      retry: 3
-    }
+  } = useQuery({
+    queryKey: ["tokenBalance", chainId, address, token],
+    queryFn: getBalance,
+    enabled: isConnected && !!token && !paused,
+    staleTime: 20000,
+    refetchOnReconnect: true,
+    retry: 3
   });
 
   useEffect(() => {
     if (isError) {
       notification.error({
-        id: "balance-error",
+        id: "balance-fetch-error",
         title: "Failed to fetch user balance",
         description: "Please try again"
       });
@@ -60,17 +76,17 @@ const useTokenBalance = ({ token, decimals, symbol }: PropsType): ReturnType => 
   return {
     data: balance
       ? {
-          value: BigInt(balance as string),
+          value: BigInt(balance.toString()),
           decimals: decimals!,
           symbol: symbol!,
-          formatted: formatUnits(BigInt(balance as string), decimals!)
+          formatted: formatUnits(BigInt(balance.toString()), decimals!)
         }
       : undefined,
-    isLoading,
+    isFetching,
     isError,
     error,
     refetch
-  };
+  } satisfies ReturnType;
 };
 
 export default useTokenBalance;
