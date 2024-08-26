@@ -20,8 +20,24 @@ import {
   TableHeader,
   TableRow
 } from "@components/ui/table";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from "@hookform/resolvers/zod"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import NewPoModal from "./new-po-modal";
 import { cn } from "@lib/utils";
+import { formSchema, ManagePoolFormSchema } from "./managePoolFormSchema";
+
+interface FormDefaultValueTypes {
+  sqlDiscount: number;
+  halfLife: number;
+  priceUpdateFactor: number;
+}
 
 const ManagePoolModal = ({
   open,
@@ -30,25 +46,34 @@ const ManagePoolModal = ({
   open: boolean;
   setOpen: (value: boolean) => void;
 }) => {
-  const [sqlDiscount, setSqlDiscount] = useState<number>(0);
-  const [halfLife, setHalfLife] = useState<number>(0);
-  const [priceUpdateFactor, setPriceUpdateFactor] = useState<number>(0);
   const VAULT_ADDRESS = "0x428084313F9dCc38e9d0cB51dBBe466c8300a35c";
 
+  const form = useForm<ManagePoolFormSchema>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      sqlDiscount: 0,
+      halfLife: 0,
+      priceUpdateFactor: 0,
+    },
+    mode: 'onChange'
+  });
+
+  const sqlDiscountValue = form.watch("sqlDiscount");
+
   const [isSqlDiscValid, sqlDiscMin, sqlDiscMax] = useMemo(() => {
-    const disc = sqlDiscount;
+    const disc = form.watch("sqlDiscount");
     if (disc > 0 && disc <= 2000) {
       return [true, false, false];
     }
     return [false, disc < 0, disc > 2000];
-  }, [sqlDiscount]);
+  }, [sqlDiscountValue]);
 
-  const isValidUpdate =
-    halfLife > 0 &&
-    !isNaN(halfLife) &&
-    priceUpdateFactor > 0 &&
-    !isNaN(priceUpdateFactor) &&
-    !isSqlDiscValid;
+  /* const isValidUpdate =
+    form.watch("halfLife") > 0 &&
+    !isNaN(form.watch("halfLife")) &&
+    form.watch("priceUpdateFactor") > 0 &&
+    !isNaN(form.watch("priceUpdateFactor")) &&
+    !isSqlDiscValid; */
 
   const [newPoOpen, setNewPoOpen] = useState<boolean>(false);
 
@@ -79,6 +104,10 @@ const ManagePoolModal = ({
     }
   ];
 
+  function onSubmit(values: ManagePoolFormSchema) {
+    console.log(values);
+  }
+
   return (
     <Modal
       open={open}
@@ -92,108 +121,161 @@ const ManagePoolModal = ({
           Create a new pool or create a liquidity position on an existing pool.
         </DialogDescription>
       </DialogHeader>
-      {/* SQL Discount Lock Section */}
-      <div className="p-6 flex flex-col gap-10">
-        <div className="flex flex-row items-start justify-between">
-          <h5>SQL Discount Lock</h5>
-          <div className="w-1/2">
-            <Input
-              placeholder="0"
-              value={sqlDiscount}
-              onChange={(e) => {
-                setSqlDiscount(parseFloat(e.target.value));
-              }}
-              type="number"
-              className={cn("p-4 bg-transparent", !isSqlDiscValid && "border-[#FF3318]")}
-            />
-            <div className="text-[#FF3318] mt-2 text-sm/5">
-              {sqlDiscMin && (
-                <p>
-                  Please enter a number greater than 0.
-                </p>
-              )}
-              {sqlDiscMax && (
-                <p>
-                  Please enter a number less than or equal to 2000.
-                </p>
-              )}
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="h-full w-full mb-6">
+          {/* SQL Discount Lock Section */}
+          <div className="p-6 flex flex-col gap-10">
+            <div className="flex flex-row items-start justify-between">
+              <h5>SQL Discount Lock</h5>
+              <div className="w-1/2">
+                <FormField
+                  control={form.control}
+                  name="sqlDiscount"
+                  render={({ field }) => (
+                    <FormItem >
+                      <FormControl>
+                        <>
+                          <Input
+                            placeholder="0"
+                            value={field.value}
+                            onChange={(e) => {
+                              return field.onChange(parseFloat(e.target.value));
+                            }}
+                            type="number"
+                            className={cn("p-4 bg-transparent mb-4", !isSqlDiscValid && "border-[#FF3318]")}
+                          />
+                          {/* <div className="text-[#FF3318] mt-2 text-sm/5">
+                            {sqlDiscMin && (
+                              <p>
+                                Please enter a number greater than 0.
+                              </p>
+                            )}
+                            {sqlDiscMax && (
+                              <p>
+                                Please enter a number less than or equal to 2000.
+                              </p>
+                            )}
+                          </div> */}
+                          <SliderBar
+                            {...field}
+                            value={field.value}
+                            setValue={(value) => field.onChange(value)}
+                            min={0}
+                            max={2000}
+                            step={1}
+                            className="mt-4"
+                            indices={[0, 500, 1000, 1500, 2000]}
+                          />
+                        </>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
-            <SliderBar
-              value={sqlDiscount}
-              setValue={setSqlDiscount}
-              min={0}
-              max={2000}
-              step={1}
-              className="mt-4"
-              indices={[0, 500, 1000, 1500, 2000]}
-            />
+            <div className="space-y-2 text-right font-normal text-base/6 text-[#94A3B8]">
+              <p>
+                Position Discount : <span className="font-bold text-white">5%</span>
+              </p>
+              <p className="inline-flex items-center gap-2">
+                <span>Vault Address :</span>
+                <span className="font-bold text-white">{shortenHash(VAULT_ADDRESS)}</span>
+                <CopyToClipboard
+                  text={VAULT_ADDRESS}
+                  onCopy={() => {
+                    // notification.success({
+                    //   title: "Vault Address copied!",
+                    //   duration: 2000
+                    // });
+                  }}
+                >
+                  <button aria-label="button to copy vault address">
+                    <PiCopy className="text-white" />
+                  </button>
+                </CopyToClipboard>
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="space-y-2 text-right font-normal text-base/6 text-[#94A3B8]">
-          <p>
-            Position Discount : <span className="font-bold text-white">5%</span>
-          </p>
-          <p className="inline-flex items-center gap-2">
-            <span>Vault Address :</span>
-            <span className="font-bold text-white">{shortenHash(VAULT_ADDRESS)}</span>
-            <CopyToClipboard
-              text={VAULT_ADDRESS}
-              onCopy={() => {
-                // notification.success({
-                //   title: "Vault Address copied!",
-                //   duration: 2000
-                // });
-              }}
-            >
-              <button aria-label="button to copy vault address">
-                <PiCopy className="text-white" />
-              </button>
-            </CopyToClipboard>
-          </p>
-        </div>
-      </div>
+          <Separator />
+          {/* Advanced Section */}
+          <div className="p-6">
+            <h4 className="font-normal text-base/6 text-[#94A3B8] mb-6">Advanced</h4>
+            <div className="flex flex-row items-start justify-between mb-12">
+              <h5>Position Half Life</h5>
+              <div className="w-1/2">
+                <FormField
+                  control={form.control}
+                  name="halfLife"
+                  render={({ field, formState: { errors } }) => (
+                    <FormItem>
+                      <FormControl>
+                        <>
+                          <Input
+                            {...field}
+                            placeholder="0"
+                            value={field.value}
+                            onChange={(e) => {
+                              return field.onChange(parseFloat(e.target.value));
+                            }}
+                            type="number"
+                            className="p-4 bg-transparent"
+                          />
+                        </>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            <div className="flex flex-row items-start justify-between mb-10">
+              <h5>Price Update Factor</h5>
+              <div className="w-1/2">
+                <FormField
+                  control={form.control}
+                  name="priceUpdateFactor"
+                  render={({ field, formState: { errors } }) => (
+                    <FormItem>
+                      <FormControl>
+                        <>
+                          <Input
+                            placeholder="0"
+                            value={field.value}
+                            onChange={(e) => {
+                              return field.onChange(parseFloat(e.target.value));
+                            }}
+                            type="number"
+                            className="p-4 bg-transparent mb-4"
+                          />
+                          <SliderBar
+                            {...field}
+                            value={field.value}
+                            setValue={(value) => field.onChange(value)}
+                            min={0}
+                            max={1}
+                            step={0.001}
+                            className="mt-4"
+                            indices={[0, 0.25, 0.5, 0.75, 1]}
+                          />
+                        </>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            <ButtonCTA className="w-1/2 rounded-lg float-right" disabled={!(form.formState.isValid && form.formState.isDirty)}>
+              Update
+            </ButtonCTA>
+          </div>
+        </form>
+      </Form>
+
       <Separator />
-      {/* Advanced Section */}
-      <div className="p-6">
-        <h4 className="font-normal text-base/6 text-[#94A3B8] mb-6">Advanced</h4>
-        <div className="flex flex-row items-start justify-between mb-12">
-          <h5>Position Half Life</h5>
-          <div className="w-1/2">
-            <Input
-              placeholder="0"
-              value={halfLife}
-              onChange={(e) => setHalfLife(parseFloat(e.target.value))}
-              type="number"
-              className="p-4 bg-transparent"
-            />
-          </div>
-        </div>
-        <div className="flex flex-row items-start justify-between mb-10">
-          <h5>Price Update Factor</h5>
-          <div className="w-1/2">
-            <Input
-              placeholder="0"
-              value={priceUpdateFactor}
-              onChange={(e) => setPriceUpdateFactor(parseFloat(e.target.value))}
-              type="number"
-              className="p-4 bg-transparent"
-            />
-            <SliderBar
-              value={priceUpdateFactor}
-              setValue={setPriceUpdateFactor}
-              min={0}
-              max={1}
-              step={0.001}
-              className="mt-4"
-              indices={[0, 0.25, 0.5, 0.75, 1]}
-            />
-          </div>
-        </div>
-        <ButtonCTA className="w-1/2 rounded-lg float-right" disabled={!isValidUpdate}>
-          Update
-        </ButtonCTA>
-      </div>
-      <Separator />
+
       {/* Pool Operators Section */}
       <div className="p-6">
         <h4 className="font-normal text-base/6 text-[#94A3B8] mb-6">Pool Operators</h4>
