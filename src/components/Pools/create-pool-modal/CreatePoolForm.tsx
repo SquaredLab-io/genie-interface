@@ -25,8 +25,8 @@ interface FormDefaultValueTypes {
 export default function CreatePoolForm() {
 
   const [sqlDiscount, setSqlDiscount] = useState<number[]>([0]);
-  const [halfLife, setHalfLife] = useState<number>(0);
-  const [priceUpdateFactor, setPriceUpdateFactor] = useState<number>(0);
+  /* const [halfLife, setHalfLife] = useState<number>(0);
+  const [priceUpdateFactor, setPriceUpdateFactor] = useState<number>(0); */
 
   const VAULT_ADDRESS = "0x428084313F9dCc38e9d0cB51dBBe466c8300a35c";
 
@@ -60,12 +60,12 @@ export default function CreatePoolForm() {
     return [false, disc < 0, disc > 2000];
   }, [sqlDiscount]);
 
-  const isValidUpdate =
+  /* const isValidUpdate =
     halfLife > 0 &&
     !isNaN(halfLife) &&
     priceUpdateFactor > 0 &&
     !isNaN(priceUpdateFactor) &&
-    !isSqlDiscValid;
+    !isSqlDiscValid; */
 
   const handleIntialLiquiditySliderChange = useCallback((value: number) => {
     /* if (initialLiquidityTimeoutRef.current !== null) {
@@ -163,7 +163,7 @@ export default function CreatePoolForm() {
             title="Set Power"
             description="Which token pair would you like to add liquidity to."
           >
-            <Controller
+            <FormField
               control={form.control}
               name="power"
               render={({ field, formState: { errors } }) => (
@@ -190,7 +190,7 @@ export default function CreatePoolForm() {
             title="SQL Fees"
             description="Which token pair would you like to add liquidity to."
           >
-            <Controller
+            <FormField
               control={form.control}
               name="sqlFee"
               render={({ field, formState: { errors } }) => (
@@ -234,7 +234,7 @@ export default function CreatePoolForm() {
           <div className="flex flex-row items-start justify-between mb-20">
             <h5>Position Half Life</h5>
             <div className="w-1/2">
-              <Controller
+              <FormField
                 control={form.control}
                 name="halfLife"
                 render={({ field, formState: { errors } }) => (
@@ -271,7 +271,7 @@ export default function CreatePoolForm() {
           <div className="flex flex-row items-start justify-between mb-20">
             <h5>Price Update Factor</h5>
             <div className="w-1/2">
-              <Controller
+              <FormField
                 control={form.control}
                 name="priceUpdateFactor"
                 render={({ field, formState: { errors } }) => (
