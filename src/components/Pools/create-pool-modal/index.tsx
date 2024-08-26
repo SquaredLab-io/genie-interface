@@ -134,7 +134,7 @@ liquidity to."
             className="p-4 bg-transparent"
           />
           <SliderBar
-            value={[2]}
+            value={2}
             setValue={() => {}}
             min={2}
             max={32}

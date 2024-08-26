@@ -18,9 +18,9 @@ interface ReturnType {
 }
 
 interface PropsType {
-  token: Address;
-  decimals: number;
-  symbol: string;
+  token: Address | undefined;
+  decimals: number | undefined;
+  symbol: string | undefined;
 }
 
 /**
@@ -40,7 +40,7 @@ const useTokenBalance = ({ token, decimals, symbol }: PropsType): ReturnType => 
     functionName: "balanceOf",
     args: [address],
     query: {
-      enabled: !!address,
+      enabled: !!address && !!token,
       staleTime: 60000,
       refetchOnReconnect: true,
       retry: 3
@@ -61,9 +61,9 @@ const useTokenBalance = ({ token, decimals, symbol }: PropsType): ReturnType => 
     data: balance
       ? {
           value: BigInt(balance as string),
-          decimals,
-          symbol: symbol,
-          formatted: formatUnits(BigInt(balance as string), decimals)
+          decimals: decimals!,
+          symbol: symbol!,
+          formatted: formatUnits(BigInt(balance as string), decimals!)
         }
       : undefined,
     isLoading,

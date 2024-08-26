@@ -3,7 +3,12 @@
 import { memo, useEffect, useState } from "react";
 import Image from "next/image";
 import { Address } from "viem";
-import { useAccount, useWaitForTransactionReceipt, useWalletClient } from "wagmi";
+import {
+  useAccount,
+  useToken,
+  useWaitForTransactionReceipt,
+  useWalletClient
+} from "wagmi";
 import Modal from "@components/common/Modal";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import {
@@ -20,6 +25,8 @@ import { DialogDescription, DialogHeader, DialogTitle } from "@components/ui/dia
 import notification from "../notification";
 import { shortenHash } from "@lib/utils/formatting";
 import Link from "next/link";
+import useTokenBalance from "@lib/hooks/useTokenBalance";
+import { usePoolsStore } from "@store/poolsStore";
 
 const FaucetModal = ({
   open,
@@ -32,18 +39,28 @@ const FaucetModal = ({
 }) => {
   const { potentia } = usePotentiaSdk();
   const { isConnected, address } = useAccount();
-  const { data: walletClient, status } = useWalletClient();
+  const { data: walletClient } = useWalletClient();
 
   // form states
   const [selectedNetwork, setSelectedNetwork] = useState(SUPPORTED_NETWORKS[0]);
-  const [selectedToken, setSelectedToken] = useState(SUPPORTED_TOKENS[0]);
-  // const [inputAddress, setInputAddress] = useState<string>("");
+
+  const { selectedPool } = usePoolsStore();
+
+  const [selectedToken, setSelectedToken] = useState(
+    SUPPORTED_TOKENS.find((token) => {
+      return token.address === selectedPool()?.underlyingAddress;
+    }) ?? SUPPORTED_TOKENS[0]
+  );
+
+  const { refetch: refetchBalance } = useTokenBalance({
+    token: selectedPool()?.underlyingAddress as Address,
+    decimals: selectedPool()?.underlyingDecimals,
+    symbol: selectedPool()?.underlying
+  });
 
   // tx states
   const [isTxLoading, setIsTxLoading] = useState(false);
   const [txHash, setTxHash] = useState<Address>();
-
-  // const isValidInput = isValidAddress(inputAddress);
 
   // addToken() adds token into the connected wallet
   async function addToken() {
@@ -52,20 +69,22 @@ const FaucetModal = ({
         type: "ERC20",
         options: {
           address: selectedToken.address,
-          decimals: 18,
+          decimals: selectedToken.decimals,
           symbol: selectedToken.token
         }
       });
-      // TODO: update the title and description
-      notification.success({
-        id: "facuet-success",
-        title: `${selectedToken.token} added in the wallet`,
-        description: "Please check in the wallet"
-      });
+
+      if (success) {
+        notification.success({
+          id: "facuet-success",
+          title: `${selectedToken.token} token added in your Account`,
+          description: "Please check in the wallet"
+        });
+      }
     } catch (error) {
       notification.error({
         id: "facuet-error",
-        title: ` Failed to add ${selectedToken.token} in the wallet`,
+        title: `Failed to add ${selectedToken.token} in the wallet`,
         description: `${error}`
       });
     }
@@ -103,11 +122,11 @@ const FaucetModal = ({
         description: `${error.message}`
       });
     } else if (isSuccess) {
-      // TODO:
-      // refetchBalance();
+      // TODO: refetchBalance();
+      refetchBalance();
       notification.success({
         id: "facuet-tx-success",
-        title: "Facuet transferred succeesfull to your account"
+        title: "Test tokens transferred succeesfully to your account"
       });
       // prompt to add token into the wallet
       addToken();
@@ -125,7 +144,10 @@ const FaucetModal = ({
         <DialogTitle className="text-[22px]/[27px]">Get Test Tokens</DialogTitle>
         <DialogDescription className="text-sm/[19px] text-[#CACACC]">
           Click the button below to receive your test net tokens. Need more?{" "}
-          <Link href={meta.DISCORD} className="text-primary-blue hover:underline underline-offset-2">
+          <Link
+            href={meta.DISCORD}
+            className="text-primary-blue hover:underline underline-offset-2"
+          >
             Join our Discord
           </Link>{" "}
           for exclusive access to additional tokens.

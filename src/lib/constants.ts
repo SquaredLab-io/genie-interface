@@ -73,13 +73,15 @@ export const SUPPORTED_TOKENS = [
     token: "WETH",
     name: "Wrapped Ether",
     address: TOKENS.WETH,
-    logo: "/tokens/weth.svg"
+    logo: "/tokens/weth.svg",
+    decimals: 18
   },
   {
     token: "USDC",
     name: "USD Coin",
     address: TOKENS.USDC,
-    logo: "/tokens/usdc.svg"
+    logo: "/tokens/usdc.svg",
+    decimals: 6
   }
 ];
 
