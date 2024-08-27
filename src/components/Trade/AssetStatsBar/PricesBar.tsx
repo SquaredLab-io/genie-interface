@@ -62,8 +62,6 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
   const { tokenPrices, isFetching, status } = useTokenPrice({
     poolAddress: selectedPool?.poolAddr
   });
-  // const { tokenPrice: tokenPrices, isFetchingPrice: isTokenPricesFetching } =
-  //   usePricesStore();
 
   const fundingRateLong = parseFloat(
     new BigNumber(tokenPrices?.fundingInfo.longF ?? 0).toString() ?? "0"
@@ -119,13 +117,13 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
         />
         <Marker
           label="Long Funding Rate"
-          value={`${fundingRateLong > 0 ? "+" : ""}${fundingRateLong ? formatNumber(fundingRateLong) : "-"}%`}
+          value={`${fundingRateLong > 0 ? "+" : ""}${fundingRateLong ? fundingRateLong.toFixed(8) : "-"}%`}
           fetching={isFetching}
           showChange
         />
         <Marker
           label="Short Funding Rate"
-          value={`${fundingRateShort > 0 ? "+" : ""}${fundingRateShort ? formatNumber(fundingRateShort) : "-"}%`}
+          value={`${fundingRateShort > 0 ? "+" : ""}${fundingRateShort ? fundingRateShort.toFixed(8) : "-"}%`}
           fetching={isFetching}
           showChange
         />

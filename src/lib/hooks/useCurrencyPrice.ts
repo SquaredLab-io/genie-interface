@@ -58,7 +58,7 @@ export function useCurrencyPrice(symbol = ""): ReturnType {
 
   // Given symbol's current price
   const { data, status, error, isError, isFetching, refetch } = useQuery({
-    queryKey: ["currencyPrice"],
+    queryKey: ["currencyPrice", symbol],
     queryFn: fetchPrice,
     refetchInterval: REFETCH_INTERVAL,
     enabled: !!symbol
@@ -66,9 +66,9 @@ export function useCurrencyPrice(symbol = ""): ReturnType {
 
   // Previous day's 24h High and Low
   const { data: daily, isFetching: isDailyFetching } = useQuery({
-    queryKey: ["dailyData"],
+    queryKey: ["dailyData", symbol],
     queryFn: fetchDailyData,
-    refetchInterval: false,
+    refetchInterval: REFETCH_INTERVAL,
     enabled: !!symbol
   });
 
