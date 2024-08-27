@@ -19,7 +19,7 @@ export default function SelectDate({
         <Button
           variant={"outline"}
           className={cn(
-            "w-1/2 float-right text-left font-normal border border-secondary-gray px-4 py-3"
+            "w-full float-right text-left font-normal border border-secondary-gray px-4 py-3"
           )}
         >
           {date ? <span>{fullDate}</span> : <span>Pick a date</span>}

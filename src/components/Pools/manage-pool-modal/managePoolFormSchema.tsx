@@ -8,34 +8,34 @@ export const formSchema = z.object({
         required_error: "Sql Fee is required",
         invalid_type_error: "Sql Fee must be a number",
     })
-    .int("Power must be an integer")
-    .min(0, {
-        message: "Power must be atleast 0"
+    .int("Sql discount must be an integer")
+    .min(1, {
+        message: "Please enter a number greater than 0"
     })
-    .max(2000, {
-        message: 'Value exceeded max range'
+    .max(1999, {
+        message: 'Please enter a number less than 2000'
     }),
     halfLife: z
     .number({
         required_error: "Half life is required",
         invalid_type_error: "Half life must be a number",
     })
-    .min(0, {
-        message: "Half Life must be atleast 0"
+    .min(0.0001, {
+        message: "Please enter a number greater than 0"
     })
-    .max(1000, {
+   /*  .max(1000, {
         message: 'Value exceeded max range'
-    }),
+    }) */,
     priceUpdateFactor: z
     .number({
         required_error: "Price update factor is required",
         invalid_type_error: "Value must be a number"
     })
-    .min(0, {
-        message: "Update factor must be atleast 0"
+    .min(0.001, {
+        message: "Please enter a number greater than 0"
     })
-    .max(1, {
-        message: 'Value exceeded max range'
+    .max(0.999, {
+        message: 'Please enter a number less than 1'
     }),
 })
 
