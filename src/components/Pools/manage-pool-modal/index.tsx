@@ -2,7 +2,7 @@
 
 import { cn } from "@lib/utils";
 import { useState } from "react";
-import { useForm } from 'react-hook-form';
+import { useForm } from "react-hook-form";
 
 import { PiCopy } from "react-icons/pi";
 import Modal from "@components/common/Modal";
@@ -21,13 +21,13 @@ import {
   TableHeader,
   TableRow
 } from "@components/ui/table";
-import { zodResolver } from "@hookform/resolvers/zod"
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormMessage,
+  FormMessage
 } from "@/components/ui/form";
 
 import NewPoModal from "./new-po-modal";
@@ -50,9 +50,9 @@ const ManagePoolModal = ({
     defaultValues: {
       sqlDiscount: 0,
       halfLife: 0,
-      priceUpdateFactor: 0,
+      priceUpdateFactor: 0
     },
-    mode: 'onChange'
+    mode: "onChange"
   });
 
   const [newPoOpen, setNewPoOpen] = useState<boolean>(false);
@@ -101,7 +101,6 @@ const ManagePoolModal = ({
           Create a new pool or create a liquidity position on an existing pool.
         </DialogDescription>
       </DialogHeader>
-
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="h-full w-full mb-6">
           {/* SQL Discount Lock Section */}
@@ -112,8 +111,8 @@ const ManagePoolModal = ({
                 <FormField
                   control={form.control}
                   name="sqlDiscount"
-                  render={({ field, formState: {errors} }) => (
-                    <FormItem >
+                  render={({ field, formState: { errors } }) => (
+                    <FormItem>
                       <FormControl>
                         <>
                           <Input
@@ -123,7 +122,10 @@ const ManagePoolModal = ({
                               return field.onChange(parseFloat(e.target.value));
                             }}
                             type="number"
-                            className={cn("p-4 bg-transparent mb-4", errors.sqlDiscount && "border-[#FF3318]")}
+                            className={cn(
+                              "p-4 bg-transparent mb-4",
+                              errors.sqlDiscount && "border-[#FF3318]"
+                            )}
                           />
                           <FormMessage className="text-[#FF3318] text-sm/5 -mt-2 mb-3" />
                           <SliderBar
@@ -188,7 +190,10 @@ const ManagePoolModal = ({
                               return field.onChange(parseFloat(e.target.value));
                             }}
                             type="number"
-                            className={cn("p-4 bg-transparent mb-4", errors.halfLife && "border-[#FF3318]")}
+                            className={cn(
+                              "p-4 bg-transparent mb-4",
+                              errors.halfLife && "border-[#FF3318]"
+                            )}
                           />
                         </>
                       </FormControl>
@@ -215,7 +220,10 @@ const ManagePoolModal = ({
                               return field.onChange(parseFloat(e.target.value));
                             }}
                             type="number"
-                            className={cn("p-4 bg-transparent mb-4", errors.priceUpdateFactor && "border-[#FF3318]")}
+                            className={cn(
+                              "p-4 bg-transparent mb-4",
+                              errors.priceUpdateFactor && "border-[#FF3318]"
+                            )}
                           />
                           <FormMessage className="text-[#FF3318] text-sm/5 -mt-2 mb-3" />
                           <SliderBar
@@ -235,7 +243,10 @@ const ManagePoolModal = ({
                 />
               </div>
             </div>
-            <ButtonCTA className="w-1/2 rounded-lg float-right" disabled={!(form.formState.isValid && form.formState.isDirty)}>
+            <ButtonCTA
+              className="w-1/2 rounded-lg float-right"
+              disabled={!(form.formState.isValid && form.formState.isDirty)}
+            >
               Update
             </ButtonCTA>
           </div>
