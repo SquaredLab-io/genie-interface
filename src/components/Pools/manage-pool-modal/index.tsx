@@ -1,16 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Modal from "@components/common/Modal";
-import SliderBar from "@components/common/slider-bar";
-import { DialogHeader, DialogDescription, DialogTitle } from "@components/ui/dialog";
-import { Input } from "@components/ui/input";
+import { cn } from "@lib/utils";
+import { useState } from "react";
+import { useForm } from 'react-hook-form';
+
 import { PiCopy } from "react-icons/pi";
-import CopyToClipboard from "react-copy-to-clipboard";
-import { shortenHash } from "@lib/utils/formatting";
-import notification from "@components/common/notification";
+import Modal from "@components/common/Modal";
+import { Input } from "@components/ui/input";
 import { Separator } from "@components/ui/separator";
+import SliderBar from "@components/common/slider-bar";
 import ButtonCTA from "@components/common/button-cta";
+import notification from "@components/common/notification";
+import { DialogHeader, DialogDescription, DialogTitle } from "@components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -20,7 +21,6 @@ import {
   TableHeader,
   TableRow
 } from "@components/ui/table";
-import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Form,
@@ -29,15 +29,12 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+
 import NewPoModal from "./new-po-modal";
-import { cn } from "@lib/utils";
 import { formSchema, ManagePoolFormSchema } from "./managePoolFormSchema";
 
-interface FormDefaultValueTypes {
-  sqlDiscount: number;
-  halfLife: number;
-  priceUpdateFactor: number;
-}
+import { shortenHash } from "@lib/utils/formatting";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 const ManagePoolModal = ({
   open,
@@ -57,23 +54,6 @@ const ManagePoolModal = ({
     },
     mode: 'onChange'
   });
-
-  const sqlDiscountValue = form.watch("sqlDiscount");
-
-  const [isSqlDiscValid, sqlDiscMin, sqlDiscMax] = useMemo(() => {
-    const disc = form.watch("sqlDiscount");
-    if (disc > 0 && disc <= 2000) {
-      return [true, false, false];
-    }
-    return [false, disc < 0, disc > 2000];
-  }, [sqlDiscountValue]);
-
-  /* const isValidUpdate =
-    form.watch("halfLife") > 0 &&
-    !isNaN(form.watch("halfLife")) &&
-    form.watch("priceUpdateFactor") > 0 &&
-    !isNaN(form.watch("priceUpdateFactor")) &&
-    !isSqlDiscValid; */
 
   const [newPoOpen, setNewPoOpen] = useState<boolean>(false);
 
@@ -132,7 +112,7 @@ const ManagePoolModal = ({
                 <FormField
                   control={form.control}
                   name="sqlDiscount"
-                  render={({ field }) => (
+                  render={({ field, formState: {errors} }) => (
                     <FormItem >
                       <FormControl>
                         <>
@@ -143,20 +123,9 @@ const ManagePoolModal = ({
                               return field.onChange(parseFloat(e.target.value));
                             }}
                             type="number"
-                            className={cn("p-4 bg-transparent mb-4", !isSqlDiscValid && "border-[#FF3318]")}
+                            className={cn("p-4 bg-transparent mb-4", errors.sqlDiscount && "border-[#FF3318]")}
                           />
-                          {/* <div className="text-[#FF3318] mt-2 text-sm/5">
-                            {sqlDiscMin && (
-                              <p>
-                                Please enter a number greater than 0.
-                              </p>
-                            )}
-                            {sqlDiscMax && (
-                              <p>
-                                Please enter a number less than or equal to 2000.
-                              </p>
-                            )}
-                          </div> */}
+                          <FormMessage className="text-[#FF3318] text-sm/5 -mt-2 mb-3" />
                           <SliderBar
                             {...field}
                             value={field.value}
@@ -169,7 +138,6 @@ const ManagePoolModal = ({
                           />
                         </>
                       </FormControl>
-                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -220,11 +188,11 @@ const ManagePoolModal = ({
                               return field.onChange(parseFloat(e.target.value));
                             }}
                             type="number"
-                            className="p-4 bg-transparent"
+                            className={cn("p-4 bg-transparent mb-4", errors.halfLife && "border-[#FF3318]")}
                           />
                         </>
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-[#FF3318] text-sm/5 -mt-2 mb-3" />
                     </FormItem>
                   )}
                 />
@@ -247,8 +215,9 @@ const ManagePoolModal = ({
                               return field.onChange(parseFloat(e.target.value));
                             }}
                             type="number"
-                            className="p-4 bg-transparent mb-4"
+                            className={cn("p-4 bg-transparent mb-4", errors.priceUpdateFactor && "border-[#FF3318]")}
                           />
+                          <FormMessage className="text-[#FF3318] text-sm/5 -mt-2 mb-3" />
                           <SliderBar
                             {...field}
                             value={field.value}
@@ -261,7 +230,6 @@ const ManagePoolModal = ({
                           />
                         </>
                       </FormControl>
-                      <FormMessage />
                     </FormItem>
                   )}
                 />
