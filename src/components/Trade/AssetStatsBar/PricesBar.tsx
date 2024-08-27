@@ -35,13 +35,15 @@ function Marker({ label, value, fetching, subValue, showChange = false }: Marker
         >
           {(fetching && !value) || value === "0" ? "-" : value}
         </span>
-        {_subValue && (
+        {_subValue ? (
           <span
             className={cn(_subValue > 0 ? "text-positive-green" : "text-negative-red")}
           >
             ({_subValue > 0 && "+"}
             {_subValue === 0 ? "-" : _subValue}%)
           </span>
+        ) : (
+          ""
         )}
       </div>
     </div>
@@ -50,7 +52,6 @@ function Marker({ label, value, fetching, subValue, showChange = false }: Marker
 
 const PricesBar = ({ selectedPool }: PricesBarProps) => {
   const underlying = selectedPool?.underlying;
-  // console.log('underlying @pricebar',underlying);
   const {
     price,
     isFetching: isPriceLoading,

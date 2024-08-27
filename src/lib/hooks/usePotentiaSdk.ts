@@ -3,7 +3,7 @@ import { useWalletClient } from "wagmi";
 import { createPublicClient, http } from "viem";
 import { baseSepolia } from "viem/chains";
 import { PotentiaSdk } from "@squaredlab-io/sdk/src";
-import { PONDER_URL, SUBGRAPH_URL } from "@lib/keys";
+import { PONDER_URL, SQL_CHANNEL_URL } from "@lib/keys";
 
 /**
  * Hook to creates a Potentia SDK instance after a user is connected
@@ -20,7 +20,7 @@ export const usePotentiaSdk = () => {
   });
 
   async function userConnected() {
-    const potentia = new PotentiaSdk(publicClient, SUBGRAPH_URL, PONDER_URL);
+    const potentia = new PotentiaSdk(publicClient, PONDER_URL, SQL_CHANNEL_URL);
     setPotentia(potentia);
   }
 

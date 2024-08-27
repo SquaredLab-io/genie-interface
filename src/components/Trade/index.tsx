@@ -64,7 +64,6 @@ const Trade = () => {
             <MarketData />
           </div>
         </div>
-
       </div>
     </>
   );

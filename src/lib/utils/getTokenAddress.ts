@@ -1,3 +1,4 @@
+/* DEPRECATED */
 import { TOKENS } from "@lib/constants";
 
 export function getTokenAddress(symbol: string | undefined): `0x${string}` {

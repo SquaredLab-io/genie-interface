@@ -58,7 +58,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   } = useWriteContract();
 
   /**
-   * This handler method approves signers WETH_ADDR tokens to be spent on Potentia Protocol
+   * This handler method approves signers underlying tokens to be spent on Potentia Protocol
    */
   const approveHandler = async () => {
     const _amount = parseFloat(amount) * 10 ** overviewPool.underlyingDecimals;
