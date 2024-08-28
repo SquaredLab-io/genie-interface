@@ -6,6 +6,7 @@ import { formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import {
+  _getDecimalAdjusted,
   formatNumber,
   formatOraclePrice,
   formatTimestamp,
@@ -130,13 +131,23 @@ const TradeData = () => {
       accessorKey: "size",
       header: () => <span>Size</span>,
       cell: ({ row }) => {
-        const { tokenSize } = row.original;
+        const { tokenSize, underlyingPrice } = row.original;
         return (
-          <span>
-            {formatNumber(
-              getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals!)
-            )}
-          </span>
+          <p className="flex flex-col items-start">
+            <span>
+              {formatNumber(
+                getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals!)
+              )}
+            </span>
+            <span className="text-[#9299AA] text-xs">
+              {/* {underlyingPrice} */}
+              {formatNumber(
+                parseFloat(underlyingPrice) *
+                  getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals),
+                true
+              )}
+            </span>
+          </p>
         );
       }
     },
@@ -341,7 +352,10 @@ const TradeData = () => {
           />
         </TabsContent>
         {/* --- Transactions History Table --- */}
-        <TabsContent value={Tab.history} className="max-h-56 overflow-y-auto trade-history">
+        <TabsContent
+          value={Tab.history}
+          className="max-h-56 overflow-y-auto trade-history"
+        >
           <TradeHistoryTable
             columns={transactionsColumns}
             data={closedPositions}

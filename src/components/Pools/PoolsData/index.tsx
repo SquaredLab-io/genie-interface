@@ -7,7 +7,11 @@ import { PlusIcon } from "lucide-react";
 // Component Imports
 import { Tabs, TabsContent, TabsTrigger } from "@components/ui/tabs";
 import PoolsTable from "./PoolsTable";
-import { allPoolsColumnDef, userPoolsColumnDef } from "./pool-columns";
+import {
+  allPoolsColumnDef,
+  transactionsColumnDef,
+  userPoolsColumnDef
+} from "./pool-columns";
 import SearchInput from "./SearchInput";
 import CreatePoolModal from "../create-pool-modal";
 import ManagePoolModal from "../manage-pool-modal";
@@ -20,15 +24,17 @@ import MyPoolsTable from "./MyPoolsTable";
 import { useIsMounted } from "@lib/hooks/useIsMounted";
 import LoadingScreen from "@components/common/loading-screen";
 import { useModalStore, usePoolsStore } from "@store/poolsStore";
+import { useLiquidityHistory } from "@lib/hooks/useLiquidityHistory";
+import TransactionsTable from "./TransactionsTable";
+import { useFilteredTxs } from "@lib/hooks/useFilteredTxs";
 
 const PoolsData = () => {
   const { isMounted } = useIsMounted();
   const { pools, isFetching } = usePools();
+  const { data: liquidityHistory, isFetching: isLiqHistoryFetching } =
+    useLiquidityHistory();
 
-  // to be removed
-  console.log("pools @poolsdata", pools);
-  console.log("loading @poolsdata", isFetching);
-
+  // Pool Creation and Manage Modal state
   const { openCreateModal, setOpenCreateModal, openManageModal, setOpenManageModal } =
     useModalStore();
 
@@ -39,14 +45,15 @@ const PoolsData = () => {
   const [allTerm, setAllTerm] = useState("");
   const [myTerm, setMyTerm] = useState("");
   const [txTerm, setTxTerm] = useState("");
+
   const { pools: filteredAllPools } = useFilteredPools(pools, allTerm);
   const { pools: filteredMyPools } = useFilteredPools(pools, myTerm);
-  // const { pools: filteredTxPools } = useFilteredPools(pools, txTerm);
+  const { txs: filteredTxs } = useFilteredTxs(liquidityHistory, txTerm);
   const { updateSelectedPool } = usePoolsStore();
 
   const poolsColumns = allPoolsColumnDef(updateSelectedPool);
   const userColumns = userPoolsColumnDef();
-  // const txColumns = txColumnDef();
+  const txColumns = transactionsColumnDef();
 
   const activeTabStyle =
     "py-2 px-4 data-[state=active]:border data-[state=active]:border-[#00A0FC] rounded-lg data-[state=active]:bg-[#0A344D]";
@@ -93,15 +100,19 @@ const PoolsData = () => {
         <TabsContent value={TableOptions.my}>
           <MyPoolsTable
             columns={userColumns}
-            data={filteredMyPools.filter((pool) => true)}
+            data={filteredMyPools}
             pool={filteredMyPools[filteredMyPools.length - 1]} // passes the first pool as default
             // setOpenCreateModal={setOpenCreateModal}
             loading={isFetching}
           />
         </TabsContent>
-        {/*<TabsContent value={TableOptions.trxn}>
-          <PoolsTable columns={transactionsColumnDef} data={potentiaPoolsList} />
-        </TabsContent> */}
+        <TabsContent value={TableOptions.trxn}>
+          <TransactionsTable
+            columns={txColumns}
+            data={filteredTxs}
+            loading={isLiqHistoryFetching}
+          />
+        </TabsContent>
       </Tabs>
       {openCreateModal && (
         <CreatePoolModal open={openCreateModal} setOpen={setOpenCreateModal} />
