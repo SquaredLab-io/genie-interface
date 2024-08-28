@@ -57,7 +57,10 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
     isFetching: isPriceLoading,
     daily,
     isDailyFetching,
-    dailyChange
+    dailyChange,
+    marketData,
+    isMarketDataFetching,
+    refetchMarketData
   } = useCurrencyPrice(underlying);
 
   const { tokenPrices, isFetching, status } = useTokenPrice({
@@ -70,6 +73,8 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
   const fundingRateShort = parseFloat(
     new BigNumber(tokenPrices?.fundingInfo.shortF ?? 0).toString() ?? "0"
   );
+
+  console.log('market data in prices bar : ', marketData);
 
   return (
     <div className="flex flex-row items-center justify-start gap-6 h-full w-full px-2 xl:px-6 2xl:px-8 font-normal text-xs/4 overflow-x-auto z-50">

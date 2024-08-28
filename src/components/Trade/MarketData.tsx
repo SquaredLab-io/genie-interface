@@ -1,4 +1,6 @@
+import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import { cn } from "@lib/utils";
+import { usePoolsStore } from "@store/poolsStore";
 
 interface MarkerProps {
   label: string;
@@ -26,6 +28,14 @@ function Marker({ label, value, fetching, showChange = false }: MarkerProps) {
 }
 
 const MarketData = () => {
+  const { selectedPool } = usePoolsStore();
+  const underlying = selectedPool()?.underlying;
+  const {
+    marketData,
+    isMarketDataFetching,
+    refetchMarketData
+  } = useCurrencyPrice(underlying);
+  
   return (
     <div className="px-4 pb-4 w-full">
       <h3 className="font-medium text-sm/[54px]">Underlying Market Data</h3>
