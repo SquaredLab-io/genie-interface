@@ -5,6 +5,7 @@ if (!WALLET_CONNECT_PROJECT_ID) {
 }
 export const ALCHEMY_KEY = process.env.NEXT_PUBLIC_ALCHEMY_KEY as string;
 export const CRYPRO_COMPARE_API = process.env.NEXT_PUBLIC_CRYPRO_COMPARE_API as string;
+export const COINGECKO_API_KEY = process.env.NEXT_PUBLIC_COINGECKO_KEY as string;
 
 // URLS
 // export const SUBGRAPH_URL = process.env.NEXT_PUBLIC_SUBGRAPH as string;

@@ -1,7 +1,8 @@
-import { CRYPRO_COMPARE_API } from "@lib/keys";
+import { CRYPRO_COMPARE_API, COINGECKO_API_KEY } from "@lib/keys";
 
 // Get a CryptoCompare API key CryptoCompare https://www.cryptocompare.com/coins/guides/how-to-use-our-api/
 export const apiKey = CRYPRO_COMPARE_API;
+export const coingeckoApiKey = COINGECKO_API_KEY;
 
 // Makes requests to CryptoCompare API
 export async function makeApiRequest(path) {
@@ -9,9 +10,24 @@ export async function makeApiRequest(path) {
     const url = new URL(`https://min-api.cryptocompare.com/${path}`);
     url.searchParams.append("api_key", apiKey);
     const response = await fetch(url.toString());
+
+
     return response.json();
   } catch (error) {
     throw new Error(`CryptoCompare request error: ${error.status}`);
+  }
+}
+
+// Makes requests to Coingecko API
+export async function makeMarketDataApiRequest(path) {
+  try {
+    const response = await fetch(`https://api.coingecko.com/api/v3/${path}`, { 
+      method: "GET",
+      headers: { 'Accept': 'application/json', 'x-cg-demo-api-key': coingeckoApiKey }
+    });
+    return response.json();
+  } catch (error) {
+    throw new Error(`Coingecko request error: ${error.status}`);
   }
 }
 
