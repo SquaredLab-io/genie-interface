@@ -89,7 +89,7 @@ export function _getDecimalAdjusted(
   decimals: number | undefined
 ): string {
   if (!value) return "0";
-  return formatUnits(BigInt(value), 18);
+  return formatUnits(BigInt(value), decimals ?? 18);
 }
 
 // eg. used in Trade Flow
