@@ -60,7 +60,7 @@ export const REFETCH_INTERVAL = 5 * 60 * 1000; // 10 seconds
 export const TOKENS: {
   [key: string]: `0x${string}`;
 } = {
-  WETH: getAddress("0xc632C00e28E45B8d313B9175812c470E4e1904D3"),
+  WETH: getAddress("0xc632C00e28E45B8d313B9175812c470E4e1904D3")
 };
 
 export const SUPPORTED_TOKENS = [
@@ -70,17 +70,10 @@ export const SUPPORTED_TOKENS = [
     address: TOKENS.WETH,
     logo: "/tokens/weth.svg",
     decimals: 18
-  },
-  {
-    token: "USDC",
-    name: "USD Coin",
-    address: TOKENS.USDC,
-    logo: "/tokens/usdc.svg",
-    decimals: 6
   }
 ];
 
 export const CONTRACT_ADDRESSES = {
   POTENTIA_FACTORY_ADDR: "0x531DdAf1f0A0eC86d4892e60Fe9c869d8f22F420" as Address,
-  WETH_ADDR: TOKENS.WETH,
+  WETH_ADDR: TOKENS.WETH
 };

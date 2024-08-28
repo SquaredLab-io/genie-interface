@@ -15,7 +15,7 @@ import { config } from "@lib/wagmi";
 import { RainbowKitProvider, Theme } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { baseSepolia } from "viem/chains";
-import { SUBGRAPH_URL } from "@lib/keys";
+import { PONDER_URL } from "@lib/keys";
 import { theme } from "../ConnectWallet/theme";
 import { queryClient } from "@lib/utils/query";
 
@@ -27,7 +27,7 @@ const Providers: React.FC<PropsWithChildren> = ({ children }) => {
     });
 
     const client = createClient({
-      url: SUBGRAPH_URL,
+      url: PONDER_URL,
       exchanges: [cacheExchange, ssr, fetchExchange],
       suspense: true
     });

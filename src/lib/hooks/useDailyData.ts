@@ -1,7 +1,7 @@
 import { DailyInfo, DailyQueryResult } from "@squaredlab-io/sdk/src/subgraph";
 import notification from "@components/common/notification";
 import { cacheExchange, Client, fetchExchange } from "urql";
-import { SUBGRAPH_URL } from "@lib/keys";
+import { PONDER_URL } from "@lib/keys";
 import { QueryObserverResult, RefetchOptions, useQuery } from "@tanstack/react-query";
 
 interface PropsType {
@@ -17,7 +17,7 @@ interface ReturnType {
 
 // URQL Client for Subgraph
 const urqlClient = new Client({
-  url: SUBGRAPH_URL,
+  url: PONDER_URL,
   exchanges: [cacheExchange, fetchExchange]
 });
 

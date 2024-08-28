@@ -7,7 +7,7 @@ export const ALCHEMY_KEY = process.env.NEXT_PUBLIC_ALCHEMY_KEY as string;
 export const CRYPRO_COMPARE_API = process.env.NEXT_PUBLIC_CRYPRO_COMPARE_API as string;
 
 // URLS
-export const SUBGRAPH_URL = process.env.NEXT_PUBLIC_SUBGRAPH as string;
+// export const SUBGRAPH_URL = process.env.NEXT_PUBLIC_SUBGRAPH as string;
 export const SQL_CHANNEL_URL = process.env.NEXT_PUBLIC_SQL_CHANNEL as string;
 export const PONDER_URL = process.env.NEXT_PUBLIC_PONDER as string;
 export const BASE_SEPOLIA_RPC = process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC as string;
