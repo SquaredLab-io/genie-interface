@@ -1,3 +1,5 @@
+"use client";
+
 import LoadingLogo from "@components/icons/loading-logo";
 
 const LoadingScreen = () => (

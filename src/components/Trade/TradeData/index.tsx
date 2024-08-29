@@ -15,7 +15,7 @@ import {
 import { getClosedTransactions, getOpenTransactions } from "./helper";
 import OpenPositionsTable from "./OpenPositionsTable";
 import TradeHistoryTable from "./TradeHistoryTable";
-import { useTxHistory } from "@lib/hooks/useTxHistory";
+// import { useTxHistory } from "@lib/hooks/useTxHistory";
 import { cn } from "@lib/utils";
 import ClosePositionPopover from "./ClosePositionPopover";
 import { BASE_SEPOLIA } from "@lib/constants";
@@ -24,6 +24,7 @@ import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { OpenPositionInfo, Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useAccount } from "wagmi";
 import { useTradeHistory } from "@lib/hooks/useTradeHistory";
+import { useTokenPrice } from "@lib/hooks/useTokenPrice";
 
 enum Tab {
   position = "position",
@@ -36,14 +37,22 @@ const TradeData = () => {
 
   // All Transactions -- LP, Open Long/Short, Close Long/Short
   // TODO: Will be updated with useTxHistory, remove useTradeHistory
-  const { data: txHistory, isLoading: isTxLoading } = useTxHistory();
-  const { data: tradeHistory, isFetching: isTradeLoading } = useTradeHistory();
+  // const { data: txHistory, isLoading: isTxLoading } = useTxHistory();
 
+  // Getting the data
+  const { data: tradeHistory, isFetching: isTradeLoading } = useTradeHistory();
   const {
     openOrders,
     isFetching: loadingOpenOrders
     // refetch: refetchOpenOrders
   } = useOpenOrders({ poolAddress: selectedPool()?.poolAddr! });
+  const { tokenPrices, isFetching, status } = useTokenPrice({
+    poolAddress: selectedPool()?.poolAddr
+  });
+
+  // Managing long/short prices
+  const longPrice = parseFloat(tokenPrices?.lastLongP ?? "0");
+  const shortPrice = parseFloat(tokenPrices?.lastShortP ?? "0");
 
   const openPositions = useMemo(() => getOpenTransactions(openOrders), [openOrders]);
   const closedPositions = useMemo(
@@ -131,7 +140,8 @@ const TradeData = () => {
       accessorKey: "size",
       header: () => <span>Size</span>,
       cell: ({ row }) => {
-        const { tokenSize, underlyingPrice } = row.original;
+        const { tokenSize, underlyingPrice, side } = row.original;
+        const tradePrice = side === "Long" ? longPrice : shortPrice;
         return (
           <p className="flex flex-col items-start">
             <span>
@@ -142,7 +152,7 @@ const TradeData = () => {
             <span className="text-[#9299AA] text-xs">
               {/* {underlyingPrice} */}
               {formatNumber(
-                parseFloat(underlyingPrice) *
+                parseFloat(underlyingPrice) * tradePrice *
                   getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals),
                 true
               )}

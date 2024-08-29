@@ -69,7 +69,7 @@
     "@types/react-copy-to-clipboard": "^5.0.7",
     "@types/react-dom": "^18",
     "@types/react-lottie": "^1.2.10",
-    "eslint": "^8",
+    "eslint": "^9.9.1",
     "eslint-config-next": "14.2.3",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
