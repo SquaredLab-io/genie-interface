@@ -24,3 +24,54 @@ export const getActionType = (
       return "";
   }
 };
+
+export const POOL_ID_MAP = {
+  ETH: {
+    id: "weth",
+    symbol: "weth",
+    name: "WETH",
+    vs: "usd"
+  },
+  BTC: {
+    id: "wrapped-bitcoin",
+    symbol: "wbtc",
+    name: "Wrapped Bitcoin",
+    vs: "usd"
+  },
+  CBETH: {
+    id: "coinbase-wrapped-staked-eth",
+    symbol: "cbeth",
+    name: "Coinbase Wrapped Staked ETH",
+    vs: "usd"
+  },
+  DAI: {
+    id: "dai",
+    symbol: "dai",
+    name: "Dai",
+    vs: "usd"
+  },
+  LINK: {
+    id: "chainlink",
+    symbol: "link",
+    name: "Chainlink",
+    vs: "usd"
+  },
+  "LINK-ETH": {
+    id: "chainlink",
+    symbol: "link",
+    name: "Chainlink",
+    vs: "eth"
+  },
+  USDC: {
+    id: "usd-coin",
+    symbol: "usdc",
+    name: "USDC",
+    vs: "usd"
+  },
+  USDT: {
+    id: "tether",
+    symbol: "usdt",
+    name: "Tether",
+    vs: "usd"
+  }
+} as const;
