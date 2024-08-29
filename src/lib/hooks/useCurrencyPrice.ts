@@ -9,6 +9,7 @@ interface MarketData {
   high_24h: number;
   low_24h: number;
   price_change_percentage_24h: number;
+  total_volume: number;
   max_supply: number;
 };
 
@@ -16,6 +17,7 @@ interface ReturnType {
   price: number;
   marketData: MarketData | undefined;
   isMarketDataLoading: boolean;
+  _symbol: PoolSymbol;
   refetchMarketData: (
     (options?: RefetchOptions) => Promise<QueryObserverResult<MarketData | undefined, Error>>
   )
@@ -84,7 +86,8 @@ export function useCurrencyPrice(symbol = ""): ReturnType {
     }
     try {
       const result = await makeMarketDataApiRequest(
-        `coins/markets?vs_currency=${POOL_ID_MAP[_symbol].vs}&ids=${POOL_ID_MAP[_symbol].id}`
+        // `coins/markets?vs_currency=${POOL_ID_MAP[_symbol].vs}&ids=${POOL_ID_MAP[_symbol].id}&price_change_percentage=24h`
+        `coins/markets?vs_currency=usd&ids=${POOL_ID_MAP[_symbol].id}&price_change_percentage=24h`
       );
       const { 
         current_price,
@@ -92,6 +95,7 @@ export function useCurrencyPrice(symbol = ""): ReturnType {
         high_24h,
         low_24h,
         price_change_percentage_24h,
+        total_volume,
         max_supply
       } = result[0];
       return { 
@@ -100,6 +104,7 @@ export function useCurrencyPrice(symbol = ""): ReturnType {
         high_24h,
         low_24h,
         price_change_percentage_24h,
+        total_volume,
         max_supply
       } as MarketData;
     } catch (error) {
@@ -124,6 +129,7 @@ export function useCurrencyPrice(symbol = ""): ReturnType {
     price: marketData?.current_price ?? 0,
     marketData,
     isMarketDataLoading,
-    refetchMarketData
+    refetchMarketData,
+    _symbol
   } satisfies ReturnType;
 }
