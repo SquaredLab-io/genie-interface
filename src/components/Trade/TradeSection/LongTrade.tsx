@@ -73,7 +73,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   const longPosition = positionData?.longPositionTab?.tokenSize;
 
   // getting underlying token's price
-  const { price, isFetching: isPriceFetching } = useCurrencyPrice(
+  const { price, isMarketDataLoading } = useCurrencyPrice(
     selectedPool()?.underlying
   );
 
@@ -304,7 +304,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
               className="bg-transparent py-2 w-full placeholder:text-[#6D6D6D] text-white font-noemal text-sm/4 focus:outline-none"
             />
             <span className="text-[#404950]">
-              {isPriceFetching && !price && !isValidPositiveNumber(quantity)
+              {isMarketDataLoading && !price && !isValidPositiveNumber(quantity)
                 ? "..."
                 : `$${price * parseFloat(quantity !== "" ? quantity : "0")}`}
             </span>
