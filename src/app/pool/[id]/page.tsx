@@ -41,7 +41,7 @@ export default function Overview() {
           <LoadingLogo size={100} />
         </div>
       ) : (
-        <PoolOverview overviewPool={overviewPool} />
+        <PoolOverview overviewPool={overviewPool!} />
       )}
     </main>
   );

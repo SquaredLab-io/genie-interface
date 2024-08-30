@@ -1,8 +1,7 @@
-import { DailyInfo, DailyQueryResult } from "@squaredlab-io/sdk/src/subgraph";
-import notification from "@components/common/notification";
-import { cacheExchange, Client, fetchExchange } from "urql";
-import { PONDER_URL } from "@lib/keys";
 import { QueryObserverResult, RefetchOptions, useQuery } from "@tanstack/react-query";
+import { DailyInfo, DailyInfoArray } from "@squaredlab-io/sdk";
+import getUrqlClient from "@lib/utils/urql/get-urql-client";
+import notification from "@components/common/notification";
 
 interface PropsType {
   poolAddress: string;
@@ -12,19 +11,24 @@ interface PropsType {
 interface ReturnType {
   dailyData: DailyInfo[] | undefined;
   isFetching: boolean;
-  refetch: (options?: RefetchOptions) => Promise<QueryObserverResult<DailyInfo[] | undefined, Error>>;
+  refetch: (
+    options?: RefetchOptions
+  ) => Promise<QueryObserverResult<DailyInfo[] | undefined, Error>>;
 }
 
-// URQL Client for Subgraph
-const urqlClient = new Client({
-  url: PONDER_URL,
-  exchanges: [cacheExchange, fetchExchange]
-});
+// URQL Client
+const [client] = getUrqlClient();
 
-const getDailyData = async (pool: string): Promise<DailyInfo[]> => {
+const getDailyData = async (pool: string): Promise<DailyInfoArray> => {
+  const filterQuery = `{pool: "${pool}"}`;
   const QUERY = `
-    query MyQuery {
-      dailyInfos(orderBy: date, orderDirection: desc, where: {pool: "${pool}"}) {
+   query MyQuery {
+      dailyInfos(
+        where: ${filterQuery}
+        orderBy: "date"
+        orderDirection: "desc"
+      ) {
+        items {
           fee
           lastLongPrice
           date
@@ -34,18 +38,17 @@ const getDailyData = async (pool: string): Promise<DailyInfo[]> => {
           minTvl
           pool
           volume
+          id
+        }
       }
-    }`;
-  const result = await urqlClient.query<DailyQueryResult>(QUERY, {});
+    }    
+  `;
 
-  if (result.data == null) {
+  let res = await client.query<DailyInfoArray>(QUERY, {});
+  if (res.data == null) {
     throw new Error("No data found");
   }
-
-  if (result.data!.dailyInfos.length > 0) {
-    return result.data!.dailyInfos;
-  }
-  return [];
+  return res.data;
 };
 
 /**
@@ -58,8 +61,7 @@ export function useDailyData({ poolAddress, paused = false }: PropsType): Return
   const fetch = async () => {
     try {
       const info = await getDailyData(poolAddress);
-      console.log("dailyData @useDailyData", info);
-      return info;
+      return info.dailyInfos.items;
     } catch (error) {
       notification.error({
         id: "daily-data",
@@ -69,17 +71,10 @@ export function useDailyData({ poolAddress, paused = false }: PropsType): Return
     }
   };
 
-  const {
-    data,
-    isFetching,
-    refetch,
-    isError,
-    error
-  } = useQuery({
+  const { data, isFetching, refetch, isError, error } = useQuery({
     queryKey: ["poolDailyInfo", poolAddress],
     queryFn: fetch,
-    // refetchInterval: false,
-    enabled: urqlClient && !!poolAddress && !paused
+    enabled: !!client && !!poolAddress && !paused
   });
 
   return {

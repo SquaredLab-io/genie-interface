@@ -1,40 +1,20 @@
 "use client";
 
 import { PropsWithChildren, useMemo } from "react";
-import {
-  UrqlProvider,
-  ssrExchange,
-  cacheExchange,
-  fetchExchange,
-  createClient
-} from "@urql/next";
+import { UrqlProvider } from "@urql/next";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { WagmiProvider } from "wagmi";
 import { config } from "@lib/wagmi";
 import { RainbowKitProvider, Theme } from "@rainbow-me/rainbowkit";
-import "@rainbow-me/rainbowkit/styles.css";
 import { baseSepolia } from "viem/chains";
-import { PONDER_URL } from "@lib/keys";
 import { theme } from "../ConnectWallet/theme";
 import { getQueryClient } from "@lib/utils/query/get-query-client";
+import getUrqlClient from "@lib/utils/urql/get-urql-client";
+import "@rainbow-me/rainbowkit/styles.css";
 
 const Providers: React.FC<PropsWithChildren> = ({ children }) => {
-  // URQL Client and SSR Setup
-  const [client, ssr] = useMemo(() => {
-    const ssr = ssrExchange({
-      isClient: typeof window !== "undefined"
-    });
-
-    const client = createClient({
-      url: PONDER_URL,
-      exchanges: [cacheExchange, ssr, fetchExchange],
-      suspense: true
-    });
-
-    return [client, ssr];
-  }, []);
-
+  const [client, ssr] = useMemo(() => getUrqlClient(), []);
   const queryClient = getQueryClient();
 
   return (

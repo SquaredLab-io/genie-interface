@@ -14,13 +14,11 @@ import { useModalStore } from "@store/poolsStore";
 import PoolHeader from "./pool-header";
 import LPChart from "./lp-charts";
 
-const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo | undefined }) => {
+const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   // LP Tab: Supply and Withdraw
   const [lpTrade, setLpTrade] = useState<LpTradeOptions>(LpTradeOptions.supply);
 
   const { openOverviewModal, setOpenOverviewModal } = useModalStore();
-
-  if (!overviewPool) return <main></main>;
 
   const { pool, power } = overviewPool;
   const [token0, token1] = pool.split("/").map((p) => p.trim());
