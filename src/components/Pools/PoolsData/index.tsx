@@ -21,15 +21,12 @@ import { usePools } from "@lib/hooks/usePools";
 import { TableOptions } from "./helper";
 import { useFilteredPools } from "@lib/hooks/useFilteredPools";
 import MyPoolsTable from "./MyPoolsTable";
-import { useIsMounted } from "@lib/hooks/useIsMounted";
-import LoadingScreen from "@components/common/loading-screen";
 import { useModalStore, usePoolsStore } from "@store/poolsStore";
 import { useLiquidityHistory } from "@lib/hooks/useLiquidityHistory";
 import TransactionsTable from "./TransactionsTable";
 import { useFilteredTxs } from "@lib/hooks/useFilteredTxs";
 
 const PoolsData = () => {
-  const { isMounted } = useIsMounted();
   const { pools, isFetching } = usePools();
   const { data: liquidityHistory, isFetching: isLiqHistoryFetching } =
     useLiquidityHistory();
@@ -57,8 +54,6 @@ const PoolsData = () => {
 
   const activeTabStyle =
     "py-2 px-4 data-[state=active]:border data-[state=active]:border-[#00A0FC] rounded-lg data-[state=active]:bg-[#0A344D]";
-
-  if (!isMounted) return <LoadingScreen />;
 
   return (
     <div className="py-10">

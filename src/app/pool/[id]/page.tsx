@@ -2,10 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { useParams } from "next/navigation";
-import { useIsMounted } from "@lib/hooks/useIsMounted";
-import { usePools } from "@lib/hooks/usePools";
-import SpinnerIcon from "@components/icons/SpinnerIcon";
 import dynamic from "next/dynamic";
+import { usePools } from "@lib/hooks/usePools";
 import LoadingLogo from "@components/icons/loading-logo";
 
 // PoolOverview imported dynamically
@@ -14,14 +12,10 @@ const PoolOverview = dynamic(() =>
 );
 
 export default function Overview() {
-  // TODO: Needs to be deprecated
-  const [notFound, setNotFound] = useState(false);
+  const { pools, isFetching } = usePools();
 
   const { id } = useParams();
   const _id = Array.isArray(id) ? id[0] : id;
-  const isMounted = useIsMounted();
-
-  const { pools, isFetching } = usePools();
 
   // finding the pool based on id in url
   const overviewPool = useMemo(() => {
@@ -31,24 +25,20 @@ export default function Overview() {
     return _pool;
   }, [id, pools]);
 
-  // Loading Screen before Mounting
-  if (!isMounted)
+  // not fetching pools, but also didn't find the pool for overview
+  if (!overviewPool && !isFetching) {
     return (
-      <div className="page-center size-full flex-col-center gap-5 font-sans-ibm-plex">
-        <SpinnerIcon stroke="#01A1FF" />
-        <span>preparing pool...</span>
-      </div>
+      <main className="page-center items-center justify-center text-3xl">
+        404: {_id.toUpperCase()} Pool not found
+      </main>
     );
+  }
 
   return (
     <main className="page-center overflow-y-auto">
       {isFetching && !overviewPool ? (
         <div className="size-full flex-col-center gap-5 font-sans-ibm-plex">
           <LoadingLogo size={100} />
-        </div>
-      ) : notFound ? (
-        <div className="size-full flex-col-center font-sans-ibm-plex">
-          <span>Pool Not Found</span>
         </div>
       ) : (
         <PoolOverview overviewPool={overviewPool} />

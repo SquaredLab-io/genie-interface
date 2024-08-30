@@ -17,7 +17,7 @@ import "@rainbow-me/rainbowkit/styles.css";
 import { baseSepolia } from "viem/chains";
 import { PONDER_URL } from "@lib/keys";
 import { theme } from "../ConnectWallet/theme";
-import { queryClient } from "@lib/utils/query";
+import { getQueryClient } from "@lib/utils/query/get-query-client";
 
 const Providers: React.FC<PropsWithChildren> = ({ children }) => {
   // URQL Client and SSR Setup
@@ -34,6 +34,8 @@ const Providers: React.FC<PropsWithChildren> = ({ children }) => {
 
     return [client, ssr];
   }, []);
+
+  const queryClient = getQueryClient();
 
   return (
     <WagmiProvider config={config}>

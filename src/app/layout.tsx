@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Metadata } from "next";
 import { ibm_plex_sans, helvetica_neue, manrope } from "@lib/fonts";
 import { cn } from "@lib/utils";
@@ -5,6 +6,7 @@ import Header from "@components/common/Header";
 import { meta } from "@lib/constants";
 import Providers from "@components/common/providers";
 import { Toaster } from "@components/ui/sonner";
+import Loading from "./loading";
 import "./globals.css";
 
 const { APP_NAME, DESCRIPTION, KEYWORDS, URL, LOGO, IMAGE, SITE_NAME, USERNAME } = meta;
@@ -75,7 +77,7 @@ export default function RootLayout({
       >
         <Providers>
           <Header />
-          {children}
+          <Suspense fallback={<Loading />}>{children}</Suspense>
         </Providers>
         <Toaster
           position="bottom-right"

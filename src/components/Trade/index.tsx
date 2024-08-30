@@ -1,26 +1,33 @@
 // Library Imports
+import { useState } from "react";
 import Script from "next/script";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
 // Component, Util Imports
 import ChartLoader from "./TradeChart/loader";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 
 // Trading Interface Sections imported dynamically
 const TradeChart = dynamic(() => import("./TradeChart").then((mod) => mod.default));
-const TradeData = dynamic(() => import("@components/Trade/TradeData").then((mod) => mod.default));
-const TradeFlow = dynamic(() => import("@components/Trade/TradeFlow").then((mod) => mod.default));
-const MarketData = dynamic(() => import("@components/Trade/MarketData").then((mod) => mod.default));
-const TradeSection = dynamic(() => import("@components/Trade/TradeSection").then((mod) => mod.default));
-const AssetStatsBar = dynamic(() => import("@components/Trade/AssetStatsBar").then((mod) => mod.default));
+const TradeData = dynamic(() =>
+  import("@components/Trade/TradeData").then((mod) => mod.default)
+);
+const TradeFlow = dynamic(() =>
+  import("@components/Trade/TradeFlow").then((mod) => mod.default)
+);
+const MarketData = dynamic(() =>
+  import("@components/Trade/MarketData").then((mod) => mod.default)
+);
+const TradeSection = dynamic(() =>
+  import("@components/Trade/TradeSection").then((mod) => mod.default)
+);
+const AssetStatsBar = dynamic(() =>
+  import("@components/Trade/AssetStatsBar").then((mod) => mod.default)
+);
 
 const Trade = () => {
   const [isScriptReady, setIsScriptReady] = useState(false);
   const { potentia } = usePotentiaSdk();
 
-  // TODO: To be removed
-  useEffect(() => console.log("isScriptReady", isScriptReady), [isScriptReady]);
-  
   return (
     <>
       <Script
