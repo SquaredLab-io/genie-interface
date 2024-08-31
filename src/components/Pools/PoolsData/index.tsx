@@ -25,6 +25,7 @@ import { useModalStore, usePoolsStore } from "@store/poolsStore";
 import { useLiquidityHistory } from "@lib/hooks/useLiquidityHistory";
 import TransactionsTable from "./TransactionsTable";
 import { useFilteredTxs } from "@lib/hooks/useFilteredTxs";
+import CreateTokenModal from "../create-token-modal";
 
 const PoolsData = () => {
   const { pools, isFetching } = usePools();
@@ -32,8 +33,14 @@ const PoolsData = () => {
     useLiquidityHistory();
 
   // Pool Creation and Manage Modal state
-  const { openCreateModal, setOpenCreateModal, openManageModal, setOpenManageModal } =
-    useModalStore();
+  const {
+    openCreateTokenModal,
+    setOpenCreateTokenModal,
+    openCreateModal,
+    setOpenCreateModal,
+    openManageModal,
+    setOpenManageModal
+  } = useModalStore();
 
   const [currentTab, setCurrentTab] = useState(TableOptions.all);
 
@@ -73,6 +80,12 @@ const PoolsData = () => {
           <div className="inline-flex items-center gap-6">
             <button
               className="inline-flex items-center py-2 px-3 gap-1 text-[#49AFE9] hover:bg-[#0A344D] transition-colors font-medium text-sm/5 rounded-lg font-sans-ibm-plex"
+              onClick={() => setOpenCreateTokenModal(true)}
+            >
+              <PlusIcon size={16} /> Create a Token
+            </button>
+            <button
+              className="inline-flex items-center py-2 px-3 gap-1 text-[#49AFE9] hover:bg-[#0A344D] transition-colors font-medium text-sm/5 rounded-lg font-sans-ibm-plex"
               onClick={() => setOpenCreateModal(true)}
             >
               <PlusIcon size={16} /> Create Pool
@@ -109,6 +122,9 @@ const PoolsData = () => {
           />
         </TabsContent>
       </Tabs>
+      {openCreateTokenModal && (
+        <CreateTokenModal open={openCreateTokenModal} setOpen={setOpenCreateTokenModal} />
+      )}
       {openCreateModal && (
         <CreatePoolModal open={openCreateModal} setOpen={setOpenCreateModal} />
       )}

@@ -36,6 +36,8 @@ export const usePoolsStore = create<iPools>((set, get) => ({
 }));
 
 interface iPoolModalStore {
+  openCreateTokenModal: boolean;
+  setOpenCreateTokenModal: (value: boolean) => void;
   openCreateModal: boolean;
   setOpenCreateModal: (value: boolean) => void;
   openManageModal: boolean;
@@ -45,6 +47,12 @@ interface iPoolModalStore {
 }
 
 export const useModalStore = create<iPoolModalStore>((set, get) => ({
+  openCreateTokenModal: false,
+  setOpenCreateTokenModal: (value) => {
+    set(() => ({
+      openCreateTokenModal: value
+    }));
+  },
   openCreateModal: false,
   setOpenCreateModal: (value) => {
     set(() => ({
