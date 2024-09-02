@@ -88,6 +88,14 @@ export function getDollarQuote(
   );
 }
 
+export function getDecimalDeadjusted(
+  value: string | undefined,
+  decimals: number | undefined
+): string {
+  if (!value) return "0";
+  return (parseFloat(value) * 10 ** (decimals ?? 0)).toString();
+}
+
 export function getDecimalAdjusted(
   value: string | undefined,
   decimals: number | undefined

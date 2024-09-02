@@ -15,12 +15,16 @@ import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import TokenSelectPopover from "@components/common/TokenSelectPopover";
 import { cn } from "@lib/utils";
 import ButtonCTA from "@components/common/button-cta";
-import TradeInfo from "./TradeInfo";
+import TradeInfo, { Marker } from "./TradeInfo";
 // Notification
 import { toast } from "sonner";
 import notification from "@components/common/notification";
 import { notificationId } from "../helper";
-import { formatNumber, getDecimalAdjusted } from "@lib/utils/formatting";
+import {
+  formatNumber,
+  getDecimalAdjusted,
+  getDecimalDeadjusted
+} from "@lib/utils/formatting";
 import { CONFIRMATION } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
@@ -31,6 +35,7 @@ import { z } from "zod";
 import useIsApprovedToken from "@lib/hooks/useIsApprovedToken";
 import useApproveToken from "@lib/hooks/useApproveToken";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
+import usePTokenEstimateOut from "@lib/hooks/usePTokenEstimateOut";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -69,10 +74,15 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
   });
   const shortPosition = positionData?.shortPositionTab?.tokenSize;
 
+  // Get the Estimate Underlying Output
+  const { output, isFetching: isOutputFetching } = usePTokenEstimateOut({
+    poolAddress: selectedPool()?.poolAddr as Address,
+    amount: getDecimalDeadjusted(quantity, selectedPool()?.underlyingDecimals), // in bignumber by adjusting decimals
+    isLong: false
+  });
+
   // getting underlying token's price
-  const { price, isMarketDataLoading } = useCurrencyPrice(
-    selectedPool()?.underlying
-  );
+  const { price, isMarketDataLoading } = useCurrencyPrice(selectedPool()?.underlying);
 
   // const { refetch: refetchTxHistory } = useTxHistory(true);
   const { refetch: refetchTxHistory } = useTradeHistory(true);
@@ -351,6 +361,18 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       >
         <span>OPEN</span>
       </ButtonCTA>
+      <Marker
+        label="Estimated Payout"
+        value={`${
+          isOutputFetching
+            ? "..."
+            : !isNaN(parseFloat(quantity))
+              ? formatNumber(
+                  getDecimalAdjusted(output, selectedPool()?.underlyingDecimals)
+                )
+              : "N/A"
+        } ${selectedPool()?.underlying}`}
+      />
       {/* Iterate this data after calculating/fetching */}
       <TradeInfo />
     </div>
