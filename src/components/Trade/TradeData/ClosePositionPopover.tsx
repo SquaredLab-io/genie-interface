@@ -6,7 +6,7 @@ import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import SliderBar from "@components/common/slider-bar";
 import { usePoolsStore } from "@store/poolsStore";
 import { Address } from "viem";
-import toUnits, { getDecimalAdjusted } from "@lib/utils/formatting";
+import toUnits, { formatNumber, getDecimalAdjusted } from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
 import { useWaitForTransactionReceipt } from "wagmi";
 import { CONFIRMATION } from "@lib/constants";
@@ -19,6 +19,7 @@ import { notificationId } from "../helper";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { PositionTab } from "@squaredlab-io/sdk";
 import { useTradeHistory } from "@lib/hooks/useTradeHistory";
+import useUnderlyingEstimateOut from "@lib/hooks/useUnderlyingEstimateOut";
 
 interface PropsType {
   children: ReactNode;
@@ -68,7 +69,12 @@ const ClosePositionPopover: FC<PropsType> = ({
     paused: true
   });
 
-  // TODO: Update the user-balance too
+  // Get the Estimate Underlying Output
+  const { output, isFetching: isOutputFetching } = useUnderlyingEstimateOut({
+    poolAddress: selectedPool()?.poolAddr as Address,
+    amount: quantity,
+    isLong
+  });
 
   /**
    * Handler for closePosition from SDK
@@ -210,22 +216,20 @@ const ClosePositionPopover: FC<PropsType> = ({
           />
         </div>
         <Separator />
-        {/* <div className="flex flex-col gap-2 px-6 py-2 font-normal text-[#9299AA] text-xs/4">
-          <p className="inline-flex items-center justify-between w-full">
-            <span>Fee (0.555)</span>
-            <span className="font-medium text-white">0.25%</span>
-          </p>
-          <p className="inline-flex items-center justify-between w-full">
-            <span>TVL</span>
-            <span className="font-medium text-white">0.25%</span>
-          </p>
-        </div>
-        <Separator /> */}
         <div className="flex flex-col gap-3 p-2">
           <div className="w-full px-4 mt-1 inline-flex items-center justify-between font-medium text-xs/4">
             <span>Payout</span>
             <p className="inline-flex items-center gap-[2px]">
-              <span>0 {selectedPool()?.underlying}</span>
+              <span>
+                {isOutputFetching
+                  ? "..."
+                  : !isNaN(parseFloat(quantity))
+                    ? formatNumber(
+                        getDecimalAdjusted(output, selectedPool()?.underlyingDecimals)
+                      )
+                    : "-"}{" "}
+                {selectedPool()?.underlying}
+              </span>
               <DropDownIcon className="w-3" />
             </p>
           </div>
