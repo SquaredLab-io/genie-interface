@@ -6,6 +6,7 @@ import toUnits, {
   formatNumber,
   formatOraclePrice,
   getDecimalAdjusted,
+  getDollarQuote,
   shortenHash
 } from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
@@ -88,11 +89,11 @@ export function allPoolsColumnDef(
       accessorKey: "tvl",
       header: () => <span className="pl-[18px] pt-6">TVL</span>,
       cell: ({ row }) => {
-        const { tvl, underlying, underlyingDecimals } = row.original;
+        const { tvl, oraclePrice, underlyingDecimals } = row.original;
         return (
-          <span className="pl-[18px]">
-            {toUnits(parseFloat(tvl ?? "0") / 10 ** 18, 3)} ETH
-          </span>
+            <span className="pl-[18px]">
+              {getDollarQuote(tvl, oraclePrice, underlyingDecimals)}
+            </span>
         );
       }
     },
@@ -101,12 +102,11 @@ export function allPoolsColumnDef(
       accessorKey: "volume",
       header: () => <span className="pl-[18px] pt-6">30D Volume</span>,
       cell: ({ row }) => {
-        const { underlyingDecimals, vol, underlying } = row.original;
+        const { underlyingDecimals, vol, oraclePrice } = row.original;
         const growth = parseFloat("0");
         return (
           <div className="pl-[18px] inline-flex gap-1">
-            <span>{toUnits(parseFloat(vol ?? "0") / 10 ** underlyingDecimals, 3)}</span>{" "}
-            {underlying}
+            <span>{getDollarQuote(vol, oraclePrice, underlyingDecimals)}</span>
             <span
               className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
             >
@@ -121,14 +121,11 @@ export function allPoolsColumnDef(
       accessorKey: "fee",
       header: () => <span className="pl-10">30D Fees</span>,
       cell: ({ row }) => {
-        // const fee: Amount = row.getValue("fee");
-        const { fee, underlyingDecimals, underlying } = row.original;
-        // const value = parseFloat(fee.value);
+        const { fee, underlyingDecimals, oraclePrice } = row.original;
         const growth = parseFloat("0");
         return (
           <div className="pl-10 inline-flex gap-1">
-            <span>{toUnits(parseFloat(fee ?? "0") / 10 ** underlyingDecimals, 3)}</span>{" "}
-            {underlying}
+            <span>{getDollarQuote(fee, oraclePrice, underlyingDecimals)}</span>
             <span
               className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
             >
