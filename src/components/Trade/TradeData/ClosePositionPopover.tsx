@@ -227,7 +227,7 @@ const ClosePositionPopover: FC<PropsType> = ({
                     ? formatNumber(
                         getDecimalAdjusted(output, selectedPool()?.underlyingDecimals)
                       )
-                    : "-"}{" "}
+                    : "N/A"}{" "}
                 {selectedPool()?.underlying}
               </span>
               <DropDownIcon className="w-3" />

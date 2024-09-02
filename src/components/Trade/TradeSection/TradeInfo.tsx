@@ -11,7 +11,7 @@ interface MarkerProps {
   showChange?: boolean;
 }
 
-function Marker({ label, value, fetching = false, showChange = false }: MarkerProps) {
+export function Marker({ label, value, fetching = false, showChange = false }: MarkerProps) {
   return (
     <p className="inline-flex items-center justify-between w-full">
       <span className="text-[#6D6D6D]">{label}</span>
