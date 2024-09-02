@@ -1,10 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
-import toUnits, {
+import {
   _getDecimalAdjusted,
-  formatNumber,
-  formatOraclePrice,
   getDecimalAdjusted,
   getDollarQuote,
   shortenHash
@@ -91,9 +89,9 @@ export function allPoolsColumnDef(
       cell: ({ row }) => {
         const { tvl, oraclePrice, underlyingDecimals } = row.original;
         return (
-            <span className="pl-[18px]">
-              {getDollarQuote(tvl, oraclePrice, underlyingDecimals)}
-            </span>
+          <span className="pl-[18px]">
+            {getDollarQuote(tvl, oraclePrice, underlyingDecimals)}
+          </span>
         );
       }
     },
@@ -232,13 +230,11 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       accessorKey: "fee",
       header: () => <span>30D Fees</span>,
       cell: ({ row }) => {
-        const { fee, underlying, underlyingDecimals } = row.original;
-        // const value = parseFloat(fee.value);
+        const { fee, underlyingDecimals, oraclePrice } = row.original;
         const growth = parseFloat("0");
         return (
           <div className="inline-flex gap-1">
-            <span>{toUnits(parseFloat(fee ?? "0") / 10 ** underlyingDecimals, 3)}</span>{" "}
-            {underlying}
+            <span>{getDollarQuote(fee, oraclePrice, underlyingDecimals)}</span>
             <span
               className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
             >
@@ -353,9 +349,12 @@ export function transactionsColumnDef(): ColumnDef<Tx>[] {
       accessorKey: "amount",
       header: () => <span className="pt-6">Amount (USDT)</span>,
       cell: ({ row }) => {
-        const { size, oraclePrice } = row.original;
-        return <span>{getDecimalAdjusted(size.toString(), 18)} WETH</span>;
-        // return <span>{formatNumber(tokenPrice * parseFloat(tokenSize), true)}</span>;
+        const { size, oraclePrice, underlying } = row.original;
+        return (
+          <span>
+            {getDecimalAdjusted(size.toString(), underlying.decimals)} {underlying.symbol}
+          </span>
+        );
       }
     },
     {
@@ -363,8 +362,6 @@ export function transactionsColumnDef(): ColumnDef<Tx>[] {
       accessorKey: "fees",
       header: () => <span className="pt-6">Fees Earned (USDT)</span>,
       cell: ({ row }) => {
-        // const vol: Amount = row.getValue("volume");
-        // const decimals = row.original.decimals);
         return <span>-</span>;
       }
     },
@@ -374,9 +371,6 @@ export function transactionsColumnDef(): ColumnDef<Tx>[] {
       header: () => <span>Total (USDT)</span>,
       cell: ({ row }) => {
         const { size } = row.original;
-        // const fee: Amount = row.getValue("fee");
-        // const value = parseFloat(fee.value);
-        // const growth = parseFloat(fee.growth);
         return <span>{getDecimalAdjusted(size.toString(), 18)} WETH</span>;
       }
     },
