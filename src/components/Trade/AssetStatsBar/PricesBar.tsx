@@ -85,10 +85,10 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
                 : "text-negative-red"
             }
           >
-            {isMarketDataLoading 
+            {isMarketDataLoading || !marketData
             // && dailyChange === 0
               ? "..."
-              : `${marketData!.price_change_percentage_24h.toPrecision(3)}%`}
+              : `${marketData.price_change_percentage_24h.toPrecision(3)}%`}
           </span>
         </p>
         <Marker

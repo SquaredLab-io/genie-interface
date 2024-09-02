@@ -18,7 +18,7 @@ export const formatDollarUnits = (amount: number): string => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD"
-  }).format(amount); 
+  }).format(amount);
 };
 
 /**
@@ -74,6 +74,18 @@ export default function toUnits(
 export function shortenHash(hash: string | undefined): string {
   if (!hash) return "N/A";
   return hash.slice(0, 8) + "..." + hash.slice(-6);
+}
+
+export function getDollarQuote(
+  baseAmount: string,
+  oraclePrice: string,
+  decimals: number
+): string {
+  return formatNumber(
+    getDecimalAdjusted(baseAmount, decimals) *
+      formatOraclePrice(BigInt(oraclePrice), decimals),
+    true
+  );
 }
 
 export function getDecimalAdjusted(
