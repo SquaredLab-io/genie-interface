@@ -1,4 +1,4 @@
-import { DailyInfo } from "@squaredlab-io/sdk/src/subgraph";
+import { DailyInfo } from "@squaredlab-io/sdk/";
 
 export type LPTimeseries = {
   time: string;
@@ -95,8 +95,8 @@ export const getVolumeTimeseries = (
   return dailyData
     .map((data) => {
       return {
-        time: formatDate(parseInt(data.date)),
-        value: parseFloat(data.volume) / 10 ** 18
+        time: formatDate(parseInt(data.date.toString())),
+        value: parseFloat(data.volume.toString()) / 10 ** 18
       };
     })
     .reverse();
@@ -107,8 +107,8 @@ export const getTvlTimeseries = (dailyData: DailyInfo[] | undefined): LPTimeseri
   return dailyData
     .map((data) => {
       return {
-        time: formatDate(parseInt(data.date)),
-        value: parseFloat(data.lastTvl) / 10 ** 18
+        time: formatDate(parseInt(data.date.toString())),
+        value: parseFloat(data.lastTvl.toString()) / 10 ** 18
       };
     })
     .reverse();
@@ -119,8 +119,8 @@ export const getFeesTimeseries = (dailyData: DailyInfo[] | undefined): LPTimeser
   return dailyData
     .map((data) => {
       return {
-        time: formatDate(parseInt(data.date)),
-        value: parseFloat(data.fee)
+        time: formatDate(parseInt(data.date.toString())),
+        value: parseFloat(data.fee.toString()) / 10 ** 18
       };
     })
     .reverse();
