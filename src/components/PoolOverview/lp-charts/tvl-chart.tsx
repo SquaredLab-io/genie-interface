@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, useState } from "react";
 import { createChart } from "lightweight-charts";
-import { DailyInfo } from "@squaredlab-io/sdk/src/subgraph";
+import { DailyInfo } from "@squaredlab-io/sdk/";
 import { getTvlTimeseries } from "../helper";
 import { chartOptionsConfig, colors } from "./configs";
 import LoadingLogo from "@components/icons/loading-logo";

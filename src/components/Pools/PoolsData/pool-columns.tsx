@@ -13,6 +13,19 @@ import { BASE_SEPOLIA } from "@lib/constants";
 import { calculatePoolAge } from "@lib/utils/calculatePoolAge";
 import PoolMenu from "./PoolMenu";
 import { getActionType } from "@lib/utils/pools";
+import { createChart, CrosshairMode } from "lightweight-charts";
+import { useEffect, useRef, useState } from "react";
+import LoadingLogo from "@components/icons/loading-logo";
+import { useDailyData } from "@lib/hooks/useDailyData";
+import { getFeesTimeseries } from "@components/PoolOverview/helper";
+
+const getCorrectLineColor = (val1 : number | null, val2 : number | null) => {
+  switch (true) {
+    case !!val1 && !!val2 && (val1 > val2): return "#CF1800";
+    case !!val1 && !!val2 && (val1 < val2): return "#44BD22";
+    default: return "#2962FF";
+  }
+}
 
 export function allPoolsColumnDef(
   updateSelectedPool: (value: PoolInfo) => void
@@ -222,11 +235,80 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       accessorKey: "historical_fees",
       header: () => <span>Historical Pool Fees</span>,
       cell: ({ row }) => {
-        /* const { pool, poolAddr, underlying, underlyingAddress } = row.original;
+        const { poolAddr } = row.original;
         const { dailyData } = useDailyData({poolAddress: poolAddr})
         const chartContainerRef = useRef(null);
-        const [isLoadingChart, setIsLoadingChart] = useState(false); */
-        return <span className="opacity-50">Chart here</span>;
+        const [isLoadingChart, setIsLoadingChart] = useState(false);
+
+        // Reversed as we need series in ascending order
+        const timeseries = getFeesTimeseries(dailyData); 
+        console.log('time series : ', timeseries);       
+
+        useEffect(() => {
+          if (chartContainerRef.current !== null) {
+            // chart prep start
+            setIsLoadingChart(true);
+
+            const chart = createChart(chartContainerRef.current, { 
+              width: 135, height: 45,
+              layout : {
+                background: {
+                  color: "transparent"
+                },
+                attributionLogo: false,
+              },
+              grid: {
+                vertLines: {
+                  visible: false
+                },
+                horzLines: {
+                  visible: false
+                }
+              },
+              crosshair: {
+                mode: CrosshairMode.Hidden
+              },
+              timeScale: {
+                visible: false
+              },
+              rightPriceScale : {
+                visible: false
+              },
+              handleScale: false,
+              handleScroll: false
+            });
+            chart.timeScale().fitContent();
+            const lineSeries = chart.addLineSeries({ 
+              color: (timeseries.length!==0) ? getCorrectLineColor(timeseries[0].value, timeseries[timeseries.length-1].value) : "#2962FF",
+              lastValueVisible: false,
+              priceLineVisible: false,
+              
+            });
+            lineSeries.setData(timeseries);
+            lineSeries.priceScale().applyOptions({
+              autoScale: false
+            })
+
+            setIsLoadingChart(false);
+
+            return () => {
+              chart.remove();
+            };
+          }
+        }, [timeseries]);
+
+        return (
+          // <span className="opacity-50">Chart here</span>;
+          <div className="relative max-h-[150px] max-w-[200px]">
+            {isLoadingChart ? (
+              <div className="size-full flex-col-center">
+                <LoadingLogo size={80} />
+              </div>
+            ) : (
+              <div className="h-full" ref={chartContainerRef} />
+            )}
+          </div>
+        )
       }
     },
     {
