@@ -18,12 +18,22 @@ import { useEffect, useRef, useState } from "react";
 import LoadingLogo from "@components/icons/loading-logo";
 import { useDailyData } from "@lib/hooks/useDailyData";
 import { getFeesTimeseries } from "@components/PoolOverview/helper";
+import { DailyInfo } from "@squaredlab-io/sdk";
 
 const getCorrectLineColor = (val1 : number | null, val2 : number | null) => {
   switch (true) {
     case !!val1 && !!val2 && (val1 > val2): return "#CF1800";
     case !!val1 && !!val2 && (val1 < val2): return "#44BD22";
     default: return "#2962FF";
+  }
+}
+
+const getGrowthPercentage = (val1 : number | null, val2 : number | null) => {
+  switch (true) {
+    case !!val1 && !!val2 && (val1 > val2): return ((val2-val1)*100)/val1;
+    case !!val1 && !!val2 && (val1 < val2): return ((val2-val1)*100)/val1;
+    case !!val1 && !!val2 && (val1 === val2): return 0;
+    default: return 0;
   }
 }
 
@@ -242,7 +252,7 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
 
         // Reversed as we need series in ascending order
         const timeseries = getFeesTimeseries(dailyData); 
-        console.log('time series : ', timeseries);       
+        console.log('time series 1: ', timeseries);       
 
         useEffect(() => {
           if (chartContainerRef.current !== null) {
@@ -315,15 +325,25 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       accessorKey: "fee",
       header: () => <span>30D Fees</span>,
       cell: ({ row }) => {
-        const { fee, underlyingDecimals, oraclePrice } = row.original;
-        const growth = parseFloat("0");
+        const { fee, underlyingDecimals, oraclePrice, poolAddr } = row.original;
+        const { dailyData } = useDailyData({poolAddress: poolAddr})
+
+        // Reversed as we need series in ascending order
+        const timeseries = getFeesTimeseries(dailyData); 
+        console.log('time series 2: ', timeseries);    
+
+        const growth = timeseries.length!==0 ? getGrowthPercentage(timeseries[0].value, timeseries[timeseries.length-1].value) : 0;
         return (
           <div className="inline-flex gap-1">
             <span>{getDollarQuote(fee, oraclePrice, underlyingDecimals)}</span>
             <span
-              className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
+              className={cn(
+                growth > 0 ? "text-positive-green" : 
+                growth < 0 ? "text-negative-red" :
+                undefined
+              )}
             >
-              {growth}%
+              {parseFloat(growth.toFixed(1)).toPrecision(5)}%
             </span>
           </div>
         );

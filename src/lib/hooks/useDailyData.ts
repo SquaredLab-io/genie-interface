@@ -6,6 +6,7 @@ import notification from "@components/common/notification";
 interface PropsType {
   poolAddress: string;
   paused?: boolean;
+  limit?: number;
 }
 
 interface ReturnType {
@@ -19,14 +20,16 @@ interface ReturnType {
 // URQL Client
 const [client] = getUrqlClient();
 
-const getDailyData = async (pool: string): Promise<DailyInfoArray> => {
+const getDailyData = async (pool: string, limit?: number): Promise<DailyInfoArray> => {
   const filterQuery = `{pool: "${pool}"}`;
+  const limitClause = limit !== undefined ? `limit: ${limit},` : '';
   const QUERY = `
    query MyQuery {
       dailyInfos(
         where: ${filterQuery}
         orderBy: "date"
         orderDirection: "desc"
+        ${limitClause}
       ) {
         items {
           fee
@@ -57,10 +60,10 @@ const getDailyData = async (pool: string): Promise<DailyInfoArray> => {
  * @param paused Pause the auto fetching
  * @returns dailyInfos, isFetching, refetch
  */
-export function useDailyData({ poolAddress, paused = false }: PropsType): ReturnType {
+export function useDailyData({ poolAddress, paused = false, limit }: PropsType): ReturnType {
   const fetch = async () => {
     try {
-      const info = await getDailyData(poolAddress);
+      const info = await getDailyData(poolAddress, limit);
       return info.dailyInfos.items;
     } catch (error) {
       notification.error({
