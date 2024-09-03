@@ -3,7 +3,6 @@ import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   _getDecimalAdjusted,
-  getDecimalAdjusted,
   getDollarQuote,
   shortenHash
 } from "@lib/utils/formatting";
@@ -223,6 +222,10 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       accessorKey: "historical_fees",
       header: () => <span>Historical Pool Fees</span>,
       cell: ({ row }) => {
+        /* const { pool, poolAddr, underlying, underlyingAddress } = row.original;
+        const { dailyData } = useDailyData({poolAddress: poolAddr})
+        const chartContainerRef = useRef(null);
+        const [isLoadingChart, setIsLoadingChart] = useState(false); */
         return <span className="opacity-50">Chart here</span>;
       }
     },
@@ -352,26 +355,29 @@ export function transactionsColumnDef(): ColumnDef<Tx>[] {
         const { size, oraclePrice, underlying } = row.original;
         return (
           <span>
-            {getDecimalAdjusted(size.toString(), underlying.decimals)} {underlying.symbol}
+            {/* {getDecimalAdjusted(size.toString(), underlying.decimals)} {underlying.symbol} */}
+            {getDollarQuote(size.toString(), oraclePrice.toString(), underlying.decimals)}
           </span>
         );
       }
     },
-    {
+    /* {
       id: "fees",
       accessorKey: "fees",
       header: () => <span className="pt-6">Fees Earned (USDT)</span>,
       cell: ({ row }) => {
+        const { oraclePrice } = row.original;
         return <span>-</span>;
       }
-    },
+    }, */
     {
       id: "total",
       accessorKey: "total",
       header: () => <span>Total (USDT)</span>,
       cell: ({ row }) => {
-        const { size } = row.original;
-        return <span>{getDecimalAdjusted(size.toString(), 18)} WETH</span>;
+        const { size, oraclePrice } = row.original;
+        // return <span>{getDecimalAdjusted(size.toString(), 18)} WETH</span>;
+        return <span>{getDollarQuote(size.toString(), oraclePrice.toString(), 18)}</span>;
       }
     },
     {
@@ -379,8 +385,17 @@ export function transactionsColumnDef(): ColumnDef<Tx>[] {
       accessorKey: "action",
       header: () => <span className="">Total (USD)</span>,
       cell: ({ row }) => {
-        const { size } = row.original;
-        return <span>{getDecimalAdjusted(size.toString(), 18)} WETH</span>;
+        const { size, oraclePrice } = row.original;
+        const growth = parseFloat("0");
+        // return <span>{getDecimalAdjusted(size.toString(), 18)} WETH</span>;
+        return (
+          <div className="inline-flex gap-1">
+            <span>{getDollarQuote(size.toString(), oraclePrice.toString(), 18)}</span>
+            <span className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}>
+              {growth}%
+            </span>
+          </div>
+        );
       }
     }
   ];
