@@ -21,6 +21,9 @@ export const notificationId = {
   },
   close_event: {
     default: "close",
+    loading_init: "close_loading_init",
+    error_init: "close_error_init",
+    success_init: "close_success_init",
     loading: "close_loading",
     error: "close_error",
     success: "close_success"

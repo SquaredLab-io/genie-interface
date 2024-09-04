@@ -270,6 +270,9 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     }
   }, [isSuccess]);
 
+  // Condition to disable Inputting values
+  const disabledInput = !userBalance || userBalance?.formatted === "0" || !isConnected;
+  
   return (
     <div className="flex flex-col font-normal text-xs/[14px] gap-2 py-6 px-4 2xl:py-[24px] 2xl:px-[16px]">
       <p className="inline-flex items-start gap-1 w-full">
@@ -310,6 +313,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
               value={quantity}
               placeholder={`Qty (min) is 0.001 ${selectedPool()?.underlying}`}
               onChange={inputHandler}
+              disabled={disabledInput}
               id="quantity"
               className="bg-transparent py-[8px] w-full placeholder:text-[#6D6D6D] text-white font-noemal text-sm/4 2xl:text-[14px]/[16px] focus:outline-none"
             />
@@ -338,6 +342,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
           min={0}
           max={100}
           indices={[0, 25, 50, 75, 100]}
+          disabled={disabledInput}
           isPerc={true}
         />
       </div>
@@ -366,7 +371,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
         value={`${
           isOutputFetching
             ? "..."
-            : !isNaN(parseFloat(quantity))
+            : !isNaN(parseFloat(quantity)) && isConnected
               ? formatNumber(
                   getDecimalAdjusted(output, selectedPool()?.underlyingDecimals)
                 )
