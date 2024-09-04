@@ -12,6 +12,7 @@ interface PropsType {
   step?: number;
   indices?: number[];
   isPerc?: boolean;
+  disabled?: boolean;
   className?: string;
 }
 
@@ -32,6 +33,7 @@ const SliderBar = ({
   step = 1,
   indices,
   isPerc = false,
+  disabled = false,
   className
 }: PropsType) => {
   return (
@@ -39,6 +41,7 @@ const SliderBar = ({
       <Slider
         defaultValue={[value]}
         value={value ? [value] : [0]}
+        disabled={disabled}
         min={min}
         max={max}
         step={step}

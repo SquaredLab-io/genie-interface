@@ -83,6 +83,10 @@ const ClosePositionPopover: FC<PropsType> = ({
     const amount = parseFloat(quantity) * 10 ** 18;
     console.log("Amount", amount);
     setIsHandlerLoading(true);
+    notification.loading({
+      id: close_event.loading_init,
+      title: "Closing position in initiated..."
+    });
     try {
       const hash = await potentia?.poolWrite.closePosition(
         selectedPool()?.poolAddr! as Address,
@@ -91,8 +95,9 @@ const ClosePositionPopover: FC<PropsType> = ({
       );
       setTxHash(hash as Address);
       setIsHandlerLoading(false);
-      // console.log("closePosition hash", hash);
     } catch (error) {
+      // dismiss loading toast onError
+      toast.dismiss(close_event.loading_init);
       notification.error({
         id: close_event.default,
         title: "Attempt to Close Position failed",
@@ -101,6 +106,7 @@ const ClosePositionPopover: FC<PropsType> = ({
       setIsHandlerLoading(false);
       console.error("closePosition Error", error);
     } finally {
+      toast.dismiss(close_event.loading_init);
       setIsHandlerLoading(false);
     }
   }
@@ -135,6 +141,7 @@ const ClosePositionPopover: FC<PropsType> = ({
       refetchTxHistory();
       // TODO: refetchBalance();
 
+      // dismiss loading toast onSuccess
       toast.dismiss(close_event.loading);
       notification.success({
         id: close_event.success,
