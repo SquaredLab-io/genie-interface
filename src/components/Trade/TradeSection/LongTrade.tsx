@@ -177,10 +177,9 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   // Handler that updates Quantity and keep SliderValue in sync
   function inputHandler(event: ChangeEvent<HTMLInputElement>) {
     const input = event.target.value;
-    console.log("input @longtrade", input);
     setQuantity(input);
     if (userBalance) {
-      const value = (parseFloat(input ?? "0") / parseFloat(userBalance?.formatted)) * 100;
+      const value = (parseFloat(input ?? "0") / parseFloat(userBalance.formatted)) * 100;
       setSliderValue(value);
     }
   }
@@ -189,17 +188,17 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   function sliderHandler(value: number) {
     setSliderValue(value);
     if (userBalance) {
-      const amount = (parseFloat(userBalance?.formatted) * value) / 100;
+      const amount = (parseFloat(userBalance.formatted) * value) / 100;
       setQuantity(amount.toString());
     }
   }
 
   // setting initial quantity
-  useEffect(() => {
-    if (userBalance) {
-      setQuantity(((parseFloat(userBalance?.formatted) * sliderValue) / 100).toString());
-    }
-  }, [userBalance]);
+  // useEffect(() => {
+  //   if (userBalance) {
+  //     setQuantity(((parseFloat(userBalance?.formatted) * sliderValue) / 100).toString());
+  //   }
+  // }, [userBalance]);
 
   // Approval Loading or Error Effects
   useEffect(() => {
@@ -307,11 +306,11 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
         >
           <div className="flex flex-col gap-1 items-start w-full max-w-full">
             <input
-              type="number"
-              value={quantity}
-              placeholder={`Qty (min) is 0.001 ${selectedPool()?.underlying}`}
-              onChange={inputHandler}
               id="quantity"
+              type="number"
+              placeholder={`Qty (min) is 0.001 ${selectedPool()?.underlying}`}
+              value={quantity}
+              onChange={inputHandler}
               disabled={disabledInput}
               className="bg-transparent py-[8px] w-full placeholder:text-[#6D6D6D] text-white font-noemal text-sm/4 2xl:text-[14px]/[16px] focus:outline-none"
             />
