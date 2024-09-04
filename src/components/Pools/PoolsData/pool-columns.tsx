@@ -1,11 +1,8 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import Link from "next/link";
 import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  _getDecimalAdjusted,
-  getDollarQuote,
-  shortenHash
-} from "@lib/utils/formatting";
+import { _getDecimalAdjusted, getDollarQuote, shortenHash } from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
 import { Button } from "@components/ui/button";
 import { PoolInfo, Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
@@ -18,24 +15,30 @@ import { useEffect, useRef, useState } from "react";
 import LoadingLogo from "@components/icons/loading-logo";
 import { useDailyData } from "@lib/hooks/useDailyData";
 import { getFeesTimeseries } from "@components/PoolOverview/helper";
-import { DailyInfo } from "@squaredlab-io/sdk";
 
-const getCorrectLineColor = (val1 : number | null, val2 : number | null) => {
+const getCorrectLineColor = (val1: number | null, val2: number | null) => {
   switch (true) {
-    case !!val1 && !!val2 && (val1 > val2): return "#CF1800";
-    case !!val1 && !!val2 && (val1 < val2): return "#44BD22";
-    default: return "#2962FF";
+    case !!val1 && !!val2 && val1 > val2:
+      return "#CF1800";
+    case !!val1 && !!val2 && val1 < val2:
+      return "#44BD22";
+    default:
+      return "#2962FF";
   }
-}
+};
 
-const getGrowthPercentage = (val1 : number | null, val2 : number | null) => {
+const getGrowthPercentage = (val1: number | null, val2: number | null) => {
   switch (true) {
-    case !!val1 && !!val2 && (val1 > val2): return ((val2-val1)*100)/val1;
-    case !!val1 && !!val2 && (val1 < val2): return ((val2-val1)*100)/val1;
-    case !!val1 && !!val2 && (val1 === val2): return 0;
-    default: return 0;
+    case !!val1 && !!val2 && val1 > val2:
+      return ((val2 - val1) * 100) / val1;
+    case !!val1 && !!val2 && val1 < val2:
+      return ((val2 - val1) * 100) / val1;
+    case !!val1 && !!val2 && val1 === val2:
+      return 0;
+    default:
+      return 0;
   }
-}
+};
 
 export function allPoolsColumnDef(
   updateSelectedPool: (value: PoolInfo) => void
@@ -246,26 +249,27 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       header: () => <span>Historical Pool Fees</span>,
       cell: ({ row }) => {
         const { poolAddr } = row.original;
-        const { dailyData } = useDailyData({poolAddress: poolAddr})
+        const { dailyData } = useDailyData({ poolAddress: poolAddr });
         const chartContainerRef = useRef(null);
         const [isLoadingChart, setIsLoadingChart] = useState(false);
 
         // Reversed as we need series in ascending order
-        const timeseries = getFeesTimeseries(dailyData); 
-        console.log('time series 1: ', timeseries);       
+        const timeseries = getFeesTimeseries(dailyData);
+        console.log("time series 1: ", timeseries);
 
         useEffect(() => {
           if (chartContainerRef.current !== null) {
             // chart prep start
             setIsLoadingChart(true);
 
-            const chart = createChart(chartContainerRef.current, { 
-              width: 135, height: 45,
-              layout : {
+            const chart = createChart(chartContainerRef.current, {
+              width: 135,
+              height: 45,
+              layout: {
                 background: {
                   color: "transparent"
                 },
-                attributionLogo: false,
+                attributionLogo: false
               },
               grid: {
                 vertLines: {
@@ -281,23 +285,28 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
               timeScale: {
                 visible: false
               },
-              rightPriceScale : {
+              rightPriceScale: {
                 visible: false
               },
               handleScale: false,
               handleScroll: false
             });
             chart.timeScale().fitContent();
-            const lineSeries = chart.addLineSeries({ 
-              color: (timeseries.length!==0) ? getCorrectLineColor(timeseries[0].value, timeseries[timeseries.length-1].value) : "#2962FF",
+            const lineSeries = chart.addLineSeries({
+              color:
+                timeseries.length !== 0
+                  ? getCorrectLineColor(
+                      timeseries[0].value,
+                      timeseries[timeseries.length - 1].value
+                    )
+                  : "#2962FF",
               lastValueVisible: false,
-              priceLineVisible: false,
-              
+              priceLineVisible: false
             });
             lineSeries.setData(timeseries);
             lineSeries.priceScale().applyOptions({
               autoScale: false
-            })
+            });
 
             setIsLoadingChart(false);
 
@@ -318,7 +327,7 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
               <div className="h-full" ref={chartContainerRef} />
             )}
           </div>
-        )
+        );
       }
     },
     {
@@ -326,21 +335,29 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       header: () => <span>30D Fees</span>,
       cell: ({ row }) => {
         const { fee, underlyingDecimals, oraclePrice, poolAddr } = row.original;
-        const { dailyData } = useDailyData({poolAddress: poolAddr})
+        const { dailyData } = useDailyData({ poolAddress: poolAddr });
 
         // Reversed as we need series in ascending order
-        const timeseries = getFeesTimeseries(dailyData); 
-        console.log('time series 2: ', timeseries);    
+        const timeseries = getFeesTimeseries(dailyData);
+        console.log("time series 2: ", timeseries);
 
-        const growth = timeseries.length!==0 ? getGrowthPercentage(timeseries[0].value, timeseries[timeseries.length-1].value) : 0;
+        const growth =
+          timeseries.length !== 0
+            ? getGrowthPercentage(
+                timeseries[0].value,
+                timeseries[timeseries.length - 1].value
+              )
+            : 0;
         return (
           <div className="inline-flex gap-1">
             <span>{getDollarQuote(fee, oraclePrice, underlyingDecimals)}</span>
             <span
               className={cn(
-                growth > 0 ? "text-positive-green" : 
-                growth < 0 ? "text-negative-red" :
-                undefined
+                growth > 0
+                  ? "text-positive-green"
+                  : growth < 0
+                    ? "text-negative-red"
+                    : undefined
               )}
             >
               {parseFloat(growth.toFixed(1)).toPrecision(5)}%
@@ -493,7 +510,9 @@ export function transactionsColumnDef(): ColumnDef<Tx>[] {
         return (
           <div className="inline-flex gap-1">
             <span>{getDollarQuote(size.toString(), oraclePrice.toString(), 18)}</span>
-            <span className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}>
+            <span
+              className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
+            >
               {growth}%
             </span>
           </div>
