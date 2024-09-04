@@ -59,7 +59,7 @@ const TradeFlow = () => {
                 return (
                   <TableRow
                     key={`${tHistory.size}_${index}`}
-                    className="font-normal text-[11px]/4"
+                    className="font-normal text-[0.6875rem]/4"
                   >
                     <TableCell
                       className={cn(
@@ -74,7 +74,7 @@ const TradeFlow = () => {
                 );
               })
             ) : (
-              <TableRow className="font-normal text-[11px]/4">
+              <TableRow className="font-normal text-[0.6875rem]/4">
                 {isFetching ? <span>...</span> : <span>No Data available</span>}
               </TableRow>
             )}

@@ -7,6 +7,10 @@
     @apply box-border p-0 m-0 scroll-smooth;
   }
 
+  html {
+    @apply text-base 2xl:text-lg 3xl:text-[1.25rem] 4xl:text-[1.31rem]
+  }
+
   body {
     @apply h-screen w-full max-w-[2000px] overflow-x-hidden 3xl:border-x border-secondary-gray mx-auto text-white bg-primary-gray font-helvetica-neue tracking-wide;
   }
@@ -26,7 +30,7 @@
   }
 
   .page-center {
-    @apply flex flex-col h-[calc(100vh-74px)]; /* adjustment_height(header_height) */
+    @apply flex flex-col h-[calc(100vh-74px)] max-w-full; /* adjustment_height(header_height) */
   }
 
   .flex-col-center {
