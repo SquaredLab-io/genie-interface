@@ -22,7 +22,7 @@ const [client] = getUrqlClient();
 
 const getDailyData = async (pool: string, limit?: number): Promise<DailyInfoArray> => {
   const filterQuery = `{pool: "${pool}"}`;
-  const limitClause = limit !== undefined ? `limit: ${limit},` : '';
+  const limitClause = limit !== undefined ? `limit: ${limit},` : "";
   const QUERY = `
    query MyQuery {
       dailyInfos(
@@ -60,7 +60,11 @@ const getDailyData = async (pool: string, limit?: number): Promise<DailyInfoArra
  * @param paused Pause the auto fetching
  * @returns dailyInfos, isFetching, refetch
  */
-export function useDailyData({ poolAddress, paused = false, limit }: PropsType): ReturnType {
+export function useDailyData({
+  poolAddress,
+  paused = false,
+  limit
+}: PropsType): ReturnType {
   const fetch = async () => {
     try {
       const info = await getDailyData(poolAddress, limit);
