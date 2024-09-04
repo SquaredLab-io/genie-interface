@@ -271,7 +271,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
   }, [isSuccess]);
 
   return (
-    <div className="flex flex-col font-normal text-xs/[14px] gap-2 py-6 px-4">
+    <div className="flex flex-col font-normal text-xs/[14px] gap-2 py-6 px-4 2xl:py-[24px] 2xl:px-[16px]">
       <p className="inline-flex items-start gap-1 w-full">
         <span className="text-[#757B80]">Balance:</span>
         <span className="font-medium">
@@ -300,7 +300,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
         {/* Input Box: Token Input and Selection */}
         <div
           className={cn(
-            "inline-flex w-full justify-between items-center border py-2 px-3 bg-transparent",
+            "inline-flex w-full justify-between items-center border py-[8px] px-[12px] bg-transparent",
             balanceExceedError ? "border-[#FF615C]" : "border-[#1F2D3F]"
           )}
         >
@@ -311,16 +311,16 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
               placeholder={`Qty (min) is 0.001 ${selectedPool()?.underlying}`}
               onChange={inputHandler}
               id="quantity"
-              className="bg-transparent py-2 w-full placeholder:text-[#6D6D6D] text-white font-noemal text-sm/4 focus:outline-none"
+              className="bg-transparent py-[8px] w-full placeholder:text-[#6D6D6D] text-white font-noemal text-sm/4 2xl:text-[14px]/[16px] focus:outline-none"
             />
-            <span className="text-[#404950]">
+            <span className="text-[#404950] 2xl:text-[14px]">
               {isMarketDataLoading && !price && !isValidPositiveNumber(quantity)
                 ? "..."
                 : `$${price * parseFloat(quantity !== "" ? quantity : "0")}`}
             </span>
           </div>
           <TokenSelectPopover size="compact">
-            <button className="hover:bg-transparent px-0 flex h-10 items-center justify-between gap-0 font-normal text-sm/4 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1">
+            <button className="hover:bg-transparent px-0 flex h-10 items-center justify-between gap-0 font-normal text-sm/4 2xl:text-[16px]/[16px] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1">
               <span className="text-nowrap">{selectedPool()?.underlying}</span>
               <BiSolidDownArrow className="h-3 w-3 ml-4" color="#9D9D9D" />
             </button>

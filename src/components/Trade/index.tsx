@@ -38,11 +38,11 @@ const Trade = () => {
           setIsScriptReady(true);
         }}
       />
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full flex-auto flex-grow">
         {/* top box */}
-        <div className="flex-1 flex flex-row min-w-full">
+        <div className="flex-auto flex flex-row min-w-full">
           {/* left section -- (flexible) */}
-          <div className="flex flex-col flex-grow border-r border-t border-secondary-gray">
+          <div className="flex flex-col flex-auto max-w-[calc(100vw-346px)] border-r border-t border-secondary-gray">
             <AssetStatsBar />
             <div className="grid grid-cols-[1fr_1fr_1fr_auto] w-full h-full">
               {isScriptReady && potentia ? (
@@ -55,19 +55,19 @@ const Trade = () => {
           </div>
 
           {/* right section -- (fixed width) */}
-          <div className="flex flex-grow min-w-[346px] w-[346px] max-w-[346px]">
+          <div className="flex flex-auto flex-grow min-w-[346px] w-[346px] max-w-[346px]">
             <TradeSection />
           </div>
         </div>
 
         {/* bottom box */}
-        <div className="flex-1 flex flex-row flex-grow-0 border-t border-secondary-gray">
+        <div className="flex flex-auto flex-row border-t border-secondary-gray">
           {/* left section -- (flexible) */}
-          <div className="flex flex-grow border-r border-secondary-gray">
+          <div className="flex flex-auto border-r border-secondary-gray">
             <TradeData />
           </div>
           {/* right section -- (fixed width) */}
-          <div className="flex min-w-[346px] w-[346px] max-w-[346px]">
+          <div className="flex flex-initial min-w-[346px] w-[346px] max-w-[346px]">
             <MarketData />
           </div>
         </div>

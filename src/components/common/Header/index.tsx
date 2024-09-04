@@ -18,7 +18,7 @@ const Header = () => {
   const [isFaucetOpen, setIsFaucetOpen] = useState<boolean>(false);
 
   return (
-    <header className="flex flex-row py-4 px-5 justify-between font-sans-ibm-plex">
+    <header className="flex flex-row flex-grow py-4 px-5 justify-between font-sans-ibm-plex max-w-full">
       <nav className="flex justify-start items-center gap-12" aria-label="Global">
         {/* Brand Logo */}
         <Link href="/" className="-m-1.5 p-1.5 max-w-fit">
@@ -31,7 +31,7 @@ const Header = () => {
             priority
           />
         </Link>
-        <div className="hidden sm:flex gap-x-6 lg:gap-x-11 font-medium text-[14px]/[22px] uppercase">
+        <div className="hidden sm:flex gap-x-6 lg:gap-x-11 font-medium text-[14px]/[22px] 2xl:text-[15.75px] 3xl:text-[17.50px] uppercase">
           {navigation.map((item) => (
             <Link
               key={item.name}
