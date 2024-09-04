@@ -177,7 +177,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   // Handler that updates Quantity and keep SliderValue in sync
   function inputHandler(event: ChangeEvent<HTMLInputElement>) {
     const input = event.target.value;
-    console.log('input @longtrade', input);
+    console.log("input @longtrade", input);
     setQuantity(input);
     if (userBalance) {
       const value = (parseFloat(input ?? "0") / parseFloat(userBalance?.formatted)) * 100;
