@@ -81,7 +81,6 @@ const ClosePositionPopover: FC<PropsType> = ({
    */
   async function closePositionHandlerSdk() {
     const amount = parseFloat(quantity) * 10 ** 18;
-    // const amount = value * 10 ** 18;
     console.log("Amount", amount);
     setIsHandlerLoading(true);
     try {
