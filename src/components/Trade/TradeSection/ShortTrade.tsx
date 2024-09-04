@@ -199,11 +199,11 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
   }
 
   // setting intital quantity
-  useEffect(() => {
-    if (userBalance) {
-      setQuantity(((parseFloat(userBalance?.formatted) * sliderValue) / 100).toString());
-    }
-  }, [userBalance]);
+  // useEffect(() => {
+  //   if (userBalance) {
+  //     setQuantity(((parseFloat(userBalance?.formatted) * sliderValue) / 100).toString());
+  //   }
+  // }, [userBalance]);
 
   // Approval Loading or Error Effects
   useEffect(() => {
@@ -309,12 +309,12 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
         >
           <div className="flex flex-col gap-1 items-start w-full max-w-full">
             <input
+              id="quantity"
+              placeholder={`Qty (min) is 0.001 ${selectedPool()?.underlying}`}
               type="number"
               value={quantity}
-              placeholder={`Qty (min) is 0.001 ${selectedPool()?.underlying}`}
               onChange={inputHandler}
               disabled={disabledInput}
-              id="quantity"
               className="bg-transparent py-[8px] w-full placeholder:text-[#6D6D6D] text-white font-noemal text-sm/4 2xl:text-[14px]/[16px] focus:outline-none"
             />
             <span className="text-[#404950] 2xl:text-[14px]">
