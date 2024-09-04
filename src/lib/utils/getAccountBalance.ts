@@ -9,5 +9,6 @@ export const getAccountBalance = (
   isLoading?: boolean
 ): string => {
   if (!data && isLoading) return "...";
-  return `${formatNumber(parseFloat(data?.formatted ?? "0"))} ${data?.symbol}`;
+  else if (!data) return "0";
+  return `${formatNumber(parseFloat(data.formatted ?? "0"))} ${data.symbol}`;
 };
