@@ -55,8 +55,8 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
   const {
     price,
     marketData,
-    isMarketDataLoading,
-    refetchMarketData
+    isMarketDataLoading
+    // refetchMarketData
   } = useCurrencyPrice(underlying);
 
   const { tokenPrices, isFetching, status } = useTokenPrice({
@@ -71,22 +71,22 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
   );
 
   return (
-    <div className="flex flex-row items-center justify-start gap-6 h-full w-full px-2 xl:px-6 2xl:px-8 font-normal text-xs/4 overflow-x-auto z-50">
-      <div className="inline-flex items-center gap-6 2xl:gap-8 3xl:gap-8">
+    <div className="flex flex-row items-center justify-start gap-6 2xl:gap-5 3xl:gap-8 h-full w-full px-2 xl:px-6 font-normal text-xs/4 overflow-x-auto z-50">
+      <div className="inline-flex items-center gap-6 2xl:gap-5 3xl:gap-8">
         <p className="flex flex-col items-start justify-center gap-1 -mb-1 h-full">
           <span className="font-bold text-lg/[8px] text-white">
-            {isMarketDataLoading && price === 0 ? "loading..." : price ?? "-"}
+            {isMarketDataLoading && price === 0 ? "loading..." : (price ?? "-")}
           </span>
           {/* TODO: Calculate and replace original price's 24h change  */}
           <span
             className={
-              !!marketData?.price_change_percentage_24h && marketData?.price_change_percentage_24h > 0
+              !!marketData?.price_change_percentage_24h &&
+              marketData?.price_change_percentage_24h > 0
                 ? "text-positive-green"
                 : "text-negative-red"
             }
           >
             {isMarketDataLoading || !marketData
-            // && dailyChange === 0
               ? "..."
               : `${marketData.price_change_percentage_24h.toPrecision(3)}%`}
           </span>
@@ -103,7 +103,7 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
         />
       </div>
       <Separator orientation="vertical" />
-      <div className="inline-flex gap-6 2xl:gap-8 3xl:gap-8">
+      <div className="inline-flex gap-6 2xl:gap-5 3xl:gap-8">
         <Marker
           label="Long Price"
           value={toUnits(parseFloat(tokenPrices?.lastLongP!), 2)}
