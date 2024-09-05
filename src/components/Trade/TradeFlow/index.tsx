@@ -31,7 +31,7 @@ const TradeFlow = () => {
     <div className="hidden col-span-1 xl:flex flex-col border-l border-secondary-gray text-[1.2rem] min-w-[272.5px] w-[272.5px] h-full">
       <h1 className="font-medium text-sm/5 p-4">Trade Flow {isFetching && "..."}</h1>
       <Separator />
-      <div className="flex flex-col pt-3 pl-3 h-full min-h-[334px] max-h-[calc(100vh-462px)]">
+      <div className="flex flex-col pt-3 pl-3 h-full min-h-[374px] max-h-[calc(100vh-462px)]">
         {/* Layout Selections */}
         <LayoutSelector layout={tradeflowLayout} setLayout={setTradeflowLayout} />
         {/* TradeFlow table */}
