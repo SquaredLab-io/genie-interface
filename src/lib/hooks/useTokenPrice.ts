@@ -57,7 +57,7 @@ export function useTokenPrice({ poolAddress, paused = false }: PropsType): Retur
     isFetching: fetchingPrice,
     refetch
   } = useQuery({
-    queryKey: ["tokenPrice"],
+    queryKey: ["tokenPrice", poolAddress],
     queryFn: fetchTokenPrice,
     refetchInterval: REFETCH_INTERVAL,
     enabled: !paused && !!potentia && !!poolAddress
