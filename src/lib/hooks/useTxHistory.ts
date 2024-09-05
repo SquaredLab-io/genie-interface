@@ -40,7 +40,7 @@ export function useTxHistory(paused = false): ReturnTxHistory {
   }
 
   const { data, isFetching, refetch } = useQuery({
-    queryKey: ["userTxHistory", selectedPool()?.underlying, address],
+    queryKey: ["userTxHistory", selectedPool()?.poolAddr, address],
     queryFn: getTxHistory,
     refetchInterval: REFETCH_INTERVAL,
     enabled: !paused && !!selectedPool() && !!potentia && !!address
