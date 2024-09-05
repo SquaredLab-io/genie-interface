@@ -28,7 +28,6 @@ import {
 import { CONFIRMATION } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
-import { useTxHistory } from "@lib/hooks/useTxHistory";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import { useTradeHistory } from "@lib/hooks/useTradeHistory";
 import { z } from "zod";
@@ -84,8 +83,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
   // getting underlying token's price
   const { price, isMarketDataLoading } = useCurrencyPrice(selectedPool()?.underlying);
 
-  // const { refetch: refetchTxHistory } = useTxHistory(true);
-  const { refetch: refetchTxHistory } = useTradeHistory(true);
+  const { refetch: refetchTradeHistory } = useTradeHistory(true);
 
   // Check approved tokens amount
   const { isApprovedData, isApprovedLoading, isApprovedError, isApprovedSuccess } =
@@ -260,7 +258,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     if (isSuccess) {
       refetchBalance();
       refetchOpenOrders();
-      refetchTxHistory();
+      refetchTradeHistory();
 
       toast.dismiss(short_event.loading);
       notification.success({
@@ -272,7 +270,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
 
   // Condition to disable Inputting values
   const disabledInput = !userBalance || userBalance?.formatted === "0" || !isConnected;
-  
+
   return (
     <div className="flex flex-col font-normal text-xs/[14px] gap-2 py-6 px-4 2xl:py-[24px] 2xl:px-[16px]">
       <p className="inline-flex items-start gap-1 w-full">

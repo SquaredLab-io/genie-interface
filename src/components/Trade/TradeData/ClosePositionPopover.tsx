@@ -20,6 +20,7 @@ import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { PositionTab } from "@squaredlab-io/sdk";
 import { useTradeHistory } from "@lib/hooks/useTradeHistory";
 import useUnderlyingEstimateOut from "@lib/hooks/useUnderlyingEstimateOut";
+import { useTxHistory } from "@lib/hooks/useTxHistory";
 
 interface PropsType {
   children: ReactNode;
@@ -60,14 +61,13 @@ const ClosePositionPopover: FC<PropsType> = ({
   // Current user balance of Long / Short Token
   const balance = isLong ? longTokenBalance : shortTokenBalance;
 
-  // const { refetch: refetchTxHistory } = useTxHistory(true);
-  const { refetch: refetchTxHistory } = useTradeHistory(true);
-
   // All current positions
   const { refetch: refetchOpenOrders } = useOpenOrders({
     poolAddress: selectedPool()?.poolAddr as Address,
     paused: true
   });
+  // Closed orders History
+  const { refetch: refetchTxHistory } = useTxHistory(true);
 
   // Get the Estimate Underlying Output
   const { output, isFetching: isOutputFetching } = useUnderlyingEstimateOut({
@@ -111,7 +111,7 @@ const ClosePositionPopover: FC<PropsType> = ({
     }
   }
 
-  // wait for openPosition transaction
+  // wait for closePosition transaction
   const { isSuccess, isLoading, isPending, isError, error } =
     useWaitForTransactionReceipt({
       hash: txHash,
@@ -137,9 +137,8 @@ const ClosePositionPopover: FC<PropsType> = ({
 
   useEffect(() => {
     if (isSuccess) {
-      refetchOpenOrders();
-      refetchTxHistory();
-      // TODO: refetchBalance();
+      refetchOpenOrders(); // updating open orders
+      refetchTxHistory(); // updating closed orders' history
 
       // dismiss loading toast onSuccess
       toast.dismiss(close_event.loading);
