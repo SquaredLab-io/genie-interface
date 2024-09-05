@@ -52,6 +52,7 @@ export const SUPPORTED_NETWORKS = [
 ];
 export const BASE_SEPOLIA = SUPPORTED_NETWORKS[0];
 
+// Number of Blocks to confirm
 export const CONFIRMATION = 5;
 
 // export const REFETCH_INTERVAL = false; // disabled

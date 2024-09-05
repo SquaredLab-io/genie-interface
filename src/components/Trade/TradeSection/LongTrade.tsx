@@ -84,8 +84,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   // getting underlying token's price
   const { price, isMarketDataLoading } = useCurrencyPrice(selectedPool()?.underlying);
 
-  // const { refetch: refetchTxHistory } = useTxHistory(true);
-  const { refetch: refetchTxHistory } = useTradeHistory(true);
+  const { refetch: refetchTradeHistory } = useTradeHistory(true);
 
   // Check approved tokens amount
   const { isApprovedData, isApprovedLoading, isApprovedError, isApprovedSuccess } =
@@ -254,7 +253,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     if (isSuccess) {
       refetchBalance();
       refetchOpenOrders();
-      refetchTxHistory();
+      refetchTradeHistory();
 
       toast.dismiss(long_event.loading);
       notification.success({

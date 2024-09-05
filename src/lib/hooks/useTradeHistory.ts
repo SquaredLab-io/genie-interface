@@ -34,7 +34,7 @@ export function useTradeHistory(paused = false): ReturnTxHistory {
   }
 
   const { data, isFetching, refetch } = useQuery({
-    queryKey: ["tradeHistory", selectedPool()?.underlying],
+    queryKey: ["tradeHistory", selectedPool()?.poolAddr],
     queryFn: getTradeHistory,
     refetchInterval: REFETCH_INTERVAL,
     enabled: !paused && !!selectedPool() && !!potentia,
