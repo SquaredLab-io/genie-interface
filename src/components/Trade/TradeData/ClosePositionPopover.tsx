@@ -18,7 +18,6 @@ import { toast } from "sonner";
 import { notificationId } from "../helper";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { PositionTab } from "@squaredlab-io/sdk";
-import { useTradeHistory } from "@lib/hooks/useTradeHistory";
 import useUnderlyingEstimateOut from "@lib/hooks/useUnderlyingEstimateOut";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
 
@@ -41,16 +40,13 @@ const ClosePositionPopover: FC<PropsType> = ({
 }) => {
   const [quantity, setQuantity] = useState<string>("");
   const [sliderValue, setSliderValue] = useState<number>(0);
-
-  const { close_event } = notificationId;
-
+  const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
   const [isHandlerLoading, setIsHandlerLoading] = useState(false);
 
-  const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
+  const { potentia } = usePotentiaSdk();  
 
-  const { selectedPool } = usePoolsStore();
-
-  const { potentia } = usePotentiaSdk();
+  const { selectedPool } = usePoolsStore();  
+  const { close_event } = notificationId;
 
   const longTokenBalance = getDecimalAdjusted(positions?.longPositionTab?.tokenSize, 18);
   const shortTokenBalance = getDecimalAdjusted(
@@ -85,7 +81,7 @@ const ClosePositionPopover: FC<PropsType> = ({
     setIsHandlerLoading(true);
     notification.loading({
       id: close_event.loading_init,
-      title: "Closing position in initiated..."
+      title: "Closing Position initiated..."
     });
     try {
       const hash = await potentia?.poolWrite.closePosition(
@@ -94,6 +90,9 @@ const ClosePositionPopover: FC<PropsType> = ({
         isLong
       );
       setTxHash(hash as Address);
+
+      // dismissing loading status and toast
+      toast.dismiss(close_event.loading_init);
       setIsHandlerLoading(false);
     } catch (error) {
       // dismiss loading toast onError
@@ -101,7 +100,8 @@ const ClosePositionPopover: FC<PropsType> = ({
       notification.error({
         id: close_event.default,
         title: "Attempt to Close Position failed",
-        description: "Please try again"
+        description: "Please try again",
+        duration: 5000
       });
       setIsHandlerLoading(false);
       console.error("closePosition Error", error);
@@ -130,7 +130,8 @@ const ClosePositionPopover: FC<PropsType> = ({
       notification.error({
         id: close_event.error,
         title: "Closing position failed",
-        description: `${error.message}`
+        description: `${error.message}`,
+        duration: 5000
       });
     }
   }, [isError, isLoading]);
@@ -168,10 +169,12 @@ const ClosePositionPopover: FC<PropsType> = ({
     }
   }
 
+  const isPopoverClosingDisabled = isHandlerLoading || isLoading;
+
   return (
     <Popover
-      open={isOpen}
-      onOpenChange={isHandlerLoading ? () => {} : setIsOpen}
+      open={isPopoverClosingDisabled ? true : isOpen}
+      onOpenChange={setIsOpen}
       modal={true}
       defaultOpen={false}
     >
@@ -247,14 +250,12 @@ const ClosePositionPopover: FC<PropsType> = ({
             onClick={closePositionHandlerSdk}
             disabled={
               !isValidPositiveNumber(quantity) ||
-              isHandlerLoading ||
+              isPopoverClosingDisabled ||
               !balance ||
-              !selectedPool() ||
-              isHandlerLoading ||
-              isLoading
+              !selectedPool()
             }
           >
-            {(isHandlerLoading || isLoading) && !isError ? (
+            {isPopoverClosingDisabled && !isError ? (
               <SpinnerIcon className="size-[16px] mx-auto" />
             ) : (
               <span>CLOSE POSITION</span>
