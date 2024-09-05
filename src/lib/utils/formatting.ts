@@ -4,22 +4,31 @@ import { formatUnits } from "viem";
  * Gives expontential values if number is lesser than 1e-3 or greater than -1e-3
  * Rest if gives in dollar expressions
  **/
-export const formatNumber = (num: number, isDollar: boolean = false) => {
-  if (num === 0) return "0";
+export function formatNumber(num: number, isDollar: boolean = false) {
+  if (num === 0) return isDollar ? "$0" : "0";
   // number belongs to (-0.001, 0.001)
   else if (num > -1e-3 && num < 1e-3) {
     return isDollar ? `$${num.toExponential(0)}` : num.toExponential(0);
   }
   // Otherwise, format to exactly three decimal places
   return isDollar ? toDollarUnits(num, 3) : toUnits(num, 3);
-};
+}
 
-export const formatDollarUnits = (amount: number): string => {
+export function formatDollarUnits(amount: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD"
   }).format(amount);
-};
+}
+
+export function formatLimit(amount: string | undefined, limit: number) {
+  const _amount = parseFloat(amount ?? "0");
+  const isUnderLimit = _amount >= limit || _amount <= limit * -1;
+  return {
+    sign: _amount >= limit,
+    value: isUnderLimit ? _amount : 0
+  };
+}
 
 /**
  *

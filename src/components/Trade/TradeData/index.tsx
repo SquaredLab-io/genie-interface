@@ -7,6 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import {
   _getDecimalAdjusted,
+  formatLimit,
   formatNumber,
   formatOraclePrice,
   formatTimestamp,
@@ -135,21 +136,20 @@ const TradeData = () => {
       cell: ({ row }) => {
         const { tokenSize, underlyingPrice, side } = row.original;
         const tradePrice = side === "Long" ? longPrice : shortPrice;
+        const size = formatLimit(getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals!).toString(), 0.01);
+        const sizeInDollars = formatLimit(
+          (
+            parseFloat(underlyingPrice) *
+            tradePrice *
+            getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals)
+          ).toString(),
+          0.001
+        );
         return (
           <p className="flex flex-col items-start">
-            <span>
-              {formatNumber(
-                getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals!)
-              )}
-            </span>
+            <span>{formatNumber(size.value)}</span>
             <span className="text-[#9299AA] text-xs">
-              {/* {underlyingPrice} */}
-              {formatNumber(
-                parseFloat(underlyingPrice) *
-                  tradePrice *
-                  getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals),
-                true
-              )}
+              {formatNumber(sizeInDollars.value, true)}
             </span>
           </p>
         );
@@ -159,28 +159,28 @@ const TradeData = () => {
       accessorKey: "pnl",
       header: () => <span>P&L</span>,
       cell: ({ row }) => {
-        const pAndLAmt = parseFloat(row.original.PAndLAmtInDollars ?? "0");
-        const pAndLPercent = parseFloat(row.original.PAndLPercent ?? "0");
+        const pAndLAmt = formatLimit(row.original.PAndLAmtInDollars, 0.01);
+        const pAndLPercent = formatLimit(row.original.PAndLPercent, 0.001);
         return (
           <p className="flex flex-col gap-1 items-start">
             <span
               className={cn(
-                pAndLPercent == 0
+                pAndLPercent.value == 0
                   ? "text-gray-200"
-                  : pAndLPercent > 0
+                  : pAndLPercent.value > 0
                     ? "text-[#0AFC5C]"
                     : "text-[#FF3318]"
               )}
             >
-              {formatNumber(pAndLAmt, true)}
+              {formatNumber(pAndLAmt.value, true)}
             </span>
             <span
               className={cn(
                 "font-normal text-xs/4",
-                pAndLPercent > 0 ? "text-[#07AE3B]" : "text-[#F23645]"
+                pAndLPercent.sign ? "text-[#07AE3B]" : "text-[#F23645]"
               )}
             >
-              {formatNumber(pAndLPercent)}%
+              {formatNumber(pAndLPercent.value)}%
             </span>
           </p>
         );
@@ -264,7 +264,6 @@ const TradeData = () => {
       accessorKey: "action",
       header: () => <span className="ml-10">Side</span>,
       cell: ({ row }) => {
-        // const action = (row.getValue("action") as string).split(" ")[1];
         const action = row.original.action === "CL" ? "Long" : "Short";
         return (
           <span
@@ -287,18 +286,18 @@ const TradeData = () => {
       header: () => <span>Size</span>,
       cell: ({ row }) => {
         const { action, oraclePrice, underlying, size } = row.original;
-        const tokenSize = formatNumber(
+        const tokenSize = formatLimit(formatNumber(
           getDecimalAdjusted(size.toString(), selectedPool()?.underlyingDecimals!)
-        );
+        ), 0.001);
         const tokenPrice = formatOraclePrice(oraclePrice, underlying.decimals);
         if (action === "CL" || action === "CS")
           return (
             <p className="flex flex-col items-start">
               <span>
-                {tokenSize} {underlying.symbol}
+                {tokenSize.value} {underlying.symbol}
               </span>
               <span className="text-[#9299AA] text-xs">
-                {formatNumber(tokenPrice * parseFloat(tokenSize), true)}
+                {formatNumber(tokenPrice * tokenSize.value, true)}
               </span>
             </p>
           );
