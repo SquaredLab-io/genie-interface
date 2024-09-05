@@ -1,14 +1,12 @@
 "use client";
 
+import { useState } from "react";
+import { useAccount } from "wagmi";
+import { useIsClient } from "usehooks-ts";
 import _useTokenBalance from "@lib/hooks/useTokenBalance";
 import { usePools } from "@lib/hooks/usePools";
 import { usePoolsStore } from "@store/poolsStore";
-import { useIsClient } from "usehooks-ts";
-import { Address } from "viem";
-import { useAccount } from "wagmi";
-import { ChangeEvent, useState } from "react";
-import useUnderlyingEstimateOut from "@lib/hooks/useUnderlyingEstimateOut";
-import { formatNumber, getDecimalAdjusted } from "@lib/utils/formatting";
+import { _getDecimalAdjusted } from "@lib/utils/formatting";
 
 export default function TestNew() {
   const isClient = useIsClient();
@@ -16,25 +14,17 @@ export default function TestNew() {
   const { pools, isFetching } = usePools();
   const { selectedPool } = usePoolsStore();
 
-  const { data, isFetching: isBalanceFetching } = _useTokenBalance({
-    token: selectedPool()?.underlyingAddress as Address,
-    decimals: selectedPool()?.underlyingDecimals,
-    symbol: selectedPool()?.underlying
-  });
+  // const [quantity, setQuantity] = useState("");
 
-  const [quantity, setQuantity] = useState("");
+  // const { openOrders, isFetching: isOrdersFetching } = useOpenOrders({
+  //   poolAddress: selectedPool()?.poolAddr as Address,
+  //   paused: true
+  // });
 
-  const { output, isFetching: isOutputFetching } = useUnderlyingEstimateOut({
-    poolAddress: selectedPool()?.poolAddr as Address,
-    amount: quantity,
-    isLong: true
-  });
+  // const longTokenBalance = new BigNumber(openOrders?.longPositionTab?.tokenSize ?? "0");
+  // const shortTokenBalance = new BigNumber(openOrders?.shortPositionTab?.tokenSize ?? "0");
 
-  // Handler that updates Quantity and keep SliderValue in sync
-  function inputHandler(event: ChangeEvent<HTMLInputElement>) {
-    const input = event.target.value;
-    setQuantity(input);
-  }
+  // const isValid = !isNaN(parseFloat(quantity));
 
   if (!isClient) {
     return (
@@ -43,7 +33,6 @@ export default function TestNew() {
       </main>
     );
   }
-
   const WalletStatus = () => (
     <>
       <span>
@@ -53,7 +42,6 @@ export default function TestNew() {
       {isConnected && <span>{address}</span>}
     </>
   );
-
   const PoolsStatus = () => (
     <>
       <span>{isFetching && !pools ? "fetching..." : "fetched"}</span>
@@ -61,44 +49,41 @@ export default function TestNew() {
     </>
   );
 
+  // const amount = longTokenBalance
+  //   .multipliedBy(BigNumber(isValid ? quantity : 0))
+  //   .dividedBy(BigNumber(100));
+  // const adjAmount = _getDecimalAdjusted(amount.toFixed(0), 18);
+  // const deAdjAmount = BigNumber(adjAmount)
+  //   .multipliedBy(10 ** 18)
+  //   .toFixed(0);
+
   return (
     <main className="flex-col-center gap-3">
       <WalletStatus />
       <PoolsStatus />
-      <div className="border p-2 flex flex-col items-start">
+      <div className="p-2 flex flex-col items-start">
         <span>
-          {isBalanceFetching ? "fetching..." : !!data ? "fetched" : "not fetched"}
+          {/* {isOrdersFetching ? "fetching..." : !!openOrders ? "fetched" : "not fetched"} */}
         </span>
-        {data && (
-          <>
-            <span>
-              {selectedPool()?.underlying} balance: {data?.formatted}
-            </span>
-            <span>{data?.value}</span>
-            <span>{data?.decimals}</span>
-            <span>{data?.symbol}</span>
-          </>
-        )}
-      </div>
-      <div className="flex flex-col gap-5 items-start max-w-sm">
-        <input
-          type="number"
+        {/* {openOrders && (
+          <div className="flex flex-col gap-2 items-start">
+            <span>Long Balance: {longTokenBalance.toFixed(0)}</span>
+            <span>Short Balance: {shortTokenBalance.toFixed(0)}</span>
+          </div>
+        )} */}
+        {/* <Input
           value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
           placeholder="0"
-          onChange={inputHandler}
-          id="quantity"
-          className="border border-secondary-gray bg-transparent p-2 w-full placeholder:text-[#6D6D6D] text-white font-semibold text-sm/6 focus:outline-none"
-        />
-        <span>
-          Output:{" "}
-          {isOutputFetching
-            ? "..."
-            : !isNaN(parseFloat(quantity))
-              ? formatNumber(
-                  getDecimalAdjusted(output, selectedPool()?.underlyingDecimals)
-                )
-              : "-"}
-        </span>
+          type="number"
+          min={0}
+          max={100}
+          className="mt-5"
+        /> */}
+        {/* {isValid && <p>amount: {amount.toFixed(0)}</p>}
+        {isValid && <p>adj. amount: {adjAmount}</p>}
+        {isValid && <p>de adj. amount: {deAdjAmount}</p>}
+        <p>Is Balance 0: {amount.isEqualTo(BigNumber("0")) ? "true" : "false"}</p> */}
       </div>
     </main>
   );

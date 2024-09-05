@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { formatUnits } from "viem";
 
 /**
@@ -102,7 +103,7 @@ export function getDecimalDeadjusted(
   decimals: number | undefined
 ): string {
   if (!value) return "0";
-  return (parseFloat(value) * 10 ** (decimals ?? 0)).toString();
+  return new BigNumber(value).multipliedBy(10 ** (decimals ?? 18)).toFixed(0);
 }
 
 export function getDecimalAdjusted(

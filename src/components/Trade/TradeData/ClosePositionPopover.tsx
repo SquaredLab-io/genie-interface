@@ -1,23 +1,31 @@
+// Library Imports
 import { ChangeEvent, FC, memo, ReactNode, useEffect, useState } from "react";
+import { Address } from "viem";
+import { toast } from "sonner";
+import BigNumber from "bignumber.js";
+import { useWaitForTransactionReceipt } from "wagmi";
+import { PositionTab } from "@squaredlab-io/sdk";
+// Component Imports
 import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover";
 import { Separator } from "@components/ui/separator";
 import DropDownIcon from "@components/icons/DropDownIcon";
-import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import SliderBar from "@components/common/slider-bar";
+import SpinnerIcon from "@components/icons/SpinnerIcon";
+import notification from "@components/common/notification";
 import { usePoolsStore } from "@store/poolsStore";
-import { Address } from "viem";
-import toUnits, { formatNumber, getDecimalAdjusted } from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
-import { useWaitForTransactionReceipt } from "wagmi";
+// Hook and Util Imports
+import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
+import {
+  _getDecimalAdjusted,
+  formatNumber,
+  getDecimalAdjusted,
+  getDecimalDeadjusted
+} from "@lib/utils/formatting";
 import { CONFIRMATION } from "@lib/constants";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
-import SpinnerIcon from "@components/icons/SpinnerIcon";
-// Notification
-import notification from "@components/common/notification";
-import { toast } from "sonner";
 import { notificationId } from "../helper";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
-import { PositionTab } from "@squaredlab-io/sdk";
 import useUnderlyingEstimateOut from "@lib/hooks/useUnderlyingEstimateOut";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
 
@@ -43,19 +51,17 @@ const ClosePositionPopover: FC<PropsType> = ({
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
   const [isHandlerLoading, setIsHandlerLoading] = useState(false);
 
-  const { potentia } = usePotentiaSdk();  
+  const { potentia } = usePotentiaSdk();
 
-  const { selectedPool } = usePoolsStore();  
+  const { selectedPool } = usePoolsStore();
   const { close_event } = notificationId;
 
-  const longTokenBalance = getDecimalAdjusted(positions?.longPositionTab?.tokenSize, 18);
-  const shortTokenBalance = getDecimalAdjusted(
-    positions?.shortPositionTab?.tokenSize,
-    18
-  );
+  const longTokenBalance = new BigNumber(positions?.longPositionTab?.tokenSize ?? "0");
+  const shortTokenBalance = new BigNumber(positions?.shortPositionTab?.tokenSize ?? "0");
 
   // Current user balance of Long / Short Token
   const balance = isLong ? longTokenBalance : shortTokenBalance;
+  const isValidQuantity = !isNaN(parseFloat(quantity));
 
   // All current positions
   const { refetch: refetchOpenOrders } = useOpenOrders({
@@ -76,7 +82,8 @@ const ClosePositionPopover: FC<PropsType> = ({
    * Handler for closePosition from SDK
    */
   async function closePositionHandlerSdk() {
-    const amount = parseFloat(quantity) * 10 ** 18;
+    const amount = getDecimalDeadjusted(quantity, 18);
+    // const amount = BigInt(quantity).toString();
     console.log("Amount", amount);
     setIsHandlerLoading(true);
     notification.loading({
@@ -86,7 +93,7 @@ const ClosePositionPopover: FC<PropsType> = ({
     try {
       const hash = await potentia?.poolWrite.closePosition(
         selectedPool()?.poolAddr! as Address,
-        BigInt(amount).toString(),
+        amount,
         isLong
       );
       setTxHash(hash as Address);
@@ -154,8 +161,11 @@ const ClosePositionPopover: FC<PropsType> = ({
   function inputHandler(event: ChangeEvent<HTMLInputElement>) {
     const input = event.target.value;
     setQuantity(input);
+    // setQuantity(isNaN(parseFloat(input)) ? input : getDecimalDeadjusted(input, 18));
     if (balance) {
-      const value = (parseFloat(input ?? "0") / balance) * 100;
+      const value = isValidQuantity
+        ? (parseFloat(input) / getDecimalAdjusted(balance.toFixed(0), 18)) * 100
+        : 0;
       setSliderValue(value);
     }
   }
@@ -164,8 +174,8 @@ const ClosePositionPopover: FC<PropsType> = ({
   function sliderHandler(value: number) {
     setSliderValue(value);
     if (balance) {
-      const amount = (balance * value) / 100;
-      setQuantity(amount.toString());
+      const amount = balance.multipliedBy(BigNumber(value)).dividedBy(BigNumber(100));
+      setQuantity(_getDecimalAdjusted(amount.toFixed(0), 18));
     }
   }
 
@@ -211,7 +221,11 @@ const ClosePositionPopover: FC<PropsType> = ({
               </p>
             </div>
             <span>
-              Balance: {toUnits(isLong ? longTokenBalance : shortTokenBalance, 3)}
+              Balance:{" "}
+              {getDecimalAdjusted(
+                isLong ? longTokenBalance.toFixed(0) : shortTokenBalance.toFixed(0),
+                18
+              )}
             </span>
           </div>
           <SliderBar
@@ -231,7 +245,7 @@ const ClosePositionPopover: FC<PropsType> = ({
               <span>
                 {isOutputFetching
                   ? "..."
-                  : !isNaN(parseFloat(quantity))
+                  : isValidQuantity
                     ? formatNumber(
                         getDecimalAdjusted(output, selectedPool()?.underlyingDecimals)
                       )
