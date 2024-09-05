@@ -15,7 +15,7 @@ import {
 import { getClosedTransactions, getOpenTransactions } from "./helper";
 import OpenPositionsTable from "./OpenPositionsTable";
 import TradeHistoryTable from "./TradeHistoryTable";
-// import { useTxHistory } from "@lib/hooks/useTxHistory";
+import { useTxHistory } from "@lib/hooks/useTxHistory";
 import { cn } from "@lib/utils";
 import ClosePositionPopover from "./ClosePositionPopover";
 import { BASE_SEPOLIA } from "@lib/constants";
@@ -23,7 +23,6 @@ import { usePoolsStore } from "@store/poolsStore";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { OpenPositionInfo, Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useAccount } from "wagmi";
-import { useTradeHistory } from "@lib/hooks/useTradeHistory";
 import { useTokenPrice } from "@lib/hooks/useTokenPrice";
 
 enum Tab {
@@ -36,16 +35,10 @@ const TradeData = () => {
   const { isConnected } = useAccount();
 
   // All Transactions -- LP, Open Long/Short, Close Long/Short
-  // TODO: Will be updated with useTxHistory, remove useTradeHistory
-  // const { data: txHistory, isLoading: isTxLoading } = useTxHistory();
-
-  // Getting the data
-  const { data: tradeHistory, isFetching: isTradeLoading } = useTradeHistory();
-  const {
-    openOrders,
-    isFetching: loadingOpenOrders
-    // refetch: refetchOpenOrders
-  } = useOpenOrders({ poolAddress: selectedPool()?.poolAddr! });
+  const { data: tradeHistory, isFetching: isTradeLoading } = useTxHistory();
+  const { openOrders, isFetching: loadingOpenOrders } = useOpenOrders({
+    poolAddress: selectedPool()?.poolAddr!
+  });
   const { tokenPrices, isFetching, status } = useTokenPrice({
     poolAddress: selectedPool()?.poolAddr
   });
@@ -152,7 +145,8 @@ const TradeData = () => {
             <span className="text-[#9299AA] text-xs">
               {/* {underlyingPrice} */}
               {formatNumber(
-                parseFloat(underlyingPrice) * tradePrice *
+                parseFloat(underlyingPrice) *
+                  tradePrice *
                   getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals),
                 true
               )}

@@ -4,11 +4,15 @@ import { Address, getAddress } from "viem";
 import { Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { usePoolsStore } from "@store/poolsStore";
+import { QueryObserverResult, RefetchOptions, useQuery } from "@tanstack/react-query";
+import { REFETCH_INTERVAL } from "@lib/constants";
 
 type ReturnTxHistory = {
   data: Tx[] | undefined;
-  isLoading: boolean;
-  refetch: () => Promise<void>;
+  isFetching: boolean;
+  refetch: (
+    options?: RefetchOptions
+  ) => Promise<QueryObserverResult<Tx[] | undefined, Error>>;
 };
 
 /**
@@ -16,34 +20,31 @@ type ReturnTxHistory = {
  * @returns data, isLoading, refetch
  */
 export function useTxHistory(paused = false): ReturnTxHistory {
-  const [txHistory, setTxHistory] = useState<Tx[]>();
-  const [isLoadingTxH, setIsLoadingTxH] = useState<boolean>(false);
-  const { selectedPool } = usePoolsStore();
-
   const { address } = useAccount();
   const { potentia } = usePotentiaSdk();
 
-  async function refetch() {
+  const { selectedPool } = usePoolsStore();
+
+  async function getTxHistory() {
     try {
-      setIsLoadingTxH(true);
       const result = await potentia?.getUserTxHistory(
         getAddress(selectedPool()?.poolAddr!), // pool
         address as Address // user
       );
       console.log("txHistory", result);
-      setTxHistory(result);
+      return result;
+      // setTxHistory(result);
     } catch (error) {
       console.error("Error -- fetching transaction history", error);
-    } finally {
-      setIsLoadingTxH(false);
     }
   }
 
-  useEffect(() => {
-    if (address && potentia && selectedPool() && !paused) {
-      refetch();
-    }
-  }, [address, potentia, selectedPool]);
+  const { data, isFetching, refetch } = useQuery({
+    queryKey: ["userTxHistory", selectedPool()?.underlying, address],
+    queryFn: getTxHistory,
+    refetchInterval: REFETCH_INTERVAL,
+    enabled: !paused && !!selectedPool() && !!potentia && !!address
+  });
 
-  return { data: txHistory, isLoading: isLoadingTxH, refetch };
+  return { data, isFetching, refetch };
 }

@@ -23,7 +23,7 @@ const TradeFlow = () => {
 
   const { selectedPool } = usePoolsStore();
 
-  const { data, isFetching } = useTradeHistory(true); // paused
+  const { data, isFetching } = useTradeHistory();
 
   const tradeHistory = getTradeflowData(tradeflowLayout, data);
 
