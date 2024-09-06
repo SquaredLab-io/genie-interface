@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { WethABi } from "@lib/abis";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
-import toUnits, { getDecimalAdjusted, getDecimalDeadjusted } from "@lib/utils/formatting";
+import toUnits, { formatOraclePrice, getDecimalAdjusted, getDecimalDeadjusted } from "@lib/utils/formatting";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import ButtonCTA from "@components/common/button-cta";
@@ -19,6 +19,12 @@ import { cn } from "@lib/utils";
 import InfoBox from "../info-box";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
 import useLpTokenReceiveEstimate from "@lib/hooks/useLpTokenReceiveEstimate";
+import { useCurrentLpPosition } from "@lib/hooks/useCurrentLpPosition";
+
+const getCorrectFormattedValue = (value: number, inDollars = false) : string => {
+  if (value < 0.00001) return inDollars ? "< $0.00001" : "< 0.00001";
+  else return inDollars ? `$${value.toFixed(5)}` : value.toFixed(5);
+};
 
 const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const [amount, setAmount] = useState<string>("");
@@ -42,14 +48,6 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     symbol: underlying
   });
 
-  // Current positions
-  const {
-    data: positionData,
-    isFetching: isPositionFetching,
-    refetch: refetchPosition
-  } = useCurrentPosition({ poolAddress: poolAddr as Address });
-  const lpBalance = positionData?.lpToken.balance;
-
   // Write Hook => Token Approval
   const {
     data: approvalData,
@@ -64,6 +62,19 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     amount: getDecimalDeadjusted(amount, underlyingDecimals)
   });
   // console.log('lpTokens : ', lpTokens);
+
+  // get current position of LP 
+  const { 
+    data: lpPosition, 
+    isFetching: isLpPositionFetching, 
+    refetch: refetchLpPosition 
+  } = useCurrentLpPosition({
+    poolAddress: poolAddr as Address,
+  });
+  const lpBalance = parseFloat(lpPosition?.counterLpAmt ?? "0") / 10 ** underlyingDecimals;
+  const decimalAdjustedOraclePrice = formatOraclePrice(BigInt(lpPosition?.oraclePrice ?? "0"), underlyingDecimals) ;
+  const lpPriceInDollars = decimalAdjustedOraclePrice * parseFloat(lpPosition?.lpTokenPriceUnderlying ?? "0");
+  // console.log('lp position data : ', lpPosition);
 
   /**
    * This handler method approves signers underlying tokens to be spent on Potentia Protocol
@@ -168,7 +179,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       });
     } else if (isSuccess) {
       refetchBalance();
-      refetchPosition();
+      refetchLpPosition();
       notification.success({
         id: "add-success",
         title: "Liquidity Added Successfully"
@@ -191,7 +202,9 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
             <span>
               {isPriceFetching && !price && !isValidPositiveNumber(amount)
                 ? "..."
-                : `$${price * parseFloat(amount !== "" ? amount : "0")}`}
+                : parseFloat(amount) > 0 ?
+                getCorrectFormattedValue(price * parseFloat(amount !== "" ? amount : "0"), true)
+                : "$0"}
             </span>
           </p>
           <div className="inline-flex-between">
@@ -253,21 +266,30 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
         <div className="rounded-[4px] border-x-secondary-gray flex flex-col gap-y-2 border border-secondary-gray p-4">
           <p className="w-full inline-flex justify-between font-medium text-xs/3 text-[#5F7183]">
             <span>You Receive</span>
-            <span>~$0.00</span>
+            <span>
+              {isLpPositionFetching || isLpTokenFetching
+              ?
+              "..."
+              :
+              ((lpPriceInDollars && lpTokens && lpTokens!=="0") ?
+                getCorrectFormattedValue(lpPriceInDollars*getDecimalAdjusted(lpTokens, underlyingDecimals), true)
+                : "$0")
+              }
+            </span>
           </p>
           <div className="inline-flex-between">
             <h4 className="font-medium text-base/5">LP Tokens</h4>
             <span className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right">
               {/* {receiveQuantity > 0 ? receiveQuantity : "-"} */}
-              {isLpTokenFetching ? "..." : ((!!lpTokens && lpTokens!=="0") ? getDecimalAdjusted(lpTokens, underlyingDecimals).toFixed(5) : "-")}
+              {isLpTokenFetching ? "..." : ((!!lpTokens && lpTokens!=="0") ? getCorrectFormattedValue(getDecimalAdjusted(lpTokens, underlyingDecimals)) : "-")}
             </span>
           </div>
           <div className="font-normal text-xs/3 mt-1">
             <span className="text-[#5F7183]">
               Your LP balance:{" "}
-              {isPositionFetching && !lpBalance && !lpTokens
+              {isLpPositionFetching && !lpPosition
                 ? "loading..."
-                : (parseFloat((parseFloat(lpBalance ?? "0") / 10 ** underlyingDecimals).toFixed(5)) + parseFloat((getDecimalAdjusted(lpTokens, underlyingDecimals) ?? 0).toFixed(5)))}
+                : lpBalance.toFixed(5)}
             </span>
           </div>
         </div>
