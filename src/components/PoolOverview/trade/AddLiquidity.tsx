@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { WethABi } from "@lib/abis";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
-import toUnits from "@lib/utils/formatting";
+import toUnits, { getDecimalAdjusted, getDecimalDeadjusted } from "@lib/utils/formatting";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import ButtonCTA from "@components/common/button-cta";
@@ -18,6 +18,7 @@ import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import { cn } from "@lib/utils";
 import InfoBox from "../info-box";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
+import useLpTokenReceiveEstimate from "@lib/hooks/useLpTokenReceiveEstimate";
 
 const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const [amount, setAmount] = useState<string>("");
@@ -56,6 +57,13 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     error: approveError,
     isPending: isApprovePending
   } = useWriteContract();
+
+  // get estimate of LP tokens that will be received
+  const { output: lpTokens, isFetching: isLpTokenFetching } = useLpTokenReceiveEstimate({
+    poolAddress: poolAddr as Address,
+    amount: getDecimalDeadjusted(amount, underlyingDecimals)
+  });
+  // console.log('lpTokens : ', lpTokens);
 
   /**
    * This handler method approves signers underlying tokens to be spent on Potentia Protocol
@@ -121,7 +129,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     });
 
   // getting underlying token's price
-  const { price, isFetching: isPriceFetching } = useCurrencyPrice(underlying);
+  const { price, isMarketDataLoading: isPriceFetching } = useCurrencyPrice(underlying);
 
   const balanceExceedError = useMemo(
     () => !!userBalance?.value && parseFloat(amount) > parseFloat(userBalance?.formatted),
@@ -250,15 +258,16 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           <div className="inline-flex-between">
             <h4 className="font-medium text-base/5">LP Tokens</h4>
             <span className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right">
-              {receiveQuantity > 0 ? receiveQuantity : "-"}
+              {/* {receiveQuantity > 0 ? receiveQuantity : "-"} */}
+              {isLpTokenFetching ? "..." : ((!!lpTokens && lpTokens!=="0") ? getDecimalAdjusted(lpTokens, underlyingDecimals).toFixed(5) : "-")}
             </span>
           </div>
           <div className="font-normal text-xs/3 mt-1">
             <span className="text-[#5F7183]">
               Your LP balance:{" "}
-              {isPositionFetching && !lpBalance
+              {isPositionFetching && !lpBalance && !lpTokens
                 ? "loading..."
-                : (parseFloat(lpBalance ?? "0") / 10 ** underlyingDecimals).toFixed(5)}
+                : (parseFloat((parseFloat(lpBalance ?? "0") / 10 ** underlyingDecimals).toFixed(5)) + parseFloat((getDecimalAdjusted(lpTokens, underlyingDecimals) ?? 0).toFixed(5)))}
             </span>
           </div>
         </div>

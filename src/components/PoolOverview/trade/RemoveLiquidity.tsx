@@ -10,16 +10,18 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import { cn } from "@lib/utils";
 import ButtonCTA from "@components/common/button-cta";
-import toUnits from "@lib/utils/formatting";
+import toUnits, { getDecimalAdjusted } from "@lib/utils/formatting";
 import { CONFIRMATION } from "@lib/constants";
 import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import notification from "@components/common/notification";
 import InfoBox from "../info-box";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
+import useLpUnderlyingReceived from "@lib/hooks/useLpUnderlyingReceived";
+import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 
 const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   // Amount to remove
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState<string>("");
   const [showInfo, setShowInfo] = useState<boolean>(true);
   const [txHash, setTxHash] = useState<Address | undefined>(undefined);
 
@@ -49,6 +51,17 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const lpBalance =
     parseFloat(positionData?.lpToken.balance ?? "0") /
     10 ** overviewPool.underlyingDecimals;
+
+  // Get the Estimate LP Underlying Output
+  const { output: lpUnderlying, isFetching: isLpUnderlyingFetching } = useLpUnderlyingReceived({
+    poolAddress: poolAddr as Address,
+    amount: amount || "0",
+  });
+
+  // console.log('lpunderlying : ', lpUnderlying);
+
+  // getting underlying token's price
+  const { price, isMarketDataLoading: isPriceFetching } = useCurrencyPrice(underlying);
 
   /**
    * Handler for RemoveLiquidity Function
@@ -164,7 +177,11 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
         <div className="rounded-[4px] border-x-secondary-gray flex flex-col gap-y-2 border border-secondary-gray p-4">
           <p className="w-full inline-flex justify-between font-medium text-xs/3 text-[#5F7183]">
             <span>You Receive</span>
-            <span>~$0.00</span>
+            <span>
+            {isPriceFetching && !price && !isValidPositiveNumber(amount)
+                ? "..."
+                : `$${price * parseFloat(amount !== "" ? amount : "0")}`}
+            </span>
           </p>
           <div className="inline-flex-between">
             <div className="max-w-fit inline-flex gap-2 items-center">
@@ -177,15 +194,16 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
               <span className="font-medium text-base/5">{underlying}</span>
             </div>
             <span className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right">
-              {receiveQuantity > 0 ? receiveQuantity : "-"}
+              {/* {receiveQuantity > 0 ? receiveQuantity : "-"} */}
+              {isLpUnderlyingFetching ? "..." : (((!!lpUnderlying) && lpUnderlying!=="0") ? getDecimalAdjusted(lpUnderlying, underlyingDecimals).toFixed(5) : "-")}
             </span>
           </div>
           <div className="font-normal text-xs/3 mt-1">
             <span className="text-[#5F7183]">
               Your balance:{" "}
-              {isBalLoading && !userBalance
+              {isBalLoading && !userBalance && !lpUnderlying
                 ? "loading..."
-                : toUnits(parseFloat(userBalance?.formatted ?? "0"), 3)}
+                : ((toUnits(parseFloat(userBalance?.formatted ?? "0"), 3)) )}
             </span>
           </div>
         </div>
