@@ -88,7 +88,8 @@ const TradeChart = ({ potentia }: PropsType) => {
   }, [widgetProps, selectedPool, tradeType, potentia]);
   // TODO: check here is chart is not updating on pool change
 
-  return <div ref={chartContainerRef} className="col-span-4 xl:col-span-3" />;
+  return <div ref={chartContainerRef} className="col-span-4" />;
+  // return <div ref={chartContainerRef} className="col-span-4 xl:col-span-3" />;
 };
 
 export default memo(TradeChart);
