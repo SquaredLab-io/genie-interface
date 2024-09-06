@@ -16,8 +16,7 @@ export function getOpenTransactions(openOrders?: PositionTab): OpenPositionInfo[
         : !longPos && shortPos
           ? [shortPos]
           : [];
-  // console.log("getOpenTransactions", data);
-  return data;
+  return data.filter((pos) => parseFloat(pos.tokenSize) !== 0);
 }
 
 export function getClosedTransactions(transactions?: Tx[]): Tx[] {
