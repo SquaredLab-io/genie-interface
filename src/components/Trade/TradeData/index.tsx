@@ -33,7 +33,7 @@ enum Tab {
 
 const TradeData = () => {
   const [tableHeight, setTableHeight] = useState<number>(276);
-  
+
   const { selectedPool } = usePoolsStore();
   const { isConnected } = useAccount();
 
@@ -58,22 +58,27 @@ const TradeData = () => {
 
   useEffect(() => {
     const updateHeight = () => {
-      const tradeDataContainerHeight = document.getElementById('tradeData-container')?.offsetHeight;
-      const tabListHeight = document.getElementById('tradeData-tabList')?.offsetHeight;
-      console.log("useEffect called on mount (update height");
-      if(tradeDataContainerHeight && tabListHeight){
-        console.log("inside if condition of update height");
-        console.log("tradeData container : ", tradeDataContainerHeight, "tab list container : ", tabListHeight);
+      const tradeDataContainerHeight =
+        document.getElementById("tradeData-container")?.offsetHeight;
+      const tabListHeight = document.getElementById("tradeData-tabList")?.offsetHeight;
+      // console.log("useEffect called on mount (update height");
+      if (tradeDataContainerHeight && tabListHeight) {
+        // console.log("inside if condition of update height");
+        // console.log(
+        //   "tradeData container : ",
+        //   tradeDataContainerHeight,
+        //   "tab list container : ",
+        //   tabListHeight
+        // );
         setTableHeight(tradeDataContainerHeight - tabListHeight);
       }
-    }
+    };
 
     updateHeight();
-    window.addEventListener('resize', updateHeight);
+    window.addEventListener("resize", updateHeight);
 
-    return () => window.removeEventListener('resize', updateHeight);                    
-  },[document.getElementById('tradeData-container')?.offsetHeight])
-
+    return () => window.removeEventListener("resize", updateHeight);
+  }, [document.getElementById("tradeData-container")?.offsetHeight]);
 
   const positionColumns: ColumnDef<OpenPositionInfo>[] = [
     {
@@ -157,7 +162,10 @@ const TradeData = () => {
       cell: ({ row }) => {
         const { tokenSize, underlyingPrice, side } = row.original;
         const tradePrice = side === "Long" ? longPrice : shortPrice;
-        const size = formatLimit(getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals!).toString(), 0.01);
+        const size = formatLimit(
+          getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals!).toString(),
+          0.01
+        );
         const sizeInDollars = formatLimit(
           (
             parseFloat(underlyingPrice) *
@@ -307,9 +315,12 @@ const TradeData = () => {
       header: () => <span>Size</span>,
       cell: ({ row }) => {
         const { action, oraclePrice, underlying, size } = row.original;
-        const tokenSize = formatLimit(formatNumber(
-          getDecimalAdjusted(size.toString(), selectedPool()?.underlyingDecimals!)
-        ), 0.001);
+        const tokenSize = formatLimit(
+          formatNumber(
+            getDecimalAdjusted(size.toString(), selectedPool()?.underlyingDecimals!)
+          ),
+          0.001
+        );
         const tokenPrice = formatOraclePrice(oraclePrice, underlying.decimals);
         if (action === "CL" || action === "CS")
           return (
@@ -352,12 +363,15 @@ const TradeData = () => {
 
   const tabStyle =
     "data-[state=active]:bg-white data-[state=active]:text-black uppercase py-2 px-4";
-  
+
   return (
     <div className="w-full font-medium text-xs leading-4 h-[276px]">
       {/* Tab Row */}
       <Tabs defaultValue={Tab.position}>
-        <TabsList id="tradeData-tabList" className="flex flex-row justify-start rounded-none font-medium text-sm/6 font-sans-ibm-plex border-b border-secondary-gray">
+        <TabsList
+          id="tradeData-tabList"
+          className="flex flex-row justify-start rounded-none font-medium text-sm/6 font-sans-ibm-plex border-b border-secondary-gray"
+        >
           <TabsTrigger value={Tab.position} className={tabStyle}>
             Open Positions{loadingOpenOrders ? "..." : ""} (
             {isConnected ? openPositions.length : "0"})
@@ -368,9 +382,9 @@ const TradeData = () => {
         </TabsList>
         {/* Tab Content */}
         {/* --- Open Positions Table --- */}
-        <TabsContent 
-          value={Tab.position} 
-          style={{maxHeight: `${tableHeight}px`}} 
+        <TabsContent
+          value={Tab.position}
+          style={{ maxHeight: `${tableHeight}px` }}
           className="min-h-[276px] overflow-y-auto"
         >
           <OpenPositionsTable
@@ -382,7 +396,7 @@ const TradeData = () => {
         {/* --- Transactions History Table --- */}
         <TabsContent
           value={Tab.history}
-          style={{maxHeight: `${tableHeight}px`}}
+          style={{ maxHeight: `${tableHeight}px` }}
           className="min-h-[276px] overflow-y-scroll trade-history"
         >
           <TradeHistoryTable
