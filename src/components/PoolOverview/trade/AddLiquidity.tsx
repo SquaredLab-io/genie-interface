@@ -20,6 +20,8 @@ import InfoBox from "../info-box";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
 import useLpTokenReceiveEstimate from "@lib/hooks/useLpTokenReceiveEstimate";
 import { useCurrentLpPosition } from "@lib/hooks/useCurrentLpPosition";
+import { notificationId } from "@components/Trade/helper";
+import { toast } from "sonner";
 
 const getCorrectFormattedValue = (value: number, inDollars = false) : string => {
   if (value < 0.00001) return inDollars ? "< $0.00001" : "< 0.00001";
@@ -30,6 +32,8 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const [amount, setAmount] = useState<string>("");
   const [showInfo, setShowInfo] = useState<boolean>(true);
   const [txHash, setTxHash] = useState<Address | undefined>(undefined);
+
+  const { addLiq_event } = notificationId;
 
   const { potentia } = usePotentiaSdk();
   const { openConnectModal } = useConnectModal();
@@ -150,12 +154,32 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   // TODO: Update actual data from SDK
   const receiveQuantity = 0;
 
+  // Approval Loading or Error Effects
+  useEffect(() => {
+    if(isApproveLoading){
+      notification.loading({
+        id: addLiq_event.approve_loading,
+        title: "Approving transaction..."
+      })
+    } else if(isApproveError){
+      toast.dismiss(addLiq_event.approve_loading);
+      notification.error({
+        id: addLiq_event.approve_error,
+        title: "Approval failed",
+        description: `${approvalError.message}`
+      });
+    }
+  },[isApproveLoading, isApproveError]);
+
+  // Approval Successful Effects
   useEffect(() => {
     // Executes Add Liquidity handlers if Approval Txn is successful
+    console.log('approval success useEffect')
     if (isApproveSuccess) {
       console.log("Token is approved for the selected amount!");
+      toast.dismiss(addLiq_event.approve_loading);
       notification.success({
-        id: "add-approve-success",
+        id: addLiq_event.approve_success,
         title: "Tokens Approved successfully",
         description: "You may now process to Add Liquidity"
       });
@@ -163,29 +187,37 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     }
   }, [isApproveSuccess]);
 
-  // Notifications based on Transaction status
+  // add liq. Tx Loading or Error Effects
   useEffect(() => {
-    if (isApproveError) {
-      notification.error({
-        id: "add-approve-error",
-        title: "Approval failed",
-        description: `${approvalError.message}`
+    console.log("add liq. loading/error useEffect")
+    if (isLoading) {
+      notification.loading({
+        id: addLiq_event.loading,
+        title: "Adding liquidity",
       });
     } else if (isError) {
+      toast.dismiss(addLiq_event.loading);
       notification.error({
-        id: "add-error",
+        id: addLiq_event.error,
         title: "Adding liquidity failed",
         description: `${error.message}`
       });
-    } else if (isSuccess) {
+    }
+  }, [isLoading, isError]);
+
+  // add liq. Tx Successful Effects
+  useEffect(() => {
+    if (isSuccess) {
+      console.log("add liq useEffect - isSuccess")
       refetchBalance();
       refetchLpPosition();
+      toast.dismiss(addLiq_event.loading);
       notification.success({
-        id: "add-success",
+        id: addLiq_event.success,
         title: "Liquidity Added Successfully"
       });
     }
-  }, [isSuccess, isError, isApproveError]);
+  }, [isSuccess]);
 
   return (
     <div className="flex flex-col justify-between py-4 h-full">
@@ -289,7 +321,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
               Your LP balance:{" "}
               {isLpPositionFetching && !lpPosition
                 ? "loading..."
-                : lpBalance.toFixed(5)}
+                : lpBalance.toFixed(3)}
             </span>
           </div>
         </div>
