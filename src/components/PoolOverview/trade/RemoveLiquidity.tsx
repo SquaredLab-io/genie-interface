@@ -10,9 +10,8 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import { cn } from "@lib/utils";
 import ButtonCTA from "@components/common/button-cta";
-import toUnits, { formatOraclePrice, getDecimalAdjusted } from "@lib/utils/formatting";
+import toUnits, { formatOraclePrice, getCorrectFormattedValue, getDecimalAdjusted } from "@lib/utils/formatting";
 import { CONFIRMATION } from "@lib/constants";
-import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import notification from "@components/common/notification";
 import InfoBox from "../info-box";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
@@ -21,11 +20,6 @@ import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import { useCurrentLpPosition } from "@lib/hooks/useCurrentLpPosition";
 import { notificationId } from "@components/Trade/helper";
 import { toast } from "sonner";
-
-const getCorrectFormattedValue = (value: number, inDollars = false): string => {
-  if (value < 0.00001) return inDollars ? "< $0.00001" : "< 0.00001";
-  else return inDollars ? `$${value.toFixed(5)}` : value.toFixed(5);
-};
 
 const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   // Amount to remove
