@@ -112,7 +112,6 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
         ]
       });
     } catch (error) {
-      console.log("error while approving", approveError);
       notification.error({
         id: "add-approve-error",
         title: "Approval confirmation failed!"
@@ -125,8 +124,6 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
    */
   async function addLiquidityHandlerSdk() {
     const _amount = parseFloat(amount) * 10 ** 18;
-    console.log("_amount", _amount);
-
     try {
       const hash = await potentia?.poolWrite.addLiquidity(
         overviewPool.poolAddr,
@@ -360,7 +357,6 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           isLoading={isApprovedLoading || isApproveLoading || isLoading}
           onClick={() => {
             if (isConnected) {
-              console.log("amount", amount);
               if (!isApprovedSuccess) {
                 approveHandler();
               } else {

@@ -10,7 +10,11 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import { cn } from "@lib/utils";
 import ButtonCTA from "@components/common/button-cta";
-import toUnits, { formatOraclePrice, getCorrectFormattedValue, getDecimalAdjusted } from "@lib/utils/formatting";
+import toUnits, {
+  formatOraclePrice,
+  getCorrectFormattedValue,
+  getDecimalAdjusted
+} from "@lib/utils/formatting";
 import { CONFIRMATION } from "@lib/constants";
 import notification from "@components/common/notification";
 import InfoBox from "../info-box";
@@ -47,26 +51,29 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   });
 
   // Get the Estimate LP Underlying Output
-  const { output: lpUnderlying, isFetching: isLpUnderlyingFetching } = useLpUnderlyingReceived({
-    poolAddress: poolAddr as Address,
-    amount: amount || "0",
-  });
-  // console.log('lpunderlying : ', lpUnderlying);
+  const { output: lpUnderlying, isFetching: isLpUnderlyingFetching } =
+    useLpUnderlyingReceived({
+      poolAddress: poolAddr as Address,
+      amount: amount || "0"
+    });
 
-  // get current position of LP 
+  // get current position of LP
   const {
     data: lpPosition,
     isFetching: isLpPositionFetching,
     refetch: refetchLpPosition
   } = useCurrentLpPosition({
     poolAddress: poolAddr as Address,
+    paused: true
   });
   const lpBalance =
-    parseFloat(lpPosition?.counterLpAmt ?? "0") /
-    10 ** overviewPool.underlyingDecimals;
-  const decimalAdjustedOraclePrice = formatOraclePrice(BigInt(lpPosition?.oraclePrice ?? "0"), underlyingDecimals);
-  const lpPriceInDollars = decimalAdjustedOraclePrice * parseFloat(lpPosition?.lpTokenPriceUnderlying ?? "0");
-  // console.log('lp position data : ', lpPosition);
+    parseFloat(lpPosition?.counterLpAmt ?? "0") / 10 ** overviewPool.underlyingDecimals;
+  const decimalAdjustedOraclePrice = formatOraclePrice(
+    BigInt(lpPosition?.oraclePrice ?? "0"),
+    underlyingDecimals
+  );
+  const lpPriceInDollars =
+    decimalAdjustedOraclePrice * parseFloat(lpPosition?.lpTokenPriceUnderlying ?? "0");
 
   // getting underlying token's price
   const { price, isMarketDataLoading: isPriceFetching } = useCurrencyPrice(underlying);
@@ -76,8 +83,6 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
    */
   async function removeLiquidityHandlerSdk() {
     const shares = parseFloat(amount) * 10 ** 18;
-    console.log("Amount", shares);
-
     try {
       const hash = await potentia?.poolWrite.removeLiquidity(
         overviewPool.poolAddr as Address,
@@ -85,10 +90,13 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       );
       if (hash) {
         setTxHash(hash as Address);
-        console.log("removeliquidity hash", hash);
       }
     } catch (error) {
-      console.error("RemoveLiquidity Error", error);
+      notification.error({
+        id: removeLiq_event.error,
+        title: "Removing Liquidity failed",
+        description: `${error}`
+      });
     }
   }
 
@@ -100,25 +108,15 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     });
 
   const balanceExceedError = useMemo(() => {
-    console.log(
-      "parseFloat(amount) > lpBalance",
-      parseFloat(amount),
-      lpBalance,
-      parseFloat(amount) > lpBalance
-    );
     return parseFloat(amount) > lpBalance;
   }, [lpBalance, amount]);
 
-  // TODO: Update actual data from SDK
-  const receiveQuantity = 0;
-
   // Notifications based on loading and error Transaction status
   useEffect(() => {
-    console.log("remove liq. loading/error useEffect")
     if (isLoading) {
       notification.loading({
         id: removeLiq_event.loading,
-        title: "Withdrawing liquidity",
+        title: "Withdrawing liquidity"
       });
     } else if (isError) {
       toast.dismiss(removeLiq_event.loading);
@@ -157,13 +155,13 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
             <span>You Supply</span>
             <span>
               {isLpPositionFetching
-                ?
-                "..."
-                :
-                ((lpPriceInDollars && parseFloat(amount) > 0) ?
-                  getCorrectFormattedValue(lpPriceInDollars * parseFloat(amount || "0"), true)
-                  : "$0")
-              }
+                ? "..."
+                : lpPriceInDollars && parseFloat(amount) > 0
+                  ? getCorrectFormattedValue(
+                      lpPriceInDollars * parseFloat(amount || "0"),
+                      true
+                    )
+                  : "$0"}
             </span>
           </p>
           <div className="inline-flex-between">
@@ -210,8 +208,11 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
             <span>
               {isPriceFetching && !price && !isValidPositiveNumber(amount)
                 ? "..."
-                : parseFloat(amount) > 0 ?
-                  getCorrectFormattedValue(price * parseFloat(amount !== "" ? amount : "0"), true)
+                : parseFloat(amount) > 0
+                  ? getCorrectFormattedValue(
+                      price * parseFloat(amount !== "" ? amount : "0"),
+                      true
+                    )
                   : "$0"}
             </span>
           </p>
@@ -227,7 +228,13 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
             </div>
             <span className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right">
               {/* {receiveQuantity > 0 ? receiveQuantity : "-"} */}
-              {isLpUnderlyingFetching ? "..." : (((!!lpUnderlying) && lpUnderlying !== "0") ? getCorrectFormattedValue(getDecimalAdjusted(lpUnderlying, underlyingDecimals)) : "-")}
+              {isLpUnderlyingFetching
+                ? "..."
+                : !!lpUnderlying && lpUnderlying !== "0"
+                  ? getCorrectFormattedValue(
+                      getDecimalAdjusted(lpUnderlying, underlyingDecimals)
+                    )
+                  : "-"}
             </span>
           </div>
           <div className="font-normal text-xs/3 mt-1">
@@ -235,7 +242,7 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
               Your balance:{" "}
               {isBalLoading && !userBalance && !lpUnderlying
                 ? "loading..."
-                : ((toUnits(parseFloat(userBalance?.formatted ?? "0"), 3)))}
+                : toUnits(parseFloat(userBalance?.formatted ?? "0"), 3)}
             </span>
           </div>
         </div>
@@ -266,7 +273,6 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           }
           onClick={() => {
             if (isConnected) {
-              console.log("amount", amount);
               removeLiquidityHandlerSdk();
             } else {
               openConnectModal?.();
