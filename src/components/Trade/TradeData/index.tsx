@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
@@ -32,6 +32,8 @@ enum Tab {
 }
 
 const TradeData = () => {
+  const [tableHeight, setTableHeight] = useState<number>(276);
+  
   const { selectedPool } = usePoolsStore();
   const { isConnected } = useAccount();
 
@@ -53,6 +55,25 @@ const TradeData = () => {
     () => getClosedTransactions(tradeHistory),
     [tradeHistory]
   );
+
+  useEffect(() => {
+    const updateHeight = () => {
+      const tradeDataContainerHeight = document.getElementById('tradeData-container')?.offsetHeight;
+      const tabListHeight = document.getElementById('tradeData-tabList')?.offsetHeight;
+      console.log("useEffect called on mount (update height");
+      if(tradeDataContainerHeight && tabListHeight){
+        console.log("inside if condition of update height");
+        console.log("tradeData container : ", tradeDataContainerHeight, "tab list container : ", tabListHeight);
+        setTableHeight(tradeDataContainerHeight - tabListHeight);
+      }
+    }
+
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+
+    return () => window.removeEventListener('resize', updateHeight);                    
+  },[document.getElementById('tradeData-container')?.offsetHeight])
+
 
   const positionColumns: ColumnDef<OpenPositionInfo>[] = [
     {
@@ -331,12 +352,12 @@ const TradeData = () => {
 
   const tabStyle =
     "data-[state=active]:bg-white data-[state=active]:text-black uppercase py-2 px-4";
-
+  
   return (
     <div className="w-full font-medium text-xs leading-4 h-[276px]">
       {/* Tab Row */}
       <Tabs defaultValue={Tab.position}>
-        <TabsList className="flex flex-row justify-start rounded-none font-medium text-sm/6 font-sans-ibm-plex border-b border-secondary-gray">
+        <TabsList id="tradeData-tabList" className="flex flex-row justify-start rounded-none font-medium text-sm/6 font-sans-ibm-plex border-b border-secondary-gray">
           <TabsTrigger value={Tab.position} className={tabStyle}>
             Open Positions{loadingOpenOrders ? "..." : ""} (
             {isConnected ? openPositions.length : "0"})
@@ -347,7 +368,11 @@ const TradeData = () => {
         </TabsList>
         {/* Tab Content */}
         {/* --- Open Positions Table --- */}
-        <TabsContent value={Tab.position} className="max-h-56 overflow-y-auto">
+        <TabsContent 
+          value={Tab.position} 
+          style={{maxHeight: `${tableHeight}px`}} 
+          className="min-h-[276px] overflow-y-auto"
+        >
           <OpenPositionsTable
             columns={positionColumns}
             data={openPositions}
@@ -357,7 +382,8 @@ const TradeData = () => {
         {/* --- Transactions History Table --- */}
         <TabsContent
           value={Tab.history}
-          className="max-h-56 overflow-y-auto trade-history"
+          style={{maxHeight: `${tableHeight}px`}}
+          className="min-h-[276px] overflow-y-scroll trade-history"
         >
           <TradeHistoryTable
             columns={transactionsColumns}
