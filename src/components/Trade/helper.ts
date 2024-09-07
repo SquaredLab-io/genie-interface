@@ -33,5 +33,21 @@ export const notificationId = {
     loading: "faucet_loading",
     error: "faucet_error",
     success: "faucet_success"
+  },
+  addLiq_event: {
+    default_approve: "addLiq_approve",
+    approve_loading: "addLiq_approve_loading",
+    approve_error: "addLiq_approve_error",
+    approve_success: "addLiq_approve_success",
+    default: "addLiq",
+    loading: "addLiq_loading",
+    error: "addLiq_error",
+    success: "addLiq_success"
+  },
+  removeLiq_event: {
+    default: "removeLiq",
+    loading: "removeLiq_loading",
+    error: "removeLiq_error",
+    success: "removeLiq_success"
   }
 };
