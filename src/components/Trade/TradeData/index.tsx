@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, RefObject, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
@@ -31,8 +31,9 @@ enum Tab {
   history = "history"
 }
 
-const TradeData = () => {
-  const [tableHeight, setTableHeight] = useState<number>(276);
+const TradeData = ({containerRef} : {containerRef : RefObject<HTMLDivElement>}) => {
+  const [tableHeight, setTableHeight] = useState<number>(235);
+  const tabListRef = useRef<HTMLDivElement>(null);
 
   const { selectedPool } = usePoolsStore();
   const { isConnected } = useAccount();
@@ -56,34 +57,31 @@ const TradeData = () => {
     [tradeHistory]
   );
 
-  const tableHeightDomId =
-    typeof document !== undefined
-      ? document.getElementById("tradeData-container")?.offsetHeight
-      : null;
-
   useEffect(() => {
     const updateHeight = () => {
-      const tradeDataContainerHeight = tableHeightDomId;
-      const tabListHeight = document.getElementById("tradeData-tabList")?.offsetHeight;
       // console.log("useEffect called on mount (update height");
-      if (tradeDataContainerHeight && tabListHeight) {
-        // console.log("inside if condition of update height");
-        // console.log(
-        //   "tradeData container : ",
-        //   tradeDataContainerHeight,
-        //   "tab list container : ",
-        //   tabListHeight
-        // );
-        setTableHeight(tradeDataContainerHeight - tabListHeight);
+      if (containerRef.current && tabListRef.current) {
+        const newHeight = containerRef.current.offsetHeight - tabListRef.current.offsetHeight;
+        /* console.log("inside if condition of update height");
+        console.log(
+          "tradeData container : ", containerRef.current.offsetHeight,
+          "tab list container : ", tabListRef.current.offsetHeight
+        ); */
+        setTableHeight(newHeight);
       }
     };
 
-    if (typeof document !== undefined && typeof window !== undefined) {
-      updateHeight();
-      window.addEventListener("resize", updateHeight);
-      return () => window.removeEventListener("resize", updateHeight);
+    updateHeight();
+
+    const resizeObserver = new ResizeObserver(updateHeight);
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
     }
-  }, [tableHeightDomId]);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [containerRef]);
 
   const positionColumns: ColumnDef<OpenPositionInfo>[] = [
     {
@@ -374,7 +372,7 @@ const TradeData = () => {
       {/* Tab Row */}
       <Tabs defaultValue={Tab.position}>
         <TabsList
-          id="tradeData-tabList"
+          ref={tabListRef}
           className="flex flex-row justify-start rounded-none font-medium text-sm/6 font-sans-ibm-plex border-b border-secondary-gray"
         >
           <TabsTrigger value={Tab.position} className={tabStyle}>
@@ -390,7 +388,7 @@ const TradeData = () => {
         <TabsContent
           value={Tab.position}
           style={{ maxHeight: `${tableHeight}px` }}
-          className="min-h-[276px] overflow-y-auto"
+          className="min-h-[235px] overflow-y-auto"
         >
           <OpenPositionsTable
             columns={positionColumns}
@@ -402,7 +400,7 @@ const TradeData = () => {
         <TabsContent
           value={Tab.history}
           style={{ maxHeight: `${tableHeight}px` }}
-          className="min-h-[276px] overflow-y-scroll trade-history"
+          className="min-h-[235px] overflow-y-scroll trade-history"
         >
           <TradeHistoryTable
             columns={transactionsColumns}
