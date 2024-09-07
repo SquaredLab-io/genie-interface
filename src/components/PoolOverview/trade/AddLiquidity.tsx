@@ -5,7 +5,12 @@ import Image from "next/image";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { WethABi } from "@lib/abis";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
-import toUnits, { formatOraclePrice, getDecimalAdjusted, getDecimalDeadjusted } from "@lib/utils/formatting";
+import toUnits, {
+  formatOraclePrice,
+  getCorrectFormattedValue,
+  getDecimalAdjusted,
+  getDecimalDeadjusted
+} from "@lib/utils/formatting";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import ButtonCTA from "@components/common/button-cta";
@@ -13,7 +18,6 @@ import notification from "@components/common/notification";
 import { CONFIRMATION } from "@lib/constants";
 import { Address } from "viem";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
-import { useCurrentPosition } from "@lib/hooks/useCurrentPosition";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import { cn } from "@lib/utils";
 import InfoBox from "../info-box";
@@ -22,11 +26,8 @@ import useLpTokenReceiveEstimate from "@lib/hooks/useLpTokenReceiveEstimate";
 import { useCurrentLpPosition } from "@lib/hooks/useCurrentLpPosition";
 import { notificationId } from "@components/Trade/helper";
 import { toast } from "sonner";
-
-const getCorrectFormattedValue = (value: number, inDollars = false) : string => {
-  if (value < 0.00001) return inDollars ? "< $0.00001" : "< 0.00001";
-  else return inDollars ? `$${value.toFixed(5)}` : value.toFixed(5);
-};
+import useApproveToken from "@lib/hooks/useApproveToken";
+import useIsApprovedToken from "@lib/hooks/useIsApprovedToken";
 
 const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const [amount, setAmount] = useState<string>("");
@@ -52,33 +53,48 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     symbol: underlying
   });
 
-  // Write Hook => Token Approval
+  // Check approved tokens amount
+  const { isApprovedData, isApprovedLoading, isApprovedError, isApprovedSuccess } =
+    useIsApprovedToken({
+      tokenAddress: overviewPool.underlyingAddress as Address,
+      poolAddress: overviewPool.poolAddr as Address,
+      tokenBalance: userBalance,
+      input: parseFloat(amount ?? "0")
+    });
+
   const {
-    data: approvalData,
-    writeContractAsync: writeApproveToken,
-    error: approveError,
-    isPending: isApprovePending
-  } = useWriteContract();
+    isApproveLoading,
+    isApprovePending,
+    isApproveSuccess,
+    approveError,
+    isApproveError,
+    approvalError,
+    writeApproveToken
+  } = useApproveToken();
 
   // get estimate of LP tokens that will be received
   const { output: lpTokens, isFetching: isLpTokenFetching } = useLpTokenReceiveEstimate({
     poolAddress: poolAddr as Address,
     amount: getDecimalDeadjusted(amount, underlyingDecimals)
   });
-  // console.log('lpTokens : ', lpTokens);
 
-  // get current position of LP 
-  const { 
-    data: lpPosition, 
-    isFetching: isLpPositionFetching, 
-    refetch: refetchLpPosition 
+  // get current position of LP
+  const {
+    data: lpPosition,
+    isFetching: isLpPositionFetching,
+    refetch: refetchLpPosition
   } = useCurrentLpPosition({
-    poolAddress: poolAddr as Address,
+    poolAddress: poolAddr as Address
   });
-  const lpBalance = parseFloat(lpPosition?.counterLpAmt ?? "0") / 10 ** underlyingDecimals;
-  const decimalAdjustedOraclePrice = formatOraclePrice(BigInt(lpPosition?.oraclePrice ?? "0"), underlyingDecimals) ;
-  const lpPriceInDollars = decimalAdjustedOraclePrice * parseFloat(lpPosition?.lpTokenPriceUnderlying ?? "0");
-  // console.log('lp position data : ', lpPosition);
+
+  const lpBalance =
+    parseFloat(lpPosition?.counterLpAmt ?? "0") / 10 ** underlyingDecimals;
+  const decimalAdjustedOraclePrice = formatOraclePrice(
+    BigInt(lpPosition?.oraclePrice ?? "0"),
+    underlyingDecimals
+  );
+  const lpPriceInDollars =
+    decimalAdjustedOraclePrice * parseFloat(lpPosition?.lpTokenPriceUnderlying ?? "0");
 
   /**
    * This handler method approves signers underlying tokens to be spent on Potentia Protocol
@@ -118,23 +134,11 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       );
       if (hash) {
         setTxHash(hash as Address);
-        console.log("addliquiditytxn return", hash);
       }
     } catch (error) {
       console.error("Error while Adding liquidity");
     }
   }
-
-  // wait for approval transaction
-  const {
-    isSuccess: isApproveSuccess,
-    isLoading: isApproveLoading,
-    isError: isApproveError,
-    error: approvalError
-  } = useWaitForTransactionReceipt({
-    hash: approvalData,
-    confirmations: CONFIRMATION
-  });
 
   // wait for add liquidity transaction
   const { isSuccess, isLoading, isPending, isError, error } =
@@ -151,32 +155,26 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     [userBalance, amount]
   );
 
-  // TODO: Update actual data from SDK
-  const receiveQuantity = 0;
-
   // Approval Loading or Error Effects
   useEffect(() => {
-    if(isApproveLoading){
+    if (isApproveLoading) {
       notification.loading({
         id: addLiq_event.approve_loading,
         title: "Approving transaction..."
-      })
-    } else if(isApproveError){
+      });
+    } else if (isApproveError) {
       toast.dismiss(addLiq_event.approve_loading);
       notification.error({
         id: addLiq_event.approve_error,
         title: "Approval failed",
-        description: `${approvalError.message}`
+        description: `${approvalError?.message}`
       });
     }
-  },[isApproveLoading, isApproveError]);
+  }, [isApproveLoading, isApproveError]);
 
-  // Approval Successful Effects
+  // Executes Add Liquidity handlers if Approval Txn is successful
   useEffect(() => {
-    // Executes Add Liquidity handlers if Approval Txn is successful
-    console.log('approval success useEffect')
     if (isApproveSuccess) {
-      console.log("Token is approved for the selected amount!");
       toast.dismiss(addLiq_event.approve_loading);
       notification.success({
         id: addLiq_event.approve_success,
@@ -189,17 +187,16 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
 
   // add liq. Tx Loading or Error Effects
   useEffect(() => {
-    console.log("add liq. loading/error useEffect")
     if (isLoading) {
       notification.loading({
         id: addLiq_event.loading,
-        title: "Adding liquidity",
+        title: "Adding liquidity in process..."
       });
     } else if (isError) {
       toast.dismiss(addLiq_event.loading);
       notification.error({
         id: addLiq_event.error,
-        title: "Adding liquidity failed",
+        title: "Failed to add liquidity",
         description: `${error.message}`
       });
     }
@@ -208,7 +205,6 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   // add liq. Tx Successful Effects
   useEffect(() => {
     if (isSuccess) {
-      console.log("add liq useEffect - isSuccess")
       refetchBalance();
       refetchLpPosition();
       toast.dismiss(addLiq_event.loading);
@@ -234,9 +230,12 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
             <span>
               {isPriceFetching && !price && !isValidPositiveNumber(amount)
                 ? "..."
-                : parseFloat(amount) > 0 ?
-                getCorrectFormattedValue(price * parseFloat(amount !== "" ? amount : "0"), true)
-                : "$0"}
+                : parseFloat(amount) > 0
+                  ? getCorrectFormattedValue(
+                      price * parseFloat(amount !== "" ? amount : "0"),
+                      true
+                    )
+                  : "$0"}
             </span>
           </p>
           <div className="inline-flex-between">
@@ -300,28 +299,32 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
             <span>You Receive</span>
             <span>
               {isLpPositionFetching || isLpTokenFetching
-              ?
-              "..."
-              :
-              ((lpPriceInDollars && lpTokens && lpTokens!=="0") ?
-                getCorrectFormattedValue(lpPriceInDollars*getDecimalAdjusted(lpTokens, underlyingDecimals), true)
-                : "$0")
-              }
+                ? "..."
+                : lpPriceInDollars && lpTokens && lpTokens !== "0"
+                  ? getCorrectFormattedValue(
+                      lpPriceInDollars * getDecimalAdjusted(lpTokens, underlyingDecimals),
+                      true
+                    )
+                  : "$0"}
             </span>
           </p>
           <div className="inline-flex-between">
             <h4 className="font-medium text-base/5">LP Tokens</h4>
             <span className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right">
               {/* {receiveQuantity > 0 ? receiveQuantity : "-"} */}
-              {isLpTokenFetching ? "..." : ((!!lpTokens && lpTokens!=="0") ? getCorrectFormattedValue(getDecimalAdjusted(lpTokens, underlyingDecimals)) : "-")}
+              {isLpTokenFetching
+                ? "..."
+                : !!lpTokens && lpTokens !== "0"
+                  ? getCorrectFormattedValue(
+                      getDecimalAdjusted(lpTokens, underlyingDecimals)
+                    )
+                  : "-"}
             </span>
           </div>
           <div className="font-normal text-xs/3 mt-1">
             <span className="text-[#5F7183]">
               Your LP balance:{" "}
-              {isLpPositionFetching && !lpPosition
-                ? "loading..."
-                : lpBalance.toFixed(3)}
+              {isLpPositionFetching && !lpPosition ? "loading..." : lpBalance.toFixed(3)}
             </span>
           </div>
         </div>
@@ -345,19 +348,24 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           disabled={
             !isConnected ||
             !userBalance ||
-            // !lpBalance ||
+            !lpPosition ||
             balanceExceedError ||
+            isApprovedLoading ||
             isApproveLoading ||
             isApprovePending ||
             isLoading ||
             (isApproveSuccess && isPending) ||
             !isValidPositiveNumber(amount)
           }
-          isLoading={isApproveLoading || isLoading}
+          isLoading={isApprovedLoading || isApproveLoading || isLoading}
           onClick={() => {
             if (isConnected) {
               console.log("amount", amount);
-              approveHandler();
+              if (!isApprovedSuccess) {
+                approveHandler();
+              } else {
+                addLiquidityHandlerSdk();
+              }
             } else {
               openConnectModal?.();
             }
