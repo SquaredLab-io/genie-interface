@@ -3,7 +3,7 @@ import { Address } from "viem";
 import { useAccount, useReadContract } from "wagmi";
 import BigNumber from "bignumber.js";
 import { WethABi } from "@lib/abis";
-import { WagmiFetchBalanceResult } from "@lib/utils/getAccountBalance";
+import { WagmiFetchBalanceResult } from "@lib/types/common";
 
 interface PropsType {
   input: number;
