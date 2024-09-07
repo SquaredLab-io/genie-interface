@@ -29,7 +29,6 @@ import {
 import { CONFIRMATION } from "@lib/constants";
 import { usePoolsStore } from "@store/poolsStore";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
-import { useTxHistory } from "@lib/hooks/useTxHistory";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import { useTradeHistory } from "@lib/hooks/useTradeHistory";
 import useIsApprovedToken from "@lib/hooks/useIsApprovedToken";
@@ -141,7 +140,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
    * Handler for Opening Long Position
    */
   const openLongPositionHandler = async () => {
-    const _amount = parseFloat(quantity) * 10 ** 18;
+    const _amount = parseFloat(quantity) * 10 ** selectedPool()?.underlyingDecimals!;
     try {
       const hash = await potentia?.poolWrite.openPosition(
         selectedPool()?.poolAddr!, // poolAddress

@@ -152,3 +152,11 @@ export function formatTimestamp(timestamp: string): {
 
   return { date, time };
 }
+
+/**
+ * To deprecate
+ */
+export function getCorrectFormattedValue(value: number, inDollars = false): string {
+  if (value < 0.00001) return inDollars ? "< $0.00001" : "< 0.00001";
+  else return inDollars ? `$${value.toFixed(5)}` : value.toFixed(5);
+}
