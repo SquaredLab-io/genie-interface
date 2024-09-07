@@ -56,10 +56,14 @@ const TradeData = () => {
     [tradeHistory]
   );
 
+  const tableHeightDomId =
+    typeof document !== undefined
+      ? document.getElementById("tradeData-container")?.offsetHeight
+      : null;
+
   useEffect(() => {
     const updateHeight = () => {
-      const tradeDataContainerHeight =
-        document.getElementById("tradeData-container")?.offsetHeight;
+      const tradeDataContainerHeight = tableHeightDomId;
       const tabListHeight = document.getElementById("tradeData-tabList")?.offsetHeight;
       // console.log("useEffect called on mount (update height");
       if (tradeDataContainerHeight && tabListHeight) {
@@ -74,11 +78,12 @@ const TradeData = () => {
       }
     };
 
-    updateHeight();
-    window.addEventListener("resize", updateHeight);
-
-    return () => window.removeEventListener("resize", updateHeight);
-  }, [document.getElementById("tradeData-container")?.offsetHeight]);
+    if (typeof document !== undefined && typeof window !== undefined) {
+      updateHeight();
+      window.addEventListener("resize", updateHeight);
+      return () => window.removeEventListener("resize", updateHeight);
+    }
+  }, [tableHeightDomId]);
 
   const positionColumns: ColumnDef<OpenPositionInfo>[] = [
     {
