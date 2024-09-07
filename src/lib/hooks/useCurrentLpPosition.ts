@@ -27,7 +27,7 @@ type ReturnTxHistory = {
 export function useCurrentLpPosition({poolAddress, paused = false} : PropsType): ReturnTxHistory {
   const { address } = useAccount();
   const { potentia } = usePotentiaSdk();
-
+  console.log('useCurrentLpPosition');
 //   const { selectedPool } = usePoolsStore();
 
   async function getLpPosition() {
@@ -37,7 +37,7 @@ export function useCurrentLpPosition({poolAddress, paused = false} : PropsType):
         poolAddress as Address,
         address as Address // user
       );
-      console.log("current Lp position : ", result);
+      console.log("current Lp position : ", result?.userCurrentLpPoss.items[0]);
       return result?.userCurrentLpPoss.items[0];
       // setTxHistory(result);
     } catch (error) {

@@ -19,6 +19,8 @@ import useTokenBalance from "@lib/hooks/useTokenBalance";
 import useLpUnderlyingReceived from "@lib/hooks/useLpUnderlyingReceived";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import { useCurrentLpPosition } from "@lib/hooks/useCurrentLpPosition";
+import { notificationId } from "@components/Trade/helper";
+import { toast } from "sonner";
 
 const getCorrectFormattedValue = (value: number, inDollars = false): string => {
   if (value < 0.00001) return inDollars ? "< $0.00001" : "< 0.00001";
@@ -30,6 +32,8 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const [amount, setAmount] = useState<string>("");
   const [showInfo, setShowInfo] = useState<boolean>(true);
   const [txHash, setTxHash] = useState<Address | undefined>(undefined);
+
+  const { removeLiq_event } = notificationId;
 
   const { potentia } = usePotentiaSdk();
   const { openConnectModal } = useConnectModal();
@@ -114,23 +118,36 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   // TODO: Update actual data from SDK
   const receiveQuantity = 0;
 
-  // Notifications based on Transaction status
+  // Notifications based on loading and error Transaction status
   useEffect(() => {
-    if (isError) {
+    console.log("remove liq. loading/error useEffect")
+    if (isLoading) {
+      notification.loading({
+        id: removeLiq_event.loading,
+        title: "Withdrawing liquidity",
+      });
+    } else if (isError) {
+      toast.dismiss(removeLiq_event.loading);
       notification.error({
-        id: "add-error",
-        title: "Adding liquidity failed",
+        id: removeLiq_event.error,
+        title: "Withdraw liquidity failed",
         description: `${error.message}`
       });
-    } else if (isSuccess) {
+    }
+  }, [isLoading, isError]);
+
+  // Notifications based on success Transaction status
+  useEffect(() => {
+    if (isSuccess) {
       refetchBalance();
       refetchLpPosition();
+      toast.dismiss(removeLiq_event.loading);
       notification.success({
-        id: "add-success",
+        id: removeLiq_event.success,
         title: "Liquidity withdrawn successfully"
       });
     }
-  }, [isSuccess, isError]);
+  }, [isSuccess]);
 
   return (
     <div className="flex flex-col justify-between py-4 h-full">
@@ -172,7 +189,7 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
               className={cn(balanceExceedError ? "text-error-red" : "text-[#5F7183]")}
             >
               Your LP balance:{" "}
-              {isLpPositionFetching && !lpBalance ? "loading..." : lpBalance.toFixed(5)}
+              {isLpPositionFetching && !lpBalance ? "loading..." : lpBalance.toFixed(3)}
             </span>
             <div className="inline-flex gap-2">
               <button
