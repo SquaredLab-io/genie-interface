@@ -78,9 +78,15 @@ export function poolOverviewColumnDef(
       cell: ({ row }) => {
         const { price_change_percentage_24h } = row.original;
         return (
-          <span className="pr-[18px] block py-6">
-            {`${price_change_percentage_24h.toPrecision(4)}%`}
+          <div className="block py-6 h-full">
+          <span className={cn("my-6 mr-[18px] rounded-md py-1.5 px-2",
+            price_change_percentage_24h > 0 ? 
+            "text-positive-green bg-positive-green/5" 
+            : "text-negative-red bg-negative-red/60")}
+          >
+            {`${price_change_percentage_24h>0?"+":"-"}${price_change_percentage_24h.toPrecision(4)}%`}
           </span>
+          </div>
         );
       }
     },
@@ -92,7 +98,9 @@ export function poolOverviewColumnDef(
         const { total_volume } = row.original;
         return (
           <div className="pr-[18px] gap-1 block py-6">
-            <span>{formatNumber(total_volume, true)}</span>
+            <span>
+              {formatNumber(total_volume, true)}
+            </span>
             {/* <span
               className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
             >
