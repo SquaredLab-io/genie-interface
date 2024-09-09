@@ -9,16 +9,16 @@ import { LpTradeOptions } from "@lib/types/enums";
 import LpTradeSelector from "./lp-trade-selector";
 import { Separator } from "@components/ui/separator";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
-import OverviewTokenModal from "./overview-token-modal";
 import { useModalStore } from "@store/poolsStore";
 import PoolHeader from "./pool-header";
 import LPChart from "./lp-charts";
+import PoolOverviewModal from "./pool-overview-modal";
 
 const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   // LP Tab: Supply and Withdraw
   const [lpTrade, setLpTrade] = useState<LpTradeOptions>(LpTradeOptions.supply);
 
-  const { openOverviewModal, setOpenOverviewModal } = useModalStore();
+  const { openSelectPoolOverviewModal, setOpenSelectPoolOverviewModal } = useModalStore();
 
   const { pool, power } = overviewPool;
   const [token0, token1] = pool.split("/").map((p) => p.trim());
@@ -49,7 +49,7 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           </div>
         </div>
       </div>
-      <OverviewTokenModal open={openOverviewModal} setOpen={setOpenOverviewModal} />
+      <PoolOverviewModal open={openSelectPoolOverviewModal} setOpen={setOpenSelectPoolOverviewModal} />
     </div>
   );
 };

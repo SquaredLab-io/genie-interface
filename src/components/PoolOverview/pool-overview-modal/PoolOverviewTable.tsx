@@ -1,0 +1,86 @@
+import { useAccount } from "wagmi";
+import ConnectWallet from "@components/common/ConnectWallet";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@components/ui/table";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable
+} from "@tanstack/react-table";
+import { useEffect } from "react";
+import Link from "next/link";
+import { ConstructedPoolsDataResponse } from ".";
+
+interface PropsType<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  loading: boolean;
+}
+
+const PoolOverviewTable = <TData, TValue>({
+  columns,
+  data,
+  loading
+}: PropsType<TData, TValue>) => {
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel()
+  });
+
+  return (
+    <Table className="mt-4">
+      <TableHeader className="font-sans-ibm-plex">
+        {table.getHeaderGroups().map((headerGroup) => (
+          <TableRow key={headerGroup.id}>
+            {headerGroup.headers.map((header) => {
+              return (
+                <TableHead
+                  key={header.id}
+                  className="font-bold text-sm/[18px] text-[#5F7183] text-right"
+                >
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(header.column.columnDef.header, header.getContext())}
+                </TableHead>
+              );
+            })}
+          </TableRow>
+        ))}
+      </TableHeader>
+      <TableBody className="divide-y divide-[#292B31]">
+        {table.getRowModel().rows?.length ? (
+          table.getRowModel().rows.map((row) => {
+            const {underlying_symbol, power} = row.original as ConstructedPoolsDataResponse;
+            return (
+              <Link href={`/pool/${underlying_symbol}?power=${power}`}> 
+                <TableRow key={row.id} className="hover:bg-[#19242C] transition-colors duration-200">
+                {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="text-right">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                ))}
+                </TableRow>
+            </Link>
+            )
+        })
+        ) : (
+          <TableRow>
+            <TableCell colSpan={columns.length} className="h-72 text-center">
+              {loading ? "Loading Pools..." : "You have no pools."}
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
+  );
+};
+
+export default PoolOverviewTable;
