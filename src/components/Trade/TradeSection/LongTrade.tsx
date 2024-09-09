@@ -71,7 +71,10 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     poolAddress: selectedPool()?.poolAddr! as Address,
     paused: true
   });
-  const longPosition = positionData?.longPositionTab?.tokenSize;
+  // Current Long Position tokensize
+  const longPosition = positionData?.longPositions.find(
+    (pos) => pos.pool == selectedPool()?.poolAddr
+  )?.tokenSize;
 
   // Get the Estimate Underlying Output
   const { output, isFetching: isOutputFetching } = usePTokenEstimateOut({

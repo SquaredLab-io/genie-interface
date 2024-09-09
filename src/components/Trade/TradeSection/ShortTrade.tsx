@@ -71,7 +71,10 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     poolAddress: selectedPool()?.poolAddr! as Address,
     paused: true
   });
-  const shortPosition = positionData?.shortPositionTab?.tokenSize;
+  // Current Short Position tokensize
+  const shortPosition = positionData?.shortPositions.find(
+    (pos) => pos.pool == selectedPool()?.poolAddr
+  )?.tokenSize;
 
   // Get the Estimate Underlying Output
   const { output, isFetching: isOutputFetching } = usePTokenEstimateOut({
