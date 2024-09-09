@@ -32,25 +32,27 @@ interface PoolOverviewData {
   total_volume: number;
 }
 
-export interface FetchPoolsDataResponse extends PoolOverviewData{
+export interface FetchPoolsDataResponse extends PoolOverviewData {
   underlying_symbol: string;
 }
 
-export interface ConstructedPoolsDataResponse extends FetchPoolsDataResponse{
+export interface ConstructedPoolsDataResponse extends FetchPoolsDataResponse {
   pool: string;
   power: number;
 }
 
 type PoolSymbol = keyof typeof POOL_ID_MAP;
 
-const fetchPoolsData = async (pools: PoolInfo[] | undefined): Promise<FetchPoolsDataResponse[]> => {
+const fetchPoolsData = async (
+  pools: PoolInfo[] | undefined
+): Promise<FetchPoolsDataResponse[]> => {
   if (!pools) return [];
 
-  const uniqueUnderlyings = Array.from(new Set(pools.map(pool => pool.underlying)));
-  console.log('underlying unique symbols : ', uniqueUnderlyings);
+  const uniqueUnderlyings = Array.from(new Set(pools.map((pool) => pool.underlying)));
+  console.log("underlying unique symbols : ", uniqueUnderlyings);
 
   const promiseResults = await Promise.all(
-    uniqueUnderlyings.map(async(underlying) => {
+    uniqueUnderlyings.map(async (underlying) => {
       const symbol = getTokenSymbol(underlying) as PoolSymbol;
       const response = await makeMarketDataApiRequest(
         `coins/markets?vs_currency=usd&ids=${POOL_ID_MAP[symbol].id}&price_change_percentage=24h`
@@ -79,18 +81,22 @@ export default function PoolOverviewModal({ children, open, setOpen }: PropsType
   const poolOverviewColumns = poolOverviewColumnDef(updateSelectedPool);
 
   // react-query
-  const { 
-    data: poolOverviewData, 
-    isLoading: isPoolOverviewDataLoading 
-  } = useQuery<FetchPoolsDataResponse[], Error>({
-    queryKey: ['poolOverviewData', pools],
+  const { data: poolOverviewData, isLoading: isPoolOverviewDataLoading } = useQuery<
+    FetchPoolsDataResponse[],
+    Error
+  >({
+    queryKey: ["poolOverviewData", pools],
     queryFn: () => fetchPoolsData(pools),
     refetchInterval: REFETCH_INTERVAL,
-    enabled: !!pools,
+    enabled: !!pools
   });
   console.log("pool overview market data : ", poolOverviewData);
 
-  const { filteredPoolsOverview } = useFilteredPoolOverview(pools, poolOverviewData, term);
+  const { filteredPoolsOverview } = useFilteredPoolOverview(
+    pools,
+    poolOverviewData,
+    term
+  );
   console.log("filtered pools overview : ", filteredPoolsOverview);
   const isLoading = isFetching || isPoolOverviewDataLoading;
 
@@ -111,12 +117,14 @@ export default function PoolOverviewModal({ children, open, setOpen }: PropsType
         />
       </div>
       <Separator />
-      <h1 className="inline-flex font-medium text-[15px]/[18px] pt-4 pl-4 w-full">Pools</h1>
-      {/* <PoolsList pools={pools!} noPools={noPools} setModalOpen={setOpen} /> */}
+      <h1 className="inline-flex font-medium text-[15px]/[18px] pt-4 pl-4 w-full">
+        Pools
+      </h1>
       <PoolOverviewTable
         columns={poolOverviewColumns}
         data={filteredPoolsOverview}
         loading={isLoading}
+        setOpen={setOpen}
       />
     </Modal>
   );

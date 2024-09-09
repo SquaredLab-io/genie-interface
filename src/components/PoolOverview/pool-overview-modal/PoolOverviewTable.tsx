@@ -1,5 +1,3 @@
-import { useAccount } from "wagmi";
-import ConnectWallet from "@components/common/ConnectWallet";
 import {
   Table,
   TableBody,
@@ -14,7 +12,6 @@ import {
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
-import { useEffect } from "react";
 import Link from "next/link";
 import { ConstructedPoolsDataResponse } from ".";
 
@@ -22,12 +19,14 @@ interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   loading: boolean;
+  setOpen: (value: boolean) => void;
 }
 
 const PoolOverviewTable = <TData, TValue>({
   columns,
   data,
-  loading
+  loading,
+  setOpen
 }: PropsType<TData, TValue>) => {
   const table = useReactTable({
     data,
@@ -58,19 +57,26 @@ const PoolOverviewTable = <TData, TValue>({
       <TableBody className="divide-y divide-[#292B31]">
         {table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => {
-            const {underlying_symbol, power} = row.original as ConstructedPoolsDataResponse;
+            const { underlying_symbol, power } =
+              row.original as ConstructedPoolsDataResponse;
             return (
-                <TableRow key={row.id} className="hover:bg-[#19242C] transition-colors duration-200">
+              <TableRow
+                key={row.id}
+                className="hover:bg-[#19242C] transition-colors duration-200"
+                onClick={() => {
+                  setOpen(false);
+                }}
+              >
                 {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-right">
-                        <Link href={`/pool/${underlying_symbol}?power=${power}`}> 
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </Link>
-                    </TableCell>
+                  <TableCell key={cell.id} className="text-right">
+                    <Link href={`/pool/${underlying_symbol}?power=${power}`}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </Link>
+                  </TableCell>
                 ))}
-                </TableRow>
-            )
-        })
+              </TableRow>
+            );
+          })
         ) : (
           <TableRow>
             <TableCell colSpan={columns.length} className="h-72 text-center">

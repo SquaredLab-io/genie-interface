@@ -49,7 +49,10 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           </div>
         </div>
       </div>
-      <PoolOverviewModal open={openSelectPoolOverviewModal} setOpen={setOpenSelectPoolOverviewModal} />
+      <PoolOverviewModal
+        open={openSelectPoolOverviewModal}
+        setOpen={setOpenSelectPoolOverviewModal}
+      />
     </div>
   );
 };
