@@ -4,7 +4,7 @@ import { Address } from "viem";
 import { toast } from "sonner";
 import BigNumber from "bignumber.js";
 import { useWaitForTransactionReceipt } from "wagmi";
-import { AllPositions, OpenPositionInfo, PositionTab } from "@squaredlab-io/sdk";
+import { OpenPositionInfo } from "@squaredlab-io/sdk";
 // Component Imports
 import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover";
 import { Separator } from "@components/ui/separator";
@@ -87,7 +87,6 @@ const ClosePositionPopover: FC<PropsType> = ({
   async function closePositionHandlerSdk() {
     const amount = getDecimalDeadjusted(quantity, 18);
     // const amount = BigInt(quantity).toString();
-    console.log("Amount", amount);
     setIsHandlerLoading(true);
     notification.loading({
       id: close_event.loading_init,
@@ -95,7 +94,7 @@ const ClosePositionPopover: FC<PropsType> = ({
     });
     try {
       const hash = await potentia?.poolWrite.closePosition(
-        selectedPool()?.poolAddr! as Address,
+        position?.pool!,
         amount,
         isLong
       );
@@ -222,7 +221,7 @@ const ClosePositionPopover: FC<PropsType> = ({
               <p className="inline-flex items-center gap-[2px]">
                 <span className="w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm">
                   {selectedPool()?.underlying}
-                  <sup>{poolToPower[position?.pool]}</sup>
+                  <sup>{poolToPower[position?.pool ?? ""]}</sup>
                 </span>
                 <span className="opacity-60">{isLong ? "L" : "S"}</span>
               </p>
