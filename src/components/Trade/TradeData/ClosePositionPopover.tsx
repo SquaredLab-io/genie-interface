@@ -28,6 +28,7 @@ import { notificationId } from "../helper";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import useUnderlyingEstimateOut from "@lib/hooks/useUnderlyingEstimateOut";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
+import { poolToPower } from "@lib/utils/pools";
 
 interface PropsType {
   children: ReactNode;
@@ -221,7 +222,7 @@ const ClosePositionPopover: FC<PropsType> = ({
               <p className="inline-flex items-center gap-[2px]">
                 <span className="w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm">
                   {selectedPool()?.underlying}
-                  <sup>{selectedPool()?.power}</sup>
+                  <sup>{poolToPower[position?.pool]}</sup>
                 </span>
                 <span className="opacity-60">{isLong ? "L" : "S"}</span>
               </p>
