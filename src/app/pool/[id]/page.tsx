@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { usePools } from "@lib/hooks/usePools";
 import LoadingLogo from "@components/icons/loading-logo";
@@ -15,15 +15,17 @@ export default function Overview() {
   const { pools, isFetching } = usePools();
 
   const { id } = useParams();
+  const queryParams = useSearchParams();
+  const power = queryParams.get('power');
   const _id = Array.isArray(id) ? id[0] : id;
 
   // finding the pool based on id in url
   const overviewPool = useMemo(() => {
     const _pool = pools?.find(
-      (pool) => pool.underlying.toLowerCase() === _id.toLowerCase()
+      (pool) => (pool.underlying.toLowerCase() === _id.toLowerCase()) && (pool.power === parseInt(power!))
     );
     return _pool;
-  }, [id, pools]);
+  }, [id, pools, power]);
 
   // not fetching pools, but also didn't find the pool for overview
   if (!overviewPool && !isFetching) {

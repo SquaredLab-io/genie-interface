@@ -21,7 +21,7 @@ const Label = ({ text, imgSrc }: LabelProps) => {
 
 const PoolHeader = ({ assets, power }: { assets: string[]; power: number }) => {
   const { chain } = useAccount();
-  const { setOpenOverviewModal } = useModalStore();
+  const { setOpenSelectPoolOverviewModal } = useModalStore();
 
   // TODO: Get this from SDK
   const POOL_APR = 2.61;
@@ -29,7 +29,7 @@ const PoolHeader = ({ assets, power }: { assets: string[]; power: number }) => {
     <>
       <div
         className="whitespace-nowrap flex flex-row items-center gap-3 text-left font-medium rounded-full max-w-fit p-2 cursor-pointer"
-        onClick={() => setOpenOverviewModal(true)}
+        onClick={() => setOpenSelectPoolOverviewModal(true)}
       >
         <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-3">
           {assets.map((asset, index) => (

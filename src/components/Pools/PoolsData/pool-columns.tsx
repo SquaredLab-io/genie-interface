@@ -166,7 +166,7 @@ export function allPoolsColumnDef(
         const pool = row.original;
         return (
           <div className="inline-flex items-center justify-end max-w-fit float-right mr-5 w-full gap-2">
-            <Link href={`/pool/${pool.underlying}`}>
+            <Link href={`/pool/${pool.underlying}?power=${pool.power}`}>
               <Button variant="default" size="sm">
                 Add Liquidity
               </Button>
