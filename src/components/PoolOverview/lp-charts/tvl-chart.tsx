@@ -70,7 +70,7 @@ const TVLChart = ({
         <div className="h-full" ref={chartContainerRef} />
       )}
       {/* Range Toggle Group */}
-      <RangeToggle />
+      {/* <RangeToggle /> */}
     </div>
   );
 };

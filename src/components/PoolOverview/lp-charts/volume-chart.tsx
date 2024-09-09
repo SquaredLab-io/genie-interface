@@ -66,7 +66,7 @@ const VolumeChart = ({
         <div className="h-full" ref={chartContainerRef} />
       )}
       {/* Range Toggle Group */}
-      <RangeToggle />
+      {/* <RangeToggle /> */}
     </div>
   );
 };
