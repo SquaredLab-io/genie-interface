@@ -25,6 +25,7 @@ import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { OpenPositionInfo, Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useAccount } from "wagmi";
 import { useTokenPrice } from "@lib/hooks/useTokenPrice";
+import { poolToPower } from "@lib/utils/pools";
 
 enum Tab {
   position = "position",
@@ -90,6 +91,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
         const assets = selectedPool()
           ?.pool.split(" / ")
           .map((asset) => asset.trim());
+        const poolAddr = row.original.pool;
         return (
           <div className="whitespace-nowrap flex flex-row gap-2 text-left font-medium pl-[18px] py-6">
             <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-2">
@@ -120,7 +122,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
                   ))}
                 </p>
                 <p className="font-medium text-xs/3 bg-[#49AFE9] py-1 px-[10px] rounded-md">
-                  p = {selectedPool()?.power}
+                  p = {poolToPower[poolAddr]}
                 </p>
               </div>
               <div className="font-normal text-sm/5 text-[#9299AA]">
@@ -220,7 +222,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
         const side = row.original.side;
         return (
           <ClosePositionPopover
-            positions={openOrders}
+            position={row.original}
             isLong={side === "Long" ? true : false}
           >
             <button className="py-1 px-[22px] text-white bg-[#32120D] font-normal text-[14px]/5 rounded-sm">

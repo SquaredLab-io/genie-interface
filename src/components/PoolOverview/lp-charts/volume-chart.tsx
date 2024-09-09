@@ -2,9 +2,8 @@ import { memo, useEffect, useRef, useState } from "react";
 import { createChart } from "lightweight-charts";
 import { DailyInfo } from "@squaredlab-io/sdk/";
 import { getVolumeTimeseries } from "../helper";
-import { chartOptionsConfig, colors, intervals } from "./configs";
+import { chartOptionsConfig, colors } from "./configs";
 import LoadingLogo from "@components/icons/loading-logo";
-import RangeToggle from "./range-toggle";
 
 const VolumeChart = ({
   dailyData,

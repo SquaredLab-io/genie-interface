@@ -82,7 +82,7 @@ export function poolOverviewColumnDef(
           <span className={cn("my-6 mr-[18px] rounded-md py-1.5 px-2",
             price_change_percentage_24h > 0 ? 
             "text-positive-green bg-positive-green/5" 
-            : "text-negative-red bg-negative-red/60")}
+            : "text-negative-red bg-negative-red/10")}
           >
             {`${price_change_percentage_24h>0?"+":"-"}${price_change_percentage_24h.toPrecision(4)}%`}
           </span>

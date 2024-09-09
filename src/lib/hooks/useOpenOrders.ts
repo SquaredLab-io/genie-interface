@@ -1,7 +1,6 @@
 import { useAccount, useWalletClient } from "wagmi";
-import { getAddress } from "viem";
 import { QueryObserverResult, RefetchOptions, useQuery } from "@tanstack/react-query";
-import { PositionTab } from "@squaredlab-io/sdk/src/interfaces/index.interface";
+import { AllPositions } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import notification from "@components/common/notification";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { REFETCH_INTERVAL } from "@lib/constants";
@@ -12,11 +11,11 @@ interface PropsType {
 }
 
 interface ReturnType {
-  openOrders: PositionTab | undefined;
+  openOrders: AllPositions | undefined;
   isFetching: boolean;
   refetch: (
     options?: RefetchOptions
-  ) => Promise<QueryObserverResult<PositionTab | undefined, Error>>;
+  ) => Promise<QueryObserverResult<AllPositions | undefined, Error>>;
 }
 
 /**
@@ -34,7 +33,9 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
 
   const getOpenOrders = async () => {
     try {
-      return await potentia?.openOrders(getAddress(poolAddress));
+      const oo = await potentia?.openOrders();
+      console.log("orders @useOpenOrders", oo);
+      return oo;
     } catch (error) {
       notification.error({
         id: "open-orders",

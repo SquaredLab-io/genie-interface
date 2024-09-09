@@ -4,7 +4,6 @@ import { DailyInfo } from "@squaredlab-io/sdk/";
 import { getTvlTimeseries } from "../helper";
 import { chartOptionsConfig, colors } from "./configs";
 import LoadingLogo from "@components/icons/loading-logo";
-import RangeToggle from "./range-toggle";
 
 const TVLChart = ({
   dailyData,

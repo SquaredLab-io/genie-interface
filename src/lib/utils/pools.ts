@@ -1,3 +1,5 @@
+import { Address } from "viem";
+
 export const getTokenSymbol = (symbol: string | undefined): string => {
   if (!symbol) return "";
   switch (symbol) {
@@ -75,3 +77,9 @@ export const POOL_ID_MAP = {
     vs: "usd"
   }
 } as const;
+
+// to deprecate
+export const poolToPower: Record<string, number> = {
+  "0xDa22aB6bD4A2960c0c97a2Cc4b98C29bbB1Ad66B": 2,
+  "0xd721EC3b6aF39a3FeEF5903957A25BA5CE82eBf4": 16
+};

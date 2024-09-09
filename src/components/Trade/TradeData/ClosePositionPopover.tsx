@@ -4,7 +4,7 @@ import { Address } from "viem";
 import { toast } from "sonner";
 import BigNumber from "bignumber.js";
 import { useWaitForTransactionReceipt } from "wagmi";
-import { PositionTab } from "@squaredlab-io/sdk";
+import { AllPositions, OpenPositionInfo, PositionTab } from "@squaredlab-io/sdk";
 // Component Imports
 import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover";
 import { Separator } from "@components/ui/separator";
@@ -31,7 +31,7 @@ import { useTxHistory } from "@lib/hooks/useTxHistory";
 
 interface PropsType {
   children: ReactNode;
-  positions: PositionTab | undefined;
+  position: OpenPositionInfo | undefined;
   isLong: boolean;
   onClickTrigger?: () => void;
   isOpen?: boolean;
@@ -40,7 +40,8 @@ interface PropsType {
 
 const ClosePositionPopover: FC<PropsType> = ({
   children,
-  positions,
+  position,
+  // positions,
   isLong,
   onClickTrigger,
   isOpen,
@@ -56,11 +57,12 @@ const ClosePositionPopover: FC<PropsType> = ({
   const { selectedPool } = usePoolsStore();
   const { close_event } = notificationId;
 
-  const longTokenBalance = new BigNumber(positions?.longPositionTab?.tokenSize ?? "0");
-  const shortTokenBalance = new BigNumber(positions?.shortPositionTab?.tokenSize ?? "0");
+  // const longTokenBalance = new BigNumber(positions?.longPositionTab?.tokenSize ?? "0");
+  // const shortTokenBalance = new BigNumber(positions?.shortPositionTab?.tokenSize ?? "0");
+  const balance = new BigNumber(position?.tokenSize ?? "0");
 
   // Current user balance of Long / Short Token
-  const balance = isLong ? longTokenBalance : shortTokenBalance;
+  // const balance = isLong ? longTokenBalance : shortTokenBalance;
   const isValidQuantity = !isNaN(parseFloat(quantity));
 
   // All current positions
@@ -228,7 +230,9 @@ const ClosePositionPopover: FC<PropsType> = ({
               Balance:{" "}
               {formatNumber(
                 getDecimalAdjusted(
-                  isLong ? longTokenBalance.toFixed(0) : shortTokenBalance.toFixed(0),
+                  balance.toFixed(0),
+                  // isLong ? longTokenBalance.toFixed(0) : shortTokenBalance.toFixed(0),
+                  // isLong ? longTokenBalance.toFixed(0) : shortTokenBalance.toFixed(0),
                   18
                 )
               )}

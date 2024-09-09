@@ -1,21 +1,23 @@
 import {
+  AllPositions,
   OpenPositionInfo,
-  PositionTab,
   Tx
 } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 
-export function getOpenTransactions(openOrders?: PositionTab): OpenPositionInfo[] {
-  if (!openOrders) return new Array<OpenPositionInfo>();
-  const longPos = openOrders.longPositionTab;
-  const shortPos = openOrders.shortPositionTab;
-  const data =
-    longPos && shortPos
-      ? [longPos, shortPos]
-      : longPos && !shortPos
-        ? [longPos]
-        : !longPos && shortPos
-          ? [shortPos]
-          : [];
+export function getOpenTransactions(openOrders: AllPositions | undefined): OpenPositionInfo[] {
+  if (!openOrders) return [];
+  const longPos = openOrders.longPositions;
+  const shortPos = openOrders.shortPositions;
+  
+  const data = [...longPos, ...shortPos];
+  // const data =
+  //   longPos && shortPos
+  //     ? [longPos, shortPos]
+  //     : longPos && !shortPos
+  //       ? [longPos]
+  //       : !longPos && shortPos
+  //         ? [shortPos]
+  //         : [];
   return data.filter((pos) => parseFloat(pos.tokenSize) !== 0);
 }
 
