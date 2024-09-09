@@ -215,7 +215,7 @@ const ClosePositionPopover: FC<PropsType> = ({
               <p className="inline-flex items-center gap-[2px]">
                 <span className="w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm">
                   {selectedPool()?.underlying}
-                  <sup>2</sup>
+                  <sup>{selectedPool()?.power}</sup>
                 </span>
                 <span className="opacity-60">{isLong ? "L" : "S"}</span>
               </p>
