@@ -65,20 +65,20 @@ export function poolOverviewColumnDef(
     {
       id: "price",
       accessorKey: "price",
-      header: () => <span className="pr-[18px] text-right">Price</span>,
+      header: () => <span className="pr-[18px] text-right pb-2">Price</span>,
       cell: ({ row }) => {
         const { current_price } = row.original;
-        return <span className="pr-[18px]">{formatNumber(current_price, true)}</span>;
+        return <span className="pr-[18px] block py-6">{formatNumber(current_price, true)}</span>;
       }
     },
     {
       id: "24hrChange",
       accessorKey: "24hrChange",
-      header: () => <span className="pr-[18px] pt-6">24h Change</span>,
+      header: () => <span className="pr-[18px] pt-6 pb-2">24h Change</span>,
       cell: ({ row }) => {
         const { price_change_percentage_24h } = row.original;
         return (
-          <span className="pr-[18px]">
+          <span className="pr-[18px] block py-6">
             {`${price_change_percentage_24h.toPrecision(4)}%`}
           </span>
         );
@@ -87,11 +87,11 @@ export function poolOverviewColumnDef(
     {
       id: "24hrVol",
       accessorKey: "24hrVol",
-      header: () => <span className="pr-[18px] pt-6">24h Volume</span>,
+      header: () => <span className="pr-[18px] pt-6 pb-2">24h Volume</span>,
       cell: ({ row }) => {
         const { total_volume } = row.original;
         return (
-          <div className="pr-[18px] inline-flex gap-1">
+          <div className="pr-[18px] gap-1 block py-6">
             <span>{formatNumber(total_volume, true)}</span>
             {/* <span
               className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}

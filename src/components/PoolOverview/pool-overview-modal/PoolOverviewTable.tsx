@@ -44,7 +44,7 @@ const PoolOverviewTable = <TData, TValue>({
               return (
                 <TableHead
                   key={header.id}
-                  className="font-bold text-sm/[18px] text-[#5F7183] text-right"
+                  className="font-bold text-sm/[18px] text-[#5F7183] text-right pb-2"
                 >
                   {header.isPlaceholder
                     ? null
@@ -60,15 +60,15 @@ const PoolOverviewTable = <TData, TValue>({
           table.getRowModel().rows.map((row) => {
             const {underlying_symbol, power} = row.original as ConstructedPoolsDataResponse;
             return (
-              <Link href={`/pool/${underlying_symbol}?power=${power}`}> 
                 <TableRow key={row.id} className="hover:bg-[#19242C] transition-colors duration-200">
                 {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="text-right">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        <Link href={`/pool/${underlying_symbol}?power=${power}`}> 
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </Link>
                     </TableCell>
                 ))}
                 </TableRow>
-            </Link>
             )
         })
         ) : (
