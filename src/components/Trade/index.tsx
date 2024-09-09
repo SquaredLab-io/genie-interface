@@ -65,7 +65,10 @@ const Trade = () => {
         {/* bottom box */}
         <div className="flex flex-auto flex-row border-t border-secondary-gray">
           {/* left section -- (flexible) */}
-          <div ref={tradeDataContainerRef} className="flex flex-auto border-r border-secondary-gray">
+          <div
+            ref={tradeDataContainerRef}
+            className="flex flex-auto border-r border-secondary-gray"
+          >
             <TradeData containerRef={tradeDataContainerRef} />
           </div>
           {/* right section -- (fixed width) */}
