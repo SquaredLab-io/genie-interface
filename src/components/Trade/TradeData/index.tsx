@@ -1,6 +1,5 @@
 "use client";
 
-
 import { memo, RefObject, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { formatUnits } from "viem";
@@ -32,7 +31,7 @@ enum Tab {
   history = "history"
 }
 
-const TradeData = ({containerRef} : {containerRef : RefObject<HTMLDivElement>}) => {
+const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }) => {
   const [tableHeight, setTableHeight] = useState<number>(235);
   const tabListRef = useRef<HTMLDivElement>(null);
 
@@ -60,21 +59,16 @@ const TradeData = ({containerRef} : {containerRef : RefObject<HTMLDivElement>}) 
 
   useEffect(() => {
     const updateHeight = () => {
-      // console.log("useEffect called on mount (update height");
       if (containerRef.current && tabListRef.current) {
-        const newHeight = containerRef.current.offsetHeight - tabListRef.current.offsetHeight;
-        /* console.log("inside if condition of update height");
-        console.log(
-          "tradeData container : ", containerRef.current.offsetHeight,
-          "tab list container : ", tabListRef.current.offsetHeight
-        ); */
+        const newHeight =
+          containerRef.current.offsetHeight - tabListRef.current.offsetHeight;
         setTableHeight(newHeight);
       }
     };
-
     updateHeight();
-
+    
     const resizeObserver = new ResizeObserver(updateHeight);
+    
     if (containerRef.current) {
       resizeObserver.observe(containerRef.current);
     }
