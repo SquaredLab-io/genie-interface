@@ -1,5 +1,5 @@
 // Library Imports
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Script from "next/script";
 import dynamic from "next/dynamic";
 // Component, Util Imports
@@ -27,6 +27,8 @@ const AssetStatsBar = dynamic(() =>
 const Trade = () => {
   const [isScriptReady, setIsScriptReady] = useState(false);
   const { potentia } = usePotentiaSdk();
+
+  const tradeDataContainerRef = useRef<HTMLDivElement>(null);
 
   return (
     <>
@@ -63,8 +65,8 @@ const Trade = () => {
         {/* bottom box */}
         <div className="flex flex-auto flex-row border-t border-secondary-gray">
           {/* left section -- (flexible) */}
-          <div id="tradeData-container" className="flex flex-auto border-r border-secondary-gray">
-            <TradeData />
+          <div ref={tradeDataContainerRef} className="flex flex-auto border-r border-secondary-gray">
+            <TradeData containerRef={tradeDataContainerRef} />
           </div>
           {/* right section -- (fixed width) */}
           <div className="flex flex-initial min-w-[346px] w-[346px] max-w-[346px]">
