@@ -52,12 +52,7 @@ function Marker({ label, value, fetching, subValue, showChange = false }: Marker
 
 const PricesBar = ({ selectedPool }: PricesBarProps) => {
   const underlying = selectedPool?.underlying;
-  const {
-    price,
-    marketData,
-    isMarketDataLoading
-    // refetchMarketData
-  } = useCurrencyPrice(underlying);
+  const { price, marketData, isMarketDataLoading } = useCurrencyPrice(underlying);
 
   const { tokenPrices, isFetching, status } = useTokenPrice({
     poolAddress: selectedPool?.poolAddr
@@ -129,11 +124,10 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
           showChange
         />
         <Marker
-          label={`24h Volume`}
-          value={toUnits(
+          label="24h Volume"
+          value={formatNumber(
             parseFloat(tokenPrices?.volume!) /
-              10 ** (selectedPool?.underlyingDecimals ?? 18),
-            3
+              10 ** (selectedPool?.underlyingDecimals ?? 18)
           )}
           fetching={isFetching}
         />

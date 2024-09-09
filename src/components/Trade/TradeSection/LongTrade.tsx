@@ -186,8 +186,8 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   function sliderHandler(value: number) {
     setSliderValue(value);
     if (userBalance) {
-      const amount = (parseFloat(userBalance.formatted) * value) / 100;
-      setQuantity(amount.toString());
+      const amount = formatNumber((parseFloat(userBalance.formatted) * value) / 100);
+      setQuantity(amount);
     }
   }
 
@@ -315,7 +315,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
             <span className="text-[#404950] 2xl:text-[14px]">
               {isMarketDataLoading && !price && !isValidPositiveNumber(quantity)
                 ? "..."
-                : `$${price * parseFloat(quantity !== "" ? quantity : "0")}`}
+                : `${formatNumber(price * parseFloat(quantity !== "" ? quantity : "0"), true)}`}
             </span>
           </div>
           <TokenSelectPopover size="compact">

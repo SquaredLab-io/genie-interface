@@ -12,7 +12,7 @@ export function formatNumber(num: number, isDollar: boolean = false) {
     return isDollar ? `$${num.toExponential(0)}` : num.toExponential(0);
   }
   // Otherwise, format to exactly three decimal places
-  return isDollar ? toDollarUnits(num, 3) : toUnits(num, 3);
+  return isDollar ? toDollarUnits(num, 2) : toUnits(num, 2);
 }
 
 export function formatDollarUnits(amount: number): string {
@@ -73,12 +73,12 @@ export default function toUnits(
   decimals: 0 | 1 | 2 | 3
 ): string {
   if (!num || isNaN(num)) return "0";
-  if (num >= 1e9) {
-    return Number(num / 1e9).toLocaleString("en-US") + "B";
+  else if (num >= 1e9) {
+    return Number((num / 1e9).toFixed(decimals)).toLocaleString("en-US") + "B";
   } else if (num >= 1e6) {
-    return Number(num / 1e6).toLocaleString("en-US") + "M";
+    return Number((num / 1e6).toFixed(decimals)).toLocaleString("en-US") + "M";
   }
-  return Number(num).toLocaleString("en-US");
+  return Number(num.toFixed(decimals)).toLocaleString("en-US");
 }
 
 export function shortenHash(hash: string | undefined): string {

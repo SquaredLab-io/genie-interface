@@ -18,12 +18,15 @@ interface PropsType {
 
 /**
  *
- * @param value The controlled value of the slider.
- * @param setValue Method to update the value.
- * @param min The minimum value for the range.
- * @param max The maximum value for the range.
- * @param step* The stepping interval.
- * @param className*
+ * @param value The controlled value of the slider
+ * @param setValue Method to update the value
+ * @param min The minimum value for the range
+ * @param max The maximum value for the range
+ * @param step The stepping interval (optional)
+ * @param indices Index pointers (optional)
+ * @param isPerc If indices are in percentage (optional)
+ * @param disabled Condition to disable Slider (optional)
+ * @param className (optional)
  */
 const SliderBar = ({
   value,

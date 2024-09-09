@@ -1,8 +1,7 @@
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import { cn } from "@lib/utils";
-import { formatDollarUnits, toDollarUnits } from "@lib/utils/formatting";
+import { formatNumber } from "@lib/utils/formatting";
 import { usePoolsStore } from "@store/poolsStore";
-import { useEffect } from "react";
 import { BiSolidDownArrow } from "react-icons/bi";
 import { BiSolidUpArrow } from "react-icons/bi";
 
@@ -48,11 +47,7 @@ const MarketData = () => {
   const { selectedPool } = usePoolsStore();
   const underlying = selectedPool()?.underlying;
 
-  const { marketData, isMarketDataLoading, _symbol } = useCurrencyPrice(underlying);
-
-  useEffect(() => {
-    console.log("marketdata", marketData);
-  }, [marketData]);
+  const { marketData, isMarketDataLoading } = useCurrencyPrice(underlying);
 
   return (
     <div className="px-4 pb-4 w-full 2xl:px-[16px]">
@@ -60,23 +55,22 @@ const MarketData = () => {
       <div className="flex flex-col gap-2 font-normal text-xs/[14px]">
         <Marker
           label={"Market Cap"}
-          value={marketData ? `${toDollarUnits(marketData.market_cap, 3) ?? 0}` : "-"}
+          value={marketData ? `${formatNumber(marketData.market_cap, true) ?? 0}` : "-"}
           fetching={isMarketDataLoading}
         />
         <Marker
           label={"Volume (24h)"}
-          value={marketData ? `${toDollarUnits(marketData.total_volume, 3)}` : "-"}
+          value={marketData ? `${formatNumber(marketData.total_volume, true)}` : "-"}
           fetching={isMarketDataLoading}
         />
         <Marker
           label={"Day Change"}
           value={
-            marketData ? `${marketData.price_change_percentage_24h.toPrecision(4)}%` : "-"
+            marketData ? `${formatNumber(marketData.price_change_percentage_24h)}%` : "-"
           }
           fetching={isMarketDataLoading}
           showIndicator={true}
         />
-        {/* <Marker label={"Max Total Supply"} value={marketData ? (marketData.max_supply ?? "-").toString() : "-"} fetching={isMarketDataLoading} /> */}
       </div>
     </div>
   );
