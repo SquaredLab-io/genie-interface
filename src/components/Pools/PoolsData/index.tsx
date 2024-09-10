@@ -26,9 +26,11 @@ import { useLiquidityHistory } from "@lib/hooks/useLiquidityHistory";
 import TransactionsTable from "./TransactionsTable";
 import { useFilteredTxs } from "@lib/hooks/useFilteredTxs";
 import CreateTokenModal from "../create-token-modal";
+import { useMyPools } from "@lib/hooks/useMyPools";
 
 const PoolsData = () => {
   const { pools, isFetching } = usePools();
+  const { myPools, isFetching: isFetchingMyPools } = useMyPools(pools);
   const { data: liquidityHistory, isFetching: isLiqHistoryFetching } =
     useLiquidityHistory();
 
@@ -51,13 +53,14 @@ const PoolsData = () => {
   const [txTerm, setTxTerm] = useState("");
 
   const { pools: filteredAllPools } = useFilteredPools(pools, allTerm);
-  const { pools: filteredMyPools } = useFilteredPools(pools, myTerm);
+  const { pools: filteredMyPools } = useFilteredPools(myPools, myTerm);
   const { txs: filteredTxs } = useFilteredTxs(liquidityHistory, txTerm);
   const { updateSelectedPool } = usePoolsStore();
-
+  
   const poolsColumns = allPoolsColumnDef(updateSelectedPool);
   const userColumns = userPoolsColumnDef();
   const txColumns = transactionsColumnDef();
+  
 
   const activeTabStyle =
     "py-2 px-4 data-[state=active]:border data-[state=active]:border-[#00A0FC] rounded-lg data-[state=active]:bg-[#0A344D]";
