@@ -41,3 +41,11 @@ export const chartOptionsConfig = (
   };
   return options;
 };
+
+export type CLInfo = {
+  x: number;
+  longPayoff: number;
+  shortPayoff: number;
+  cl: number;
+  reserve: number;
+};
