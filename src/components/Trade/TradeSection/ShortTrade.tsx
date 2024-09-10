@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import notification from "@components/common/notification";
 import { notificationId } from "../helper";
 import {
+  _getDecimalAdjusted,
   formatNumber,
   getDecimalAdjusted,
   getDecimalDeadjusted
@@ -35,6 +36,7 @@ import useIsApprovedToken from "@lib/hooks/useIsApprovedToken";
 import useApproveToken from "@lib/hooks/useApproveToken";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
 import usePTokenEstimateOut from "@lib/hooks/usePTokenEstimateOut";
+import BigNumber from "bignumber.js";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -46,11 +48,12 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
   const { short_event } = notificationId;
 
   const [quantity, setQuantity] = useState("");
+  const [inputAmount, setInputAmount] = useState("");
   const [sliderValue, setSliderValue] = useState<number>(25);
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
 
   // Contract Hooks
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
 
   const {
     data: userBalance,
@@ -61,6 +64,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     decimals: selectedPool()?.underlyingDecimals!,
     symbol: selectedPool()?.underlying!
   });
+  const balance = userBalance?.value;
 
   // Both hooks paused, Refetch method to be used on Successful tx
   const {
@@ -184,8 +188,13 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
   function inputHandler(event: ChangeEvent<HTMLInputElement>) {
     const input = event.target.value;
     setQuantity(input);
+    setInputAmount(input);
     if (userBalance) {
-      const value = (parseFloat(input ?? "0") / parseFloat(userBalance?.formatted)) * 100;
+      const value = isValidPositiveNumber(input)
+        ? (parseFloat(input) /
+            getDecimalAdjusted(balance?.toFixed(0), userBalance.decimals)) *
+          100
+        : 0;
       setSliderValue(value);
     }
   }
@@ -194,8 +203,12 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
   function sliderHandler(value: number) {
     setSliderValue(value);
     if (userBalance) {
-      const amount = formatNumber((parseFloat(userBalance?.formatted) * value) / 100);
-      setQuantity(amount.toString());
+      const amount = _getDecimalAdjusted(
+        balance?.multipliedBy(BigNumber(value)).dividedBy(BigNumber(100)).toFixed(0),
+        userBalance.decimals
+      );
+      setQuantity(amount);
+      setInputAmount(parseFloat(amount).toFixed(2));
     }
   }
 
@@ -313,7 +326,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
               id="quantity"
               placeholder={`Qty (min) is 0.001 ${selectedPool()?.underlying}`}
               type="number"
-              value={quantity}
+              value={inputAmount}
               onChange={inputHandler}
               disabled={disabledInput}
               className="bg-transparent py-[8px] w-full placeholder:text-[#6D6D6D] text-white font-noemal text-sm/4 2xl:text-[14px]/[16px] focus:outline-none"

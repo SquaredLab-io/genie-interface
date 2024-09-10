@@ -115,7 +115,7 @@ export function getDecimalAdjusted(
   decimals: number | undefined
 ): number {
   if (!value) return 0;
-  return parseFloat(value ?? "0") / 10 ** (decimals ?? 18);
+  return parseFloat(value) / 10 ** (decimals ?? 18);
 }
 
 export function _getDecimalAdjusted(

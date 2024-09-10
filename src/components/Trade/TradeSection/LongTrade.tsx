@@ -7,6 +7,7 @@ import { useAccount, useWaitForTransactionReceipt } from "wagmi";
 import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
 import { z } from "zod";
 import { Address } from "viem";
+import BigNumber from "bignumber.js";
 // Component, Util Imports
 import SliderBar from "@components/common/slider-bar";
 import { getAccountBalance } from "@lib/utils/getAccountBalance";
@@ -42,6 +43,7 @@ interface PropsType {
 
 const LongTrade: FC<PropsType> = ({ potentia }) => {
   const [quantity, setQuantity] = useState<string>("");
+  const [inputAmount, setInputAmount] = useState<string>("");
   const [sliderValue, setSliderValue] = useState<number>(25);
 
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
@@ -61,6 +63,8 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     decimals: selectedPool()?.underlyingDecimals!,
     symbol: selectedPool()?.underlying!
   });
+
+  const balance = userBalance?.value;
 
   // Both hooks paused, Refetch method to be used on Successful tx
   const {
@@ -179,8 +183,13 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   function inputHandler(event: ChangeEvent<HTMLInputElement>) {
     const input = event.target.value;
     setQuantity(input);
+    setInputAmount(input);
     if (userBalance) {
-      const value = (parseFloat(input ?? "0") / parseFloat(userBalance.formatted)) * 100;
+      const value = isValidPositiveNumber(input)
+        ? (parseFloat(input) /
+            getDecimalAdjusted(balance?.toFixed(0), userBalance.decimals)) *
+          100
+        : 0;
       setSliderValue(value);
     }
   }
@@ -189,8 +198,12 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   function sliderHandler(value: number) {
     setSliderValue(value);
     if (userBalance) {
-      const amount = formatNumber((parseFloat(userBalance.formatted) * value) / 100);
+      const amount = _getDecimalAdjusted(
+        balance?.multipliedBy(BigNumber(value)).dividedBy(BigNumber(100)).toFixed(0),
+        userBalance.decimals
+      );
       setQuantity(amount);
+      setInputAmount(parseFloat(amount).toFixed(2));
     }
   }
 
@@ -310,7 +323,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
               id="quantity"
               type="number"
               placeholder={`Qty (min) is 0.001 ${selectedPool()?.underlying}`}
-              value={quantity}
+              value={inputAmount}
               onChange={inputHandler}
               disabled={disabledInput}
               className="bg-transparent py-[8px] w-full placeholder:text-[#6D6D6D] text-white font-noemal text-sm/4 2xl:text-[14px]/[16px] focus:outline-none"

@@ -76,7 +76,7 @@ const useTokenBalance = ({
   return {
     data: balance
       ? {
-          value: BigInt(balance.toString()),
+          value: new BigNumber(balance.toString()),
           decimals: decimals!,
           symbol: symbol!,
           formatted: formatUnits(BigInt(balance.toString()), decimals!)

@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js";
+
 /**
  * Token Selector Popover Size
  */
@@ -13,5 +15,5 @@ export type WagmiFetchBalanceResult = {
   decimals: number;
   formatted: string;
   symbol: string;
-  value: bigint;
+  value: BigNumber;
 };

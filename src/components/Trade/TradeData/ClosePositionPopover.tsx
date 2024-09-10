@@ -49,6 +49,7 @@ const ClosePositionPopover: FC<PropsType> = ({
   setIsOpen
 }) => {
   const [quantity, setQuantity] = useState<string>("");
+  const [inputAmount, setInputAmount] = useState<string>("");
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
   const [isHandlerLoading, setIsHandlerLoading] = useState(false);
@@ -163,7 +164,7 @@ const ClosePositionPopover: FC<PropsType> = ({
   function inputHandler(event: ChangeEvent<HTMLInputElement>) {
     const input = event.target.value;
     setQuantity(input);
-    // setQuantity(isNaN(parseFloat(input)) ? input : getDecimalDeadjusted(input, 18));
+    setInputAmount(input);
     if (balance) {
       const value = isValidQuantity
         ? (parseFloat(input) / getDecimalAdjusted(balance.toFixed(0), 18)) * 100
@@ -176,13 +177,12 @@ const ClosePositionPopover: FC<PropsType> = ({
   function sliderHandler(value: number) {
     setSliderValue(value);
     if (balance) {
-      const amount = balance.multipliedBy(BigNumber(value)).dividedBy(BigNumber(100));
-      setQuantity(_getDecimalAdjusted(amount.toFixed(0), 18));
-      // setQuantity(
-      //   value === 100
-      //     ? _getDecimalAdjusted(amount.toFixed(0), 18)
-      //     : formatNumber(getDecimalAdjusted(amount.toFixed(0), 18))
-      // );
+      const amount = _getDecimalAdjusted(
+        balance.multipliedBy(BigNumber(value)).dividedBy(BigNumber(100)).toFixed(0),
+        18
+      );
+      setQuantity(amount);
+      setInputAmount(parseFloat(amount).toFixed(2));
     }
   }
 
@@ -213,7 +213,7 @@ const ClosePositionPopover: FC<PropsType> = ({
             <div className="inline-flex justify-between items-center w-full">
               <input
                 type="number"
-                value={parseFloat(quantity).toFixed(2)}
+                value={inputAmount}
                 placeholder="0"
                 onChange={inputHandler}
                 id="quantity"
