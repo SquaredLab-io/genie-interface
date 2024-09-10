@@ -33,7 +33,7 @@ function Marker({ label, value, fetching, subValue, showChange = false }: Marker
               (parseFloat(value) > 0 ? "text-positive-green" : "text-negative-red")
           )}
         >
-          {(fetching && !value) || value === "0" ? "-" : value}
+          {fetching && !value ? "-" : value}
         </span>
         {_subValue ? (
           <span
@@ -101,14 +101,14 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
       <div className="inline-flex gap-6 2xl:gap-5 3xl:gap-8">
         <Marker
           label="Long Price"
-          value={toUnits(parseFloat(tokenPrices?.lastLongP!), 2)}
-          subValue={toUnits(parseFloat(tokenPrices?.longDailyChange!), 2)}
+          value={formatNumber(parseFloat(tokenPrices?.lastLongP!))}
+          subValue={formatNumber(parseFloat(tokenPrices?.longDailyChange!))}
           fetching={isFetching}
         />
         <Marker
           label="Short Price"
-          value={toUnits(parseFloat(tokenPrices?.lastShortP!), 2)}
-          subValue={toUnits(parseFloat(tokenPrices?.shortDailyChange!), 2)}
+          value={formatNumber(parseFloat(tokenPrices?.lastShortP!))}
+          subValue={formatNumber(parseFloat(tokenPrices?.shortDailyChange!))}
           fetching={isFetching}
         />
         <Marker
@@ -126,8 +126,7 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
         <Marker
           label="24h Volume"
           value={formatNumber(
-            parseFloat(tokenPrices?.volume!) /
-              10 ** (selectedPool?.underlyingDecimals ?? 18)
+            parseFloat(tokenPrices?.volume!) / 10 ** selectedPool?.underlyingDecimals!
           )}
           fetching={isFetching}
         />

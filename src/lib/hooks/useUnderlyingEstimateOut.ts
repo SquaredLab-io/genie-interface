@@ -26,11 +26,11 @@ const useUnderlyingEstimateOut = ({
   const { potentia } = usePotentiaSdk();
 
   const estimatePositionUnderlyingOut = async () => {
-    console.log("estimatePositionUnderlyingOut args", {
-      pool: poolAddress!,
-      amount: amount!,
-      isLong
-    });
+    // console.log("estimatePositionUnderlyingOut args", {
+    //   pool: poolAddress!,
+    //   amount: amount!,
+    //   isLong
+    // });
 
     const _amount = (parseFloat(amount ?? "0") * 10 ** 18).toString();
     setIsFetching(true);

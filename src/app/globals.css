@@ -67,7 +67,7 @@
 /* Trade History Scroll bar */
 .trade-history::-webkit-scrollbar {
   display: block;
-  width: 6px;
+  width: 4px;
   height: 12px;
 }
 .trade-history::-webkit-scrollbar-thumb {
