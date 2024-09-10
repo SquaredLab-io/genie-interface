@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { PoolInfo } from "@squaredlab-io/sdk";
 import { useDailyData } from "@lib/hooks/useDailyData";
 import { Address } from "viem";
+import CLChartDemo from "./cl-chart";
 
 const LPChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const { dailyData, isFetching: isFetchingDailyData } = useDailyData({
@@ -42,7 +43,8 @@ const LPChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       </TabsContent>
       {/* <TabsContent value={GraphOptions.crossbook}>Cross Book</TabsContent> */}
       <TabsContent value={GraphOptions.counterpart} className="h-[calc(100%-36px)]">
-        <CLChart overviewPool={overviewPool} />
+        {/* <CLChart overviewPool={overviewPool} /> */}
+        <CLChartDemo overviewPool={overviewPool} />
       </TabsContent>
     </Tabs>
   );
