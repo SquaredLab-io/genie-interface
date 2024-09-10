@@ -18,8 +18,7 @@ type ReturnTxHistory = {
 };
 
 /**
- * useTxHistory fetches connected user's Transaction history in the current Pool
- * @returns data, isLoading, refetch
+ * useCurrentLpPosition
  */
 export function useCurrentLpPosition({
   poolAddress,

@@ -1,13 +1,12 @@
 import { cn } from "@lib/utils";
 import { GraphOptions } from "../helper";
-import CLChart from "./counterpart-chart";
 import TVLChart from "./tvl-chart";
 import VolumeChart from "./volume-chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { PoolInfo } from "@squaredlab-io/sdk";
 import { useDailyData } from "@lib/hooks/useDailyData";
 import { Address } from "viem";
-import CLChartDemo from "./cl-chart";
+import CLChart from "./cl-chart";
 
 const LPChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const { dailyData, isFetching: isFetchingDailyData } = useDailyData({
@@ -42,9 +41,8 @@ const LPChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
         <TVLChart dailyData={dailyData} loading={isFetchingDailyData} />
       </TabsContent>
       {/* <TabsContent value={GraphOptions.crossbook}>Cross Book</TabsContent> */}
-      <TabsContent value={GraphOptions.counterpart} className="h-[calc(100%-36px)]">
-        {/* <CLChart overviewPool={overviewPool} /> */}
-        <CLChartDemo overviewPool={overviewPool} />
+      <TabsContent value={GraphOptions.counterpart} className="h-[calc(100%-40px)]">
+        <CLChart overviewPool={overviewPool} />
       </TabsContent>
     </Tabs>
   );
