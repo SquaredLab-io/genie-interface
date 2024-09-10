@@ -19,7 +19,7 @@ export const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
   user_id: "public_user_id",
   fullscreen: false,
   autosize: true,
-  symbol_search_request_delay: 2000,
+  symbol_search_request_delay: 0,
   auto_save_delay: 5,
   theme: "dark",
   toolbar_bg: "#0C1820",

@@ -33,7 +33,10 @@ const TradeChart = ({ potentia }: PropsType) => {
     async function fetchData() {
       if (!potentia && !selectedPool()) return;
 
-      const Datafeed: ExternalFeed = await getPotentiaDataFeed(potentia, ConfigurationData);
+      const Datafeed: ExternalFeed = await getPotentiaDataFeed(
+        potentia,
+        ConfigurationData
+      );
       const tokenSymbol = `${selectedPool()?.underlying}^${selectedPool()?.power} ${tradeType.toUpperCase()}`;
 
       const widgetOptions: ChartingLibraryWidgetOptions = {
@@ -45,7 +48,13 @@ const TradeChart = ({ potentia }: PropsType) => {
         container: chartContainerRef.current,
         library_path: widgetProps.library_path,
         locale: widgetProps.locale as LanguageCode,
-        disabled_features: ["use_localstorage_for_settings"],
+        disabled_features: [
+          "use_localstorage_for_settings",
+          "auto_enable_symbol_labels",
+          "header_symbol_search",
+          // "header_widget",
+          "symbol_search_hot_key"
+        ],
         enabled_features: ["study_templates"],
         charts_storage_url: widgetProps.charts_storage_url,
         charts_storage_api_version: widgetProps.charts_storage_api_version,
@@ -62,9 +71,9 @@ const TradeChart = ({ potentia }: PropsType) => {
         symbol_search_request_delay: widgetProps.symbol_search_request_delay,
         auto_save_delay: widgetProps.auto_save_delay,
         toolbar_bg: widgetProps.toolbar_bg,
-        overrides : {
+        overrides: {
           "paneProperties.background": "#0C1820",
-          "paneProperties.backgroundType": "solid",
+          "paneProperties.backgroundType": "solid"
         }
         // time_frames: props.time_frames
         // time_scale: {
@@ -76,7 +85,7 @@ const TradeChart = ({ potentia }: PropsType) => {
 
       tvWidget.onChartReady(() => {
         setIsChartReady(true);
-        tvWidget.setCSSCustomProperty('--tv-color-pane-background', '#0C1820');
+        tvWidget.setCSSCustomProperty("--tv-color-pane-background", "#0C1820");
         // tvWidget.headerReady().then(() => {});
       });
 
