@@ -5,14 +5,18 @@ import { formatUnits } from "viem";
  * Gives expontential values if number is lesser than 1e-3 or greater than -1e-3
  * Rest if gives in dollar expressions
  **/
-export function formatNumber(num: number, isDollar: boolean = false) {
+export function formatNumber(
+  num: number,
+  isDollar: boolean = false,
+  decimals: 0 | 1 | 2 | 3 = 2
+) {
   if (num === 0) return isDollar ? "$0" : "0";
   // number belongs to (-0.001, 0.001)
   else if (num > -1e-3 && num < 1e-3) {
     return isDollar ? `$${num.toExponential(0)}` : num.toExponential(0);
   }
   // Otherwise, format to exactly three decimal places
-  return isDollar ? toDollarUnits(num, 2) : toUnits(num, 2);
+  return isDollar ? toDollarUnits(num, decimals) : toUnits(num, decimals);
 }
 
 export function formatDollarUnits(amount: number): string {

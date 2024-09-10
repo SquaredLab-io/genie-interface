@@ -1,5 +1,3 @@
-import { Address } from "viem";
-
 export const getTokenSymbol = (symbol: string | undefined): string => {
   if (!symbol) return "";
   switch (symbol) {

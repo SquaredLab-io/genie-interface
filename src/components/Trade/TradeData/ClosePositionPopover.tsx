@@ -177,11 +177,12 @@ const ClosePositionPopover: FC<PropsType> = ({
     setSliderValue(value);
     if (balance) {
       const amount = balance.multipliedBy(BigNumber(value)).dividedBy(BigNumber(100));
-      setQuantity(
-        value === 100
-          ? _getDecimalAdjusted(amount.toFixed(0), 18)
-          : formatNumber(getDecimalAdjusted(amount.toFixed(0), 18))
-      );
+      setQuantity(_getDecimalAdjusted(amount.toFixed(0), 18));
+      // setQuantity(
+      //   value === 100
+      //     ? _getDecimalAdjusted(amount.toFixed(0), 18)
+      //     : formatNumber(getDecimalAdjusted(amount.toFixed(0), 18))
+      // );
     }
   }
 
@@ -212,7 +213,7 @@ const ClosePositionPopover: FC<PropsType> = ({
             <div className="inline-flex justify-between items-center w-full">
               <input
                 type="number"
-                value={quantity}
+                value={parseFloat(quantity).toFixed(2)}
                 placeholder="0"
                 onChange={inputHandler}
                 id="quantity"

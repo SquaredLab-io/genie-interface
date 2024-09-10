@@ -44,7 +44,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
   const { openOrders, isFetching: loadingOpenOrders } = useOpenOrders({
     poolAddress: selectedPool()?.poolAddr!
   });
-  const { tokenPrices, isFetching, status } = useTokenPrice({
+  const { tokenPrices, isFetching } = useTokenPrice({
     poolAddress: selectedPool()?.poolAddr
   });
 
@@ -67,9 +67,9 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
       }
     };
     updateHeight();
-    
+
     const resizeObserver = new ResizeObserver(updateHeight);
-    
+
     if (containerRef.current) {
       resizeObserver.observe(containerRef.current);
     }
@@ -385,7 +385,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
         <TabsContent
           value={Tab.position}
           style={{ maxHeight: `${tableHeight}px` }}
-          className="min-h-[235px] overflow-y-auto"
+          className="min-h-[235px] overflow-y-auto trade-history"
         >
           <OpenPositionsTable
             columns={positionColumns}
