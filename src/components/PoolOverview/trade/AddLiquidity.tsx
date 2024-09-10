@@ -256,7 +256,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
                 setAmount(event.target.value);
               }}
               id="add_liquidity_quantity"
-              className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right"
+              className="text-xl/6 font-medium w-1/2 bg-primary-gray outline-none text-right"
             />
           </div>
           <div className="inline-flex items-end justify-between font-normal text-xs/3">
@@ -345,7 +345,6 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           disabled={
             !isConnected ||
             !userBalance ||
-            !lpPosition ||
             balanceExceedError ||
             isApprovedLoading ||
             isApproveLoading ||
