@@ -1,5 +1,3 @@
-import { useAccount } from "wagmi";
-import ConnectWallet from "@components/common/ConnectWallet";
 import {
   Table,
   TableBody,
@@ -14,7 +12,7 @@ import {
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
-import { useEffect } from "react";
+import { PoolInfo } from "@squaredlab-io/sdk";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -38,36 +36,37 @@ const PoolsTable = <TData, TValue>({
       <TableHeader className="font-sans-ibm-plex">
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
-            {headerGroup.headers.map((header) => {
-              return (
-                <TableHead
-                  key={header.id}
-                  className="font-bold text-sm/[18px] text-[#5F7183]"
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
-                </TableHead>
-              );
-            })}
+            {headerGroup.headers.map((header) => (
+              <TableHead
+                key={header.id}
+                className="font-bold text-sm/[18px] text-[#5F7183]"
+              >
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(header.column.columnDef.header, header.getContext())}
+              </TableHead>
+            ))}
           </TableRow>
         ))}
       </TableHeader>
       <TableBody className="divide-y divide-[#292B31]">
         {table.getRowModel().rows?.length ? (
-          table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id} className="hover:bg-[#19242C] transition-colors duration-200">
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))
+          table.getRowModel().rows.map((row) => {
+            const pool = row.original as PoolInfo;
+            return (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            );
+          })
         ) : (
           <TableRow>
             <TableCell colSpan={columns.length} className="h-72 text-center">
-              {loading ? "Loading Pools..." : "You have no pools."}
+              {loading ? "Loading Pools..." : "No pools found."}
             </TableCell>
           </TableRow>
         )}

@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow
 } from "@components/ui/table";
-import { PoolInfo } from "@squaredlab-io/sdk";
+import { PoolInfo, Tx } from "@squaredlab-io/sdk";
 import { useModalStore } from "@store/poolsStore";
 import {
   ColumnDef,
@@ -18,6 +18,7 @@ import {
 } from "@tanstack/react-table";
 import Link from "next/link";
 import { useAccount } from "wagmi";
+import { useRouter } from "next/navigation";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -39,6 +40,7 @@ const TransactionsTable = <TData, TValue>({
   });
   const { setOpenCreateModal } = useModalStore();
 
+  const router = useRouter();
   const { isConnected } = useAccount();
 
   return (
@@ -74,15 +76,26 @@ const TransactionsTable = <TData, TValue>({
             </TableCell>
           </TableRow>
         ) : table.getRowModel().rows?.length ? (
-          table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))
+          table.getRowModel().rows.map((row, index) => {
+            const { hash } = row.original as Tx;
+            return (
+              <TableRow
+                key={row.id}
+                className="hover:bg-[#19242C] transition-colors duration-200 cursor-pointer"
+                onClick={() =>
+                  router.push(`https://sepolia.basescan.org/tx/${hash}`, {
+                    scroll: true
+                  })
+                }
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            );
+          })
         ) : (
           <TableRow>
             <TableCell colSpan={columns.length} className="h-72 text-center">
