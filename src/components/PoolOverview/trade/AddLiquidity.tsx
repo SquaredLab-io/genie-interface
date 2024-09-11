@@ -206,6 +206,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       refetchBalance();
       refetchLpPosition();
       toast.dismiss(addLiq_event.loading);
+      setAmount("");
       notification.success({
         id: addLiq_event.success,
         title: "Liquidity Added Successfully"

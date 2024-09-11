@@ -212,6 +212,11 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     }
   }
 
+  function defaultInputs() {
+    sliderHandler(0);
+    setInputAmount("");
+  }
+
   // setting intital quantity
   // useEffect(() => {
   //   if (userBalance) {
@@ -275,6 +280,8 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       refetchBalance();
       refetchOpenOrders();
       refetchTradeHistory();
+
+      defaultInputs();
 
       toast.dismiss(short_event.loading);
       notification.success({

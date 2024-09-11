@@ -135,6 +135,7 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       refetchBalance();
       refetchLpPosition();
       toast.dismiss(removeLiq_event.loading);
+      setAmount("");
       notification.success({
         id: removeLiq_event.success,
         title: "Liquidity withdrawn successfully"

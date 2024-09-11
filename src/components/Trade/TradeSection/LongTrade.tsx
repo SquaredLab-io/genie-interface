@@ -207,6 +207,11 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
     }
   }
 
+  function defaultInputs() {
+    sliderHandler(0);
+    setInputAmount("");
+  }
+
   // setting initial quantity
   // useEffect(() => {
   //   if (userBalance) {
@@ -269,6 +274,8 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       refetchBalance();
       refetchOpenOrders();
       refetchTradeHistory();
+
+      defaultInputs();
 
       toast.dismiss(long_event.loading);
       notification.success({
