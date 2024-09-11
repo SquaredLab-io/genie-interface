@@ -9,6 +9,7 @@ interface ReturnType {
   refetch: (
     options?: RefetchOptions
   ) => Promise<QueryObserverResult<PoolInfo[] | undefined, Error>>;
+  status: "error" | "success" | "pending";
 }
 
 export function usePools(paused = false): ReturnType {
@@ -28,13 +29,7 @@ export function usePools(paused = false): ReturnType {
     }
   };
 
-  const {
-    data,
-    isFetching,
-    refetch,
-    isError,
-    error
-  } = useQuery({
+  const { data, isFetching, refetch, isError, error, status } = useQuery({
     queryKey: ["geniePools"],
     queryFn: getPools,
     refetchInterval: false,
@@ -44,6 +39,7 @@ export function usePools(paused = false): ReturnType {
   return {
     pools: data,
     isFetching,
-    refetch
+    refetch,
+    status
   } satisfies ReturnType;
 }

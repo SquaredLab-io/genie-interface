@@ -50,7 +50,7 @@ const TradeChart = ({ potentia }: PropsType) => {
         locale: widgetProps.locale as LanguageCode,
         disabled_features: [
           "use_localstorage_for_settings",
-          "auto_enable_symbol_labels",
+          // "auto_enable_symbol_labels",
           "header_symbol_search",
           // "header_widget",
           "symbol_search_hot_key"

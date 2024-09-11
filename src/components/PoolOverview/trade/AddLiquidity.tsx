@@ -6,6 +6,7 @@ import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagm
 import { WethABi } from "@lib/abis";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import toUnits, {
+  formatNumber,
   formatOraclePrice,
   getCorrectFormattedValue,
   getDecimalAdjusted,
@@ -66,7 +67,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     isApproveLoading,
     isApprovePending,
     isApproveSuccess,
-    approveError,
+    // approveError,
     isApproveError,
     approvalError,
     writeApproveToken
@@ -308,7 +309,6 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           <div className="inline-flex-between">
             <h4 className="font-medium text-base/5">LP Tokens</h4>
             <span className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right">
-              {/* {receiveQuantity > 0 ? receiveQuantity : "-"} */}
               {isLpTokenFetching
                 ? "..."
                 : !!lpTokens && lpTokens !== "0"
@@ -321,7 +321,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           <div className="font-normal text-xs/3 mt-1">
             <span className="text-[#5F7183]">
               Your LP balance:{" "}
-              {isLpPositionFetching && !lpPosition ? "loading..." : lpBalance.toFixed(3)}
+              {isLpPositionFetching && !lpPosition ? "loading..." : formatNumber(lpBalance)}
             </span>
           </div>
         </div>

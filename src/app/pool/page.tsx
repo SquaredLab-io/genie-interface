@@ -6,7 +6,7 @@ import { useEffect } from "react";
 export default function PoolOverviewPage() {
   const router = useRouter();
 
-  // forward to weth page as default
+  // Forward to WETH^2 page as default pool
   useEffect(() => router.push("/pool/weth?power=2"), []);
 
   return <main></main>;

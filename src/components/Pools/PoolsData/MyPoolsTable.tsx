@@ -98,7 +98,11 @@ const MyPoolsTable = <TData, TValue>({
                     liquidity to one
                   </p>
                   <div className="inline-flex items-center gap-3">
-                    <Link href={pool ? `/pool/${pool.underlying}` : "/pool"}>
+                    <Link
+                      href={
+                        pool ? `/pool/${pool.underlying}?power=${pool.power}` : "/pool"
+                      }
+                    >
                       <Button variant="default" size="lg">
                         Add Liquidity
                       </Button>

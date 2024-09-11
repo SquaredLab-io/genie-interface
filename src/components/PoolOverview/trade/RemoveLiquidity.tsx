@@ -11,6 +11,7 @@ import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import { cn } from "@lib/utils";
 import ButtonCTA from "@components/common/button-cta";
 import toUnits, {
+  formatNumber,
   formatOraclePrice,
   getCorrectFormattedValue,
   getDecimalAdjusted
@@ -181,7 +182,7 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
               className={cn(balanceExceedError ? "text-error-red" : "text-[#5F7183]")}
             >
               Your LP balance:{" "}
-              {isLpPositionFetching && !lpBalance ? "loading..." : lpBalance.toFixed(3)}
+              {isLpPositionFetching && !lpBalance ? "loading..." : formatNumber(lpBalance)}
             </span>
             <div className="inline-flex gap-2">
               <button
@@ -279,11 +280,6 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
             }
           }}
           isLoading={isLoading}
-          className={cn(
-            "w-full font-bold text-[14px] leading-6 text-center py-[14px]",
-            "bg-[#202832] hover:bg-[#475B72] text-[#3D85C6] transition-colors duration-200",
-            "disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-[#202832]"
-          )}
         >
           {isConnected ? <span>Remove Liquidity</span> : <span>Connect Wallet</span>}
         </ButtonCTA>

@@ -12,23 +12,46 @@ const PoolOverview = dynamic(() =>
 );
 
 export default function Overview() {
-  const { pools, isFetching } = usePools();
+  const { pools, isFetching, status } = usePools();
 
   const { id } = useParams();
   const queryParams = useSearchParams();
-  const power = queryParams.get('power');
+  const power = queryParams.get("power");
   const _id = Array.isArray(id) ? id[0] : id;
 
   // finding the pool based on id in url
   const overviewPool = useMemo(() => {
-    const _pool = pools?.find(
-      (pool) => (pool.underlying.toLowerCase() === _id.toLowerCase()) && (pool.power === parseInt(power!))
-    );
-    return _pool;
-  }, [id, pools, power]);
+    if (status === "success" && pools) {
+      return pools.find(
+        (pool) =>
+          pool.underlying.toLowerCase() === _id.toLowerCase() &&
+          pool.power === parseInt(power!)
+      );
+    }
+  }, [id, pools, power, status]);
 
-  // not fetching pools, but also didn't find the pool for overview
-  if (!overviewPool && !isFetching) {
+  // Show loading state while fetching
+  if (status === "pending" || isFetching) {
+    return (
+      <main className="page-center overflow-y-auto">
+        <div className="size-full flex-col-center gap-5 font-sans-ibm-plex">
+          <LoadingLogo size={100} />
+        </div>
+      </main>
+    );
+  }
+
+  // If there's an error fetching pools
+  if (status === "error") {
+    return (
+      <main className="page-center items-center justify-center text-3xl">
+        <p>Error fetching pools. Please try again later.</p>
+      </main>
+    );
+  }
+
+  // Not fetching pools anymore, but didn't find the pool for overview
+  if (status === "success" && !overviewPool) {
     return (
       <main className="page-center items-center justify-center text-3xl">
         404: {_id.toUpperCase()} Pool not found
@@ -38,13 +61,7 @@ export default function Overview() {
 
   return (
     <main className="page-center overflow-y-auto">
-      {isFetching && !overviewPool ? (
-        <div className="size-full flex-col-center gap-5 font-sans-ibm-plex">
-          <LoadingLogo size={100} />
-        </div>
-      ) : (
-        <PoolOverview overviewPool={overviewPool!} />
-      )}
+      <PoolOverview overviewPool={overviewPool!} />
     </main>
   );
 }

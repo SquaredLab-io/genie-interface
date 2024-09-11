@@ -33,9 +33,7 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
 
   const getOpenOrders = async () => {
     try {
-      const oo = await potentia?.openOrders();
-      console.log("orders @useOpenOrders", oo);
-      return oo;
+      return await potentia?.openOrders();
     } catch (error) {
       notification.error({
         id: "open-orders",
