@@ -1,3 +1,5 @@
+import ConnectWallet from "@components/common/ConnectWallet";
+import { Button } from "@components/ui/button";
 import {
   Table,
   TableBody,
@@ -6,22 +8,28 @@ import {
   TableHeader,
   TableRow
 } from "@components/ui/table";
+import { PoolInfo } from "@squaredlab-io/sdk";
+import { useModalStore } from "@store/poolsStore";
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
+import Link from "next/link";
+import { useAccount } from "wagmi";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  pool: PoolInfo | undefined;
   loading: boolean;
 }
 
 const TransactionsTable = <TData, TValue>({
   columns,
   data,
+  pool,
   loading
 }: PropsType<TData, TValue>) => {
   const table = useReactTable({
@@ -29,6 +37,9 @@ const TransactionsTable = <TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel()
   });
+  const { setOpenCreateModal } = useModalStore();
+
+  const { isConnected } = useAccount();
 
   return (
     <Table>
@@ -51,7 +62,18 @@ const TransactionsTable = <TData, TValue>({
         ))}
       </TableHeader>
       <TableBody className="divide-y divide-[#292B31]">
-        {table?.getRowModel().rows?.length ? (
+        {!isConnected ? (
+          <TableRow>
+            <TableCell colSpan={columns.length} className="h-72 text-center w-full">
+              <div className="flex flex-col items-center w-full text-center gap-5">
+                <span className="font-normal text-base/7 text-[#B5B5B5]">
+                  Connect Wallet to view your transactions.
+                </span>
+                <ConnectWallet />
+              </div>
+            </TableCell>
+          </TableRow>
+        ) : table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => (
             <TableRow key={row.id}>
               {row.getVisibleCells().map((cell) => (
@@ -64,7 +86,34 @@ const TransactionsTable = <TData, TValue>({
         ) : (
           <TableRow>
             <TableCell colSpan={columns.length} className="h-72 text-center">
-              {loading ? "loading transactions..." : "You have no transactions."}
+              {loading ? (
+                <span>loading transactions...</span>
+              ) : (
+                <div className="flex flex-col items-center mx-auto gap-4">
+                  <p className="font-sans-manrope font-normal text-base/7 text-[#B5B5B5] max-w-[335px]">
+                    You have no transactions yet—start by creating a pool or by adding
+                    liquidity to one
+                  </p>
+                  <div className="inline-flex items-center gap-3">
+                    <Link
+                      href={
+                        pool ? `/pool/${pool.underlying}?power=${pool.power}` : "/pool"
+                      }
+                    >
+                      <Button variant="default" size="lg">
+                        Add Liquidity
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={() => setOpenCreateModal(true)}
+                    >
+                      Create Pool
+                    </Button>
+                  </div>
+                </div>
+              )}
             </TableCell>
           </TableRow>
         )}

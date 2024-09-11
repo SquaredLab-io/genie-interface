@@ -56,11 +56,10 @@ const PoolsData = () => {
   const { pools: filteredMyPools } = useFilteredPools(myPools, myTerm);
   const { txs: filteredTxs } = useFilteredTxs(liquidityHistory, txTerm);
   const { updateSelectedPool } = usePoolsStore();
-  
+
   const poolsColumns = allPoolsColumnDef(updateSelectedPool);
   const userColumns = userPoolsColumnDef();
   const txColumns = transactionsColumnDef();
-  
 
   const activeTabStyle =
     "py-2 px-4 data-[state=active]:border data-[state=active]:border-[#00A0FC] rounded-lg data-[state=active]:bg-[#0A344D]";
@@ -113,14 +112,14 @@ const PoolsData = () => {
             columns={userColumns}
             data={filteredMyPools}
             pool={filteredMyPools[filteredMyPools.length - 1]} // passes the first pool as default
-            // setOpenCreateModal={setOpenCreateModal}
-            loading={isFetching}
+            loading={isFetchingMyPools}
           />
         </TabsContent>
         <TabsContent value={TableOptions.trxn}>
           <TransactionsTable
             columns={txColumns}
             data={filteredTxs}
+            pool={filteredMyPools[filteredMyPools.length - 1]} // passes the first pool as default
             loading={isLiqHistoryFetching}
           />
         </TabsContent>

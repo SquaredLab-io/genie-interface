@@ -24,7 +24,6 @@ interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   pool: PoolInfo | undefined;
-  // setOpenCreateModal: Dispatch<SetStateAction<boolean>>;
   loading: boolean;
 }
 
@@ -32,7 +31,6 @@ const MyPoolsTable = <TData, TValue>({
   columns,
   data,
   pool,
-  // setOpenCreateModal,
   loading
 }: PropsType<TData, TValue>) => {
   const table = useReactTable({
@@ -70,7 +68,7 @@ const MyPoolsTable = <TData, TValue>({
             <TableCell colSpan={columns.length} className="h-72 text-center w-full">
               <div className="flex flex-col items-center w-full text-center gap-5">
                 <span className="font-normal text-base/7 text-[#B5B5B5]">
-                  Connect Wallet to view your transactions.
+                  Connect Wallet to view your active pools.
                 </span>
                 <ConnectWallet />
               </div>
