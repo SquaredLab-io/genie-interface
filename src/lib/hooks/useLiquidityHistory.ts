@@ -26,7 +26,6 @@ export function useLiquidityHistory(paused = false): ReturnTxHistory {
   async function getLiquidityHistory() {
     try {
       const result = await potentia?.getUserLiquidityHistory(
-        getAddress(selectedPool()?.poolAddr!), // pool
         address as Address // user
       );
       console.log("liquidity history --\n", result);
