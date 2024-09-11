@@ -22,7 +22,11 @@ export const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
   symbol_search_request_delay: 0,
   auto_save_delay: 5,
   theme: "dark",
-  toolbar_bg: "#0C1820",
+  toolbar_bg: "#0C1820"
+  // favorites: {
+  //   intervals: ["1S", "1", "1D"] as ResolutionString[],
+  //   chartTypes: ["Area", "Candles"]
+  // },
   // time_frames: [
   //   {
   //     text: "1d",

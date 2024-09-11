@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, memo, MutableRefObject } from "react";
+import { useEffect, useRef, memo, MutableRefObject } from "react";
 import {
   ConfigurationData,
   ExternalFeed,
@@ -9,6 +9,7 @@ import {
 } from "@squaredlab-io/sdk/src";
 import {
   ChartingLibraryWidgetOptions,
+  IChartingLibraryWidget,
   LanguageCode,
   ResolutionString,
   widget
@@ -22,16 +23,17 @@ interface PropsType {
 }
 
 const TradeChart = ({ potentia }: PropsType) => {
-  const [isChartReady, setIsChartReady] = useState(false);
   const { selectedPool } = usePoolsStore();
   const { tradeType } = useTradeStore();
 
+  // Chart Container and Widget Refs
   const chartContainerRef =
     useRef<HTMLDivElement>() as MutableRefObject<HTMLInputElement>;
+  const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
 
   useEffect(() => {
-    async function fetchData() {
-      if (!potentia && !selectedPool()) return;
+    async function initChart() {
+      if (!potentia || !selectedPool()) return;
 
       const Datafeed: ExternalFeed = await getPotentiaDataFeed(
         potentia,
@@ -50,10 +52,9 @@ const TradeChart = ({ potentia }: PropsType) => {
         locale: widgetProps.locale as LanguageCode,
         disabled_features: [
           "use_localstorage_for_settings",
-          // "auto_enable_symbol_labels",
           "header_symbol_search",
-          // "header_widget",
-          "symbol_search_hot_key"
+          "symbol_search_hot_key",
+          "symbol_info"
         ],
         enabled_features: ["study_templates"],
         charts_storage_url: widgetProps.charts_storage_url,
@@ -64,10 +65,6 @@ const TradeChart = ({ potentia }: PropsType) => {
         autosize: widgetProps.autosize,
         theme: widgetProps.theme,
         debug: false,
-        // favorites: {
-        //   intervals: ["1S", "1", "1D"] as ResolutionString[],
-        //   chartTypes: ["Area", "Candles"]
-        // },
         symbol_search_request_delay: widgetProps.symbol_search_request_delay,
         auto_save_delay: widgetProps.auto_save_delay,
         toolbar_bg: widgetProps.toolbar_bg,
@@ -75,30 +72,44 @@ const TradeChart = ({ potentia }: PropsType) => {
           "paneProperties.background": "#0C1820",
           "paneProperties.backgroundType": "solid"
         }
-        // time_frames: props.time_frames
-        // time_scale: {
-        //   min_bar_spacing: 10
-        // }
       };
 
       const tvWidget = new widget(widgetOptions);
+      tvWidgetRef.current = tvWidget;
 
       tvWidget.onChartReady(() => {
-        setIsChartReady(true);
-        tvWidget.setCSSCustomProperty("--tv-color-pane-background", "#0C1820");
-        // tvWidget.headerReady().then(() => {});
+        console.log("Chart is ready");
+        injectCustomCSS(tvWidget);
       });
 
+      // Cleanup function
       return () => {
-        tvWidget.remove();
+        if (tvWidgetRef.current) {
+          tvWidgetRef.current.remove();
+          tvWidgetRef.current = null;
+        }
       };
     }
-    fetchData();
+
+    initChart();
   }, [widgetProps, selectedPool, tradeType, potentia]);
-  // TODO: check here is chart is not updating on pool change
+
+  function injectCustomCSS(tvWidget: IChartingLibraryWidget) {
+    tvWidget.addCustomCSSFile(
+      "data:text/css;base64," +
+        btoa(`
+          div[data-name="legend-source-title"] {
+            pointer-events: none !important;
+          }
+        `)
+    );
+  }
 
   return <div ref={chartContainerRef} className="col-span-4" />;
-  // return <div ref={chartContainerRef} className="col-span-4 xl:col-span-3" />;
 };
 
 export default memo(TradeChart);
+
+/**
+ * return <div ref={chartContainerRef} className="col-span-4 xl:col-span-3" />;
+ */
