@@ -61,7 +61,8 @@ export const REFETCH_INTERVAL = 5 * 60 * 1000; // 10 seconds
 export const TOKENS: {
   [key: string]: `0x${string}`;
 } = {
-  WETH: getAddress("0xc632C00e28E45B8d313B9175812c470E4e1904D3")
+  WETH: getAddress("0xc632C00e28E45B8d313B9175812c470E4e1904D3"),
+  ETH: getAddress("0x0000000000000000000000000000000000000000")
 };
 
 export const SUPPORTED_TOKENS = [
@@ -70,6 +71,13 @@ export const SUPPORTED_TOKENS = [
     name: "Wrapped Ether",
     address: TOKENS.WETH,
     logo: "/tokens/weth.svg",
+    decimals: 18
+  },
+  {
+    token: "ETH",
+    name: "Ether",
+    address: TOKENS.ETH,
+    logo: "/tokens/eth.svg",
     decimals: 18
   }
 ];

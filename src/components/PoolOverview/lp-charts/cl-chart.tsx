@@ -36,7 +36,9 @@ const CLChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
         console.log("error while fetching clchart data", error);
       }
     },
-    enabled: !!potentia && !!overviewPool
+    enabled: !!potentia && !!overviewPool,
+    staleTime: 0,
+    gcTime: 0
   });
 
   const reserve = Math.ceil(chartData?.reserve ?? 0);
