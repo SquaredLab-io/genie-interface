@@ -5,8 +5,9 @@ import { memo, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Address } from "viem";
-import { useAccount, useWaitForTransactionReceipt, useWalletClient } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
 import { toast } from "sonner";
+import axios, { AxiosError } from "axios";
 // Component Imports
 import Modal from "@components/common/Modal";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
@@ -22,7 +23,7 @@ import SpinnerIcon from "@components/icons/SpinnerIcon";
 import { DialogDescription, DialogHeader, DialogTitle } from "@components/ui/dialog";
 import { notificationId } from "@components/Trade/helper";
 // Hook, Helper Imports
-import { CONFIRMATION, meta, SUPPORTED_NETWORKS, SUPPORTED_TOKENS } from "@lib/constants";
+import { meta, SUPPORTED_NETWORKS, SUPPORTED_TOKENS } from "@lib/constants";
 import notification from "../notification";
 import { shortenHash } from "@lib/utils/formatting";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
@@ -33,6 +34,9 @@ interface PropsType {
   setOpen: (value: boolean) => void;
   trigger?: React.ReactNode;
 }
+
+// Define a type for transaction status
+type TransactionStatus = "idle" | "loading" | "success" | "error";
 
 const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
   const { potentia } = usePotentiaSdk();
@@ -61,7 +65,11 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
 
   // tx states
   const [isTxLoading, setIsTxLoading] = useState(false);
-  const [txHash, setTxHash] = useState<Address>();
+  const [txStatus, setTxStatus] = useState<TransactionStatus>("idle");
+  const [error, setError] = useState<string | undefined>();
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  // const [txHash, setTxHash] = useState<Address>();
 
   // addToken() adds token into the connected wallet
   async function addToken() {
@@ -91,58 +99,90 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
     }
   }
 
-  async function getFaucet(tokenAddress: string, userAddress: string) {
+  async function callFaucetAirdrop(userAddr: Address, tokenAddr: Address) {
+    const apiUrl = "/api/airdrop";
+    const requestBody = { userWallet: userAddr, tokenAddr: tokenAddr };
+
+    setTxStatus("loading");
+    setError(undefined);
+
     try {
-      setIsTxLoading(true);
-      // Default and only Network: Base Sepolia
-      const hash = await potentia?.poolWrite.callFaucet(tokenAddress, userAddress);
-      if (hash) {
-        setTxHash(hash as Address);
-        setIsTxLoading(false);
+      const response = await axios.post(apiUrl, requestBody);
+      console.log("response", response);
+
+      if (response.status === 200) {
+        setTxStatus("success");
+        refetchBalance();
+        addToken();
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
     } catch (error) {
-      console.error("error", error);
-    } finally {
-      setIsTxLoading(false);
+      console.error("Faucet airdrop error:", error);
+      if (error instanceof AxiosError) {
+        setError(error.response?.data?.error || error.message);
+      } else {
+        setError(error instanceof Error ? error.message : String(error));
+      }
+      setTxStatus("error");
     }
   }
 
-  // wait for openPosition transaction
-  const { isSuccess, isLoading, isPending, isError, error } =
-    useWaitForTransactionReceipt({
-      hash: txHash,
-      confirmations: CONFIRMATION
-    });
+  useEffect(() => {
+    switch (txStatus) {
+      case "loading":
+        notification.loading({
+          id: faucet_event.loading,
+          title: "Getting the faucet tokens..."
+        });
+        break;
+      case "success":
+        toast.dismiss(faucet_event.loading);
+        notification.success({
+          id: "facuet-tx-success",
+          title: "Test tokens transferred successfully to your account"
+        });
+        break;
+      case "error":
+        toast.dismiss(faucet_event.loading);
+        notification.error({
+          id: faucet_event.error,
+          title: "Faucet Transaction failed",
+          description: `${error}`
+        });
+        break;
+    }
+  }, [txStatus, error]);
 
   // Notifications based on Transaction status
-  useEffect(() => {
-    if (isLoading) {
-      notification.loading({
-        id: faucet_event.loading,
-        title: "Getting the faucet tokens..."
-      });
-    } else if (isError) {
-      toast.dismiss(faucet_event.loading);
-      notification.error({
-        id: faucet_event.error,
-        title: "Faucet Transaction failed",
-        description: `${error.message}`
-      });
-    }
-  }, [isLoading, isError]);
+  // useEffect(() => {
+  //   if (isTxLoading) {
+  //     notification.loading({
+  //       id: faucet_event.loading,
+  //       title: "Getting the faucet tokens..."
+  //     });
+  //   } else if (error) {
+  //     toast.dismiss(faucet_event.loading);
+  //     notification.error({
+  //       id: faucet_event.error,
+  //       title: "Faucet Transaction failed",
+  //       description: `${error}`
+  //     });
+  //   }
+  // }, [isTxLoading, error]);
 
-  useEffect(() => {
-    if (isSuccess) {
-      toast.dismiss(faucet_event.loading);
-      refetchBalance();
-      notification.success({
-        id: "facuet-tx-success",
-        title: "Test tokens transferred succeesfully to your account"
-      });
-      // prompt to add token into the wallet
-      addToken();
-    }
-  }, [isSuccess]);
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     toast.dismiss(faucet_event.loading);
+  //     refetchBalance();
+  //     notification.success({
+  //       id: "facuet-tx-success",
+  //       title: "Test tokens transferred succeesfully to your account"
+  //     });
+  //     // prompt to add token into the wallet
+  //     addToken();
+  //   }
+  // }, [isSuccess]);
 
   return (
     <Modal
@@ -256,27 +296,18 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
           >
             {isConnected ? shortenHash(address) : "Connect Wallet to recieve tokens"}
           </span>
-
-          {/* <Input
-            placeholder="0xxxxxxxxx..."
-            type="type"
-            value={inputAddress}
-            onChange={(e) => setInputAddress(e.target.value)}
-            className={cn(
-              "placeholder:text-[#404950]",
-              !isValidInput && inputAddress !== "" && "border-negative-red"
-            )}
-          /> */}
         </div>
         {/* CTA */}
         <ButtonCTA
-          disabled={isTxLoading || (isPending && isLoading) || !isConnected}
+          disabled={txStatus === "loading" || !isConnected || !address}
+          // disabled={isTxLoading || (isPending && isLoading) || !isConnected || !address}
           className="w-full rounded-[4px] font-sans-ibm-plex"
           onClick={() => {
-            getFaucet(selectedToken.address, address!);
+            callFaucetAirdrop(address!, selectedToken.address);
           }}
         >
-          {isTxLoading || isLoading ? (
+          {/* {isTxLoading || isLoading ? ( */}
+          {txStatus === "loading" ? (
             <SpinnerIcon className="size-[22px]" />
           ) : isConnected ? (
             <span>GET TOKENS</span>

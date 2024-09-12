@@ -31,7 +31,7 @@
     "@types/lodash.merge": "^4.6.9",
     "@urql/next": "^1.1.1",
     "@wagmi/core": "^2.11.5",
-    "axios": "^1.7.2",
+    "axios": "^1.7.7",
     "bignumber.js": "^9.1.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
