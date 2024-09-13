@@ -56,12 +56,12 @@ export const BASE_SEPOLIA = SUPPORTED_NETWORKS[0];
 export const CONFIRMATION = 10;
 
 // export const REFETCH_INTERVAL = false; // disabled
-export const REFETCH_INTERVAL = 5 * 60 * 1000; // 10 seconds
+export const REFETCH_INTERVAL = 60 * 1000; // 1 minute
 
 export const TOKENS: {
   [key: string]: `0x${string}`;
 } = {
-  WETH: getAddress("0xc632C00e28E45B8d313B9175812c470E4e1904D3"),
+  WETH: getAddress("0x08EF999e4383FE62660022b73D145201bD5023d4"),
   ETH: getAddress("0x0000000000000000000000000000000000000000")
 };
 

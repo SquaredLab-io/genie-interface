@@ -31,7 +31,6 @@ export function useTxHistory(paused = false): ReturnTxHistory {
         getAddress(selectedPool()?.poolAddr!), // pool
         address as Address // user
       );
-      console.log("txHistory", result);
       return result;
       // setTxHistory(result);
     } catch (error) {

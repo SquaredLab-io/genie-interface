@@ -10,25 +10,14 @@ export function getOpenTransactions(openOrders: AllPositions | undefined): OpenP
   const shortPos = openOrders.shortPositions;
   
   const data = [...longPos, ...shortPos];
-  // const data =
-  //   longPos && shortPos
-  //     ? [longPos, shortPos]
-  //     : longPos && !shortPos
-  //       ? [longPos]
-  //       : !longPos && shortPos
-  //         ? [shortPos]
-  //         : [];
   return data.filter((pos) => parseFloat(pos.tokenSize) !== 0);
 }
 
 export function getClosedTransactions(transactions?: Tx[]): Tx[] {
-  // console.log("closed transactions", transactions);
   if (!transactions) return new Array<Tx>();
-  const closedTxs = transactions
+  return transactions
     .filter((tx) => tx.action === "CL" || tx.action === "CS")
     .sort((a, b) => parseInt(b.dateTime) - parseInt(a.dateTime));
-  console.log("closedTxs", closedTxs);
-  return closedTxs;
 }
 
 export function getDateTime(blockTimestamp: string) {

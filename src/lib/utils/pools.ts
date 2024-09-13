@@ -78,6 +78,5 @@ export const POOL_ID_MAP = {
 
 // to deprecate
 export const poolToPower: Record<string, number> = {
-  "0xDa22aB6bD4A2960c0c97a2Cc4b98C29bbB1Ad66B": 2,
-  "0xd721EC3b6aF39a3FeEF5903957A25BA5CE82eBf4": 16
+  "0x050Ac74c2Fe33D932ef30f7c481e8d9d029568D4": 2
 };
