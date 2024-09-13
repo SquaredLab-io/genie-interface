@@ -12,7 +12,6 @@ import {
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
-import { PoolInfo } from "@squaredlab-io/sdk";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -51,18 +50,15 @@ const PoolsTable = <TData, TValue>({
       </TableHeader>
       <TableBody className="divide-y divide-[#292B31]">
         {table.getRowModel().rows?.length ? (
-          table.getRowModel().rows.map((row) => {
-            const pool = row.original as PoolInfo;
-            return (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            );
-          })
+          table.getRowModel().rows.map((row) => (
+            <TableRow key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))
         ) : (
           <TableRow>
             <TableCell colSpan={columns.length} className="h-72 text-center">

@@ -76,7 +76,7 @@ const TransactionsTable = <TData, TValue>({
             </TableCell>
           </TableRow>
         ) : table.getRowModel().rows?.length ? (
-          table.getRowModel().rows.map((row, index) => {
+          table.getRowModel().rows.map((row) => {
             const { hash } = row.original as Tx;
             return (
               <TableRow

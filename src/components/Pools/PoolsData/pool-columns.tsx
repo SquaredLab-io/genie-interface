@@ -166,7 +166,13 @@ export function allPoolsColumnDef(
         const pool = row.original;
         return (
           <div className="inline-flex items-center justify-end max-w-fit float-right mr-5 w-full gap-2">
-            <Link href={`/pool/${pool.underlying}?power=${pool.power}`}>
+            <Link
+              href={{
+                pathname: `/pool/${pool.underlying}`,
+                query: { power: pool.power }
+              }}
+              as={`/pool/${pool.underlying}?power=${pool.power}`}
+            >
               <Button variant="default" size="sm">
                 Add Liquidity
               </Button>
@@ -370,10 +376,16 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       accessorKey: "action",
       header: () => <span className="sr-only">Action</span>,
       cell: ({ row }) => {
-        const { underlying } = row.original;
+        const { underlying, power } = row.original;
         return (
           <div className="inline-flex justify-end gap-2 max-w-fit float-right mr-5">
-            <Link href={`/pool/${underlying}`}>
+            <Link
+              href={{
+                pathname: `/pool/${underlying}`,
+                query: { power: power }
+              }}
+              as={`/pool/${underlying}?power=${power}`}
+            >
               <Button size="lg" variant="default">
                 Deposit
               </Button>
