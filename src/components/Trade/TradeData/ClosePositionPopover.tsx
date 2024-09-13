@@ -28,11 +28,10 @@ import { notificationId } from "../helper";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import useUnderlyingEstimateOut from "@lib/hooks/useUnderlyingEstimateOut";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
-import { poolToPower } from "@lib/utils/pools";
 
 interface PropsType {
   children: ReactNode;
-  position: OpenPositionInfo | undefined;
+  position: OpenPositionInfo;
   isLong: boolean;
   onClickTrigger?: () => void;
   isOpen?: boolean;
@@ -42,7 +41,6 @@ interface PropsType {
 const ClosePositionPopover: FC<PropsType> = ({
   children,
   position,
-  // positions,
   isLong,
   onClickTrigger,
   isOpen,
@@ -56,11 +54,9 @@ const ClosePositionPopover: FC<PropsType> = ({
 
   const { potentia } = usePotentiaSdk();
 
-  const { selectedPool } = usePoolsStore();
+  const { selectedPool, poolsToPower } = usePoolsStore();
   const { close_event } = notificationId;
 
-  // const longTokenBalance = new BigNumber(positions?.longPositionTab?.tokenSize ?? "0");
-  // const shortTokenBalance = new BigNumber(positions?.shortPositionTab?.tokenSize ?? "0");
   const balance = new BigNumber(position?.tokenSize ?? "0");
 
   // Current user balance of Long / Short Token
@@ -222,7 +218,7 @@ const ClosePositionPopover: FC<PropsType> = ({
               <p className="inline-flex items-center gap-[2px]">
                 <span className="w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm">
                   {selectedPool()?.underlying}
-                  <sup>{poolToPower[position?.pool ?? ""]}</sup>
+                  <sup>{poolsToPower?.[position.pool]}</sup>
                 </span>
                 <span className="opacity-60">{isLong ? "L" : "S"}</span>
               </p>

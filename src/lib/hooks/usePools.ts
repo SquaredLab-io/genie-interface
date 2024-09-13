@@ -12,17 +12,29 @@ interface ReturnType {
   status: "error" | "success" | "pending";
 }
 
+function createPoolToPowerMapping(pools: PoolInfo[] | undefined): Record<string, number> | undefined {
+  if (!pools) return undefined;
+  return pools.reduce(
+    (mapping, pool) => {
+      mapping[pool.poolAddr] = pool.power;
+      return mapping;
+    },
+    {} as Record<string, number>
+  );
+}
+
 export function usePools(paused = false): ReturnType {
   const { potentia } = usePotentiaSdk();
 
   // Using this poolsData for global instance
-  const { updatePoolsData } = usePoolsStore();
+  const { updatePoolsData, updatePoolsToPower } = usePoolsStore();
 
   const getPools = async () => {
     try {
       const data = await potentia?.getPools();
       console.log("pools @usePools", data);
       updatePoolsData(data);
+      updatePoolsToPower(createPoolToPowerMapping(data));
       return data;
     } catch (error) {
       console.error("Failed to fetch pools.");

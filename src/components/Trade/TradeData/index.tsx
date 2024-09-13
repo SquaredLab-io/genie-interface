@@ -25,7 +25,7 @@ import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { OpenPositionInfo, Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useAccount } from "wagmi";
 import { useTokenPrice } from "@lib/hooks/useTokenPrice";
-import { poolToPower } from "@lib/utils/pools";
+// import { poolToPower } from "@lib/utils/pools";
 
 enum Tab {
   position = "position",
@@ -36,7 +36,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
   const [tableHeight, setTableHeight] = useState<number>(235);
   const tabListRef = useRef<HTMLDivElement>(null);
 
-  const { selectedPool } = usePoolsStore();
+  const { selectedPool, poolsToPower } = usePoolsStore();
   const { isConnected } = useAccount();
 
   // All Transactions -- LP, Open Long/Short, Close Long/Short
@@ -122,7 +122,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
                   ))}
                 </p>
                 <p className="font-medium text-xs/3 bg-[#49AFE9] py-1 px-[10px] rounded-md">
-                  p = {poolToPower[poolAddr]}
+                  p = {poolsToPower?.[poolAddr]}
                 </p>
               </div>
               <div className="font-normal text-sm/5 text-[#9299AA]">

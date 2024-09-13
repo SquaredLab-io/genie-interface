@@ -3,15 +3,18 @@ import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 
 interface iPools {
   poolsData: PoolInfo[];
+  poolsToPower: Record<string, number> | undefined;
   selectedPool: () => PoolInfo | undefined;
   isFetchingPools: boolean;
   updatePoolsData: (value: PoolInfo[] | undefined) => void;
+  updatePoolsToPower: (value: Record<string, number> | undefined) => void;
   updateSelectedPool: (value: PoolInfo) => void;
   updateIsFetchingPools: (value: boolean) => void;
 }
 
 export const usePoolsStore = create<iPools>((set, get) => ({
   poolsData: [],
+  poolsToPower: undefined,
   selectedPool: () => {
     const state = get();
     // default last pool in array
@@ -22,6 +25,10 @@ export const usePoolsStore = create<iPools>((set, get) => ({
   updatePoolsData: (pools) =>
     set(() => ({
       poolsData: pools
+    })),
+  updatePoolsToPower: (newObj) =>
+    set(() => ({
+      poolsToPower: newObj
     })),
   updateSelectedPool: (newPool) => {
     set(() => ({
@@ -78,5 +85,5 @@ export const useModalStore = create<iPoolModalStore>((set, get) => ({
     set(() => ({
       openSelectPoolOverviewModal: value
     }));
-  },
+  }
 }));
