@@ -82,11 +82,15 @@ const TransactionsTable = <TData, TValue>({
               <TableRow
                 key={row.id}
                 className="hover:bg-[#19242C] transition-colors duration-200 cursor-pointer"
-                onClick={() =>
-                  router.push(`https://sepolia.basescan.org/tx/${hash}`, {
-                    scroll: true
-                  })
-                }
+                onClick={() => {
+                  if (typeof window !== "undefined") {
+                    window.open(
+                      `https://sepolia.basescan.org/tx/${hash}`,
+                      "_blank",
+                      "noopener,noreferrer"
+                    );
+                  }
+                }}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
