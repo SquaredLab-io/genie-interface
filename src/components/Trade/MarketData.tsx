@@ -25,21 +25,21 @@ const ReturnCorrectIndicator = ({ value }: { value: string }) => {
 
 function Marker({ label, value, fetching, showIndicator = false }: MarkerProps) {
   return (
-    <p className="inline-flex items-center justify-between w-full">
+    <div className="inline-flex items-center justify-between w-full">
       <span className="text-[#757B80]">{label}</span>
       <span className={cn("font-medium text-white")}>
         {fetching ? (
           "-"
         ) : showIndicator ? (
-          <p className="inline-flex items-center gap-1">
+          <span className="inline-flex items-center gap-1">
             <ReturnCorrectIndicator value={value} />
             <span>{value}</span>
-          </p>
+          </span>
         ) : (
           value
         )}
       </span>
-    </p>
+    </div>
   );
 }
 

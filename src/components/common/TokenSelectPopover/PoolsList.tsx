@@ -27,7 +27,7 @@ const PoolsList = ({ pools, updateSelectedPool, noPools, size }: PoolsListProps)
         const assets = pool.split("/").map((p) => p.trim());
         return (
           <button
-            key={underlying}
+            key={pool}
             className="flex flex-row px-4 py-2 w-full justify-between items-center gap-2 hover:bg-[#15212A] transition-colors duration-300"
             onClick={() => {
               const selectedPool = pools.find((p) => p.poolAddr === _pool.poolAddr)!;
@@ -45,7 +45,7 @@ const PoolsList = ({ pools, updateSelectedPool, noPools, size }: PoolsListProps)
               </div>
               <p>
                 {assets.map((asset, index) => (
-                  <span key={asset}>
+                  <span key={`${asset}_${index}`}>
                     {asset}
                     {assets.length !== index + 1 && <span>-</span>}
                   </span>

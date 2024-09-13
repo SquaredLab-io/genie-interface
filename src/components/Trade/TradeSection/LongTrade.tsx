@@ -297,7 +297,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
           {getAccountBalance(userBalance, isBalLoading)}
         </span>
       </p>
-      <p className="inline-flex items-start gap-1 w-full">
+      <div className="inline-flex items-start gap-1 w-full">
         <span className="text-[#757B80]">Current Position:</span>
         {isPositionFetching && !positionData ? (
           <span>...</span>
@@ -308,7 +308,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
             </span>
           </p>
         )}
-      </p>
+      </div>
       <form
         className="flex flex-col w-full gap-2 mt-5"
         autoComplete="off"

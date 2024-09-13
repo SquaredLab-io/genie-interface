@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { Address, getAddress } from "viem";
 import { Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
@@ -42,7 +41,11 @@ export function useTxHistory(paused = false): ReturnTxHistory {
     queryKey: ["userTxHistory", selectedPool()?.poolAddr, address],
     queryFn: getTxHistory,
     refetchInterval: REFETCH_INTERVAL,
-    enabled: !paused && !!selectedPool() && !!potentia && !!address
+    enabled: !paused && !!selectedPool() && !!potentia && !!address,
+    staleTime: 5000,
+    gcTime: 30000,
+    refetchOnReconnect: true,
+    refetchOnWindowFocus: true
   });
 
   return { data, isFetching, refetch };

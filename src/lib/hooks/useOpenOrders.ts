@@ -46,9 +46,7 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
   const {
     data: orders,
     isFetching,
-    refetch,
-    isError,
-    error
+    refetch
   } = useQuery({
     queryKey: ["openOrders", poolAddress, address],
     queryFn: getOpenOrders,
@@ -59,8 +57,8 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
       potentia !== undefined &&
       address !== undefined &&
       status === "success",
-    staleTime: 0, // data is treated stale immediatly after fetching
-    gcTime: 0, // cache is moved to grabage collector as soon as it's not in use
+    staleTime: 5000, // data is treated stale immediatly after fetching
+    gcTime: 30000, // cache is moved to grabage collector as soon as it's not in use
     refetchOnReconnect: true,
     refetchOnWindowFocus: true
   });
