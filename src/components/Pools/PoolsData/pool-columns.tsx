@@ -7,6 +7,7 @@ import {
   formatLimit,
   formatNumber,
   formatOraclePrice,
+  getDecimalAdjusted,
   getDollarQuote,
   shortenHash
 } from "@lib/utils/formatting";
@@ -497,40 +498,29 @@ export function transactionsColumnDef(): ColumnDef<Tx>[] {
     {
       id: "amount",
       accessorKey: "amount",
-      header: () => <span className="pt-6">Amount (USDT)</span>,
+      header: () => <span className="pt-6">Amount</span>,
       cell: ({ row }) => {
         const { size, oraclePrice, underlying } = row.original;
         return (
           <span>
-            {/* {getDecimalAdjusted(size.toString(), underlying.decimals)} {underlying.symbol} */}
-            {getDollarQuote(size.toString(), oraclePrice.toString(), underlying.decimals)}
+            {formatNumber(getDecimalAdjusted(size.toString(), underlying.decimals))} {underlying.symbol}
           </span>
         );
       }
     },
-    /* {
-      id: "fees",
-      accessorKey: "fees",
-      header: () => <span className="pt-6">Fees Earned (USDT)</span>,
-      cell: ({ row }) => {
-        const { oraclePrice } = row.original;
-        return <span>-</span>;
-      }
-    }, */
     {
       id: "total",
       accessorKey: "total",
-      header: () => <span>Total (USDT)</span>,
+      header: () => <span>Amount (USDT)</span>,
       cell: ({ row }) => {
-        const { size, oraclePrice } = row.original;
-        // return <span>{getDecimalAdjusted(size.toString(), 18)} WETH</span>;
-        return <span>{getDollarQuote(size.toString(), oraclePrice.toString(), 18)}</span>;
+        const { size, oraclePrice, underlying } = row.original;
+        return <span>{getDollarQuote(size.toString(), oraclePrice.toString(), underlying.decimals)}</span>;
       }
     },
     {
       id: "action",
       accessorKey: "action",
-      header: () => <span className="">Total (USD)</span>,
+      header: () => <span>Total (USD)</span>,
       cell: ({ row }) => {
         const { size, oraclePrice } = row.original;
         const growth = parseFloat("0");
