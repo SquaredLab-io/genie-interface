@@ -113,13 +113,13 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
         />
         <Marker
           label="Long Funding Rate"
-          value={`${fundingRateLong > 0 ? "+" : ""}${fundingRateLong ? fundingRateLong.toFixed(8) : "-"}%`}
+          value={`${fundingRateLong > 0 ? "+" : ""}${fundingRateLong ? `${fundingRateLong.toFixed(8)}%` : "-"}`}
           fetching={isFetching}
           showChange
         />
         <Marker
           label="Short Funding Rate"
-          value={`${fundingRateShort > 0 ? "+" : ""}${fundingRateShort ? fundingRateShort.toFixed(8) : "-"}%`}
+          value={`${fundingRateShort > 0 ? "+" : ""}${fundingRateShort ? `${fundingRateShort.toFixed(8)}%` : "-"}`}
           fetching={isFetching}
           showChange
         />
