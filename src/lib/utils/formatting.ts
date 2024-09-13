@@ -12,7 +12,7 @@ export function formatNumber(
 ) {
   if (num === 0) return isDollar ? "$0" : "0";
   // number belongs to (-0.001, 0.001)
-  else if (num > -1e-3 && num < 1e-3) {
+  else if (num > -1e-2 && num < 1e-2) {
     return isDollar ? `$${num.toExponential(0)}` : num.toExponential(0);
   }
   // Otherwise, format to exactly three decimal places
@@ -110,12 +110,9 @@ export function getDecimalDeadjusted(
   return new BigNumber(value).multipliedBy(10 ** (decimals ?? 18)).toFixed(0);
 }
 
-export function getDecimalAdjusted(
-  value: string | undefined,
-  decimals: number | undefined
-): number {
+export function getDecimalAdjusted(value: string | undefined, decimals: number | undefined): number {
   if (!value) return 0;
-  return parseFloat(value) / 10 ** (decimals ?? 18);
+  return parseFloat(value) / 10 ** (decimals ?? 0);
 }
 
 export function _getDecimalAdjusted(

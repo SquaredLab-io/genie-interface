@@ -2,7 +2,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
-import { _getDecimalAdjusted, getDollarQuote, shortenHash } from "@lib/utils/formatting";
+import {
+  _getDecimalAdjusted,
+  formatLimit,
+  formatNumber,
+  formatOraclePrice,
+  getDollarQuote,
+  shortenHash
+} from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
 import { Button } from "@components/ui/button";
 import { PoolInfo, Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
@@ -15,6 +22,8 @@ import { useEffect, useRef, useState } from "react";
 import LoadingLogo from "@components/icons/loading-logo";
 import { useDailyData } from "@lib/hooks/useDailyData";
 import { getFeesTimeseries } from "@components/PoolOverview/helper";
+import { useMonthlyFundingFee } from "@lib/hooks/useMonthlyFundingFee";
+import { Address } from "viem";
 
 const getCorrectLineColor = (val1: number | null, val2: number | null) => {
   switch (true) {
@@ -27,18 +36,18 @@ const getCorrectLineColor = (val1: number | null, val2: number | null) => {
   }
 };
 
-const getGrowthPercentage = (val1: number | null, val2: number | null) => {
-  switch (true) {
-    case !!val1 && !!val2 && val1 > val2:
-      return ((val2 - val1) * 100) / val1;
-    case !!val1 && !!val2 && val1 < val2:
-      return ((val2 - val1) * 100) / val1;
-    case !!val1 && !!val2 && val1 === val2:
-      return 0;
-    default:
-      return 0;
-  }
-};
+// const getGrowthPercentage = (val1: number | null, val2: number | null) => {
+//   switch (true) {
+//     case !!val1 && !!val2 && val1 > val2:
+//       return ((val2 - val1) * 100) / val1;
+//     case !!val1 && !!val2 && val1 < val2:
+//       return ((val2 - val1) * 100) / val1;
+//     case !!val1 && !!val2 && val1 === val2:
+//       return 0;
+//     default:
+//       return 0;
+//   }
+// };
 
 export function allPoolsColumnDef(
   updateSelectedPool: (value: PoolInfo) => void
@@ -340,35 +349,42 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       accessorKey: "fee",
       header: () => <span>30D Fees</span>,
       cell: ({ row }) => {
-        const { fee, underlyingDecimals, oraclePrice, poolAddr } = row.original;
+        const { underlyingDecimals, oraclePrice, poolAddr } = row.original;
         const { dailyData } = useDailyData({ poolAddress: poolAddr });
 
         // Reversed as we need series in ascending order
-        const timeseries = getFeesTimeseries(dailyData);
+        const timeseries = getFeesTimeseries(dailyData, underlyingDecimals);
         console.log("time series 2: ", timeseries);
 
-        const growth =
-          timeseries.length !== 0
-            ? getGrowthPercentage(
-                timeseries[0].value,
-                timeseries[timeseries.length - 1].value
-              )
-            : 0;
-        return (
+        const { data: fundingFees, isFetching: isFetchingFees } = useMonthlyFundingFee(
+          poolAddr as Address
+        );
+
+        return isFetchingFees ? (
+          <span>...</span>
+        ) : fundingFees ? (
           <div className="inline-flex gap-1">
-            <span>{getDollarQuote(fee, oraclePrice, underlyingDecimals)}</span>
+            <span>
+              {formatNumber(
+                fundingFees.feePerToken *
+                  formatOraclePrice(BigInt(oraclePrice), underlyingDecimals),
+                true
+              )}
+            </span>
             <span
               className={cn(
-                growth > 0
+                fundingFees.feePercent > 0
                   ? "text-positive-green"
-                  : growth < 0
+                  : fundingFees.feePercent < 0
                     ? "text-negative-red"
                     : undefined
               )}
             >
-              {parseFloat(growth.toFixed(1)).toPrecision(5)}%
+              {formatNumber(fundingFees.feePercent)}%
             </span>
           </div>
+        ) : (
+          <span>NA</span>
         );
       }
     },

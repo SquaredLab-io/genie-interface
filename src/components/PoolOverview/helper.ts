@@ -1,3 +1,4 @@
+import { getDecimalAdjusted } from "@lib/utils/formatting";
 import { DailyInfo } from "@squaredlab-io/sdk/";
 
 export type LPTimeseries = {
@@ -114,13 +115,13 @@ export const getTvlTimeseries = (dailyData: DailyInfo[] | undefined): LPTimeseri
     .reverse();
 };
 
-export const getFeesTimeseries = (dailyData: DailyInfo[] | undefined): LPTimeseries[] => {
+export const getFeesTimeseries = (dailyData: DailyInfo[] | undefined, decimals?: number): LPTimeseries[] => {
   if (!dailyData) return [];
   return dailyData
     .map((data) => {
       return {
         time: formatDate(parseInt(data.date.toString())),
-        value: parseFloat(data.fee.toString()) / 10 ** 18
+        value: getDecimalAdjusted(data.fee.toString(), 18)
       };
     })
     .reverse();
