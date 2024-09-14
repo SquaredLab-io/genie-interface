@@ -496,42 +496,42 @@ export function transactionsColumnDef(): ColumnDef<Tx>[] {
       }
     },
     {
-      id: "amount",
-      accessorKey: "amount",
-      header: () => <span className="pt-6">Amount</span>,
+      id: "lp",
+      accessorKey: "lp",
+      header: () => <span className="pt-6">LP Amount</span>,
       cell: ({ row }) => {
-        const { size, oraclePrice, underlying } = row.original;
+        const { lp, underlying } = row.original;
+        return <span>{formatNumber(getDecimalAdjusted(lp, underlying.decimals))}</span>;
+      }
+    },
+    {
+      id: "underlying",
+      accessorKey: "underlying",
+      header: () => <span>Underlying</span>,
+      cell: ({ row }) => {
+        const { underlyingSize, underlying } = row.original;
         return (
           <span>
-            {formatNumber(getDecimalAdjusted(size.toString(), underlying.decimals))} {underlying.symbol}
+            {formatNumber(getDecimalAdjusted(underlyingSize, underlying.decimals))}{" "}
+            {underlying.symbol}
           </span>
         );
       }
     },
     {
-      id: "total",
-      accessorKey: "total",
-      header: () => <span>Amount (USDT)</span>,
+      id: "value",
+      accessorKey: "value",
+      header: () => <span>Value (USD)</span>,
       cell: ({ row }) => {
-        const { size, oraclePrice, underlying } = row.original;
-        return <span>{getDollarQuote(size.toString(), oraclePrice.toString(), underlying.decimals)}</span>;
-      }
-    },
-    {
-      id: "action",
-      accessorKey: "action",
-      header: () => <span>Total (USD)</span>,
-      cell: ({ row }) => {
-        const { size, oraclePrice } = row.original;
-        const growth = parseFloat("0");
-        // return <span>{getDecimalAdjusted(size.toString(), 18)} WETH</span>;
+        const { underlyingSize, oraclePrice, underlying } = row.original;
         return (
           <div className="inline-flex gap-1">
-            <span>{getDollarQuote(size.toString(), oraclePrice.toString(), 18)}</span>
-            <span
-              className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
-            >
-              {growth}%
+            <span>
+              {getDollarQuote(
+                underlyingSize,
+                oraclePrice.toString(),
+                underlying.decimals
+              )}
             </span>
           </div>
         );
