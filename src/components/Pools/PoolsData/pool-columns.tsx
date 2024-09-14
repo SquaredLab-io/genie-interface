@@ -348,7 +348,7 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
     },
     {
       accessorKey: "fee",
-      header: () => <span>30D Fees</span>,
+      header: () => <span>30D Funding</span>,
       cell: ({ row }) => {
         const { underlyingDecimals, oraclePrice, poolAddr } = row.original;
         const { dailyData } = useDailyData({ poolAddress: poolAddr });

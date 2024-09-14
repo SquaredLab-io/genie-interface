@@ -23,7 +23,7 @@ import SpinnerIcon from "@components/icons/SpinnerIcon";
 import { DialogDescription, DialogHeader, DialogTitle } from "@components/ui/dialog";
 import { notificationId } from "@components/Trade/helper";
 // Hook, Helper Imports
-import { meta, SUPPORTED_NETWORKS, SUPPORTED_TOKENS } from "@lib/constants";
+import { meta, SUPPORTED_NETWORKS, SUPPORTED_TOKENS, TOKENS } from "@lib/constants";
 import notification from "../notification";
 import { shortenHash } from "@lib/utils/formatting";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
@@ -101,21 +101,29 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
 
   async function callFaucetAirdrop(userAddr: Address, tokenAddr: Address) {
     const apiUrl = "/api/airdrop";
-    const requestBody = { userWallet: userAddr, tokenAddr: tokenAddr };
+
+    // Req body for token and ETH
+    const requests = [
+      { userWallet: userAddr, tokenAddr: tokenAddr },
+      { userWallet: userAddr, tokenAddr: "0x0000000000000000000000000000000000000000" }
+    ];
 
     setTxStatus("loading");
     setError(undefined);
 
     try {
-      const response = await axios.post(apiUrl, requestBody);
-      console.log("response", response);
+      const responses = await Promise.all(requests.map((req) => axios.post(apiUrl, req)));
 
-      if (response.status === 200) {
+      // Check if all requests were successful
+      if (responses.every((res) => res.status === 200)) {
         setTxStatus("success");
         refetchBalance();
         addToken();
       } else {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const failedResponses = responses.filter((res) => res.status !== 200);
+        throw new Error(
+          `Airdrop request failed: ${failedResponses.map((res) => res.status).join(",")}`
+        );
       }
     } catch (error) {
       console.error("Faucet airdrop error:", error);
@@ -133,56 +141,26 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
       case "loading":
         notification.loading({
           id: faucet_event.loading,
-          title: "Getting the faucet tokens..."
+          title: "Requesting the faucet tokens..."
         });
         break;
       case "success":
         toast.dismiss(faucet_event.loading);
         notification.success({
           id: "facuet-tx-success",
-          title: "Test tokens transferred successfully to your account"
+          title: "Test tokens and ETH transferred successfully"
         });
         break;
       case "error":
         toast.dismiss(faucet_event.loading);
         notification.error({
           id: faucet_event.error,
-          title: "Faucet Transaction failed",
-          description: `${error}`
+          title: "Faucet transaction failed",
+          description: error || "An unknown error occurred"
         });
         break;
     }
   }, [txStatus, error]);
-
-  // Notifications based on Transaction status
-  // useEffect(() => {
-  //   if (isTxLoading) {
-  //     notification.loading({
-  //       id: faucet_event.loading,
-  //       title: "Getting the faucet tokens..."
-  //     });
-  //   } else if (error) {
-  //     toast.dismiss(faucet_event.loading);
-  //     notification.error({
-  //       id: faucet_event.error,
-  //       title: "Faucet Transaction failed",
-  //       description: `${error}`
-  //     });
-  //   }
-  // }, [isTxLoading, error]);
-
-  // useEffect(() => {
-  //   if (isSuccess) {
-  //     toast.dismiss(faucet_event.loading);
-  //     refetchBalance();
-  //     notification.success({
-  //       id: "facuet-tx-success",
-  //       title: "Test tokens transferred succeesfully to your account"
-  //     });
-  //     // prompt to add token into the wallet
-  //     addToken();
-  //   }
-  // }, [isSuccess]);
 
   return (
     <Modal
