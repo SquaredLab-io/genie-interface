@@ -39,7 +39,7 @@ interface PropsType {
 type TransactionStatus = "idle" | "loading" | "success" | "error";
 
 const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
-  const { potentia } = usePotentiaSdk();
+  // const { potentia } = usePotentiaSdk();
   const { isConnected, address } = useAccount();
   const { data: walletClient } = useWalletClient();
 
@@ -64,15 +64,16 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
   });
 
   // tx states
-  const [isTxLoading, setIsTxLoading] = useState(false);
+  // const [isTxLoading, setIsTxLoading] = useState(false);
   const [txStatus, setTxStatus] = useState<TransactionStatus>("idle");
   const [error, setError] = useState<string | undefined>();
-  const [isSuccess, setIsSuccess] = useState(false);
+  // const [isSuccess, setIsSuccess] = useState(false);
 
   // const [txHash, setTxHash] = useState<Address>();
 
   // addToken() adds token into the connected wallet
   async function addToken() {
+    if (selectedToken.address === "0x0000000000000000000000000000000000000000") return;
     try {
       const success = await walletClient?.watchAsset({
         type: "ERC20",
@@ -104,8 +105,8 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
 
     // Req body for token and ETH
     const requests = [
-      { userWallet: userAddr, tokenAddr: tokenAddr },
-      { userWallet: userAddr, tokenAddr: "0x0000000000000000000000000000000000000000" }
+      { userWallet: userAddr, tokenAddr: tokenAddr }
+      // { userWallet: userAddr, tokenAddr: "0x0000000000000000000000000000000000000000" }
     ];
 
     setTxStatus("loading");
