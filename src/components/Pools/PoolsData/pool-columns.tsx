@@ -355,7 +355,7 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
 
         // Reversed as we need series in ascending order
         const timeseries = getFeesTimeseries(dailyData, underlyingDecimals);
-        console.log("time series 2: ", timeseries);
+        // console.log("time series 2: ", timeseries);
 
         const { data: fundingFees, isFetching: isFetchingFees } = useMonthlyFundingFee(
           poolAddr as Address
@@ -381,7 +381,7 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
                     : undefined
               )}
             >
-              {formatNumber(fundingFees.feePercent)}%
+              {fundingFees.feePercent.toFixed(5)}%
             </span>
           </div>
         ) : (

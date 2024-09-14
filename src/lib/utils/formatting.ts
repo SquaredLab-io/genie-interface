@@ -10,9 +10,22 @@ export function formatNumber(
   isDollar: boolean = false,
   decimals: 0 | 1 | 2 | 3 = 2
 ) {
+  let minValue: number;
+  switch (decimals) {
+    case 0:
+      minValue = 0;
+    case 1:
+      minValue = -1e-1;
+    case 2:
+      minValue = -1e-2;
+    case 3:
+      minValue = -1e-3;
+    default:
+      minValue = -1e-2;
+  }
+
   if (num === 0) return isDollar ? "$0" : "0";
-  // number belongs to (-0.001, 0.001)
-  else if (num > -1e-2 && num < 1e-2) {
+  else if (num > minValue && num < Math.abs(minValue)) {
     return isDollar ? `$${num.toExponential(0)}` : num.toExponential(0);
   }
   // Otherwise, format to exactly three decimal places
@@ -110,7 +123,10 @@ export function getDecimalDeadjusted(
   return new BigNumber(value).multipliedBy(10 ** (decimals ?? 18)).toFixed(0);
 }
 
-export function getDecimalAdjusted(value: string | undefined, decimals: number | undefined): number {
+export function getDecimalAdjusted(
+  value: string | undefined,
+  decimals: number | undefined
+): number {
   if (!value) return 0;
   return parseFloat(value) / 10 ** (decimals ?? 0);
 }
