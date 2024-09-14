@@ -121,7 +121,7 @@ export const getFeesTimeseries = (dailyData: DailyInfo[] | undefined, decimals?:
     .map((data) => {
       return {
         time: formatDate(parseInt(data.date.toString())),
-        value: getDecimalAdjusted(data.fee.toString(), 18)
+        value: getDecimalAdjusted(data.fee.toString(), 18) // TODO: Remove 18 with token's decimals
       };
     })
     .reverse();

@@ -54,29 +54,27 @@ export function formatLimit(amount: string | undefined, limit: number) {
  * @param decimals Number of decimals to round to
  * @returns Converted amounts in Dollarsx
  */
-export function toDollarUnits(num: number | undefined, decimals: 0 | 1 | 2 | 3): string {
+export function toDollarUnits(
+  num: number | undefined,
+  decimals: 0 | 1 | 2 | 3 | 4 = 2
+): string {
   if (!num || isNaN(num)) return "$0";
 
   const absNum = Math.abs(num);
   const isPositive = num > 0;
+  const sign = isPositive ? "" : "-";
+
+  const formatOptions = {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  };
 
   if (absNum >= 1e9) {
-    return (
-      `${!isPositive ? "-" : ""}$` +
-      Number((absNum / 1e9).toFixed(decimals)).toLocaleString("en-US") +
-      "B"
-    );
+    return `${sign}$${(absNum / 1e9).toLocaleString("en-US", formatOptions)}B`;
   } else if (absNum >= 1e6) {
-    return (
-      `${!isPositive ? "-" : ""}$` +
-      Number((absNum / 1e6).toFixed(decimals)).toLocaleString("en-US") +
-      "M"
-    );
+    return `${sign}$${(absNum / 1e6).toLocaleString("en-US", formatOptions)}M`;
   }
-  return (
-    `${!isPositive ? "-" : ""}$` +
-    Number(absNum.toFixed(decimals)).toLocaleString("en-US")
-  );
+  return `${sign}$${absNum.toLocaleString("en-US", formatOptions)}`;
 }
 
 /**

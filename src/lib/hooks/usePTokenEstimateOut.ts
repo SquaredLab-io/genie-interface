@@ -26,15 +26,7 @@ const usePTokenEstimateOut = ({
   const { potentia } = usePotentiaSdk();
 
   const estimatePositionPTokenOut = async () => {
-    console.log("estimatePositionUnderlyingOut args", {
-      pool: poolAddress!,
-      amount: amount!,
-      isLong
-    });
-
-    // const _amount = (parseFloat(amount ?? "0") * 10 ** 18).toString();
     setIsFetching(true);
-
     try {
       const data = await potentia?.ponderClient.estimatePositionPTokenOut(
         poolAddress!, // pool address

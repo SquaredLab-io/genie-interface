@@ -9,7 +9,8 @@ import {
   formatOraclePrice,
   getDecimalAdjusted,
   getDollarQuote,
-  shortenHash
+  shortenHash,
+  toDollarUnits
 } from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
 import { Button } from "@components/ui/button";
@@ -18,8 +19,8 @@ import { BASE_SEPOLIA } from "@lib/constants";
 import { calculatePoolAge } from "@lib/utils/calculatePoolAge";
 import PoolMenu from "./PoolMenu";
 import { getActionType } from "@lib/utils/pools";
-import { createChart, CrosshairMode } from "lightweight-charts";
-import { useEffect, useRef, useState } from "react";
+import { createChart, CrosshairMode, IChartApi, ISeriesApi } from "lightweight-charts";
+import { useEffect, useMemo, useRef, useState } from "react";
 import LoadingLogo from "@components/icons/loading-logo";
 import { useDailyData } from "@lib/hooks/useDailyData";
 import { getFeesTimeseries } from "@components/PoolOverview/helper";
@@ -265,72 +266,93 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       header: () => <span>Historical Pool Fees</span>,
       cell: ({ row }) => {
         const { poolAddr } = row.original;
-        const { dailyData } = useDailyData({ poolAddress: poolAddr });
+        const { dailyData } = useDailyData({ poolAddress: poolAddr, limit: 30 });
+
         const chartContainerRef = useRef(null);
+        const chartRef = useRef<IChartApi | null>(null);
+        const seriesRef = useRef<ISeriesApi<"Line"> | null>(null);
         const [isLoadingChart, setIsLoadingChart] = useState(false);
 
         // Reversed as we need series in ascending order
-        const timeseries = getFeesTimeseries(dailyData);
-        console.log("time series 1: ", timeseries);
+        const timeseries = useMemo(() => getFeesTimeseries(dailyData), [dailyData]);
+
+        const chartOptions = useMemo(
+          () => ({
+            width: 135,
+            height: 45,
+            layout: {
+              background: {
+                color: "transparent"
+              },
+              attributionLogo: false
+            },
+            grid: {
+              vertLines: {
+                visible: false
+              },
+              horzLines: {
+                visible: false
+              }
+            },
+            crosshair: {
+              mode: CrosshairMode.Hidden
+            },
+            timeScale: {
+              visible: false
+            },
+            rightPriceScale: {
+              visible: false
+            },
+            handleScale: false,
+            handleScroll: false
+          }),
+          []
+        );
+
+        const seriesOptions = useMemo(
+          () => ({
+            color:
+              timeseries.length !== 0
+                ? getCorrectLineColor(
+                    timeseries[0].value,
+                    timeseries[timeseries.length - 1].value
+                  )
+                : "#2962FF",
+            lastValueVisible: false,
+            priceLineVisible: false
+          }),
+          [timeseries]
+        );
 
         useEffect(() => {
-          if (chartContainerRef.current !== null) {
-            // chart prep start
-            setIsLoadingChart(true);
+          if (!chartContainerRef.current) return;
 
-            const chart = createChart(chartContainerRef.current, {
-              width: 135,
-              height: 45,
-              layout: {
-                background: {
-                  color: "transparent"
-                },
-                attributionLogo: false
-              },
-              grid: {
-                vertLines: {
-                  visible: false
-                },
-                horzLines: {
-                  visible: false
-                }
-              },
-              crosshair: {
-                mode: CrosshairMode.Hidden
-              },
-              timeScale: {
-                visible: false
-              },
-              rightPriceScale: {
-                visible: false
-              },
-              handleScale: false,
-              handleScroll: false
-            });
-            chart.timeScale().fitContent();
-            const lineSeries = chart.addLineSeries({
-              color:
-                timeseries.length !== 0
-                  ? getCorrectLineColor(
-                      timeseries[0].value,
-                      timeseries[timeseries.length - 1].value
-                    )
-                  : "#2962FF",
-              lastValueVisible: false,
-              priceLineVisible: false
-            });
-            lineSeries.setData(timeseries);
-            lineSeries.priceScale().applyOptions({
-              autoScale: false
-            });
+          setIsLoadingChart(true);
 
-            setIsLoadingChart(false);
-
-            return () => {
-              chart.remove();
-            };
+          if (!chartRef.current) {
+            chartRef.current = createChart(chartContainerRef.current, chartOptions);
+            seriesRef.current = chartRef.current.addLineSeries(seriesOptions);
+          } else {
+            chartRef.current.applyOptions(chartOptions);
+            seriesRef.current?.applyOptions(seriesOptions);
           }
-        }, [timeseries]);
+
+          chartRef.current.timeScale().fitContent();
+          seriesRef.current?.setData(timeseries);
+          seriesRef.current?.priceScale().applyOptions({
+            autoScale: false
+          });
+
+          setIsLoadingChart(false);
+
+          return () => {
+            if (chartRef.current) {
+              chartRef.current.remove();
+              chartRef.current = null;
+              seriesRef.current = null;
+            }
+          };
+        }, [chartOptions, seriesOptions, timeseries]);
 
         return (
           // <span className="opacity-50">Chart here</span>;
@@ -351,14 +373,17 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       header: () => <span>30D Funding</span>,
       cell: ({ row }) => {
         const { underlyingDecimals, oraclePrice, poolAddr } = row.original;
-        const { dailyData } = useDailyData({ poolAddress: poolAddr });
-
-        // Reversed as we need series in ascending order
-        const timeseries = getFeesTimeseries(dailyData, underlyingDecimals);
-        // console.log("time series 2: ", timeseries);
-
         const { data: fundingFees, isFetching: isFetchingFees } = useMonthlyFundingFee(
           poolAddr as Address
+        );
+
+        const feeLimit = formatLimit(
+          (fundingFees
+            ? fundingFees.feePerToken *
+              formatOraclePrice(BigInt(oraclePrice), underlyingDecimals)
+            : 0
+          ).toString(),
+          0.0001
         );
 
         return isFetchingFees ? (
@@ -366,11 +391,7 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
         ) : fundingFees ? (
           <div className="inline-flex gap-1">
             <span>
-              {formatNumber(
-                fundingFees.feePerToken *
-                  formatOraclePrice(BigInt(oraclePrice), underlyingDecimals),
-                true
-              )}
+              {toDollarUnits(feeLimit.value, 2)}
             </span>
             <span
               className={cn(
@@ -521,7 +542,7 @@ export function transactionsColumnDef(): ColumnDef<Tx>[] {
     {
       id: "value",
       accessorKey: "value",
-      header: () => <span>Value (USD)</span>,
+      header: () => <span>Value</span>,
       cell: ({ row }) => {
         const { underlyingSize, oraclePrice, underlying } = row.original;
         return (
