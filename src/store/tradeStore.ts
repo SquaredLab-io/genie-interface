@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { TradeOptions } from "@lib/types/enums";
-import { TokenPrice } from "@lib/hooks/useTokenPrice";
-import { TokenBalance } from "@squaredlab-io/sdk";
+import { AllPositions } from "@squaredlab-io/sdk/src/interfaces/index.interface";
+import { isEqual } from "lodash";
 
 interface iTrade {
   isPositionModalOpen: boolean;
@@ -10,45 +10,11 @@ interface iTrade {
   setTradeType: (value: string) => void;
 }
 
-interface iPrices {
-  tokenPrice: TokenPrice | undefined;
-  setTokenPrice: (value: TokenPrice) => void;
-  isFetchingPrice: boolean;
-  setIsFetchingPrice: (value: boolean) => void;
+interface OrdersState {
+  orders: AllPositions | undefined;
+  // setOrders: (orders: AllPositions | undefined) => void;
+  updateOrders: (newOrders: AllPositions | undefined) => void;
 }
-
-interface iBalances {
-  currentPosition: TokenBalance | undefined;
-  updateCurrentPosition: (value: TokenBalance) => void;
-  isFetchingPosition: boolean;
-  updateFetchingPosition: (value: boolean) => void;
-}
-
-export const usePricesStore = create<iPrices>((set, get) => ({
-  tokenPrice: undefined,
-  setTokenPrice: (updatedPrice: TokenPrice) =>
-    set(() => ({
-      tokenPrice: updatedPrice
-    })),
-  isFetchingPrice: false,
-  setIsFetchingPrice: (update: boolean) =>
-    set(() => ({
-      isFetchingPrice: update
-    }))
-}));
-
-export const useBalanceStore = create<iBalances>((set, get) => ({
-  currentPosition: undefined,
-  updateCurrentPosition: (newPosition: TokenBalance) =>
-    set(() => ({
-      currentPosition: newPosition
-    })),
-  isFetchingPosition: false,
-  updateFetchingPosition: (fetching: boolean) =>
-    set(() => ({
-      isFetchingPosition: fetching
-    }))
-}));
 
 export const useTradeStore = create<iTrade>((set, get) => ({
   // states
@@ -63,4 +29,13 @@ export const useTradeStore = create<iTrade>((set, get) => ({
     set(() => ({
       tradeType: newTradeType
     }))
+}));
+
+export const useOrdersStore = create<OrdersState>((set, get) => ({
+  orders: undefined,
+  updateOrders: (newOrders) => {
+    if (!isEqual(get().orders, newOrders)) {
+      set({ orders: newOrders });
+    }
+  }
 }));

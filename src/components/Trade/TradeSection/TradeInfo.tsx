@@ -38,7 +38,7 @@ export function Marker({
 export default function TradeInfo() {
   const { selectedPool } = usePoolsStore();
 
-  const { tokenPrices: tokenPrice, isFetching: isFetchingPrice } = useTokenPrice({
+  const { tokenPrices, isFetching: isFetchingPrice } = useTokenPrice({
     poolAddress: selectedPool()?.poolAddr
   });
 
@@ -47,13 +47,13 @@ export default function TradeInfo() {
       <Marker label={"Fee"} value={"-"} />
       <Marker
         label={"TVL"}
-        value={`${formatNumber(parseFloat(tokenPrice?.tvl ?? "0") / 10 ** (selectedPool()?.underlyingDecimals ?? 18))}`}
+        value={`${formatNumber(parseFloat(tokenPrices?.tvl ?? "0") / 10 ** (selectedPool()?.underlyingDecimals ?? 18))}`}
         fetching={isFetchingPrice}
       />
       <Marker
         label={"Volume (24h)"}
         value={formatNumber(
-          parseFloat(tokenPrice?.volume!) /
+          parseFloat(tokenPrices?.volume!) /
             10 ** (selectedPool()?.underlyingDecimals ?? 18)
         )}
         fetching={isFetchingPrice}

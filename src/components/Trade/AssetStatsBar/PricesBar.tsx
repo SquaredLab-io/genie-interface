@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { Separator } from "@components/ui/separator";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
-import toUnits, { formatNumber } from "@lib/utils/formatting";
+import { formatNumber } from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
 import { useTokenPrice } from "@lib/hooks/useTokenPrice";
 
