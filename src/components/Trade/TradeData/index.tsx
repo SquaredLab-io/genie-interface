@@ -198,7 +198,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
       header: () => <span>P&L</span>,
       cell: ({ row }) => {
         const pAndLAmt = formatLimit(row.original.PAndLAmtInDollars, 0.01);
-        const pAndLPercent = formatLimit(row.original.PAndLPercent, 0.001);
+        const pAndLPercent = formatLimit(row.original.PAndLPercent, 0.01);
         return (
           <p className="flex flex-col gap-1 items-start">
             <span

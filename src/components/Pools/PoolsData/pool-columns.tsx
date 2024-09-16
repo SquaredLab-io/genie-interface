@@ -266,7 +266,10 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       header: () => <span>Historical Pool Fees</span>,
       cell: ({ row }) => {
         const { poolAddr } = row.original;
-        const { dailyData } = useDailyData({ poolAddress: poolAddr, limit: 30 });
+
+        const { cumulativeSumData } = useMonthlyFundingFee(
+          poolAddr as Address
+        );
 
         const chartContainerRef = useRef(null);
         const chartRef = useRef<IChartApi | null>(null);
@@ -274,7 +277,10 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
         const [isLoadingChart, setIsLoadingChart] = useState(false);
 
         // Reversed as we need series in ascending order
-        const timeseries = useMemo(() => getFeesTimeseries(dailyData), [dailyData]);
+        const timeseries = useMemo(
+          () => getFeesTimeseries(cumulativeSumData),
+          [cumulativeSumData]
+        );
 
         const chartOptions = useMemo(
           () => ({
@@ -373,13 +379,13 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       header: () => <span>30D Funding</span>,
       cell: ({ row }) => {
         const { underlyingDecimals, oraclePrice, poolAddr } = row.original;
-        const { data: fundingFees, isFetching: isFetchingFees } = useMonthlyFundingFee(
+        const { fundingFeeData, isFetching: isFetchingFees } = useMonthlyFundingFee(
           poolAddr as Address
         );
 
         const feeLimit = formatLimit(
-          (fundingFees
-            ? fundingFees.feePerToken *
+          (fundingFeeData
+            ? fundingFeeData.feePerToken *
               formatOraclePrice(BigInt(oraclePrice), underlyingDecimals)
             : 0
           ).toString(),
@@ -388,21 +394,19 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
 
         return isFetchingFees ? (
           <span>...</span>
-        ) : fundingFees ? (
+        ) : fundingFeeData ? (
           <div className="inline-flex gap-1">
-            <span>
-              {toDollarUnits(feeLimit.value, 2)}
-            </span>
+            <span>{toDollarUnits(feeLimit.value, 2)}</span>
             <span
               className={cn(
-                fundingFees.feePercent > 0
+                fundingFeeData.feePercent > 0
                   ? "text-positive-green"
-                  : fundingFees.feePercent < 0
+                  : fundingFeeData.feePercent < 0
                     ? "text-negative-red"
                     : undefined
               )}
             >
-              {fundingFees.feePercent.toFixed(5)}%
+              {fundingFeeData.feePercent.toFixed(5)}%
             </span>
           </div>
         ) : (

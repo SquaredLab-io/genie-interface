@@ -28,6 +28,7 @@ import { notificationId } from "../helper";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import useUnderlyingEstimateOut from "@lib/hooks/useUnderlyingEstimateOut";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
+import useTokenBalance from "@lib/hooks/useTokenBalance";
 
 interface PropsType {
   children: ReactNode;
@@ -76,6 +77,12 @@ const ClosePositionPopover: FC<PropsType> = ({
     poolAddress: selectedPool()?.poolAddr as Address,
     amount: quantity,
     isLong
+  });
+
+  const { refetch: refetchBalance } = useTokenBalance({
+    token: selectedPool()?.underlyingAddress! as Address,
+    decimals: selectedPool()?.underlyingDecimals!,
+    symbol: selectedPool()?.underlying!
   });
 
   /**
@@ -146,6 +153,7 @@ const ClosePositionPopover: FC<PropsType> = ({
     if (isSuccess) {
       refetchOpenOrders(); // updating open orders
       refetchTxHistory(); // updating closed orders' history
+      refetchBalance();
 
       // dismiss loading toast onSuccess
       toast.dismiss(close_event.loading);

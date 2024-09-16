@@ -24,7 +24,7 @@ export function formatNumber(
       minValue = -1e-2;
   }
 
-  if (num === 0) return isDollar ? "$0" : "0";
+  if (num === 0) return isDollar ? "$0.00" : "0.00";
   else if (num > minValue && num < Math.abs(minValue)) {
     return isDollar ? `$${num.toExponential(0)}` : num.toExponential(0);
   }
@@ -132,7 +132,7 @@ export function getDecimalAdjusted(
   decimals: number | undefined
 ): number {
   if (!value) return 0;
-  return parseFloat(value) / 10 ** (decimals ?? 0);
+  return parseFloat(value) / 10 ** (decimals ?? 18);
 }
 
 export function _getDecimalAdjusted(

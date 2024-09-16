@@ -1,3 +1,4 @@
+import { FeeCumulativeSumData } from "@lib/hooks/useMonthlyFundingFee";
 import { getDecimalAdjusted } from "@lib/utils/formatting";
 import { DailyInfo } from "@squaredlab-io/sdk/";
 
@@ -115,14 +116,15 @@ export const getTvlTimeseries = (dailyData: DailyInfo[] | undefined): LPTimeseri
     .reverse();
 };
 
-export const getFeesTimeseries = (dailyData: DailyInfo[] | undefined, decimals?: number): LPTimeseries[] => {
+export const getFeesTimeseries = (
+  dailyData: FeeCumulativeSumData,
+  decimals?: number
+): LPTimeseries[] => {
   if (!dailyData) return [];
-  return dailyData
-    .map((data) => {
-      return {
-        time: formatDate(parseInt(data.date.toString())),
-        value: getDecimalAdjusted(data.fee.toString(), 18) // TODO: Remove 18 with token's decimals
-      };
-    })
-    .reverse();
+  return dailyData.map((data) => {
+    return {
+      time: formatDate(parseInt(data.date.toString())),
+      value: getDecimalAdjusted(data.fee.toString(), decimals)
+    };
+  });
 };
