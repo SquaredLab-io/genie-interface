@@ -170,26 +170,24 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
           ? parseFloat(side === "Long" ? tokenPrices.lastLongP : tokenPrices.lastShortP)
           : undefined;
 
-        // const tradePrice = side === "Long" ? longPrice : shortPrice;
         const size = formatLimit(
           getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals!).toString(),
           0.01
         );
-        const sizeInDollars = !isFetching
-          ? formatLimit(
-              (
-                parseFloat(underlyingPrice) *
-                (tradePrice ?? 0) *
-                getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals)
-              ).toString(),
-              0.001
-            )
-          : "...";
+        const sizeInDollars = formatLimit(
+          (
+            parseFloat(underlyingPrice) *
+            (tradePrice ?? 0) *
+            getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals)
+          ).toString(),
+          0.001
+        );
+
         return (
           <p className="flex flex-col items-start">
             <span>{formatNumber(size.value)}</span>
             <span className="text-[#9299AA] text-xs">
-              {formatNumber(sizeInDollars.value, true)}
+              {!isFetching ? formatNumber(sizeInDollars.value, true) : "..."}
             </span>
           </p>
         );

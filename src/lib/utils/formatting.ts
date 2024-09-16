@@ -56,25 +56,25 @@ export function formatLimit(amount: string | undefined, limit: number) {
  */
 export function toDollarUnits(
   num: number | undefined,
-  decimals: 0 | 1 | 2 | 3 | 4 = 2
+  decimals: 0 | 1 | 2 | 3 = 2
 ): string {
-  if (!num || isNaN(num)) return "$0";
+  if (!num || isNaN(num)) return "$0".padEnd(decimals + 2, "0");
 
   const absNum = Math.abs(num);
   const isPositive = num > 0;
   const sign = isPositive ? "" : "-";
 
-  const formatOptions = {
+  const formatter = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  };
+    maximumFractionDigits: decimals
+  });
 
   if (absNum >= 1e9) {
-    return `${sign}$${(absNum / 1e9).toLocaleString("en-US", formatOptions)}B`;
+    return `${sign}$${formatter.format(absNum / 1e9)}B`;
   } else if (absNum >= 1e6) {
-    return `${sign}$${(absNum / 1e6).toLocaleString("en-US", formatOptions)}M`;
+    return `${sign}$${formatter.format(absNum / 1e6)}M`;
   }
-  return `${sign}$${absNum.toLocaleString("en-US", formatOptions)}`;
+  return `${sign}$${formatter.format(absNum)}`;
 }
 
 /**
@@ -87,13 +87,19 @@ export default function toUnits(
   num: number | undefined,
   decimals: 0 | 1 | 2 | 3
 ): string {
-  if (!num || isNaN(num)) return "0";
-  else if (num >= 1e9) {
-    return Number((num / 1e9).toFixed(decimals)).toLocaleString("en-US") + "B";
+  if (!num || isNaN(num)) return "0".padEnd(decimals + 2, "0");
+
+  const formatter = new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals
+  });
+
+  if (num >= 1e9) {
+    return formatter.format(num / 1e9) + "B";
   } else if (num >= 1e6) {
-    return Number((num / 1e6).toFixed(decimals)).toLocaleString("en-US") + "M";
+    return formatter.format(num / 1e6) + "M";
   }
-  return Number(num.toFixed(decimals)).toLocaleString("en-US");
+  return formatter.format(num);
 }
 
 export function shortenHash(hash: string | undefined): string {
