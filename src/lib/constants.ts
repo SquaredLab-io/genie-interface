@@ -27,7 +27,7 @@ export const meta = {
   TWITTER: "https://x.com/SquaredLabs_",
   DISCORD: "https://discord.gg/yMe2kkKP",
   TELEGRAM: "https://t.me/squaredlabs",
-  DOCS: "https://squaredlabs-io.gitbook.io/squaredlabs.io",
+  DOCS: "https://docs.squaredlabs.io/",
   LOGO: "/images/logo.svg",
   SUPPORT_MAIL: "genie@squaredlabs.io"
 };

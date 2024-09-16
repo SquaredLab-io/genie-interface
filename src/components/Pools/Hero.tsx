@@ -1,5 +1,6 @@
 "use client";
 
+import { meta } from "@lib/constants";
 import Link from "next/link";
 
 const Hero = () => {
@@ -8,7 +9,11 @@ const Hero = () => {
       <h1 className="heading-gradient font-medium text-[32px] leading-9">Pools</h1>
       <h4 className="font-normal text-base/[22px] text-[#98B0C1]">
         Earn fees & rewards by deploying liquidity into Pools.
-        <Link href="/pools" className="inline-flex items-center gap-[6px] ml-1 text-[#00A3FF]" target="_blank">
+        <Link
+          href={meta.DOCS}
+          className="inline-flex items-center gap-[6px] ml-1 text-[#00A3FF]"
+          target="_blank"
+        >
           How it works?
         </Link>
       </h4>
