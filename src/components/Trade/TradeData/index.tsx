@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import { memo, RefObject, useEffect, useMemo, useRef, useState } from "react";
@@ -44,13 +45,13 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
   const { openOrders, isFetching: loadingOpenOrders } = useOpenOrders({
     poolAddress: selectedPool()?.poolAddr!
   });
-  const { tokenPrices, isFetching } = useTokenPrice({
-    poolAddress: selectedPool()?.poolAddr
-  });
+  // const { tokenPrices, isFetching } = useTokenPrice({
+  //   poolAddress: selectedPool()?.poolAddr
+  // });
 
   // Managing long/short prices
-  const longPrice = parseFloat(tokenPrices?.lastLongP ?? "0");
-  const shortPrice = parseFloat(tokenPrices?.lastShortP ?? "0");
+  // const longPrice = parseFloat(tokenPrices?.lastLongP ?? "0");
+  // const shortPrice = parseFloat(tokenPrices?.lastShortP ?? "0");
 
   const openPositions = useMemo(() => getOpenTransactions(openOrders), [openOrders]);
   const closedPositions = useMemo(
@@ -160,20 +161,30 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
       accessorKey: "size",
       header: () => <span>Size</span>,
       cell: ({ row }) => {
-        const { tokenSize, underlyingPrice, side } = row.original;
-        const tradePrice = side === "Long" ? longPrice : shortPrice;
+        const { tokenSize, underlyingPrice, side, pool } = row.original;
+
+        const { tokenPrices, isFetching } = useTokenPrice({
+          poolAddress: pool
+        });
+        const tradePrice = tokenPrices
+          ? parseFloat(side === "Long" ? tokenPrices.lastLongP : tokenPrices.lastShortP)
+          : undefined;
+
+        // const tradePrice = side === "Long" ? longPrice : shortPrice;
         const size = formatLimit(
           getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals!).toString(),
           0.01
         );
-        const sizeInDollars = formatLimit(
-          (
-            parseFloat(underlyingPrice) *
-            tradePrice *
-            getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals)
-          ).toString(),
-          0.001
-        );
+        const sizeInDollars = !isFetching
+          ? formatLimit(
+              (
+                parseFloat(underlyingPrice) *
+                (tradePrice ?? 0) *
+                getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals)
+              ).toString(),
+              0.001
+            )
+          : "...";
         return (
           <p className="flex flex-col items-start">
             <span>{formatNumber(size.value)}</span>

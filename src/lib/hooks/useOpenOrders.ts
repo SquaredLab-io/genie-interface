@@ -44,7 +44,7 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
   };
 
   const { data, isFetching, refetch } = useQuery({
-    queryKey: ["openOrders", poolAddress, address],
+    queryKey: ["openOrders", address],
     queryFn: getOpenOrders,
     refetchInterval: REFETCH_INTERVAL,
     enabled:
