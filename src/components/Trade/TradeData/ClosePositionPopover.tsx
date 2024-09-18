@@ -1,5 +1,13 @@
 // Library Imports
-import { ChangeEvent, FC, memo, ReactNode, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FC,
+  memo,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState
+} from "react";
 import { Address } from "viem";
 import { toast } from "sonner";
 import BigNumber from "bignumber.js";
@@ -124,45 +132,56 @@ const ClosePositionPopover: FC<PropsType> = ({
     }
   }
 
+  // Memoized function to handle transaction status updates and notifications
+  const handleTransactionStatus = useCallback(
+    (status: "loading" | "success" | "error", errorMessage?: string) => {
+      switch (status) {
+        case "loading":
+          notification.loading({
+            id: close_event.loading,
+            title: "Closing position in process..."
+          });
+          break;
+        case "success":
+          toast.dismiss(close_event.loading);
+          notification.success({
+            id: close_event.success,
+            title: "Position successfully closed"
+          });
+          refetchOpenOrders();
+          refetchTxHistory();
+          refetchBalance();
+          break;
+        case "error":
+          toast.dismiss(close_event.loading);
+          notification.error({
+            id: close_event.error,
+            title: "Closing position failed",
+            description: errorMessage || "An error occurred",
+            duration: 5000
+          });
+          break;
+      }
+    },
+    [refetchOpenOrders, refetchTxHistory, refetchBalance]
+  );
+
   // wait for closePosition transaction
-  const { isSuccess, isLoading, isPending, isError, error } =
+  const { isSuccess, isLoading, isPending, isError, error, status } =
     useWaitForTransactionReceipt({
       hash: txHash,
       confirmations: CONFIRMATION
     });
 
-  // Notifications based on Transaction status
   useEffect(() => {
-    if (isLoading) {
-      notification.loading({
-        id: close_event.loading,
-        title: "Closing position in process..."
-      });
-    } else if (isError) {
-      toast.dismiss(close_event.loading);
-      notification.error({
-        id: close_event.error,
-        title: "Closing position failed",
-        description: `${error.message}`,
-        duration: 5000
-      });
+    if (isLoading && isPending) {
+      handleTransactionStatus("loading");
+    } else if (status === "success") {
+      handleTransactionStatus("success");
+    } else if (status === "error") {
+      handleTransactionStatus("error", error?.message);
     }
-  }, [isError, isLoading]);
-
-  useEffect(() => {
-    if (isSuccess) {
-      refetchOpenOrders(); // updating open orders
-      refetchTxHistory(); // updating closed orders' history
-      refetchBalance();
-
-      // dismiss loading toast onSuccess
-      toast.dismiss(close_event.loading);
-      notification.success({
-        id: close_event.success,
-        title: "Position successfully closed"
-      });
-    }
-  }, [isSuccess]);
+  }, [status, isLoading, isPending, error, handleTransactionStatus]);
 
   // Handler that updates Quantity and keep SliderValue in sync
   function inputHandler(event: ChangeEvent<HTMLInputElement>) {
