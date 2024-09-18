@@ -81,8 +81,3 @@ export const SUPPORTED_TOKENS = [
     decimals: 18
   }
 ];
-
-export const CONTRACT_ADDRESSES = {
-  POTENTIA_FACTORY_ADDR: "0x531DdAf1f0A0eC86d4892e60Fe9c869d8f22F420" as Address,
-  WETH_ADDR: TOKENS.WETH
-};

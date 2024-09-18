@@ -35,11 +35,12 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
     try {
       return await potentia?.openOrders();
     } catch (error) {
-      notification.error({
-        id: "open-orders",
-        title: "Failed to fetch Open Orders",
-        description: `${error}`
-      });
+      console.error("Failed to fetch open orders\n", error);
+      // notification.error({
+      //   id: "open-orders",
+      //   title: "Failed to fetch Open Orders",
+      //   description: `${error}`
+      // });
     }
   };
 
@@ -55,6 +56,7 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
       status === "success",
     staleTime: 0, // data is treated stale immediatly after fetching
     gcTime: 0, // cache is moved to grabage collector immediatly after it's not in use
+    retry: 4,
     refetchOnReconnect: true,
     refetchOnMount: true,
     refetchOnWindowFocus: true

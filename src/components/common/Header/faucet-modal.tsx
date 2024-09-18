@@ -10,7 +10,6 @@ import { toast } from "sonner";
 import axios, { AxiosError } from "axios";
 // Component Imports
 import Modal from "@components/common/Modal";
-import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import {
   Select,
   SelectContent,
@@ -39,7 +38,6 @@ interface PropsType {
 type TransactionStatus = "idle" | "loading" | "success" | "error";
 
 const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
-  // const { potentia } = usePotentiaSdk();
   const { isConnected, address } = useAccount();
   const { data: walletClient } = useWalletClient();
 
@@ -50,6 +48,7 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
 
   const { selectedPool } = usePoolsStore();
 
+  // selecting selected pool's token as the deault token option in faucet
   const [selectedToken, setSelectedToken] = useState(
     SUPPORTED_TOKENS.find((token) => {
       return token.address === selectedPool()?.underlyingAddress;
@@ -60,16 +59,11 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
     token: selectedPool()?.underlyingAddress as Address,
     decimals: selectedPool()?.underlyingDecimals,
     symbol: selectedPool()?.underlying
-    // paused: true,
   });
 
   // tx states
-  // const [isTxLoading, setIsTxLoading] = useState(false);
   const [txStatus, setTxStatus] = useState<TransactionStatus>("idle");
   const [error, setError] = useState<string | undefined>();
-  // const [isSuccess, setIsSuccess] = useState(false);
-
-  // const [txHash, setTxHash] = useState<Address>();
 
   // addToken() adds token into the connected wallet
   async function addToken() {

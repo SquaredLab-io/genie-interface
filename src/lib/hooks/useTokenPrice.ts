@@ -40,27 +40,28 @@ export function useTokenPrice({ poolAddress, paused = false }: PropsType): Retur
       const tokenprice = await potentia?.fetchTokenPrice(poolAddress!);
       return tokenprice;
     } catch (error) {
-      console.log("poolAddress @useTokenPrice", poolAddress);
-      notification.error({
-        id: "token-price",
-        title: "Failed to fetch Token Prices",
-        description: `${error}`
-      });
+      console.error("Failed to fetch Token Prices\n", error);
+      // notification.error({
+      //   id: "token-price",
+      //   title: "Failed to fetch Token Prices",
+      //   description: `${error}`
+      // });
     }
   };
 
   const {
     data,
     status,
-    error,
-    isError,
-    isFetching: fetchingPrice,
-    refetch
+    // error,
+    // isError,
+    isFetching: fetchingPrice
+    // refetch
   } = useQuery({
     queryKey: ["tokenPrice", poolAddress],
     queryFn: fetchTokenPrice,
     refetchInterval: REFETCH_INTERVAL,
-    enabled: !paused && !!potentia && !!poolAddress
+    enabled: !paused && !!potentia && !!poolAddress,
+    retry: 4
   });
 
   return {
