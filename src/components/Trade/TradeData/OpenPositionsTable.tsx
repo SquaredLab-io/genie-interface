@@ -14,6 +14,8 @@ import {
 } from "@tanstack/react-table";
 import NextImage from "@components/common/NextImage";
 import { useAccount } from "wagmi";
+import { memo, useMemo } from "react";
+import { PopoverProvider } from "./PopoverContext";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -26,15 +28,17 @@ const OpenPositionsTable = <TData, TValue>({
   data,
   isLoading
 }: PropsType<TData, TValue>) => {
+  const memoizedCoreRowModal = useMemo(() => getCoreRowModel(), []);
+
   const table = useReactTable({
     data,
     columns,
-    getCoreRowModel: getCoreRowModel()
+    getCoreRowModel: memoizedCoreRowModal
   });
 
   const { isConnected } = useAccount();
 
-  return (
+  const tableContent = useMemo(() => (
     <Table>
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
@@ -67,20 +71,7 @@ const OpenPositionsTable = <TData, TValue>({
           </TableRow>
         ) : table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => (
-            <TableRow
-              key={row.id}
-              className="hover:bg-[#101F29] -z-10"
-              // onClick={() => {
-              //   const action = (row.getValue("action") as string)
-              //     .split(" ")[1]
-              //     .toLowerCase();
-              //   if (action == "long") {
-              //     setTradeType(TradeOptions.long);
-              //   } else {
-              //     setTradeType(TradeOptions.short);
-              //   }
-              // }}
-            >
+            <TableRow key={row.id} className="hover:bg-[#101F29] -z-10">
               {row.getVisibleCells().map((cell) => (
                 <TableCell key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -106,7 +97,11 @@ const OpenPositionsTable = <TData, TValue>({
         )}
       </TableBody>
     </Table>
-  );
+  ), [table, isConnected, columns.length, isLoading]);
+
+  return <PopoverProvider>{tableContent}</PopoverProvider>;
 };
+
+OpenPositionsTable.displayName = "OpenPositionsTable";
 
 export default OpenPositionsTable;
