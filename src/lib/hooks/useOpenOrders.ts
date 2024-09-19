@@ -4,6 +4,7 @@ import { AllPositions } from "@squaredlab-io/sdk/src/interfaces/index.interface"
 import notification from "@components/common/notification";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { REFETCH_INTERVAL } from "@lib/constants";
+import { useTradeStore } from "@store/tradeStore";
 
 interface PropsType {
   poolAddress: string;
@@ -31,6 +32,8 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
   // initiating sdk
   const { potentia } = usePotentiaSdk();
 
+  const { closePopoverDisabled } = useTradeStore();
+
   const getOpenOrders = async () => {
     try {
       return await potentia?.openOrders();
@@ -47,7 +50,7 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
   const { data, isFetching, refetch } = useQuery({
     queryKey: ["openOrders", address],
     queryFn: getOpenOrders,
-    refetchInterval: REFETCH_INTERVAL,
+    refetchInterval: closePopoverDisabled ? false : REFETCH_INTERVAL,
     enabled:
       !paused &&
       !!poolAddress &&

@@ -6,7 +6,6 @@ import {
   ReactNode,
   useCallback,
   useEffect,
-  useRef,
   useState
 } from "react";
 import { Address } from "viem";
@@ -38,35 +37,28 @@ import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import useUnderlyingEstimateOut from "@lib/hooks/useUnderlyingEstimateOut";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
-import { usePopover } from "./PopoverContext";
+import { useTradeStore } from "@store/tradeStore";
 
 interface PropsType {
   children: ReactNode;
   position: OpenPositionInfo;
   isLong: boolean;
-  popoverId: string;
-  // onClickTrigger?: () => void;
-  // isOpen?: boolean;
-  // setIsOpen?: (open: boolean) => void;
+  random?: number;
 }
 
 const ClosePositionPopover: FC<PropsType> = memo(
-  ({ children, position, isLong, popoverId }) => {
-    const { openPopoverId, setOpenPopoverId } = usePopover();
-    const isOpen = openPopoverId === popoverId;
+  ({ children, position, isLong, random }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [quantity, setQuantity] = useState("");
+    const [inputAmount, setInputAmount] = useState("");
+    const [sliderValue, setSliderValue] = useState(0);
 
-    const quantityRef = useRef(position.tokenSize);
-    const inputAmountRef = useRef("");
-    const sliderValueRef = useRef(0);
-
-    const [quantity, setQuantity] = useState<string>(quantityRef.current);
-    const [inputAmount, setInputAmount] = useState<string>(inputAmountRef.current);
-    const [sliderValue, setSliderValue] = useState<number>(sliderValueRef.current);
     const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
     const [isHandlerLoading, setIsHandlerLoading] = useState(false);
 
     const { potentia } = usePotentiaSdk();
 
+    const { setClosePopoverDisabled } = useTradeStore();
     const { selectedPool, poolsToPower } = usePoolsStore();
     const { close_event } = notificationId;
 
@@ -185,22 +177,6 @@ const ClosePositionPopover: FC<PropsType> = memo(
       }
     }, [status, isLoading, isPending, error, handleTransactionStatus]);
 
-    // Update refs when state changes
-    useEffect(() => {
-      quantityRef.current = quantity;
-      inputAmountRef.current = inputAmount;
-      sliderValueRef.current = sliderValue;
-    }, [quantity, inputAmount, sliderValue]);
-
-    // Reset state when position changes
-    useEffect(() => {
-      if (position.tokenSize !== quantityRef.current) {
-        setQuantity(position.tokenSize);
-        setInputAmount("");
-        setSliderValue(0);
-      }
-    }, [position.tokenSize]);
-
     // Handler that updates Quantity and keep SliderValue in sync
     function inputHandler(event: ChangeEvent<HTMLInputElement>) {
       const input = event.target.value;
@@ -228,27 +204,27 @@ const ClosePositionPopover: FC<PropsType> = memo(
     }
 
     const isPopoverClosingDisabled = isHandlerLoading || isLoading;
+    useEffect(() => {
+      if (isHandlerLoading || isLoading || isOpen) {
+        setClosePopoverDisabled(true);
+      } else {
+        setClosePopoverDisabled(false);
+      }
+    }, [isHandlerLoading, isLoading, isOpen]);
 
-    const handleOpenChange = useCallback(
-      (open: boolean) => {
-        if (open) {
-          setOpenPopoverId(popoverId);
-        } else {
-          setOpenPopoverId(null);
-        }
-      },
-      [popoverId, setOpenPopoverId]
-    );
+    const handleOpenChange = useCallback((open: boolean) => {
+      setIsOpen(open);
+    }, []);
 
     return (
       <Popover
-        open={isOpen}
-        // open={isPopoverClosingDisabled ? true : isOpen}
+        open={isPopoverClosingDisabled ? true : isOpen}
         onOpenChange={handleOpenChange}
         modal={true}
-        // defaultOpen={false}
       >
-        <PopoverTrigger asChild className="min-w-fit z-50">{children}</PopoverTrigger>
+        <PopoverTrigger asChild className="min-w-fit z-50">
+          {children}
+        </PopoverTrigger>
         <PopoverContent
           side="top"
           className="bg-primary-gray border border-secondary-gray rounded-base p-0"
@@ -279,15 +255,7 @@ const ClosePositionPopover: FC<PropsType> = memo(
                 </p>
               </div>
               <span>
-                Balance:{" "}
-                {formatNumber(
-                  getDecimalAdjusted(
-                    balance.toFixed(0),
-                    // isLong ? longTokenBalance.toFixed(0) : shortTokenBalance.toFixed(0),
-                    // isLong ? longTokenBalance.toFixed(0) : shortTokenBalance.toFixed(0),
-                    18
-                  )
-                )}
+                Balance: {formatNumber(getDecimalAdjusted(balance.toFixed(0), 18))}
               </span>
             </div>
             <SliderBar

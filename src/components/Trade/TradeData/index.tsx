@@ -26,7 +26,6 @@ import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { OpenPositionInfo, Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useAccount } from "wagmi";
 import { useTokenPrice } from "@lib/hooks/useTokenPrice";
-import { PopoverProvider } from "./PopoverContext";
 
 enum Tab {
   position = "position",
@@ -180,7 +179,9 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
           <p className="flex flex-col items-start">
             <span>{formatNumber(size.value)}</span>
             <span className="text-[#9299AA] text-xs">
-              {!isFetching ? formatNumber(sizeInDollars.value, true) : "..."}
+              {isFetching && !sizeInDollars
+                ? "..."
+                : formatNumber(sizeInDollars.value, true)}
             </span>
           </p>
         );
@@ -228,17 +229,13 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
         // Use useMemo to prevent unnecessary re-renders of ClosePositionPopover
         return useMemo(
           () => (
-            <ClosePositionPopover
-              position={row.original}
-              isLong={isLong}
-              popoverId={popoverId}
-            >
+            <ClosePositionPopover position={row.original} isLong={isLong}>
               <button className="py-1 px-[22px] text-white bg-[#32120D] font-normal text-[14px]/5 rounded-sm">
                 Close
               </button>
             </ClosePositionPopover>
           ),
-          [row.original, isLong]
+          [isLong]
         );
       }
     }

@@ -48,11 +48,11 @@ export const SUPPORTED_NETWORKS = [
 ];
 export const BASE_SEPOLIA = SUPPORTED_NETWORKS[0];
 
-// Number of Blocks to confirm
+// Number of Blocks required for confirmation
 export const CONFIRMATION = 7;
 
-// export const REFETCH_INTERVAL = false; // disabled
-export const REFETCH_INTERVAL = 10 * 1000; // 10 secs
+// Interval for refetching data in milliseconds
+export const REFETCH_INTERVAL = 60 * 1000;
 
 export const TOKENS: {
   [key: string]: `0x${string}`;
