@@ -26,7 +26,7 @@ import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import { OpenPositionInfo, Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useAccount } from "wagmi";
 import { useTokenPrice } from "@lib/hooks/useTokenPrice";
-// import { poolToPower } from "@lib/utils/pools";
+import { PopoverProvider } from "./PopoverContext";
 
 enum Tab {
   position = "position",
@@ -45,13 +45,6 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
   const { openOrders, isFetching: loadingOpenOrders } = useOpenOrders({
     poolAddress: selectedPool()?.poolAddr!
   });
-  // const { tokenPrices, isFetching } = useTokenPrice({
-  //   poolAddress: selectedPool()?.poolAddr
-  // });
-
-  // Managing long/short prices
-  // const longPrice = parseFloat(tokenPrices?.lastLongP ?? "0");
-  // const shortPrice = parseFloat(tokenPrices?.lastShortP ?? "0");
 
   const openPositions = useMemo(() => getOpenTransactions(openOrders), [openOrders]);
   const closedPositions = useMemo(
@@ -158,7 +151,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
       }
     },
     {
-      accessorKey: "size",
+      accessorKey: "tokenSize",
       header: () => <span>Size</span>,
       cell: ({ row }) => {
         const { tokenSize, underlyingPrice, side, pool } = row.original;
@@ -194,7 +187,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
       }
     },
     {
-      accessorKey: "pnl",
+      accessorKey: "PAndLAmtInDollars",
       header: () => <span>P&L</span>,
       cell: ({ row }) => {
         const pAndLAmt = formatLimit(row.original.PAndLAmtInDollars, 0.01);
@@ -225,19 +218,27 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
       }
     },
     {
-      accessorKey: "action",
+      accessorKey: "profit",
       header: () => <span className="sr-only">Action</span>,
       cell: ({ row }) => {
         const side = row.original.side;
-        return (
-          <ClosePositionPopover
-            position={row.original}
-            isLong={side === "Long" ? true : false}
-          >
-            <button className="py-1 px-[22px] text-white bg-[#32120D] font-normal text-[14px]/5 rounded-sm">
-              Close
-            </button>
-          </ClosePositionPopover>
+        const isLong = side === "Long";
+        const popoverId = `popover-${row.original.pool}`; // Assuming each position has a unique id
+
+        // Use useMemo to prevent unnecessary re-renders of ClosePositionPopover
+        return useMemo(
+          () => (
+            <ClosePositionPopover
+              position={row.original}
+              isLong={isLong}
+              popoverId={popoverId}
+            >
+              <button className="py-1 px-[22px] text-white bg-[#32120D] font-normal text-[14px]/5 rounded-sm">
+                Close
+              </button>
+            </ClosePositionPopover>
+          ),
+          [row.original, isLong]
         );
       }
     }

@@ -1,7 +1,4 @@
-import { Address, getAddress } from "viem";
-
-// App State
-export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION === "production";
+import { getAddress } from "viem";
 
 //
 // App's Metadata all at one place
@@ -40,7 +37,6 @@ export const navigation: {
 }[] = [
   { name: "Trades", href: "/", target: "" },
   { name: "Pools", href: "/pools", target: "" }
-  // { name: "Test", href: "/test_new", target: "" }
 ];
 
 export const SUPPORTED_NETWORKS = [
@@ -56,7 +52,7 @@ export const BASE_SEPOLIA = SUPPORTED_NETWORKS[0];
 export const CONFIRMATION = 7;
 
 // export const REFETCH_INTERVAL = false; // disabled
-export const REFETCH_INTERVAL = 60 * 1000; // 1 minute
+export const REFETCH_INTERVAL = 10 * 1000; // 10 secs
 
 export const TOKENS: {
   [key: string]: `0x${string}`;
