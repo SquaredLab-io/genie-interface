@@ -101,6 +101,9 @@ const TradeChart = ({ potentia }: PropsType) => {
           div[data-name="legend-source-title"] {
             pointer-events: none !important;
           }
+          .centerElement-kfvcmk8t {
+            display: none !important;
+          }
         `)
     );
   }
