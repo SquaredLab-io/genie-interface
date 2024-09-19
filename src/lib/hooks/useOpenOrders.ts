@@ -60,9 +60,9 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
     staleTime: 0, // data is treated stale immediatly after fetching
     gcTime: 0, // cache is moved to grabage collector immediatly after it's not in use
     retry: 4,
-    refetchOnReconnect: true,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true
+    refetchOnReconnect: !closePopoverDisabled,
+    refetchOnMount: !closePopoverDisabled,
+    refetchOnWindowFocus: !closePopoverDisabled
   });
 
   return {
