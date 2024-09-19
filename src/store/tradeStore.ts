@@ -1,25 +1,20 @@
 import { create } from "zustand";
 import { TradeOptions } from "@lib/types/enums";
-import { AllPositions } from "@squaredlab-io/sdk/src/interfaces/index.interface";
-import { isEqual } from "lodash";
 
 interface iTrade {
   isPositionModalOpen: boolean;
   tradeType: string;
+  closePopoverDisabled: boolean;
   setIsPositionModalOpen: (value: boolean) => void;
   setTradeType: (value: string) => void;
-}
-
-interface OrdersState {
-  orders: AllPositions | undefined;
-  // setOrders: (orders: AllPositions | undefined) => void;
-  updateOrders: (newOrders: AllPositions | undefined) => void;
+  setClosePopoverDisabled: (update: boolean) => void;
 }
 
 export const useTradeStore = create<iTrade>((set, get) => ({
   // states
   isPositionModalOpen: false,
   tradeType: TradeOptions.long,
+  closePopoverDisabled: false,
   // actions
   setIsPositionModalOpen: (updatedState: boolean) =>
     set(() => ({
@@ -28,14 +23,9 @@ export const useTradeStore = create<iTrade>((set, get) => ({
   setTradeType: (newTradeType: string) =>
     set(() => ({
       tradeType: newTradeType
+    })),
+  setClosePopoverDisabled: (update: boolean) =>
+    set(() => ({
+      closePopoverDisabled: update
     }))
-}));
-
-export const useOrdersStore = create<OrdersState>((set, get) => ({
-  orders: undefined,
-  updateOrders: (newOrders) => {
-    if (!isEqual(get().orders, newOrders)) {
-      set({ orders: newOrders });
-    }
-  }
 }));
