@@ -5,6 +5,7 @@ import {
   ConfigurationData,
   ExternalFeed,
   PotentiaSdk,
+  Timezone,
   getPotentiaDataFeed
 } from "@squaredlab-io/sdk/src";
 import {
@@ -41,11 +42,16 @@ const TradeChart = ({ potentia }: PropsType) => {
       );
       const tokenSymbol = `${selectedPool()?.underlying}^${selectedPool()?.power} ${tradeType.toUpperCase()}`;
 
+      // Retrieve the saved timezone from localStorage
+      const savedTimezone =
+        (localStorage.getItem("chartTimezone") as "exchange" | Timezone | undefined) ||
+        widgetProps.timezone;
+
       const widgetOptions: ChartingLibraryWidgetOptions = {
         symbol: tokenSymbol,
         // BEWARE: no trailing slash is expected in feed URL
         datafeed: Datafeed,
-        timezone: widgetProps.timezone,
+        timezone: savedTimezone,
         interval: widgetProps.interval as ResolutionString,
         container: chartContainerRef.current,
         library_path: widgetProps.library_path,
@@ -56,7 +62,7 @@ const TradeChart = ({ potentia }: PropsType) => {
           "symbol_search_hot_key",
           "symbol_info"
         ],
-        enabled_features: ["study_templates"],
+        enabled_features: ["study_templates", "timezone_menu"],
         charts_storage_url: widgetProps.charts_storage_url,
         charts_storage_api_version: widgetProps.charts_storage_api_version,
         client_id: widgetProps.client_id,
@@ -80,6 +86,11 @@ const TradeChart = ({ potentia }: PropsType) => {
       tvWidget.onChartReady(() => {
         console.log("Chart is ready");
         injectCustomCSS(tvWidget);
+
+        tvWidget.subscribe("onAutoSaveNeeded", () => {
+          const currentTimezone = tvWidget.chart().getTimezoneApi().getTimezone();
+          localStorage.setItem("chartTimezone", currentTimezone.id);
+        });
       });
 
       // Cleanup function
