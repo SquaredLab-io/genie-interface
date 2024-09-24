@@ -6,7 +6,7 @@ import { getAddress } from "viem";
 export const meta = {
   APP_NAME: "Genie DEX",
   DESCRIPTION:
-    "Genie is an entire derivatives ecosystem without liquidation! Powered by Potentia Protocol.",
+    "Genie DEX is an entire derivatives ecosystem without liquidation! Powered by Potentia Protocol.",
   KEYWORDS: [
     "Derivatives",
     "Liquidation",
@@ -22,8 +22,8 @@ export const meta = {
   SITE_NAME: "genie.squaredlabs.io",
   USERNAME: "@squaredlabs_",
   TWITTER: "https://x.com/SquaredLabs_",
-  DISCORD: "https://discord.gg/yMe2kkKP",
-  TELEGRAM: "https://t.me/squaredlabs",
+  DISCORD: "https://discord.com/invite/aD8Wtk4fNs",
+  TELEGRAM: "https://t.me/genie_dex",
   DOCS: "https://docs.squaredlabs.io/",
   LOGO: "/images/logo.svg",
   SUPPORT_MAIL: "genie@squaredlabs.io"

@@ -5,6 +5,7 @@ import { Textarea } from "@components/ui/textarea";
 import { cn } from "@lib/utils";
 import { meta } from "@lib/constants";
 import { DialogDescription, DialogHeader, DialogTitle } from "@components/ui/dialog";
+import Link from "next/link";
 
 enum Feedback {
   que = "Question",
@@ -65,9 +66,11 @@ const FeedbackModal = ({
             </a>
           </p>
           <div className="font-medium text-xs/6">
-            <button className="px-7 py-1 bg-transparent text-white border border-secondary-gray rounded-base mr-6 leading-6">
-              Help Center
-            </button>
+            <Link href={meta.DISCORD} target="_blank">
+              <button className="px-7 py-1 hover:bg-white/5 text-white border border-secondary-gray rounded-base mr-6 leading-6">
+                Help Center
+              </button>
+            </Link>
             <a
               className="py-2 px-7 bg-white text-black border border-white rounded-base leading-6"
               href={mailToLink()}
@@ -81,7 +84,7 @@ const FeedbackModal = ({
     >
       <DialogHeader>
         <DialogTitle className="font-normal text-lg/6">
-          Contact SquaredLabs Team
+          Contact Genie DEX team
         </DialogTitle>
       </DialogHeader>
       <div className="flex flex-row gap-3 mt-4 mb-5">

@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     template: `%s | ${APP_NAME}`,
     default: APP_NAME
   },
-  description: "Derivatives without liquidation",
+  description: DESCRIPTION,
   icons: {
     icon: LOGO,
     apple: "apple-touch-icon-precomposed"
