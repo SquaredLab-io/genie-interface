@@ -21,10 +21,21 @@ export const chartOptionsConfig = (
   const options: DeepPartial<ChartOptions> = {
     layout: {
       background: { type: ColorType.Solid, color: colors.backgroundColor },
-      textColor: colors.textColor
+      textColor: colors.textColor,
+      attributionLogo: false
     },
     width: (chartContainerRef.current as any)?.clientWidth,
     height: 417,
+    watermark: {
+      visible: false
+    },
+    rightPriceScale: {
+      scaleMargins: {
+        top: 0.1,
+        bottom: 0
+      },
+      borderVisible: false
+    },
     autoSize: true,
     grid: {
       vertLines: {

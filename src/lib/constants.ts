@@ -6,7 +6,7 @@ import { getAddress } from "viem";
 export const meta = {
   APP_NAME: "Genie DEX",
   DESCRIPTION:
-    "Genie DEX is an entire derivatives ecosystem without liquidation! Powered by Potentia Protocol.",
+    "Genie Dex is a derivatives protocol without long and short liquidations. Built on to of Potentia Protocol.",
   KEYWORDS: [
     "Derivatives",
     "Liquidation",

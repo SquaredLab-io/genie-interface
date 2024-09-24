@@ -39,9 +39,22 @@ const VolumeChart = ({
       chart.timeScale().fitContent();
 
       const series = chart.addHistogramSeries({
-        color: colors.barColor
+        color: colors.barColor,
+        priceFormat: {
+          type: "volume"
+        },
+        priceScaleId: "right"
       });
       series.setData(timeseries);
+
+      // Set y-axis to start from 0
+      chart.priceScale("right").applyOptions({
+        autoScale: false,
+        scaleMargins: {
+          top: 0.1, // Leave some space at the top
+          bottom: 0 // Start from the bottom of the chart
+        }
+      });
 
       window.addEventListener("resize", handleResize);
 
@@ -56,7 +69,7 @@ const VolumeChart = ({
   }, [timeseries]);
 
   return (
-    <div className="relative h-[calc(100%-20px)]">
+    <div className="relative h-[calc(100%-10px)]">
       {isLoadingChart || loading ? (
         <div className="size-full flex-col-center">
           <LoadingLogo size={80} />
