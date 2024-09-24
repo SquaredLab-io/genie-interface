@@ -95,8 +95,8 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     } catch (error) {
       notification.error({
         id: removeLiq_event.error,
-        title: "Removing Liquidity failed",
-        description: `${error}`
+        title: "Remove Liquidity Failed",
+        description: "Unable to initiate liquidity withdrawl. Try again"
       });
     }
   }
@@ -117,14 +117,15 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     if (isLoading) {
       notification.loading({
         id: removeLiq_event.loading,
-        title: "Withdrawing liquidity"
+        title: "Removing Liquidity",
+        description: "This may take ~30 seconds."
       });
     } else if (isError) {
       toast.dismiss(removeLiq_event.loading);
       notification.error({
         id: removeLiq_event.error,
-        title: "Withdraw liquidity failed",
-        description: `${error.message}`
+        title: "Transaction Failed",
+        description: "Liquidity withdrawl failed. Please try again."
       });
     }
   }, [isLoading, isError]);
@@ -138,7 +139,8 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       setAmount("");
       notification.success({
         id: removeLiq_event.success,
-        title: "Liquidity withdrawn successfully"
+        title: "Withdrew Liquidity Successfully",
+        description: "You have successfully removed liquidity."
       });
     }
   }, [isSuccess]);
@@ -183,7 +185,9 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
               className={cn(balanceExceedError ? "text-error-red" : "text-[#5F7183]")}
             >
               Your LP balance:{" "}
-              {isLpPositionFetching && !lpBalance ? "loading..." : formatNumber(lpBalance)}
+              {isLpPositionFetching && !lpBalance
+                ? "loading..."
+                : formatNumber(lpBalance)}
             </span>
             <div className="inline-flex gap-2">
               <button

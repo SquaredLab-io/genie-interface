@@ -147,8 +147,8 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
     } catch (error) {
       notification.error({
         id: long_event.default_approve,
-        title: "Token approval failed!",
-        description: `${approveError?.message}`
+        title: "Token Approval Unsuccessful",
+        description: "Unable to initiate token approval."
       });
     }
   }, [quantity, selectedPool(), isApprovedData, writeApproveToken, approveError]);
@@ -177,8 +177,8 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
     } catch (e) {
       notification.error({
         id: long_event.default,
-        title: "Opening Position confirmation failed",
-        description: `${e}`
+        title: "Open Position Failed",
+        description: "Unable to open position. Please try again."
       });
     }
   }, [quantity, potentia, selectedPool()]);
@@ -246,14 +246,15 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
     if (isApproveLoading) {
       notification.loading({
         id: long_event.approve_loading,
-        title: "Approving tokens..."
+        title: "Approving Token",
+        description: "This may take ~30 seconds."
       });
     } else if (isApproveError) {
       toast.dismiss(long_event.approve_loading);
       notification.error({
         id: long_event.approve_error,
-        title: "Approval failed",
-        description: `${approvalError?.message}`
+        title: "Token Approval Failed",
+        description: "Approval transaction failed. Please try again."
       });
     }
   }, [isApproveError, isApproveLoading]);
@@ -267,7 +268,7 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
       notification.success({
         id: long_event.approve_success,
         title: "Token Approved",
-        description: "You may now process to Opening a long position"
+        description: "Token approval successful. Please wait..."
       });
     }
   }, [isApproveSuccess]);
@@ -277,15 +278,16 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
     if (isLoading) {
       notification.loading({
         id: long_event.loading,
-        title: "Opening Long Position..."
+        title: "Opening Position",
+        description: "This may take ~30 seconds."
       });
     }
     if (isError) {
       toast.dismiss(long_event.loading);
       notification.error({
         id: long_event.error,
-        title: "Opening Long Position failed",
-        description: `${error.message}`
+        title: "Transaction Failed",
+        description: "Opening position failed. Please try again."
       });
     }
   }, [isError, isLoading]);
@@ -302,8 +304,8 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
       toast.dismiss(long_event.loading);
       notification.success({
         id: long_event.success,
-        title: "Long Order placed successfully",
-        description: "You may see updated positions."
+        title: "Position Opened Successfully",
+        description: "Your position is now open."
       });
     }
   }, [isSuccess]);

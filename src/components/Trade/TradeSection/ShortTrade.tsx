@@ -153,8 +153,8 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     } catch (error) {
       notification.error({
         id: short_event.default_approve,
-        title: "Approval failed",
-        description: `${error}`
+        title: "Token Approval Unsuccessful",
+        description: "Unable to initiate token approval."
       });
     }
   };
@@ -198,9 +198,9 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       }
     } catch (e) {
       notification.error({
-        id: "",
-        title: "Opening Short Position failed",
-        description: "Please try again"
+        id: short_event.default,
+        title: "Open Position Failed",
+        description: "Unable to open position. Please try again."
       });
     } finally {
       console.log("open_short_position amount", _amount);
@@ -265,14 +265,15 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     if (isApproveLoading) {
       notification.loading({
         id: short_event.approve_loading,
-        title: "Approving tokens..."
+        title: "Approving Token",
+        description: "This may take ~30 seconds."
       });
     } else if (isApproveError) {
       toast.dismiss(short_event.approve_loading);
       notification.error({
         id: short_event.approve_error,
-        title: "Approval failed",
-        description: `${approvalError?.message}`
+        title: "Token Approval Failed",
+        description: "Approval transaction failed. Please try again."
       });
     }
   }, [isApproveError, isApproveLoading]);
@@ -286,7 +287,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       notification.success({
         id: short_event.approve_success,
         title: "Token Approved",
-        description: "You may now process to Opening a short position"
+        description: "Token approval successful. Please wait..."
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -297,15 +298,16 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     if (isLoading) {
       notification.loading({
         id: short_event.loading,
-        title: "Opening Short Position..."
+        title: "Opening Position",
+        description: "This may take ~30 seconds."
       });
     }
     if (isError) {
       toast.dismiss(short_event.loading);
       notification.error({
         id: short_event.default,
-        title: "Opening Position confirmation failed",
-        description: `${error.message}`
+        title: "Transaction Failed",
+        description: "Opening position failed. Please try again."
       });
     }
   }, [isError, isLoading]);
@@ -323,8 +325,8 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       toast.dismiss(short_event.loading);
       notification.success({
         id: short_event.success,
-        title: "Short Order placed successfully",
-        description: "You may see updated positions."
+        title: "Position Opened Successfully",
+        description: "Your position is now open."
       });
     }
   }, [isSuccess]);

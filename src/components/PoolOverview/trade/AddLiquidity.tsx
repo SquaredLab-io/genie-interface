@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { useAccount, useWaitForTransactionReceipt } from "wagmi";
 import { WethABi } from "@lib/abis";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import toUnits, {
@@ -114,8 +114,9 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       });
     } catch (error) {
       notification.error({
-        id: "add-approve-error",
-        title: "Approval confirmation failed!"
+        id: addLiq_event.error,
+        title: "Token Approval Unsuccessful",
+        description: "Unable to initiate token approval."
       });
     }
   };
@@ -158,14 +159,15 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     if (isApproveLoading) {
       notification.loading({
         id: addLiq_event.approve_loading,
-        title: "Approving transaction..."
+        title: "Approving Token",
+        description: "This may take ~30 seconds."
       });
     } else if (isApproveError) {
       toast.dismiss(addLiq_event.approve_loading);
       notification.error({
         id: addLiq_event.approve_error,
-        title: "Approval failed",
-        description: `${approvalError?.message}`
+        title: "Token Approval Failed",
+        description: "Approval transaction failed. Please try again."
       });
     }
   }, [isApproveLoading, isApproveError]);
@@ -188,14 +190,15 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     if (isLoading) {
       notification.loading({
         id: addLiq_event.loading,
-        title: "Adding liquidity in process..."
+        title: "Adding Liquidity",
+        description: "This may take ~30 seconds."
       });
     } else if (isError) {
       toast.dismiss(addLiq_event.loading);
       notification.error({
         id: addLiq_event.error,
-        title: "Failed to add liquidity",
-        description: `${error.message}`
+        title: "Add Liquidity Failed",
+        description: "Unable to open position. Please try again."
       });
     }
   }, [isLoading, isError]);
@@ -209,7 +212,8 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       setAmount("");
       notification.success({
         id: addLiq_event.success,
-        title: "Liquidity Added Successfully"
+        title: "Liquidity Added Successfully",
+        description: "You have added liquidity."
       });
     }
   }, [isSuccess]);
@@ -322,7 +326,9 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           <div className="font-normal text-xs/3 mt-1">
             <span className="text-[#5F7183]">
               Your LP balance:{" "}
-              {isLpPositionFetching && !lpPosition ? "loading..." : formatNumber(lpBalance)}
+              {isLpPositionFetching && !lpPosition
+                ? "loading..."
+                : formatNumber(lpBalance)}
             </span>
           </div>
         </div>

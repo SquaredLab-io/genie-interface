@@ -96,7 +96,8 @@ const ClosePositionPopover: FC<PropsType> = memo(
       setIsHandlerLoading(true);
       notification.loading({
         id: close_event.loading_init,
-        title: "Closing Position initiated..."
+        title: "Close Position Initiated",
+        description: "Please accept the transaction."
       });
       try {
         const hash = await potentia?.poolWrite.closePosition(
@@ -114,9 +115,8 @@ const ClosePositionPopover: FC<PropsType> = memo(
         toast.dismiss(close_event.loading_init);
         notification.error({
           id: close_event.default,
-          title: "Attempt to Close Position failed",
-          description: "Please try again",
-          duration: 5000
+          title: "Close Position Failed",
+          description: "Unable to initiate position closure. Try again"
         });
         setIsHandlerLoading(false);
         console.error("closePosition Error", error);
@@ -133,14 +133,16 @@ const ClosePositionPopover: FC<PropsType> = memo(
           case "loading":
             notification.loading({
               id: close_event.loading,
-              title: "Closing position in process..."
+              title: "Closing Position",
+              description: "This may take ~30 seconds."
             });
             break;
           case "success":
             toast.dismiss(close_event.loading);
             notification.success({
               id: close_event.success,
-              title: "Position successfully closed"
+              title: "Position Closed Successfully",
+              description: "Your position has been closed."
             });
             refetchOpenOrders();
             refetchTxHistory();
@@ -150,9 +152,9 @@ const ClosePositionPopover: FC<PropsType> = memo(
             toast.dismiss(close_event.loading);
             notification.error({
               id: close_event.error,
-              title: "Closing position failed",
-              description: errorMessage || "An error occurred",
-              duration: 5000
+              title: "Transaction Failed",
+              description: "Closing position failed. Please try again."
+              // description: errorMessage || "An error occurred"
             });
             break;
         }
