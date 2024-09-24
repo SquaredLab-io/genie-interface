@@ -93,13 +93,30 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
   const { refetch: refetchTradeHistory } = useTradeHistory(true);
 
   // Check approved tokens amount
-  const { isApprovedData, isApprovedLoading, isApprovedError, isApprovedSuccess } =
-    useIsApprovedToken({
-      tokenAddress: selectedPool()?.underlyingAddress as Address,
-      poolAddress: selectedPool()?.poolAddr as Address,
-      tokenBalance: userBalance,
-      input: parseFloat(quantity ?? "0")
-    });
+  const {
+    isApprovedData,
+    isApprovedLoading,
+    isApprovedSuccess,
+    refetch: refetchIsApproved
+  } = useIsApprovedToken({
+    tokenAddress: selectedPool()?.underlyingAddress as Address,
+    poolAddress: selectedPool()?.poolAddr as Address,
+    tokenBalance: userBalance,
+    input: parseFloat(quantity ?? "0")
+  });
+
+  // TODO: Remove this
+  useEffect(() => {
+    console.log(
+      "isApprovedData",
+      getDecimalAdjusted(
+        BigNumber(isApprovedData as BigNumber)?.toString(),
+        selectedPool()?.underlyingDecimals
+      ),
+      "\nisApprovedSuccess",
+      isApprovedSuccess
+    );
+  }, [inputAmount]);
 
   const {
     isApproveLoading,
@@ -115,7 +132,14 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
    * This handler method approves signers TOKEN_ADDR tokens to be spent on Potentia Protocol
    */
   const approveHandler = async () => {
-    const _amount = parseFloat(quantity) * 10 ** 18;
+    if (!selectedPool()) return;
+
+    const _quantity = getDecimalDeadjusted(quantity, selectedPool()?.underlyingDecimals);
+    // const _amount = BigNumber(_quantity)
+    //   .minus(BigNumber(isApprovedData as BigNumber))
+    //   .toFixed(0);
+
+    // const _amount = parseFloat(quantity) * 10 ** 18;
     try {
       await writeApproveToken({
         abi: WethABi,
@@ -123,7 +147,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
         functionName: "approve",
         args: [
           selectedPool()?.poolAddr! as Address,
-          BigInt(_amount).toString() // Approving as much as input amount only
+          BigInt(_quantity).toString() // Approving as much as input amount only
         ]
       });
     } catch (error) {
@@ -149,7 +173,19 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     // Invalidating openOrders Cache as it needs to be fetched fresh
     // queryClient.invalidateQueries({ queryKey: ["openOrders"] });
 
-    const _amount = parseFloat(quantity) * 10 ** 18;
+    refetchIsApproved();
+    console.log(
+      "isApprovedData",
+      getDecimalAdjusted(
+        BigNumber(isApprovedData as BigNumber)?.toString(),
+        selectedPool()?.underlyingDecimals
+      ),
+      "\nisApprovedSuccess",
+      isApprovedSuccess
+    );
+
+    const _amount = getDecimalDeadjusted(quantity, selectedPool()?.underlyingDecimals);
+    // const _amount = parseFloat(quantity) * 10 ** 18;
     try {
       const hash = await potentia?.poolWrite.openPosition(
         selectedPool()?.poolAddr as Address, // poolAddress
@@ -280,6 +316,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       refetchBalance();
       refetchOpenOrders();
       refetchTradeHistory();
+      refetchIsApproved();
 
       defaultInputs();
 

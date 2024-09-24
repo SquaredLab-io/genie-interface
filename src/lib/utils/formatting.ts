@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js";
 import { formatUnits } from "viem";
+import { isValidPositiveNumber } from "./checkVadility";
 
 /**
  * Gives expontential values if number is lesser than 1e-3 or greater than -1e-3
@@ -123,7 +124,7 @@ export function getDecimalDeadjusted(
   value: string | undefined,
   decimals: number | undefined
 ): string {
-  if (!value) return "0";
+  if (!isValidPositiveNumber(value) || !value) return "0";
   return new BigNumber(value).multipliedBy(10 ** (decimals ?? 18)).toFixed(0);
 }
 

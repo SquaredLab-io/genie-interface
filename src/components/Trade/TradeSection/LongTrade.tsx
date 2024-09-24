@@ -1,7 +1,7 @@
 "use client";
 
 // Library Imports
-import { ChangeEvent, FC, memo, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FC, memo, useCallback, useEffect, useMemo, useState } from "react";
 import { BiSolidDownArrow } from "react-icons/bi";
 import { useAccount, useWaitForTransactionReceipt } from "wagmi";
 import { type PotentiaSdk } from "@squaredlab-io/sdk/src";
@@ -41,7 +41,7 @@ interface PropsType {
   potentia?: PotentiaSdk;
 }
 
-const LongTrade: FC<PropsType> = ({ potentia }) => {
+const LongTrade: FC<PropsType> = memo(({ potentia }) => {
   const [quantity, setQuantity] = useState<string>("");
   const [inputAmount, setInputAmount] = useState<string>("");
   const [sliderValue, setSliderValue] = useState<number>(25);
@@ -98,8 +98,22 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       tokenAddress: selectedPool()?.underlyingAddress as Address,
       poolAddress: selectedPool()?.poolAddr as Address,
       tokenBalance: userBalance,
-      input: parseFloat(quantity ?? "0")
+      input: isValidPositiveNumber(quantity) ? parseFloat(quantity) : 0
     });
+
+  // useEffect(() => {
+  //   console.log(
+  //     "userBalance",
+  //     userBalance?.formatted,
+  //     "\nisApprovedData",
+  //     getDecimalAdjusted(
+  //       BigNumber(isApprovedData as BigNumber)?.toString(),
+  //       selectedPool()?.underlyingDecimals
+  //     ),
+  //     "\nisApprovedSuccess",
+  //     isApprovedSuccess
+  //   );
+  // }, [userBalance, isApprovedData, selectedPool, isApprovedSuccess]);
 
   const {
     isApproveLoading,
@@ -114,9 +128,12 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   /**
    * This handler method approves signer's underlying tokens to be spent on Potentia Protocol
    */
-  const approveHandler = async () => {
+  const approveHandler = useCallback(async () => {
     if (!selectedPool()) return;
-    const _amount = parseFloat(quantity) * 10 ** selectedPool()?.underlyingDecimals!;
+    const _quantity = getDecimalDeadjusted(quantity, selectedPool()?.underlyingDecimals);
+    // const _amount = BigNumber(_quantity).minus(BigNumber(isApprovedData as BigNumber)).toFixed(0);
+    // .plus(BigNumber(getDecimalDeadjusted("1", selectedPool()?.underlyingDecimals)));
+
     try {
       await writeApproveToken({
         abi: WethABi,
@@ -124,7 +141,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
         functionName: "approve",
         args: [
           selectedPool()?.poolAddr,
-          BigInt(_amount).toString() // Approving as much as input amount only
+          BigInt(_quantity).toString() // Approving as much as input amount only
         ]
       });
     } catch (error) {
@@ -134,20 +151,19 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
         description: `${approveError?.message}`
       });
     }
-  };
+  }, [quantity, selectedPool(), isApprovedData, writeApproveToken, approveError]);
 
   // wait for openPosition transaction
-  const { isSuccess, isLoading, isPending, isError, error } =
-    useWaitForTransactionReceipt({
-      hash: txHash,
-      confirmations: CONFIRMATION
-    });
+  const { isSuccess, isLoading, isError, error } = useWaitForTransactionReceipt({
+    hash: txHash,
+    confirmations: CONFIRMATION
+  });
 
   /**
    * Handler for Opening Long Position
    */
-  const openLongPositionHandler = async () => {
-    const _amount = parseFloat(quantity) * 10 ** selectedPool()?.underlyingDecimals!;
+  const openLongPositionHandler = useCallback(async () => {
+    const _amount = getDecimalDeadjusted(quantity, selectedPool()?.underlyingDecimals);
     try {
       const hash = await potentia?.poolWrite.openPosition(
         selectedPool()?.poolAddr!, // poolAddress
@@ -162,10 +178,10 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       notification.error({
         id: long_event.default,
         title: "Opening Position confirmation failed",
-        description: "Please try again"
+        description: `${e}`
       });
     }
-  };
+  }, [quantity, potentia, selectedPool()]);
 
   const balanceExceedError = useMemo(() => {
     return (
@@ -180,37 +196,43 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
   }, [quantity]);
 
   // Handler that updates Quantity and keep SliderValue in sync
-  function inputHandler(event: ChangeEvent<HTMLInputElement>) {
-    const input = event.target.value;
-    setQuantity(input);
-    setInputAmount(input);
-    if (userBalance) {
-      const value = isValidPositiveNumber(input)
-        ? (parseFloat(input) /
-            getDecimalAdjusted(balance?.toFixed(0), userBalance.decimals)) *
-          100
-        : 0;
-      setSliderValue(value);
-    }
-  }
+  const inputHandler = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const input = event.target.value;
+      setQuantity(input);
+      setInputAmount(input);
+      if (userBalance) {
+        const value = isValidPositiveNumber(input)
+          ? (parseFloat(input) /
+              getDecimalAdjusted(balance?.toFixed(0), userBalance.decimals)) *
+            100
+          : 0;
+        setSliderValue(value);
+      }
+    },
+    [userBalance, balance]
+  );
 
   // Handler that updates SliderValue and keep Quantity in sync
-  function sliderHandler(value: number) {
-    setSliderValue(value);
-    if (userBalance) {
-      const amount = _getDecimalAdjusted(
-        balance?.multipliedBy(BigNumber(value)).dividedBy(BigNumber(100)).toFixed(0),
-        userBalance.decimals
-      );
-      setQuantity(amount);
-      setInputAmount(parseFloat(amount).toFixed(2));
-    }
-  }
+  const sliderHandler = useCallback(
+    (value: number) => {
+      setSliderValue(value);
+      if (userBalance) {
+        const amount = _getDecimalAdjusted(
+          balance?.multipliedBy(BigNumber(value)).dividedBy(BigNumber(100)).toFixed(0),
+          userBalance.decimals
+        );
+        setQuantity(amount);
+        setInputAmount(parseFloat(amount).toFixed(2));
+      }
+    },
+    [userBalance, balance]
+  );
 
-  function defaultInputs() {
+  const defaultInputs = useCallback(() => {
     sliderHandler(0);
     setInputAmount("");
-  }
+  }, [sliderHandler]);
 
   // setting initial quantity
   // useEffect(() => {
@@ -281,7 +303,7 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       notification.success({
         id: long_event.success,
         title: "Long position successfully opened!",
-        description: "Yoy may see updated tokens. if not, please refresh!"
+        description: "You may see updated tokens. If not, please refresh!"
       });
     }
   }, [isSuccess]);
@@ -372,13 +394,12 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
           isApproveLoading ||
           isApprovePending ||
           isLoading ||
-          // (isApproveSuccess && isPending) ||
           balanceExceedError ||
           !minQuantityCheck ||
           isApprovedLoading
         } // conditions to Long Button
         onClick={() => (isApprovedSuccess ? openLongPositionHandler() : approveHandler())}
-        isLoading={isApproveLoading || isLoading}
+        isLoading={isApproveLoading || isLoading || isApprovedLoading}
       >
         <span>OPEN</span>
       </ButtonCTA>
@@ -398,6 +419,8 @@ const LongTrade: FC<PropsType> = ({ potentia }) => {
       <TradeInfo />
     </div>
   );
-};
+});
+
+LongTrade.displayName = "LongTrade";
 
 export default memo(LongTrade);

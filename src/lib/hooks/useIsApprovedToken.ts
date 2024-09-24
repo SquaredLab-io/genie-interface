@@ -31,7 +31,7 @@ const useIsApprovedToken = ({
 }: PropsType) => {
   const { address } = useAccount();
 
-  const { data, isLoading, isError } = useReadContract({
+  const { data, isLoading, isError, refetch } = useReadContract({
     abi: WethABi,
     address: tokenAddress,
     functionName: "allowance",
@@ -46,21 +46,21 @@ const useIsApprovedToken = ({
     [data]
   );
 
-  const check = useMemo(() => {
-    if (tokenBalance?.decimals && input) {
-      const inputAmount = BigNumber(input.toString())
-        .multipliedBy(BigNumber(10).pow(tokenBalance.decimals))
-        .decimalPlaces(0, 1);
-      return inputAmount.isLessThanOrEqualTo(allowance);
-    }
-    return false;
+  const isApprovedSuccess = useMemo(() => {
+    if (!tokenBalance || !input || !allowance) return false;
+
+    const inputAmount = BigNumber(input.toString())
+      .multipliedBy(BigNumber(10).pow(tokenBalance.decimals))
+      .decimalPlaces(0, 1);
+    return inputAmount.isLessThanOrEqualTo(allowance);
   }, [tokenBalance, input, allowance]);
 
   return {
-    isApprovedData: data,
+    isApprovedData: allowance,
     isApprovedLoading: isLoading,
     isApprovedError: isError,
-    isApprovedSuccess: check
+    isApprovedSuccess,
+    refetch
   };
 };
 
