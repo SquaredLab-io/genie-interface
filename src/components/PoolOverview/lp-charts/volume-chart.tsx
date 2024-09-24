@@ -65,7 +65,6 @@ const VolumeChart = ({
         chart.remove();
       };
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeseries]);
 
   return (
@@ -77,8 +76,6 @@ const VolumeChart = ({
       ) : (
         <div className="h-full" ref={chartContainerRef} />
       )}
-      {/* Range Toggle Group */}
-      {/* <RangeToggle /> */}
     </div>
   );
 };

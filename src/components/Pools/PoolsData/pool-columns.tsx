@@ -267,9 +267,7 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       cell: ({ row }) => {
         const { poolAddr } = row.original;
 
-        const { cumulativeSumData } = useMonthlyFundingFee(
-          poolAddr as Address
-        );
+        const { cumulativeSumData } = useMonthlyFundingFee(poolAddr as Address);
 
         const chartContainerRef = useRef(null);
         const chartRef = useRef<IChartApi | null>(null);
@@ -432,7 +430,7 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
                 Deposit
               </Button>
             </Link>
-            <PoolMenu underlying={underlying}>
+            <PoolMenu underlying={underlying} power={power}>
               <Button size="sm" variant="secondary">
                 More
               </Button>

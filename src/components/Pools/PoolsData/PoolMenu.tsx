@@ -13,9 +13,11 @@ import { useModalStore } from "@store/poolsStore";
 
 const PoolMenu = ({
   underlying,
+  power,
   children
 }: {
   underlying: string;
+  power: number;
   children: ReactNode;
 }) => {
   const { setOpenManageModal } = useModalStore();
@@ -28,7 +30,11 @@ const PoolMenu = ({
         <DropdownMenuItem className="p-0 mb-4 focus:bg-[#0D1921]">
           <Link
             className="inline-flex gap-2 items-center w-full"
-            href={`/pool/${underlying}`}
+            href={{
+              pathname: `/pool/${underlying}`,
+              query: { power: power }
+            }}
+            as={`/pool/${underlying}?power=${power}`}
           >
             <Image src="/icons/MinusIcon.svg" width={14} height={14} alt="add icon" />
             <span>Withdraw</span>
