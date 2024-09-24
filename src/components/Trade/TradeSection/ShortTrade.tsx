@@ -323,7 +323,8 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       toast.dismiss(short_event.loading);
       notification.success({
         id: short_event.success,
-        title: "Short position successfully opened"
+        title: "Short Order placed successfully",
+        description: "You may see updated positions."
       });
     }
   }, [isSuccess]);
@@ -412,7 +413,6 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
           isApproveLoading ||
           isApprovePending ||
           isLoading ||
-          // (isApproveSuccess && isPending) ||
           !minQuantityCheck ||
           balanceExceedError ||
           isApprovedLoading

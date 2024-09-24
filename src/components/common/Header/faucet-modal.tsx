@@ -220,7 +220,7 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
           </Select>
         </div>
         {/* TOKEN SELECTOR */}
-        <div className="space-y-3 w-full">
+        {/* <div className="space-y-3 w-full">
           <label>Select Token</label>
           <Select
             value={selectedToken.token}
@@ -259,7 +259,7 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
               ))}
             </SelectContent>
           </Select>
-        </div>
+        </div> */}
         {/* ADDRESS */}
         <div className="flex flex-col space-y-2 w-full mt-4 text-right">
           <label htmlFor="user-address">Wallet Address</label>
@@ -273,7 +273,6 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
         {/* CTA */}
         <ButtonCTA
           disabled={txStatus === "loading" || !isConnected || !address}
-          // disabled={isTxLoading || (isPending && isLoading) || !isConnected || !address}
           className="w-full rounded-[4px] font-sans-ibm-plex"
           onClick={() => {
             callFaucetAirdrop(address!, selectedToken.address);

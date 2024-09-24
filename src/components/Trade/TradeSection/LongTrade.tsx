@@ -302,8 +302,8 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
       toast.dismiss(long_event.loading);
       notification.success({
         id: long_event.success,
-        title: "Long position successfully opened!",
-        description: "You may see updated tokens. If not, please refresh!"
+        title: "Long Order placed successfully",
+        description: "You may see updated positions."
       });
     }
   }, [isSuccess]);
