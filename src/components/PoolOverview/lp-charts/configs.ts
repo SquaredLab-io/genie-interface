@@ -24,8 +24,12 @@ export const chartOptionsConfig = (
       textColor: colors.textColor,
       attributionLogo: false
     },
-    width: (chartContainerRef.current as any)?.clientWidth,
-    height: 417,
+    width: chartContainerRef.current
+      ? (chartContainerRef.current as HTMLElement).clientWidth
+      : undefined,
+    height: chartContainerRef.current
+      ? (chartContainerRef.current as HTMLElement).clientHeight
+      : undefined,
     watermark: {
       visible: false
     },
@@ -36,7 +40,7 @@ export const chartOptionsConfig = (
       },
       borderVisible: false
     },
-    autoSize: true,
+    autoSize: false, // Explicitly turn off autoSize
     grid: {
       vertLines: {
         color: colors.gridColor,
@@ -48,6 +52,12 @@ export const chartOptionsConfig = (
         style: LineStyle.Solid,
         visible: true
       }
+    },
+    handleScale: {
+      axisDoubleClickReset: true
+    },
+    handleScroll: {
+      vertTouchDrag: false
     }
   };
   return options;

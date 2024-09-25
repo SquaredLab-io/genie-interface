@@ -22,8 +22,6 @@ const TVLChart = ({
 
   // A useEffect that creates the chart based on configuration on load
   useEffect(() => {
-    const chartOptions = chartOptionsConfig(chartContainerRef);
-
     if (chartContainerRef.current !== null) {
       // chart prep start
       setIsLoadingChart(true);
@@ -34,6 +32,7 @@ const TVLChart = ({
         });
       };
 
+      const chartOptions = chartOptionsConfig(chartContainerRef);
       const chart = createChart(chartContainerRef.current, chartOptions);
 
       chart.timeScale().fitContent();
@@ -66,7 +65,7 @@ const TVLChart = ({
           <LoadingLogo size={80} />
         </div>
       ) : (
-        <div className="h-full" ref={chartContainerRef} />
+        <div className="size-full" ref={chartContainerRef} />
       )}
     </div>
   );
