@@ -187,7 +187,7 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
               Your LP balance:{" "}
               {isLpPositionFetching && !lpBalance
                 ? "loading..."
-                : formatNumber(lpBalance)}
+                : toUnits(lpBalance, 3)}
             </span>
             <div className="inline-flex gap-2">
               <button

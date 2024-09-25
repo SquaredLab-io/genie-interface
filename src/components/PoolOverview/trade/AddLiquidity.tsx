@@ -55,13 +55,17 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   });
 
   // Check approved tokens amount
-  const { isApprovedData, isApprovedLoading, isApprovedError, isApprovedSuccess } =
-    useIsApprovedToken({
-      tokenAddress: overviewPool.underlyingAddress as Address,
-      poolAddress: overviewPool.poolAddr as Address,
-      tokenBalance: userBalance,
-      input: parseFloat(amount ?? "0")
-    });
+  const {
+    // isApprovedData,
+    isApprovedLoading,
+    // isApprovedError,
+    isApprovedSuccess
+  } = useIsApprovedToken({
+    tokenAddress: overviewPool.underlyingAddress as Address,
+    poolAddress: overviewPool.poolAddr as Address,
+    tokenBalance: userBalance,
+    input: parseFloat(amount ?? "0")
+  });
 
   const {
     isApproveLoading,
@@ -328,7 +332,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
               Your LP balance:{" "}
               {isLpPositionFetching && !lpPosition
                 ? "loading..."
-                : formatNumber(lpBalance)}
+                : toUnits(lpBalance, 3)}
             </span>
           </div>
         </div>

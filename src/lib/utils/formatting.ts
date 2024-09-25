@@ -88,7 +88,7 @@ export default function toUnits(
   num: number | undefined,
   decimals: 0 | 1 | 2 | 3
 ): string {
-  if (!num || isNaN(num)) return "0".padEnd(decimals + 2, "0");
+  if (!num || isNaN(num)) return "0.00";
 
   const formatter = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: decimals,
