@@ -68,13 +68,13 @@ const VolumeChart = ({
   }, [timeseries]);
 
   return (
-    <div className="relative h-[calc(100%-10px)]">
+    <div className="relative h-[calc(100%-20px)]">
       {isLoadingChart || loading ? (
         <div className="size-full flex-col-center">
           <LoadingLogo size={80} />
         </div>
       ) : (
-        <div className="h-full" ref={chartContainerRef} />
+        <div className="size-full" ref={chartContainerRef} />
       )}
     </div>
   );

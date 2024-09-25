@@ -30,7 +30,7 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo }) => {
         <div className="col-span-5 border border-gray-800">
           <LPChart overviewPool={overviewPool} />
         </div>
-        <div className="col-span-2">
+        <div className="col-span-2 min-w-[402px] w-[402px] max-w-[402px]">
           <div className="flex flex-col px-4 border-y border-secondary-gray h-full">
             <header className="inline-flex items-center justify-between py-5">
               <h2 className="font-medium text-lg/6">
