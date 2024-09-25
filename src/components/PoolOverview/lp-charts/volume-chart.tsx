@@ -18,8 +18,6 @@ const VolumeChart = ({
   // Reversed as we need series in ascending order
   const timeseries = getVolumeTimeseries(dailyData);
 
-  console.log("timeseries in volume", timeseries);
-
   // A useEffect that creates the chart based on configuration on load
   useEffect(() => {
     const chartOptions = chartOptionsConfig(chartContainerRef);

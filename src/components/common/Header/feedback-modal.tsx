@@ -50,16 +50,12 @@ const FeedbackModal = ({
     setStatus("loading");
 
     const payload = { type: selectedFeedback, text: feedback };
-    console.log("Sending payload:", payload);
-
     try {
       const response = await axios.post("/api/feedback", payload, {
         headers: {
           "Content-Type": "application/json"
         }
       });
-      console.log("Response status:", response);
-
       setStatus("success");
       setFeedback("");
       setSelectedFeedback(Feedback.que);

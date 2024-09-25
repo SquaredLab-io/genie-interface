@@ -24,14 +24,7 @@ const useLpTokenReceiveEstimate = ({
   const { potentia } = usePotentiaSdk();
 
   const estimateLPTokenOut = async () => {
-    console.log("estimateLPTokenOut args", {
-      pool: poolAddress!,
-      amount: amount!,
-    });
-
-    // const _amount = (parseFloat(amount ?? "0") * 10 ** 18).toString();
     setIsFetching(true);
-
     try {
       const data = await potentia?.ponderClient.estimateLiqLPOut(
         poolAddress!, // pool address
@@ -42,10 +35,10 @@ const useLpTokenReceiveEstimate = ({
     } catch (error) {
       setIsFetching(false);
       console.error("Failed to estimate LpToken output");
-      notification.error({
-        id: "error-output-LpToken",
-        title: "Failed to estimate LpToken output"
-      });
+      // notification.error({
+      //   id: "error-output-LpToken",
+      //   title: "Failed to estimate LpToken output"
+      // });
     }
   };
 

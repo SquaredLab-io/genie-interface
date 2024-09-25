@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import Image from "next/image";
 import { PopoverSizes } from "@lib/types/common";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
@@ -12,11 +12,6 @@ interface PoolsListProps {
 }
 
 const PoolsList = ({ pools, updateSelectedPool, noPools, size }: PoolsListProps) => {
-  console.log({
-    pools,
-    noPools
-  });
-
   if (noPools) {
     return <div className="flex-row-center w-full h-20 opacity-50">No pools found</div>;
   }

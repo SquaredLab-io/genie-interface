@@ -20,7 +20,6 @@ export function useMyPools(allPools: PoolInfo[] | undefined, paused = false): Re
   const getMyPools = async () => {
     try {
       const data = await potentia?.ponderClient.getMyPools(address!);
-      console.log("my pools @useMyPools", data);
       return data?.pools;
     } catch (error) {
       console.error("Failed to fetch pools.");

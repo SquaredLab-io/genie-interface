@@ -73,7 +73,6 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
 
   const lpBalance = useMemo(() => {
     if (!lpPosition) return 0;
-    console.log("lpPosition", lpPosition);
     return parseFloat(lpPosition.counterLpAmt) / 10 ** overviewPool.underlyingDecimals;
   }, [lpPosition]);
 
@@ -92,9 +91,6 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
    */
   async function removeLiquidityHandlerSdk() {
     const shares = getDecimalDeadjusted(amount, 18);
-    // const shares = parseFloat(amount) * 10 ** 18;
-    console.log("shares", shares);
-    console.log("balance", userBalance?.value.toFixed(0));
     try {
       const hash = await potentia?.poolWrite.removeLiquidity(
         overviewPool.poolAddr as Address,
@@ -211,9 +207,7 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
                 onClick={() =>
                   setAmount(() => {
                     if (!lpPosition) return "0.00";
-                    const x = _getDecimalAdjusted(lpPosition.counterLpAmt, 18);
-                    console.log("formatted", x);
-                    return x;
+                    return _getDecimalAdjusted(lpPosition.counterLpAmt, 18);
                   })
                 }
                 disabled={!isConnected || !lpBalance}

@@ -33,7 +33,7 @@ const CLChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           overviewPool.poolAddr as Address // pool
         );
       } catch (error) {
-        console.log("error while fetching clchart data", error);
+        console.error("error while fetching clchart data", error);
       }
     },
     enabled: !!potentia && !!overviewPool,

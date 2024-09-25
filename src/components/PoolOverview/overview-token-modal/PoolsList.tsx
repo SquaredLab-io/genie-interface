@@ -11,11 +11,6 @@ interface PoolsListProps {
 }
 
 const PoolsList = ({ pools, noPools, setModalOpen }: PoolsListProps) => {
-  console.log({
-    pools,
-    noPools
-  });
-
   if (noPools) {
     return <div className="flex-row-center w-full h-20 opacity-50">No pools found</div>;
   }

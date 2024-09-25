@@ -24,10 +24,10 @@ const useLpUnderlyingReceived = ({
   const { potentia } = usePotentiaSdk();
 
   const estimatePositionUnderlyingOut = async () => {
-    console.log("estimatePositionUnderlyingOut args", {
-      pool: poolAddress!,
-      amount: amount!,
-    });
+    // console.log("estimatePositionUnderlyingOut args", {
+    //   pool: poolAddress!,
+    //   amount: amount!,
+    // });
 
     const _amount = (parseFloat(amount ?? "0") * 10 ** 18).toString();
     setIsFetching(true);
@@ -42,10 +42,10 @@ const useLpUnderlyingReceived = ({
     } catch (error) {
       setIsFetching(false);
       console.error("Failed to estimate underlying output");
-      notification.error({
-        id: "error-output-underlying",
-        title: "Failed to estimate underlying output"
-      });
+      // notification.error({
+      //   id: "error-output-underlying",
+      //   title: "Failed to estimate underlying output"
+      // });
     }
   };
 
