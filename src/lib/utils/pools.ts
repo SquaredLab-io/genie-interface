@@ -10,6 +10,10 @@ export const getTokenSymbol = (symbol: string | undefined): string => {
   }
 };
 
+export const getPoolTokens = (pool: string): string[] => {
+  return pool.split("/").map((p) => p.trim());
+};
+
 export const getActionType = (
   action?: "AL" | "RL" | "PC" | "OL" | "CL" | "OS" | "CS"
 ): string => {

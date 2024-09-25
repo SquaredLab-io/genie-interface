@@ -1,7 +1,8 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import Image from "next/image";
 import { PopoverSizes } from "@lib/types/common";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
+import { getPoolTokens } from "@lib/utils/pools";
 
 interface PoolsListProps {
   pools: PoolInfo[];
@@ -24,7 +25,7 @@ const PoolsList = ({ pools, updateSelectedPool, noPools, size }: PoolsListProps)
     <div className="flex flex-col mb-2">
       {pools.map((_pool) => {
         const { pool, underlying, power } = _pool;
-        const assets = pool.split("/").map((p) => p.trim());
+        const assets = getPoolTokens(pool);
         return (
           <button
             key={pool}

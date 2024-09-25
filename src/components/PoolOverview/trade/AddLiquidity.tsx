@@ -24,13 +24,18 @@ import { cn } from "@lib/utils";
 import InfoBox from "../info-box";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
 import useLpTokenReceiveEstimate from "@lib/hooks/useLpTokenReceiveEstimate";
-import { useCurrentLpPosition } from "@lib/hooks/useCurrentLpPosition";
+import { ReturnTxHistory, useCurrentLpPosition } from "@lib/hooks/useCurrentLpPosition";
 import { notificationId } from "@components/Trade/helper";
 import { toast } from "sonner";
 import useApproveToken from "@lib/hooks/useApproveToken";
 import useIsApprovedToken from "@lib/hooks/useIsApprovedToken";
 
-const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
+interface PropsType {
+  overviewPool: PoolInfo;
+  lpTokenBalance: ReturnTxHistory;
+}
+
+const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
   const [amount, setAmount] = useState<string>("");
   const [showInfo, setShowInfo] = useState<boolean>(true);
   const [txHash, setTxHash] = useState<Address | undefined>(undefined);
@@ -88,10 +93,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     data: lpPosition,
     isFetching: isLpPositionFetching,
     refetch: refetchLpPosition
-  } = useCurrentLpPosition({
-    poolAddress: poolAddr as Address
-  });
-
+  } = lpTokenBalance;
   const lpBalance =
     parseFloat(lpPosition?.counterLpAmt ?? "0") / 10 ** underlyingDecimals;
   const decimalAdjustedOraclePrice = formatOraclePrice(
@@ -330,9 +332,7 @@ const AddLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           <div className="font-normal text-xs/3 mt-1">
             <span className="text-[#5F7183]">
               Your LP balance:{" "}
-              {isLpPositionFetching && !lpPosition
-                ? "loading..."
-                : toUnits(lpBalance, 3)}
+              {isLpPositionFetching && !lpPosition ? "loading..." : toUnits(lpBalance, 3)}
             </span>
           </div>
         </div>

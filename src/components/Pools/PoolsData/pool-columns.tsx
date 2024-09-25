@@ -18,7 +18,7 @@ import { PoolInfo, Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface"
 import { BASE_SEPOLIA } from "@lib/constants";
 import { calculatePoolAge } from "@lib/utils/calculatePoolAge";
 import PoolMenu from "./PoolMenu";
-import { getActionType } from "@lib/utils/pools";
+import { getActionType, getPoolTokens } from "@lib/utils/pools";
 import { createChart, CrosshairMode, IChartApi, ISeriesApi } from "lightweight-charts";
 import { useEffect, useMemo, useRef, useState } from "react";
 import LoadingLogo from "@components/icons/loading-logo";
@@ -68,7 +68,7 @@ export function allPoolsColumnDef(
       ),
       cell: ({ row }) => {
         const { power, pool } = row.original;
-        const assets = pool.split("/").map((a) => a.trim());
+        const assets = getPoolTokens(pool);
         return (
           <div className="whitespace-nowrap flex flex-row gap-2 text-left font-medium pl-[18px] py-6">
             <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-2">
@@ -227,7 +227,7 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       ),
       cell: ({ row }) => {
         const { pool, power } = row.original;
-        const assets = pool.split("/").map((p) => p.trim());
+        const assets = getPoolTokens(pool);
         return (
           <div className="whitespace-nowrap flex flex-row gap-2 text-left font-medium pl-[18px] py-6">
             <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-2">
