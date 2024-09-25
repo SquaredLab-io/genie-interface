@@ -32,7 +32,6 @@ export function usePools(paused = false): ReturnType {
   const getPools = async () => {
     try {
       const data = await potentia?.getPools();
-      console.log("pools @usePools", data);
       updatePoolsData(data);
       updatePoolsToPower(createPoolToPowerMapping(data));
       return data;

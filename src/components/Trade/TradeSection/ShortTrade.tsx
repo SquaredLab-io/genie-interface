@@ -105,19 +105,6 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
     input: parseFloat(quantity ?? "0")
   });
 
-  // TODO: Remove this
-  useEffect(() => {
-    console.log(
-      "isApprovedData",
-      getDecimalAdjusted(
-        BigNumber(isApprovedData as BigNumber)?.toString(),
-        selectedPool()?.underlyingDecimals
-      ),
-      "\nisApprovedSuccess",
-      isApprovedSuccess
-    );
-  }, [inputAmount]);
-
   const {
     isApproveLoading,
     isApprovePending,
@@ -170,22 +157,8 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
    * Handler for Opening Short Position
    */
   const openShortPositionHandler = async () => {
-    // Invalidating openOrders Cache as it needs to be fetched fresh
-    // queryClient.invalidateQueries({ queryKey: ["openOrders"] });
-
     refetchIsApproved();
-    console.log(
-      "isApprovedData",
-      getDecimalAdjusted(
-        BigNumber(isApprovedData as BigNumber)?.toString(),
-        selectedPool()?.underlyingDecimals
-      ),
-      "\nisApprovedSuccess",
-      isApprovedSuccess
-    );
-
     const _amount = getDecimalDeadjusted(quantity, selectedPool()?.underlyingDecimals);
-    // const _amount = parseFloat(quantity) * 10 ** 18;
     try {
       const hash = await potentia?.poolWrite.openPosition(
         selectedPool()?.poolAddr as Address, // poolAddress
@@ -203,7 +176,7 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
         description: "Unable to open position. Please try again."
       });
     } finally {
-      console.log("open_short_position amount", _amount);
+      // console.log("open_short_position amount", _amount);
     }
   };
 

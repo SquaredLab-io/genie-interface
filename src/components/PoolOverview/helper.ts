@@ -44,8 +44,6 @@ export const generateRandomData = (
     });
     currentDate.setDate(currentDate.getDate() + 1);
   }
-  console.log("data for chart", data);
-
   return data;
 };
 
@@ -71,8 +69,6 @@ export const removeDuplicateDates = (data: { time: string; value: number }[]) =>
 
 // Function to transform timeseries data
 export const transformTimeseries = (timeseries: Timeseries[]) => {
-  console.log("timeseries", timeseries);
-
   const _array1 = timeseries?.map((item) => ({
     time: formatDate(item.timestamp),
     value: parseFloat(item.R)

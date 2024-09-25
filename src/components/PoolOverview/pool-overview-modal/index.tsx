@@ -55,7 +55,6 @@ const PoolOverviewModal: FC<PropsType> = ({ children, open, setOpen }) => {
     enabled: !!pools,
     staleTime: 30000
   });
-  console.log("Pools market data:", poolOverviewData);
 
   // Filtering based on Search term
   const { filteredPoolsOverview } = useFilteredPoolOverview(

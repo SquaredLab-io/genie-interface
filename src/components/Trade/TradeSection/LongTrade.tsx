@@ -101,20 +101,6 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
       input: isValidPositiveNumber(quantity) ? parseFloat(quantity) : 0
     });
 
-  // useEffect(() => {
-  //   console.log(
-  //     "userBalance",
-  //     userBalance?.formatted,
-  //     "\nisApprovedData",
-  //     getDecimalAdjusted(
-  //       BigNumber(isApprovedData as BigNumber)?.toString(),
-  //       selectedPool()?.underlyingDecimals
-  //     ),
-  //     "\nisApprovedSuccess",
-  //     isApprovedSuccess
-  //   );
-  // }, [userBalance, isApprovedData, selectedPool, isApprovedSuccess]);
-
   const {
     isApproveLoading,
     isApprovePending,
@@ -131,9 +117,6 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
   const approveHandler = useCallback(async () => {
     if (!selectedPool()) return;
     const _quantity = getDecimalDeadjusted(quantity, selectedPool()?.underlyingDecimals);
-    // const _amount = BigNumber(_quantity).minus(BigNumber(isApprovedData as BigNumber)).toFixed(0);
-    // .plus(BigNumber(getDecimalDeadjusted("1", selectedPool()?.underlyingDecimals)));
-
     try {
       await writeApproveToken({
         abi: WethABi,

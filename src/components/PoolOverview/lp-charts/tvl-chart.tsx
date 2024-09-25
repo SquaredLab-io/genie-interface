@@ -18,7 +18,7 @@ const TVLChart = ({
   // Reversed as we need series in ascending order
   const timeseries = getTvlTimeseries(dailyData);
 
-  console.log("timeseries in volume", timeseries);
+  // console.log("timeseries in volume", timeseries);
 
   // A useEffect that creates the chart based on configuration on load
   useEffect(() => {

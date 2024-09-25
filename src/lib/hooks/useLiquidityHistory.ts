@@ -28,7 +28,6 @@ export function useLiquidityHistory(paused = false): ReturnTxHistory {
       const result = await potentia?.getUserLiquidityHistory(
         address as Address // user
       );
-      console.log("liquidity history --\n", result);
       return result;
     } catch (error) {
       console.error("Error -- fetching liquidity history", error);

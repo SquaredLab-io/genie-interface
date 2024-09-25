@@ -13,7 +13,6 @@ type PoolSymbol = keyof typeof POOL_ID_MAP;
 const getPoolsMarketData = async (pools: PoolInfo[] | undefined) => {
   if (!pools) return [];
   const uniqueUnderlyings = Array.from(new Set(pools.map((pool) => pool.underlying)));
-  console.log("underlying unique symbols:", uniqueUnderlyings);
   const promiseResults = await Promise.all(
     uniqueUnderlyings.map(async (underlying) => {
       const symbol = getTokenSymbol(underlying) as PoolSymbol;

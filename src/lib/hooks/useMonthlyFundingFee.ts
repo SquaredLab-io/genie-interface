@@ -45,7 +45,6 @@ export function useMonthlyFundingFee(
         return undefined;
       }
       const result = await potentia?.ponderClient.get30DFunding(getAddress(poolAddress));
-      console.log("result @fundingFee", result);
       return result;
     } catch (error) {
       console.error("Error -- fetching monthly funding fee", error);
@@ -60,7 +59,6 @@ export function useMonthlyFundingFee(
         return undefined;
       }
       const result = await potentia?.get30DFeeCumulativeSum(getAddress(poolAddress));
-      console.log("result @feeCumulativeSum", result);
       return result;
     } catch (error) {
       console.error("Error -- fetching 30D fee cumulative sum", error);
