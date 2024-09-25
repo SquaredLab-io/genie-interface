@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 // Trade
 import AddLiquidity from "./trade/AddLiquidity";
 import RemoveLiquidity from "./trade/RemoveLiquidity";
@@ -13,11 +12,10 @@ import { useModalStore } from "@store/poolsStore";
 import PoolHeader from "./pool-header";
 import LPChart from "./lp-charts";
 import PoolOverviewModal from "./pool-overview-modal";
+import { useLpStore } from "@store/lpStore";
 
 const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo }) => {
-  // LP Tab: Supply and Withdraw
-  const [lpTrade, setLpTrade] = useState<LpTradeOptions>(LpTradeOptions.supply);
-
+  const { lpTradeOption, setLpTradeOption } = useLpStore();
   const { openSelectPoolOverviewModal, setOpenSelectPoolOverviewModal } = useModalStore();
 
   const { pool, power } = overviewPool;
@@ -36,12 +34,14 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           <div className="flex flex-col px-4 border-y border-secondary-gray h-full">
             <header className="inline-flex items-center justify-between py-5">
               <h2 className="font-medium text-lg/6">
-                {lpTrade === LpTradeOptions.supply ? "Add Liquidity" : "Remove Liquidity"}
+                {lpTradeOption === LpTradeOptions.supply
+                  ? "Add Liquidity"
+                  : "Remove Liquidity"}
               </h2>
-              <LpTradeSelector lpTrade={lpTrade} setLpTrade={setLpTrade} />
+              <LpTradeSelector lpTrade={lpTradeOption} setLpTrade={setLpTradeOption} />
             </header>
             <Separator className="mb-3" />
-            {lpTrade === LpTradeOptions.supply ? (
+            {lpTradeOption === LpTradeOptions.supply ? (
               <AddLiquidity overviewPool={overviewPool} />
             ) : (
               <RemoveLiquidity overviewPool={overviewPool} />
