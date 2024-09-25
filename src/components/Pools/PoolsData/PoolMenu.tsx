@@ -47,15 +47,16 @@ const PoolMenu = ({
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem className="p-0 focus:bg-[#0D1921]">
-          <div
-            className="inline-flex gap-2 items-center w-full cursor-pointer"
+          <button
+            className="inline-flex gap-2 items-center w-full disabled:cursor-not-allowed disabled:opacity-80"
             onClick={() => {
               setOpenManageModal(true);
             }}
+            disabled={true}
           >
             <Image src="/icons/TradeIcon.svg" width={16} height={16} alt="trade icon" />
             <span>Manage Pool</span>
-          </div>
+          </button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

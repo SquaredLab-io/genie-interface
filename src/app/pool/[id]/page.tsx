@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { usePools } from "@lib/hooks/usePools";
@@ -20,7 +20,7 @@ export default function Overview() {
   const _id = Array.isArray(id) ? id[0] : id;
 
   // finding the pool based on id in url
-  const overviewPool = useMemo(() => {
+const overviewPool = useMemo(() => {
     if (status === "success" && pools) {
       return pools.find(
         (pool) =>
