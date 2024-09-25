@@ -13,18 +13,26 @@ import PoolHeader from "./pool-header";
 import LPChart from "./lp-charts";
 import PoolOverviewModal from "./pool-overview-modal";
 import { useLpStore } from "@store/lpStore";
+import { useMemo } from "react";
+import { getPoolTokens } from "@lib/utils/pools";
+import { useCurrentLpPosition } from "@lib/hooks/useCurrentLpPosition";
+import { Address } from "viem";
 
 const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const { lpTradeOption, setLpTradeOption } = useLpStore();
   const { openSelectPoolOverviewModal, setOpenSelectPoolOverviewModal } = useModalStore();
 
   const { pool, power } = overviewPool;
-  const [token0, token1] = pool.split("/").map((p) => p.trim());
+  const tokens = useMemo(() => getPoolTokens(pool), [pool]);
+
+  const lpTokenBalance = useCurrentLpPosition({
+    poolAddress: overviewPool.poolAddr as Address
+  });
 
   return (
     <div className="overflow-auto pl-11 pt-11 h-full">
       {/* Header */}
-      <PoolHeader assets={[token0, token1]} power={power} />
+      <PoolHeader assets={tokens} power={power} />
       {/* Graph and Add/Remove Liquidity Box */}
       <div className="grid grid-cols-7 mt-8 h-[calc(100vh-254px)]">
         <div className="col-span-5 border border-gray-800">
@@ -42,9 +50,9 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo }) => {
             </header>
             <Separator className="mb-3" />
             {lpTradeOption === LpTradeOptions.supply ? (
-              <AddLiquidity overviewPool={overviewPool} />
+              <AddLiquidity overviewPool={overviewPool} lpTokenBalance={lpTokenBalance} />
             ) : (
-              <RemoveLiquidity overviewPool={overviewPool} />
+              <RemoveLiquidity overviewPool={overviewPool} lpTokenBalance={lpTokenBalance} />
             )}
           </div>
         </div>

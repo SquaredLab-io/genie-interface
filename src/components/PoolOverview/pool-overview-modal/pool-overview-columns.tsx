@@ -8,6 +8,8 @@ import { PoolInfo, Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface"
 import { BASE_SEPOLIA } from "@lib/constants";
 import { calculatePoolAge } from "@lib/utils/calculatePoolAge";
 import { ConstructedPoolsDataResponse } from ".";
+import { useMemo } from "react";
+import { getPoolTokens } from "@lib/utils/pools";
 
 export function poolOverviewColumnDef(
   updateSelectedPool: (value: PoolInfo) => void
@@ -23,7 +25,7 @@ export function poolOverviewColumnDef(
       ),
       cell: ({ row }) => {
         const { power, pool } = row.original;
-        const assets = pool.split("/").map((a) => a.trim());
+        const assets = useMemo(() => getPoolTokens(pool), [pool]);
         return (
           <div className="whitespace-nowrap flex flex-row gap-2 text-left font-medium pl-[18px] py-6">
             <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-2">
@@ -68,7 +70,11 @@ export function poolOverviewColumnDef(
       header: () => <span className="pr-[18px] text-right pb-2">Price</span>,
       cell: ({ row }) => {
         const { current_price } = row.original;
-        return <span className="pr-[18px] block py-6">{formatNumber(current_price, true)}</span>;
+        return (
+          <span className="pr-[18px] block py-6">
+            {formatNumber(current_price, true)}
+          </span>
+        );
       }
     },
     {
@@ -79,13 +85,16 @@ export function poolOverviewColumnDef(
         const { price_change_percentage_24h } = row.original;
         return (
           <div className="block py-6 h-full">
-          <span className={cn("my-6 mr-[18px] rounded-md py-1.5 px-2",
-            price_change_percentage_24h > 0 ? 
-            "text-positive-green bg-positive-green/5" 
-            : "text-negative-red bg-negative-red/10")}
-          >
-            {`${price_change_percentage_24h>0?"+":"-"}${price_change_percentage_24h.toPrecision(4)}%`}
-          </span>
+            <span
+              className={cn(
+                "my-6 mr-[18px] rounded-md py-1.5 px-2",
+                price_change_percentage_24h > 0
+                  ? "text-positive-green bg-positive-green/5"
+                  : "text-negative-red bg-negative-red/10"
+              )}
+            >
+              {`${price_change_percentage_24h > 0 ? "+" : "-"}${price_change_percentage_24h.toPrecision(4)}%`}
+            </span>
           </div>
         );
       }
@@ -98,9 +107,7 @@ export function poolOverviewColumnDef(
         const { total_volume } = row.original;
         return (
           <div className="pr-[18px] gap-1 block py-6">
-            <span>
-              {formatNumber(total_volume, true)}
-            </span>
+            <span>{formatNumber(total_volume, true)}</span>
             {/* <span
               className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
             >

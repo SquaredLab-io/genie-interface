@@ -9,7 +9,7 @@ interface PropsType {
   paused?: boolean;
 }
 
-type ReturnTxHistory = {
+export type ReturnTxHistory = {
   data: UserCurrentLpPosition | undefined;
   isFetching: boolean;
   refetch: (

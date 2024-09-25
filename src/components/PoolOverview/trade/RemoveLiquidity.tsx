@@ -22,11 +22,16 @@ import InfoBox from "../info-box";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
 import useLpUnderlyingReceived from "@lib/hooks/useLpUnderlyingReceived";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
-import { useCurrentLpPosition } from "@lib/hooks/useCurrentLpPosition";
+import { ReturnTxHistory, useCurrentLpPosition } from "@lib/hooks/useCurrentLpPosition";
 import { notificationId } from "@components/Trade/helper";
 import { toast } from "sonner";
 
-const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
+interface PropsType {
+  overviewPool: PoolInfo;
+  lpTokenBalance: ReturnTxHistory;
+}
+
+const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
   // Amount to remove
   const [amount, setAmount] = useState<string>("");
   const [showInfo, setShowInfo] = useState<boolean>(true);
@@ -63,10 +68,7 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
     data: lpPosition,
     isFetching: isLpPositionFetching,
     refetch: refetchLpPosition
-  } = useCurrentLpPosition({
-    poolAddress: poolAddr as Address,
-    paused: true
-  });
+  } = lpTokenBalance;
   const lpBalance =
     parseFloat(lpPosition?.counterLpAmt ?? "0") / 10 ** overviewPool.underlyingDecimals;
   const decimalAdjustedOraclePrice = formatOraclePrice(
@@ -185,9 +187,7 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
               className={cn(balanceExceedError ? "text-error-red" : "text-[#5F7183]")}
             >
               Your LP balance:{" "}
-              {isLpPositionFetching && !lpBalance
-                ? "loading..."
-                : toUnits(lpBalance, 3)}
+              {isLpPositionFetching && !lpBalance ? "loading..." : toUnits(lpBalance, 3)}
             </span>
             <div className="inline-flex gap-2">
               <button
