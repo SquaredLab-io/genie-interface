@@ -11,10 +11,11 @@ import { isValidPositiveNumber } from "@lib/utils/checkVadility";
 import { cn } from "@lib/utils";
 import ButtonCTA from "@components/common/button-cta";
 import toUnits, {
-  formatNumber,
+  _getDecimalAdjusted,
   formatOraclePrice,
   getCorrectFormattedValue,
-  getDecimalAdjusted
+  getDecimalAdjusted,
+  getDecimalDeadjusted
 } from "@lib/utils/formatting";
 import { CONFIRMATION } from "@lib/constants";
 import notification from "@components/common/notification";
@@ -22,7 +23,7 @@ import InfoBox from "../info-box";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
 import useLpUnderlyingReceived from "@lib/hooks/useLpUnderlyingReceived";
 import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
-import { ReturnTxHistory, useCurrentLpPosition } from "@lib/hooks/useCurrentLpPosition";
+import { ReturnTxHistory } from "@lib/hooks/useCurrentLpPosition";
 import { notificationId } from "@components/Trade/helper";
 import { toast } from "sonner";
 
@@ -69,8 +70,13 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
     isFetching: isLpPositionFetching,
     refetch: refetchLpPosition
   } = lpTokenBalance;
-  const lpBalance =
-    parseFloat(lpPosition?.counterLpAmt ?? "0") / 10 ** overviewPool.underlyingDecimals;
+
+  const lpBalance = useMemo(() => {
+    if (!lpPosition) return 0;
+    console.log("lpPosition", lpPosition);
+    return parseFloat(lpPosition.counterLpAmt) / 10 ** overviewPool.underlyingDecimals;
+  }, [lpPosition]);
+
   const decimalAdjustedOraclePrice = formatOraclePrice(
     BigInt(lpPosition?.oraclePrice ?? "0"),
     underlyingDecimals
@@ -85,7 +91,10 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
    * Handler for RemoveLiquidity Function
    */
   async function removeLiquidityHandlerSdk() {
-    const shares = parseFloat(amount) * 10 ** 18;
+    const shares = getDecimalDeadjusted(amount, 18);
+    // const shares = parseFloat(amount) * 10 ** 18;
+    console.log("shares", shares);
+    console.log("balance", userBalance?.value.toFixed(0));
     try {
       const hash = await potentia?.poolWrite.removeLiquidity(
         overviewPool.poolAddr as Address,
@@ -199,7 +208,14 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
               </button>
               <button
                 className="py-[5.5px] px-[6px] rounded-[4px] bg-[#212C42] hover:bg-[#283751] transition-colors disabled:opacity-50 disabled:pointer-events-none"
-                onClick={() => setAmount(lpBalance.toString())}
+                onClick={() =>
+                  setAmount(() => {
+                    if (!lpPosition) return "0.00";
+                    const x = _getDecimalAdjusted(lpPosition.counterLpAmt, 18);
+                    console.log("formatted", x);
+                    return x;
+                  })
+                }
                 disabled={!isConnected || !lpBalance}
               >
                 Max
@@ -233,7 +249,6 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
               <span className="font-medium text-base/5">{underlying}</span>
             </div>
             <span className="text-xl/6 font-medium w-fit bg-primary-gray outline-none text-right">
-              {/* {receiveQuantity > 0 ? receiveQuantity : "-"} */}
               {isLpUnderlyingFetching
                 ? "..."
                 : !!lpUnderlying && lpUnderlying !== "0"
