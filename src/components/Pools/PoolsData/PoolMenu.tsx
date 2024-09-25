@@ -10,6 +10,8 @@ import {
   DropdownMenuTrigger
 } from "@components/ui/dropdown-menu";
 import { useModalStore } from "@store/poolsStore";
+import { LpTradeOptions } from "@lib/types/enums";
+import { useLpStore } from "@store/lpStore";
 
 const PoolMenu = ({
   underlying,
@@ -20,6 +22,7 @@ const PoolMenu = ({
   power: number;
   children: ReactNode;
 }) => {
+  const { setLpTradeOption } = useLpStore();
   const { setOpenManageModal } = useModalStore();
   return (
     <DropdownMenu>
@@ -35,6 +38,9 @@ const PoolMenu = ({
               query: { power: power }
             }}
             as={`/pool/${underlying}?power=${power}`}
+            onClick={() => {
+              setLpTradeOption(LpTradeOptions.withdraw);
+            }}
           >
             <Image src="/icons/MinusIcon.svg" width={14} height={14} alt="add icon" />
             <span>Withdraw</span>

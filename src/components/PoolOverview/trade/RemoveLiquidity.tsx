@@ -225,7 +225,7 @@ const RemoveLiquidity = ({ overviewPool }: { overviewPool: PoolInfo }) => {
           <div className="inline-flex-between">
             <div className="max-w-fit inline-flex gap-2 items-center">
               <Image
-                src={`/tokens/${underlying}.svg`}
+                src={`/tokens/${underlying.toLowerCase()}.svg`}
                 alt="token"
                 width={24}
                 height={24}

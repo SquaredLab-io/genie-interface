@@ -26,6 +26,8 @@ import { useDailyData } from "@lib/hooks/useDailyData";
 import { getFeesTimeseries } from "@components/PoolOverview/helper";
 import { useMonthlyFundingFee } from "@lib/hooks/useMonthlyFundingFee";
 import { Address } from "viem";
+import { useLpStore } from "@store/lpStore";
+import { LpTradeOptions } from "@lib/types/enums";
 
 const getCorrectLineColor = (val1: number | null, val2: number | null) => {
   switch (true) {
@@ -54,6 +56,7 @@ const getCorrectLineColor = (val1: number | null, val2: number | null) => {
 export function allPoolsColumnDef(
   updateSelectedPool: (value: PoolInfo) => void
 ): ColumnDef<PoolInfo>[] {
+  const { setLpTradeOption } = useLpStore();
   return [
     {
       id: "assets",
@@ -184,7 +187,13 @@ export function allPoolsColumnDef(
               }}
               as={`/pool/${pool.underlying}?power=${pool.power}`}
             >
-              <Button variant="default" size="sm">
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => {
+                  setLpTradeOption(LpTradeOptions.supply);
+                }}
+              >
                 Add Liquidity
               </Button>
             </Link>
@@ -207,6 +216,7 @@ export function allPoolsColumnDef(
 }
 
 export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
+  const { setLpTradeOption } = useLpStore();
   return [
     {
       accessorKey: "assets",
@@ -426,7 +436,13 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
               }}
               as={`/pool/${underlying}?power=${power}`}
             >
-              <Button size="lg" variant="default">
+              <Button
+                size="lg"
+                variant="default"
+                onClick={() => {
+                  setLpTradeOption(LpTradeOptions.supply);
+                }}
+              >
                 Deposit
               </Button>
             </Link>
