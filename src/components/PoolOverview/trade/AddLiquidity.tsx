@@ -348,10 +348,6 @@ const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
         )}
       </div>
       <div className="flex flex-col gap-4 mt-3">
-        <div className="inline-flex-between text-xs/[14px]">
-          <span className="font-normal text-[#757B80]">Conversion Fee</span>
-          <span className="font-medium">0.00 {underlying}</span>
-        </div>
         <ButtonCTA
           disabled={
             !isConnected ||
