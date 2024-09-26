@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { toast } from "sonner";
 import { Loader, XIcon } from "lucide-react";
+import Spinner from "@components/icons/Spinner";
 
 interface ArgsType {
   id: string | number;
@@ -69,11 +70,17 @@ const info = ({ id, title, description, closable = true, duration = 5000 }: Args
   );
 };
 
-const loading = ({ id, title, description, closable = false, duration = Infinity }: ArgsType) => {
+const loading = ({
+  id,
+  title,
+  description,
+  closable = false,
+  duration = Infinity
+}: ArgsType) => {
   return toast.custom(
     (t) => (
-      <div className="relative inline-flex items-start gap-3 font-normal text-sm/4 py-5 px-3 bg-[#161A1C17]/5 border-b border-[#F7931A] w-full">
-        <Loader size={24} color="#F7931A" className="animate-spin" />
+      <div className="relative inline-flex items-center gap-3 font-normal text-sm/4 py-5 px-3 bg-[#161A1C17]/5 border-b border-[#F7931A] w-full">
+        <Spinner />
         <div className="flex flex-col gap-2">
           <h2 className="text-[#F7931A]">{title}</h2>
           <p className="text-white">{description}</p>
