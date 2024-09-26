@@ -1,5 +1,5 @@
+import { RefObject } from "react";
 import { ChartOptions, ColorType, DeepPartial, LineStyle } from "lightweight-charts";
-import { MutableRefObject } from "react";
 
 // lp chart ranges
 export const intervals = ["1m", "5m", "30m", "1h", "12h", "1d"];
@@ -16,20 +16,16 @@ export const colors = {
 };
 
 export const chartOptionsConfig = (
-  chartContainerRef: MutableRefObject<null>
+  containerRef: RefObject<HTMLDivElement>
 ): DeepPartial<ChartOptions> => {
-  const options: DeepPartial<ChartOptions> = {
+  return {
     layout: {
       background: { type: ColorType.Solid, color: colors.backgroundColor },
       textColor: colors.textColor,
       attributionLogo: false
     },
-    width: chartContainerRef.current
-      ? (chartContainerRef.current as HTMLElement).clientWidth
-      : undefined,
-    height: chartContainerRef.current
-      ? (chartContainerRef.current as HTMLElement).clientHeight
-      : undefined,
+    width: containerRef.current?.clientWidth || 400,
+    height: containerRef.current?.clientHeight || 300,
     watermark: {
       visible: false
     },
@@ -60,7 +56,6 @@ export const chartOptionsConfig = (
       vertTouchDrag: false
     }
   };
-  return options;
 };
 
 export type CLInfo = {
