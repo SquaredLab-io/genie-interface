@@ -36,7 +36,7 @@ export const chartOptionsConfig = (
       },
       borderVisible: false
     },
-    autoSize: false, // Enable autoSize for responsiveness
+    autoSize: false, // Explicitly turn off autoSize
     grid: {
       vertLines: {
         color: colors.gridColor,
