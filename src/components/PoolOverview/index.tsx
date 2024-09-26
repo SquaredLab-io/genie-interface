@@ -34,13 +34,13 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       {/* Header */}
       <PoolHeader assets={tokens} power={power} />
       {/* Graph and Add/Remove Liquidity Box */}
-      <div className="grid grid-cols-7 mt-8 h-[calc(100vh-254px)]">
+      <div className="grid grid-cols-7 mt-8 h-[calc(100vh-254px)] 2xl:h-[calc(100vh-280px)] 3xl:h-[calc(100vh-300px)]">
         <div className="col-span-5 border border-gray-800">
           <LPChart overviewPool={overviewPool} />
         </div>
-        <div className="col-span-2 min-w-[402px] w-[402px] max-w-[402px]">
-          <div className="flex flex-col px-4 border-y border-secondary-gray h-full">
-            <header className="inline-flex items-center justify-between py-5">
+        <div className="col-span-2 min-w-[402px] w-full">
+          <div className="flex flex-col h-full border-y border-secondary-gray">
+            <header className="inline-flex items-center justify-between p-5">
               <h2 className="font-medium text-lg/6">
                 {lpTradeOption === LpTradeOptions.supply
                   ? "Add Liquidity"
@@ -49,11 +49,19 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo }) => {
               <LpTradeSelector lpTrade={lpTradeOption} setLpTrade={setLpTradeOption} />
             </header>
             <Separator className="mb-3" />
-            {lpTradeOption === LpTradeOptions.supply ? (
-              <AddLiquidity overviewPool={overviewPool} lpTokenBalance={lpTokenBalance} />
-            ) : (
-              <RemoveLiquidity overviewPool={overviewPool} lpTokenBalance={lpTokenBalance} />
-            )}
+            <div className="flex-grow overflow-y-auto h-fit max-h-[640px] px-5">
+              {lpTradeOption === LpTradeOptions.supply ? (
+                <AddLiquidity
+                  overviewPool={overviewPool}
+                  lpTokenBalance={lpTokenBalance}
+                />
+              ) : (
+                <RemoveLiquidity
+                  overviewPool={overviewPool}
+                  lpTokenBalance={lpTokenBalance}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
