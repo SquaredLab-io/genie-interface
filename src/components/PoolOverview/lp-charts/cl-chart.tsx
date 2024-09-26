@@ -37,8 +37,9 @@ const CLChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       }
     },
     enabled: !!potentia && !!overviewPool,
-    staleTime: 0,
-    gcTime: 0
+    staleTime: 0, // refetch everytime for fresh data
+    gcTime: 0,
+    retry: 4
   });
 
   const reserve = Math.ceil(chartData?.reserve ?? 0);

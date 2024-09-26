@@ -40,10 +40,17 @@ export function usePools(paused = false): ReturnType {
     }
   };
 
-  const { data, isFetching, refetch, isError, error, status } = useQuery({
+  const { data, isFetching, refetch, status } = useQuery({
     queryKey: ["geniePools"],
     queryFn: getPools,
-    refetchInterval: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
+    retry: 3,
+    // This sets the retry delay for failed queries using an exponential backoff strategy, doubling the delay each attempt
+    // It caps the maximum delay at 30 seconds (30000ms)
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     enabled: !paused && !!potentia
   });
 

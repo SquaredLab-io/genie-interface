@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef, useState } from "react";
-import { createChart } from "lightweight-charts";
+import { createChart, IChartApi } from "lightweight-charts";
 import { DailyInfo } from "@squaredlab-io/sdk/";
 import { getTvlTimeseries } from "../helper";
 import { chartOptionsConfig, colors } from "./configs";
@@ -12,51 +12,54 @@ const TVLChart = ({
   dailyData: DailyInfo[] | undefined;
   loading: boolean;
 }) => {
-  const chartContainerRef = useRef(null);
+  const chartContainerRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<IChartApi | null>(null);
   const [isLoadingChart, setIsLoadingChart] = useState(false);
 
   // Reversed as we need series in ascending order
   const timeseries = getTvlTimeseries(dailyData);
 
-  // console.log("timeseries in volume", timeseries);
-
-  // A useEffect that creates the chart based on configuration on load
   useEffect(() => {
-    if (chartContainerRef.current !== null) {
-      // chart prep start
+    if (chartContainerRef.current && (!chartRef.current || timeseries.length > 0)) {
       setIsLoadingChart(true);
 
       const handleResize = () => {
-        chart.applyOptions({
-          width: (chartContainerRef.current as any)?.clientWidth
-        });
+        if (chartRef.current && chartContainerRef.current) {
+          chartRef.current.applyOptions({
+            width: chartContainerRef.current.clientWidth,
+            height: chartContainerRef.current.clientHeight
+          });
+        }
       };
 
-      const chartOptions = chartOptionsConfig(chartContainerRef);
-      const chart = createChart(chartContainerRef.current, chartOptions);
+      if (!chartRef.current) {
+        const chartOptions = chartOptionsConfig(chartContainerRef);
+        chartRef.current = createChart(chartContainerRef.current, chartOptions);
 
-      chart.timeScale().fitContent();
+        window.addEventListener("resize", handleResize);
+      }
 
-      const series = chart.addAreaSeries({
-        lineColor: colors.lineColorTwo,
-        topColor: colors.areaColor,
-        bottomColor: colors.areaColor
-      });
-      series.setData(timeseries);
-
-      window.addEventListener("resize", handleResize);
+      if (chartRef.current && timeseries.length > 0) {
+        const series = chartRef.current.addAreaSeries({
+          lineColor: colors.lineColorTwo,
+          topColor: colors.areaColor,
+          bottomColor: colors.areaColor
+        });
+        series.setData(timeseries);
+        chartRef.current.timeScale().fitContent();
+      }
 
       setIsLoadingChart(false);
 
       return () => {
         window.removeEventListener("resize", handleResize);
-        chart.remove();
+        if (chartRef.current) {
+          chartRef.current.remove();
+          chartRef.current = null;
+        }
       };
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeseries]);
-
-  const intervals = ["1m", "5m", "30m", "1h", "12h", "1d"];
+  }, [timeseries]); // Now we depend on timeseries
 
   return (
     <div className="relative h-[calc(100%-20px)]">

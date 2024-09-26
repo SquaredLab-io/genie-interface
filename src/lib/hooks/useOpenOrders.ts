@@ -39,11 +39,6 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
       return await potentia?.openOrders();
     } catch (error) {
       console.error("Failed to fetch open orders\n", error);
-      // notification.error({
-      //   id: "open-orders",
-      //   title: "Failed to fetch Open Orders",
-      //   description: `${error}`
-      // });
     }
   };
 

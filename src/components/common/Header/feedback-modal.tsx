@@ -90,7 +90,7 @@ const FeedbackModal = ({
           </p>
           <div className="font-medium text-xs/6">
             <Link href={meta.DISCORD} target="_blank">
-              <button className="px-7 py-1 hover:bg-white/5 text-white border border-secondary-gray rounded-base mr-6 leading-6">
+              <button className="px-7 py-2 hover:bg-white/5 text-white border border-secondary-gray rounded-base mr-6 leading-6">
                 Help Center
               </button>
             </Link>
