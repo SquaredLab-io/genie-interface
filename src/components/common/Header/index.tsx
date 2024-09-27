@@ -31,7 +31,7 @@ const Header = () => {
             priority
           />
         </Link>
-        <div className="hidden sm:flex gap-x-6 lg:gap-x-11 font-medium text-[14px]/[22px] 2xl:text-[15.75px] 3xl:text-[17.50px] uppercase">
+        <div className="hidden sm:flex gap-x-6 lg:gap-x-11 font-medium text-[14px]/[22px] 2xl:text-[14px]/[22px] 3xl:text-[15.75px] uppercase">
           {navigation.map((item) => (
             <Link
               key={item.name}

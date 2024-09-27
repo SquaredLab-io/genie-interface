@@ -5,11 +5,12 @@ import { useParams, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { usePools } from "@lib/hooks/usePools";
 import LoadingLogo from "@components/icons/loading-logo";
+import PoolOverview from "@components/PoolOverview";
 
 // PoolOverview imported dynamically
-const PoolOverview = dynamic(() =>
-  import("@components/PoolOverview").then((mod) => mod.default)
-);
+// const PoolOverview = dynamic(() =>
+//   import("@components/PoolOverview").then((mod) => mod.default)
+// );
 
 export default function Overview() {
   const { pools, isFetching, status } = usePools();
@@ -60,7 +61,7 @@ const overviewPool = useMemo(() => {
   }
 
   return (
-    <main className="page-center overflow-y-auto">
+    <main className="page-center">
       <PoolOverview overviewPool={overviewPool!} />
     </main>
   );
