@@ -75,7 +75,7 @@ const FeedbackModal = ({
       open={open}
       onOpenChange={setOpen}
       trigger={trigger}
-      className="max-w-fit px-7 py-6 rounded-[20px]"
+      className="max-w-fit p-6 rounded-[20px]"
       footer={
         <div className="inline-flex items-center justify-between w-full mt-5 text-xs/6">
           <p>
@@ -88,14 +88,20 @@ const FeedbackModal = ({
               {meta.SUPPORT_MAIL}
             </a>
           </p>
-          <div className="font-medium text-xs/6">
+          <div className="inline-flex justify-end gap-5 font-medium text-xs/6">
             <Link href={meta.DISCORD} target="_blank">
-              <button className="px-7 py-2 hover:bg-white/5 text-white border border-secondary-gray rounded-base mr-6 leading-6">
-                Help Center
+              <button className="inline-flex items-center gap-1 px-[14px] h-[31px] hover:bg-white/5 text-white border border-secondary-gray rounded-base leading-6 whitespace-nowrap">
+                <Image
+                  src="/icons/discord-logo.svg"
+                  alt="discord-logo"
+                  height={16}
+                  width={21}
+                />
+                <span>Help Center</span>
               </button>
             </Link>
             <button
-              className="py-2 px-7 bg-white text-black border border-white rounded-base leading-6"
+              className="px-7 h-[31px] bg-white text-black border border-white rounded-base leading-6 whitespace-nowrap"
               type="button"
               onClick={(e) => {
                 e.preventDefault();
