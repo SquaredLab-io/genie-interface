@@ -9,38 +9,78 @@ import { Toaster } from "@components/ui/sonner";
 import Loading from "./loading";
 import "./globals.css";
 
-const { APP_NAME, DESCRIPTION, KEYWORDS, URL, LOGO, IMAGE, SITE_NAME, USERNAME } = meta;
+const {
+  DOMAIN,
+  APP_NAME,
+  DESCRIPTION,
+  KEYWORDS,
+  APP_URL,
+  LOGO,
+  IMAGE,
+  SITE_NAME,
+  USERNAME
+} = meta;
 
 export const metadata: Metadata = {
+  metadataBase: new URL(DOMAIN),
   title: {
     template: `%s | ${APP_NAME}`,
     default: APP_NAME
   },
   description: DESCRIPTION,
+  keywords: KEYWORDS,
+  authors: [
+    {
+      name: "SquaredLabs",
+      url: DOMAIN
+    }
+  ],
+  creator: "SquaredLabs",
+  publisher: "SquaredLabs",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false
+  },
   icons: {
     icon: LOGO,
     apple: "apple-touch-icon-precomposed"
   },
-  keywords: KEYWORDS,
   applicationName: APP_NAME,
   referrer: "origin-when-cross-origin",
-  publisher: "SquaredLabs",
   openGraph: {
     title: APP_NAME,
     description: DESCRIPTION,
-    url: URL,
+    url: APP_URL,
     siteName: SITE_NAME,
     images: [
       {
-        url: "https://frontend-web-resources.s3.amazonaws.com/og-small.png",
+        url: "https://frontend-web-resources.s3.amazonaws.com/genie-og-small.webp",
         width: 800,
-        height: 600
+        height: 600,
+        alt: `${APP_NAME} Preview`,
+        type: "image/webp"
       },
       {
-        url: "https://frontend-web-resources.s3.amazonaws.com/og-large.png",
+        url: "https://frontend-web-resources.s3.amazonaws.com/genie-og-small.png",
+        width: 800,
+        height: 600,
+        alt: `${APP_NAME} Preview`,
+        type: "image/png"
+      },
+      {
+        url: "https://frontend-web-resources.s3.amazonaws.com/genie-og-large.webp",
         width: 1800,
         height: 1600,
-        alt: "SquaredLabs"
+        alt: `${APP_NAME} Preview`,
+        type: "image/webp"
+      },
+      {
+        url: "https://frontend-web-resources.s3.amazonaws.com/genie-og-large.png",
+        width: 1800,
+        height: 1600,
+        alt: `${APP_NAME} Preview`,
+        type: "image/png"
       }
     ],
     locale: "en_US",
@@ -53,16 +93,22 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      nocache: true
+      noimageindex: false,
+      nocache: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1
     }
   },
   twitter: {
-    title: "SquaredLabs",
-    description: "Derivatives without liquidation.",
+    title: APP_NAME,
+    description: DESCRIPTION,
     images: [IMAGE],
     card: "summary_large_image",
-    creator: USERNAME
-  }
+    creator: USERNAME,
+    site: USERNAME
+  },
+  category: "DeFi"
 };
 
 export default function RootLayout({
