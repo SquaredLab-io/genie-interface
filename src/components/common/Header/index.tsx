@@ -31,7 +31,7 @@ const Header = () => {
             priority
           />
         </Link>
-        <div className="hidden sm:flex gap-x-6 lg:gap-x-11 font-medium text-[14px]/[22px] 2xl:text-[14px]/[22px] 3xl:text-[15.75px] uppercase">
+        <div className="hidden lg:flex gap-x-6 lg:gap-x-11 font-medium text-[14px]/[22px] 2xl:text-[14px]/[22px] 3xl:text-[15.75px] uppercase">
           {navigation.map((item) => (
             <Link
               key={item.name}
@@ -69,7 +69,7 @@ const Header = () => {
           </button>
         </div>
       </nav>
-      <div className="inline-flex gap-6">
+      <div className="hidden lg:inline-flex gap-6">
         {/* <button variant={"secondary"} onClick={() => setIsFaucetOpen(true)}>
         className="max-w-fit hover:underline underline-offset-2"
         </button> */}
