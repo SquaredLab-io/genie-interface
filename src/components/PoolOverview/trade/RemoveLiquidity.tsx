@@ -103,7 +103,7 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
       notification.error({
         id: removeLiq_event.error,
         title: "Remove Liquidity Failed",
-        description: "Unable to initiate liquidity withdrawl. Try again"
+        description: "Unable to initiate liquidity withdrawal. Try again"
       });
     }
   }
@@ -132,7 +132,7 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
       notification.error({
         id: removeLiq_event.error,
         title: "Transaction Failed",
-        description: "Liquidity withdrawl failed. Please try again."
+        description: "Liquidity withdrawal failed. Please try again."
       });
     }
   }, [isLoading, isError]);

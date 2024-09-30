@@ -40,9 +40,8 @@ const PoolOverviewModal: FC<PropsType> = ({ children, open, setOpen }) => {
 
   // hooks
   const { pools, isFetching } = usePools();
-  const { updateSelectedPool } = usePoolsStore((state) => state);
 
-  const poolOverviewColumns = poolOverviewColumnDef(updateSelectedPool);
+  const poolOverviewColumns = poolOverviewColumnDef();
 
   // react-query
   const { data: poolOverviewData, isLoading: isPoolOverviewDataLoading } = useQuery<

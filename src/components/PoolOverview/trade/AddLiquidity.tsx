@@ -6,7 +6,6 @@ import { useAccount, useWaitForTransactionReceipt } from "wagmi";
 import { WethABi } from "@lib/abis";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import toUnits, {
-  formatNumber,
   formatOraclePrice,
   getCorrectFormattedValue,
   getDecimalAdjusted,
@@ -24,7 +23,7 @@ import { cn } from "@lib/utils";
 import InfoBox from "../info-box";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
 import useLpTokenReceiveEstimate from "@lib/hooks/useLpTokenReceiveEstimate";
-import { ReturnTxHistory, useCurrentLpPosition } from "@lib/hooks/useCurrentLpPosition";
+import { ReturnTxHistory } from "@lib/hooks/useCurrentLpPosition";
 import { notificationId } from "@components/Trade/helper";
 import { toast } from "sonner";
 import useApproveToken from "@lib/hooks/useApproveToken";

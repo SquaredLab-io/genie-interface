@@ -23,7 +23,7 @@ const Providers: React.FC<PropsWithChildren> = ({ children }) => {
         <RainbowKitProvider
           initialChain={baseSepolia}
           modalSize="compact"
-          theme={theme as Theme}
+          theme={theme}
         >
           <UrqlProvider client={client} ssr={ssr}>
             {children}
