@@ -1,16 +1,14 @@
 "use client";
 
 import { memo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@lib/utils";
 import { meta, navigation } from "@lib/constants";
 import FeedbackModal from "./feedback-modal";
 import ConnectWallet from "../ConnectWallet";
-// import { CoinbaseCreateWallet } from "../ConnectWallet/CoinbaseCreateWallet";
-import NextImage from "../NextImage";
 import FaucetModal from "@components/common/Header/faucet-modal";
-import Image from "next/image";
 
 const Header = () => {
   const pathname = usePathname();

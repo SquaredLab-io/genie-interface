@@ -1,11 +1,13 @@
 "use client";
 
+import { useMemo } from "react";
+import dynamic from "next/dynamic";
+import { useWindowSize } from "usehooks-ts";
 import { usePools } from "@lib/hooks/usePools";
 import Loading from "./loading";
-import { useWindowSize } from "usehooks-ts";
-import { useMemo } from "react";
 import MobileInfoScreen from "@components/common/MobileInfoScreen";
-import Trade from "@components/Trade";
+
+const Trade = dynamic(() => import("@components/Trade").then((mod) => mod.default));
 
 /**
  * Trade Interface - Currently set as the Homepage of Genie
@@ -32,7 +34,7 @@ export default function Home() {
 
   const render = useMemo(() => {
     return width <= 1024 ? MobileInfoScreen : <TradeInterface />;
-  }, [width]);
+  }, [width, isFetching, status, pools]);
 
   return render;
 }
