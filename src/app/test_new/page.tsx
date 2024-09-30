@@ -1,45 +1,39 @@
 "use client";
 
 import { useAccount } from "wagmi";
-import { useIsClient } from "usehooks-ts";
+import { useIsClient, useWindowSize } from "usehooks-ts";
 import _useTokenBalance from "@lib/hooks/useTokenBalance";
 import { usePools } from "@lib/hooks/usePools";
 import { usePoolsStore } from "@store/poolsStore";
 import { _getDecimalAdjusted } from "@lib/utils/formatting";
+import MobileInfoScreen from "@components/common/MobileInfoScreen";
+import Loading from "@app/loading";
+import { useMemo } from "react";
 
 export default function TestNew() {
+  const { width } = useWindowSize();
+
   const isClient = useIsClient();
   const { isConnected, isConnecting, address } = useAccount();
   const { pools, isFetching } = usePools();
   const { selectedPool } = usePoolsStore();
 
-  if (!isClient) {
-    return (
-      <main className="page-center items-center justify-center">
-        <span>mounting...</span>
-      </main>
-    );
-  }
-  const WalletStatus = () => (
-    <>
+  const TestNew = () => (
+    <main className="page-center items-center justify-center gap-3">
       <span>
         Wallet status:{" "}
         {isConnecting ? "Connecting..." : isConnected ? "Connected" : "Not Connected"}
       </span>
       {isConnected && <span>{address}</span>}
-    </>
-  );
-  const PoolsStatus = () => (
-    <>
       <span>{isFetching && !pools ? "fetching..." : "fetched"}</span>
       {<span>Selected Pool: {selectedPool()?.pool}</span>}
-    </>
-  );
-
-  return (
-    <main className="flex-col-center gap-3">
-      <WalletStatus />
-      <PoolsStatus />
     </main>
   );
+
+  const render = useMemo(() => {
+    return width <= 1024 ? MobileInfoScreen : <TestNew />;
+  }, [width]);
+
+  if (width === 0 || !isClient) return <Loading />;
+  return render;
 }
