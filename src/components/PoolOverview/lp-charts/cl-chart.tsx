@@ -25,20 +25,22 @@ const chartConfig = {
 
 const CLChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const { potentia } = usePotentiaSdk();
+
   const { data: chartData, isFetching } = useQuery({
     queryKey: ["clChart", overviewPool.poolAddr],
     queryFn: async () => {
       try {
         return await potentia?.getCLChartData(
-          overviewPool.poolAddr as Address // pool
+          overviewPool.poolAddr as Address, // pool,
+          10
         );
       } catch (error) {
         console.error("error while fetching clchart data", error);
       }
     },
     enabled: !!potentia && !!overviewPool,
-    staleTime: 0, // refetch everytime for fresh data
-    gcTime: 0,
+    staleTime: 5000, // refetch everytime for fresh data
+    gcTime: 15000,
     retry: 4
   });
 

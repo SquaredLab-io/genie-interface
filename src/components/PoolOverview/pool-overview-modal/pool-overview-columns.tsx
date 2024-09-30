@@ -1,19 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import Link from "next/link";
+import { useMemo } from "react";
 import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
-import { _getDecimalAdjusted, formatNumber, getDollarQuote } from "@lib/utils/formatting";
+import { _getDecimalAdjusted, formatNumber } from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
-import { PoolInfo, Tx } from "@squaredlab-io/sdk/src/interfaces/index.interface";
-import { BASE_SEPOLIA } from "@lib/constants";
-import { calculatePoolAge } from "@lib/utils/calculatePoolAge";
 import { ConstructedPoolsDataResponse } from ".";
-import { useMemo } from "react";
 import { getPoolTokens } from "@lib/utils/pools";
 
-export function poolOverviewColumnDef(
-  updateSelectedPool: (value: PoolInfo) => void
-): ColumnDef<ConstructedPoolsDataResponse>[] {
+export function poolOverviewColumnDef(): ColumnDef<ConstructedPoolsDataResponse>[] {
   return [
     {
       id: "pools",
@@ -93,7 +87,7 @@ export function poolOverviewColumnDef(
                   : "text-negative-red bg-negative-red/10"
               )}
             >
-              {`${price_change_percentage_24h > 0 ? "+" : "-"}${price_change_percentage_24h.toPrecision(4)}%`}
+              {`${price_change_percentage_24h > 0 ? "+" : ""}${price_change_percentage_24h.toPrecision(4)}%`}
             </span>
           </div>
         );
