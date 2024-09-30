@@ -6,7 +6,7 @@ import { getAddress } from "viem";
 export const meta = {
   APP_NAME: "Genie DEX",
   DESCRIPTION:
-    "Genie Dex is a derivatives protocol without long and short liquidations. Built on to of Potentia Protocol.",
+    "Genie DEX is a derivatives protocol without long and short liquidations. Built on top of Potentia Protocol.",
   KEYWORDS: [
     "Derivatives",
     "Liquidation",
@@ -16,12 +16,12 @@ export const meta = {
     "Power Perpetuals",
     "Leveraged Trading"
   ],
-  URL: "https://genie.squaredlabs.io",
-  DOMAIN: "https://squaredlabs.io",
-  IMAGE: "https://frontend-web-resources.s3.amazonaws.com/og-large.png",
-  SITE_NAME: "genie.squaredlabs.io",
-  USERNAME: "@squaredlabs_",
-  TWITTER: "https://x.com/SquaredLabs_",
+  APP_URL: "https://trade.geniedex.io/",
+  DOMAIN: "https://geniedex.io/",
+  IMAGE: "https://frontend-web-resources.s3.amazonaws.com/genie-og-large.png",
+  SITE_NAME: "trade.geniedex.io",
+  USERNAME: "@GenieDEX",
+  TWITTER: "https://x.com/GenieDEX",
   DISCORD: "https://discord.com/invite/aD8Wtk4fNs",
   TELEGRAM: "https://t.me/genie_dex",
   DOCS: "https://docs.squaredlabs.io/",

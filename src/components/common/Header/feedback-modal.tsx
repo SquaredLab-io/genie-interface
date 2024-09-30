@@ -82,7 +82,7 @@ const FeedbackModal = ({
             You can also email us at{" "}
             <a
               className="text-primary-blue"
-              href="mailto:support@squaredlabs.io"
+              href={`mailto:${meta.SUPPORT_MAIL}`}
               target="_blank"
             >
               {meta.SUPPORT_MAIL}

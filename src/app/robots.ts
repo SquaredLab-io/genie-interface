@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: "/private/"
     },
-    sitemap: "https://genie.squaredlabs.io/sitemap.xml"
+    sitemap: "https://trade.geniedex.io/sitemap.xml"
   };
 }
