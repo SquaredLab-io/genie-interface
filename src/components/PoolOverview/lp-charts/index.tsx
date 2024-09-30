@@ -6,7 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { PoolInfo } from "@squaredlab-io/sdk";
 import { useDailyData } from "@lib/hooks/useDailyData";
 import { Address } from "viem";
-import CLChart from "./cl-chart";
+import CLChart from "./cl-chart-echart";
+// import CLChart from "./cl-chart";
 
 const LPChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const { dailyData, isFetching: isFetchingDailyData } = useDailyData({
@@ -27,9 +28,6 @@ const LPChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
         <TabsTrigger value={GraphOptions.tvl} className={graphTabStyle}>
           TVL
         </TabsTrigger>
-        {/* <TabsTrigger value={GraphOptions.crossbook} className={graphTabStyle}>
-        Cross Book
-      </TabsTrigger> */}
         <TabsTrigger value={GraphOptions.counterpart} className={graphTabStyle}>
           Counterpart Liquidity
         </TabsTrigger>

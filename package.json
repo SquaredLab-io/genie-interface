@@ -37,6 +37,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
+    "echarts": "^5.5.1",
     "encoding": "^0.1.13",
     "ethers": "^6.13.1",
     "graphql": "^16.9.0",
