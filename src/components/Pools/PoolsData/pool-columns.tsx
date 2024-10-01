@@ -523,13 +523,9 @@ export function transactionsColumnDef(): ColumnDef<Tx>[] {
         return (
           <p className="flex flex-col items-start">
             <span className="font-bold">{getActionType(action)}</span>
-            <Link
-              href={`https://sepolia.basescan.org/tx/${hash}`}
-              target="_blank"
-              className="text-[#9299AA] text-sm/5 hover:underline"
-            >
+            <span className="text-[#9299AA] text-sm/5">
               {shortenHash(hash)}
-            </Link>
+            </span>
           </p>
         );
       }
