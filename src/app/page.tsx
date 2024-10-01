@@ -6,6 +6,7 @@ import { useWindowSize } from "usehooks-ts";
 import { usePools } from "@lib/hooks/usePools";
 import Loading from "./loading";
 import MobileInfoScreen from "@components/common/MobileInfoScreen";
+import NotFoundCommon from "@components/common/not-found-common";
 
 const Trade = dynamic(() => import("@components/Trade").then((mod) => mod.default));
 
@@ -20,9 +21,10 @@ export default function Home() {
     if ((isFetching && status === "pending") || width === 0) return <Loading />;
     else if (status === "success" && pools?.length === 0) {
       return (
-        <main className="page-center items-center justify-center text-3xl">
-          404: Pools not found
-        </main>
+        <NotFoundCommon
+          title="404 Pools not found"
+          subText="Sorry, but unable to find any pools."
+        />
       );
     }
     return (

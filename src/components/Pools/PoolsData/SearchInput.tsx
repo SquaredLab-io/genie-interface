@@ -1,5 +1,6 @@
-import { Input } from "@components/ui/input";
+import { memo } from "react";
 import { SearchIcon } from "lucide-react";
+import { Input } from "@components/ui/input";
 
 interface PropsType {
   showSearch: boolean;
@@ -8,7 +9,7 @@ interface PropsType {
   setTerm: (value: string) => void;
 }
 
-export default function SearchInput({ showSearch, setShowSearch, term, setTerm }: PropsType) {
+const SearchInput = ({ showSearch, setShowSearch, term, setTerm }: PropsType) => {
   return !showSearch ? (
     <button className="p-[6px] text-white" onClick={() => setShowSearch(true)}>
       <SearchIcon size={24} />
@@ -32,4 +33,6 @@ export default function SearchInput({ showSearch, setShowSearch, term, setTerm }
       />
     </div>
   );
-}
+};
+
+export default memo(SearchInput);
