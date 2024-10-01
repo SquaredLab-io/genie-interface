@@ -3,7 +3,7 @@
 // Library Imports
 import { useState } from "react";
 import { TabsList } from "@radix-ui/react-tabs";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, Table } from "lucide-react";
 // Component Imports
 import { Tabs, TabsContent, TabsTrigger } from "@components/ui/tabs";
 import PoolsTable from "./PoolsTable";
@@ -95,8 +95,20 @@ const PoolsData = () => {
               <PlusIcon size={16} /> Create Pool
             </button>
             <SearchInput
-              term={allTerm}
-              setTerm={setAllTerm}
+              term={
+                currentTab === TableOptions.all
+                  ? allTerm
+                  : currentTab === TableOptions.my
+                    ? myTerm
+                    : txTerm
+              }
+              setTerm={
+                currentTab === TableOptions.all
+                  ? setAllTerm
+                  : currentTab === TableOptions.my
+                    ? setMyTerm
+                    : setTxTerm
+              }
               showSearch={showSearch}
               setShowSearch={setShowSearch}
             />
