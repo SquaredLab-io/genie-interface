@@ -22,7 +22,6 @@ import { getActionType, getPoolTokens } from "@lib/utils/pools";
 import { createChart, CrosshairMode, IChartApi, ISeriesApi } from "lightweight-charts";
 import { useEffect, useMemo, useRef, useState } from "react";
 import LoadingLogo from "@components/icons/loading-logo";
-import { useDailyData } from "@lib/hooks/useDailyData";
 import { getFeesTimeseries } from "@components/PoolOverview/helper";
 import { useMonthlyFundingFee } from "@lib/hooks/useMonthlyFundingFee";
 import { Address } from "viem";
@@ -39,19 +38,6 @@ const getCorrectLineColor = (val1: number | null, val2: number | null) => {
       return "#2962FF";
   }
 };
-
-// const getGrowthPercentage = (val1: number | null, val2: number | null) => {
-//   switch (true) {
-//     case !!val1 && !!val2 && val1 > val2:
-//       return ((val2 - val1) * 100) / val1;
-//     case !!val1 && !!val2 && val1 < val2:
-//       return ((val2 - val1) * 100) / val1;
-//     case !!val1 && !!val2 && val1 === val2:
-//       return 0;
-//     default:
-//       return 0;
-//   }
-// };
 
 export function allPoolsColumnDef(
   updateSelectedPool: (value: PoolInfo) => void
