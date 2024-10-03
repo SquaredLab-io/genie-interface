@@ -83,14 +83,14 @@ const PoolsData = () => {
             <button
               className="inline-flex items-center py-2 px-3 gap-1 text-[#49AFE9] hover:bg-[#0A344D] transition-colors font-medium text-sm/5 rounded-lg font-sans-ibm-plex disabled:cursor-not-allowed disabled:opacity-80"
               onClick={() => setOpenCreateTokenModal(true)}
-              disabled={true}
+              // disabled={true}
             >
               <PlusIcon size={16} /> Create a Token
             </button>
             <button
               className="inline-flex items-center py-2 px-3 gap-1 text-[#49AFE9] hover:bg-[#0A344D] transition-colors font-medium text-sm/5 rounded-lg font-sans-ibm-plex disabled:cursor-not-allowed disabled:opacity-80"
               onClick={() => setOpenCreateModal(true)}
-              disabled={true}
+              // disabled={true}
             >
               <PlusIcon size={16} /> Create Pool
             </button>

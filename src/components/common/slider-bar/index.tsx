@@ -1,7 +1,8 @@
 "use client";
 
-import { Slider } from "@components/ui/slider";
+import { memo } from "react";
 import { cn } from "@lib/utils";
+import { Slider } from "@components/ui/slider";
 import Stepper from "./stepper";
 
 interface PropsType {
@@ -14,19 +15,29 @@ interface PropsType {
   isPerc?: boolean;
   disabled?: boolean;
   className?: string;
+  customStepper?: (index: number) => JSX.Element;
 }
 
 /**
+ * This component creates a customizable slider with optional step indicators.
+ * It wraps the base Slider component, adding functionality for step visualization and custom steppers.
  *
- * @param value The controlled value of the slider
- * @param setValue Method to update the value
- * @param min The minimum value for the range
- * @param max The maximum value for the range
- * @param step The stepping interval (optional)
- * @param indices Index pointers (optional)
- * @param isPerc If indices are in percentage (optional)
- * @param disabled Condition to disable Slider (optional)
- * @param className (optional)
+ * Features:
+ * - Customizable min, max, and step values
+ * - Optional indices for step visualization
+ * - Support for custom stepper components
+ * - Disabled state support
+ * - Customizable styling through className prop
+ *
+ * @param value - Current selected value
+ * @param setValue - Function to update the selected value
+ * @param min - Minimum value of the slider
+ * @param max - Maximum value of the slider
+ * @param step - Step size for the slider (default: 1)
+ * @param indices - Optional array of values to display as steps
+ * @param disabled - Optional boolean to disable the slider
+ * @param className - Optional CSS class name for styling
+ * @param customStepper - Optional function to render custom stepper components
  */
 const SliderBar = ({
   value,
@@ -37,7 +48,8 @@ const SliderBar = ({
   indices,
   isPerc = false,
   disabled = false,
-  className
+  className,
+  customStepper
 }: PropsType) => {
   return (
     <div className={cn("relative pb-6 z-0", className)}>
@@ -52,13 +64,23 @@ const SliderBar = ({
       />
       {indices && (
         <div className="absolute inline-flex justify-between -top-0.5 left-0 right-0 mx-auto w-full text-xs/[18px] text-[#757B80] -z-10">
-          {indices.map((i) => (
-            <Stepper key={i} index={i} isPerc={isPerc} max={max} value={value} />
-          ))}
+          {indices.map((i) =>
+            customStepper ? (
+              customStepper(i)
+            ) : (
+              <Stepper
+                key={i}
+                sliderValue={i}
+                isPerc={isPerc}
+                sliderValues={indices}
+                currentValue={value}
+              />
+            )
+          )}
         </div>
       )}
     </div>
   );
 };
 
-export default SliderBar;
+export default memo(SliderBar);

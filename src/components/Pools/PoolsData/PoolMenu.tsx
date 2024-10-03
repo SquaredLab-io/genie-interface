@@ -52,7 +52,7 @@ const PoolMenu = ({
             onClick={() => {
               setOpenManageModal(true);
             }}
-            disabled={true}
+            // disabled={true}
           >
             <Image src="/icons/TradeIcon.svg" width={16} height={16} alt="trade icon" />
             <span>Manage Pool</span>

@@ -1,32 +1,36 @@
 import { cn } from "@lib/utils";
+import { memo } from "react";
 
 interface PropsType {
-  index: number;
+  sliderValue: number;
   isPerc: boolean;
-  max: number;
-  value: number;
+  sliderValues: number[];
+  currentValue: number;
 }
 
-const Stepper = ({ index, isPerc, max, value }: PropsType) => {
+const Stepper = ({ sliderValue, isPerc, sliderValues, currentValue }: PropsType) => {
+  const isFirst = sliderValue === sliderValues[0];
+  const isLast = sliderValue === sliderValues[sliderValues.length - 1];
+
   return (
     <p
       className={cn(
-        index === 0 ? "items-start" : index === max ? "items-end" : "items-center",
+        isFirst ? "items-start" : isLast ? "items-end" : "items-center",
         "relative flex flex-col"
       )}
     >
       <span
         className={cn(
           "size-[6px] rounded-full",
-          value >= index ? "bg-primary-blue" : "bg-[#373C40]"
+          currentValue >= sliderValue ? "bg-primary-blue" : "bg-[#373C40]"
         )}
       />
       <span className="absolute top-3">
-        {index}
+        {sliderValue}
         {isPerc && "%"}
       </span>
     </p>
   );
 };
 
-export default Stepper;
+export default memo(Stepper);
