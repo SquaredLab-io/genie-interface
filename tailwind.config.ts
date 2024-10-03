@@ -61,9 +61,9 @@ const config = {
         "positive-green": "#44BD22",
         "primary-blue": "#01A1FF",
         "secondary-blue": "#0099FF",
+        "tertiary-blue": "#0496EC",
         "primary-cyan": "#00CCFF",
         "off-white": "#C9C9C9",
-        "coinbase-theme": "#0052FF",
         "error-red": "#FF0000"
       },
       animation: {
