@@ -68,10 +68,6 @@ const Header = () => {
         </div>
       </nav>
       <div className="hidden lg:inline-flex gap-6">
-        {/* <button variant={"secondary"} onClick={() => setIsFaucetOpen(true)}>
-        className="max-w-fit hover:underline underline-offset-2"
-        </button> */}
-        {/* <CoinbaseCreateWallet /> */}
         <ConnectWallet />
       </div>
       {isFaucetOpen && <FaucetModal open={isFaucetOpen} setOpen={setIsFaucetOpen} />}

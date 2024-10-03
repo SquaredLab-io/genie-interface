@@ -55,24 +55,12 @@
   }
 }
 
+@layer components {}
+
 /* Scroll bar */
-::-webkit-scrollbar-track {
-}
-/* Handle on hover */
-/*
-::-webkit-scrollbar-thumb:hover {
-  background: #7339fd;
-}*/
-/* width */
 *::-webkit-scrollbar {
   display: none;
-  /*
-  width: 4px;
-  height: 8px;
-  border-radius: 100px;
-*/
 }
-
 /* Trade History Scroll bar */
 .trade-history::-webkit-scrollbar {
   display: block;
