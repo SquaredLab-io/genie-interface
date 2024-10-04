@@ -42,9 +42,21 @@ const PoolMenu = ({
               setLpTradeOption(LpTradeOptions.withdraw);
             }}
           >
-            <Image src="/icons/MinusIcon.svg" width={14} height={14} alt="add icon" />
+            <Image src="/icons/MinusIcon.svg" width={14} height={14} alt="Withdraw" />
             <span>Withdraw</span>
           </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem className="p-0 mb-4 focus:bg-[#0D1921]">
+          <button
+            className="inline-flex gap-2 items-center w-full disabled:cursor-not-allowed disabled:opacity-80"
+            onClick={() => {
+              setOpenManageModal(true);
+            }}
+            // disabled={true}
+          >
+            <Image src="/icons/TradeIcon.svg" width={16} height={16} alt="Manage Pool" />
+            <span>Manage Pool</span>
+          </button>
         </DropdownMenuItem>
         <DropdownMenuItem className="p-0 focus:bg-[#0D1921]">
           <button
@@ -54,8 +66,8 @@ const PoolMenu = ({
             }}
             // disabled={true}
           >
-            <Image src="/icons/TradeIcon.svg" width={16} height={16} alt="trade icon" />
-            <span>Manage Pool</span>
+            <Image src="/icons/FireIcon.svg" width={16} height={16} alt="Burn NFT" />
+            <span className="text-[#FF6565]">Burn NFT</span>
           </button>
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -129,6 +129,7 @@ export default function CreatePoolForm() {
                       setValue={(value) => field.onChange(value)}
                       className="mt-5"
                       indices={[2, 4, 8, 16, 32]}
+                      asChild
                     />
                   </FormControl>
                   <FormMessage className="text-[#FF3318] text-sm/5 -mt-2 mb-3" />
