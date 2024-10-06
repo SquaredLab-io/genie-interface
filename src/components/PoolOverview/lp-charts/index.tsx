@@ -7,6 +7,7 @@ import { PoolInfo } from "@squaredlab-io/sdk";
 import { useDailyData } from "@lib/hooks/useDailyData";
 import { Address } from "viem";
 import CLChart from "./cl-chart-echart";
+import FeesChart from "./fees-chart";
 // import CLChart from "./cl-chart";
 
 const LPChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
@@ -28,6 +29,9 @@ const LPChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
         <TabsTrigger value={GraphOptions.tvl} className={graphTabStyle}>
           TVL
         </TabsTrigger>
+        <TabsTrigger value={GraphOptions.fees} className={graphTabStyle}>
+          Fees Yield
+        </TabsTrigger>
         <TabsTrigger value={GraphOptions.counterpart} className={graphTabStyle}>
           Counterpart Liquidity
         </TabsTrigger>
@@ -38,7 +42,9 @@ const LPChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       <TabsContent value={GraphOptions.tvl} className="h-[calc(100%-36px)]">
         <TVLChart dailyData={dailyData} loading={isFetchingDailyData} />
       </TabsContent>
-      {/* <TabsContent value={GraphOptions.crossbook}>Cross Book</TabsContent> */}
+      <TabsContent value={GraphOptions.fees} className="h-[calc(100%-36px)]">
+        <FeesChart poolAddr={overviewPool.poolAddr as Address} />
+      </TabsContent>
       <TabsContent value={GraphOptions.counterpart} className="h-[calc(100%-40px)]">
         <CLChart overviewPool={overviewPool} />
       </TabsContent>

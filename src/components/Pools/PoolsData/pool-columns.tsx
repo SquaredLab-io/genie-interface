@@ -355,7 +355,6 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
         }, [chartOptions, seriesOptions, timeseries]);
 
         return (
-          // <span className="opacity-50">Chart here</span>;
           <div className="relative max-h-[150px] max-w-[200px]">
             {isLoadingChart ? (
               <div className="size-full flex-col-center">

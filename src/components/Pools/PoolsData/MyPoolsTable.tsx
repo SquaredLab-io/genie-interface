@@ -17,7 +17,6 @@ import {
 import { Button } from "@components/ui/button";
 import Link from "next/link";
 import { PoolInfo } from "@squaredlab-io/sdk";
-import { Dispatch, SetStateAction } from "react";
 import { useModalStore } from "@store/poolsStore";
 
 interface PropsType<TData, TValue> {
