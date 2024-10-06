@@ -78,7 +78,7 @@ export function useDailyData({
     }
   };
 
-  const { data, isFetching, refetch, isError, error } = useQuery({
+  const { data, isFetching, refetch } = useQuery({
     queryKey: ["poolDailyInfo", poolAddress],
     queryFn: fetch,
     enabled: !!client && !!poolAddress && !paused,
