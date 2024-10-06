@@ -1,17 +1,57 @@
 import React, { useEffect, useRef, useState, memo } from "react";
-import * as echarts from "echarts";
+import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
-import { PoolInfo } from "@squaredlab-io/sdk";
+import { useAccount } from "wagmi";
 import { Address } from "viem";
+import * as echarts from "echarts";
+import { PoolInfo } from "@squaredlab-io/sdk";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import LoadingLogo from "@components/icons/loading-logo";
 import { colors } from "./configs";
+
+interface CLChartData {
+  chartData: {
+    x: number;
+    longPayoff: number;
+    shortPayoff: number;
+    cl: number;
+    reserve: number;
+  }[];
+  reserve: number;
+  alpha: number;
+  beta: number;
+  k: number;
+  priceRef: number;
+}
+
+const CLChartDataPoints = memo(
+  ({ chartData }: { chartData: CLChartData | undefined }) => {
+    return (
+      <div className="absolute right-10 2xl:right-14 -top-10 py-3 hidden xl:inline-flex items-center justify-evenly max-w-fit gap-x-7 2xl:gap-x-10 opacity-80 font-normal text-sm/[22px]">
+        <p className="inline-flex items-center gap-x-3">
+          <Image src="/icons/AlphaIcon.svg" alt="Alpha" height={14} width={16} priority />
+          <span>= {chartData ? chartData.alpha.toFixed(4) : "-"}</span>
+        </p>
+        <p className="inline-flex items-center gap-x-3">
+          <Image src="/icons/BetaIcon.svg" alt="Alpha" height={21} width={11} priority />
+          <span>= {chartData ? chartData.beta.toFixed(4) : "-"}</span>
+        </p>
+        <p className="inline-flex items-center gap-x-3">
+          <span>Reference points</span>
+          <span>= {chartData ? chartData.priceRef.toFixed(4) : "-"}</span>
+        </p>
+      </div>
+    );
+  }
+);
+CLChartDataPoints.displayName = "CLChartDataPoints";
 
 const CLChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<echarts.ECharts | null>(null);
   const { potentia } = usePotentiaSdk();
   const [isLoadingChart, setIsLoadingChart] = useState(false);
+  const { address } = useAccount();
 
   const { data: chartData, isFetching } = useQuery({
     queryKey: ["clChart", overviewPool.poolAddr],
@@ -23,8 +63,8 @@ const CLChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
       }
     },
     enabled: !!potentia && !!overviewPool,
-    staleTime: 5000,
-    gcTime: 15000,
+    staleTime: 0,
+    gcTime: 0,
     retry: 4
   });
 
@@ -147,7 +187,7 @@ const CLChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
         chartRef.current = null;
       }
     };
-  }, [chartData]);
+  }, [chartData, address]);
 
   if (isLoadingChart || isFetching) {
     return (
@@ -161,6 +201,7 @@ const CLChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
 
   return (
     <div className="relative h-[calc(100%-20px)]">
+      {!!address && <CLChartDataPoints chartData={chartData} />}
       <div className="size-full" ref={chartContainerRef} />
     </div>
   );

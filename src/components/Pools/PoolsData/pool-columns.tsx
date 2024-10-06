@@ -263,7 +263,9 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       cell: ({ row }) => {
         const { poolAddr } = row.original;
 
-        const { cumulativeSumData } = useMonthlyFundingFee(poolAddr as Address);
+        const { cumulativeSumData, isFetching } = useMonthlyFundingFee(
+          poolAddr as Address
+        );
 
         const chartContainerRef = useRef(null);
         const chartRef = useRef<IChartApi | null>(null);
@@ -326,7 +328,6 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
 
         useEffect(() => {
           if (!chartContainerRef.current) return;
-
           setIsLoadingChart(true);
 
           if (!chartRef.current) {
@@ -356,13 +357,12 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
 
         return (
           <div className="relative max-h-[150px] max-w-[200px]">
-            {isLoadingChart ? (
-              <div className="size-full flex-col-center">
-                <LoadingLogo size={80} />
-              </div>
-            ) : (
-              <div className="h-full" ref={chartContainerRef} />
+            {(isLoadingChart || isFetching) && (
+              <span className="absolute inset-0 flex items-center justify-center z-10 bg-primary-gray bg-opacity-50">
+                ...
+              </span>
             )}
+            <div className="h-full" ref={chartContainerRef} />
           </div>
         );
       }
@@ -508,9 +508,7 @@ export function transactionsColumnDef(): ColumnDef<Tx>[] {
         return (
           <p className="flex flex-col items-start">
             <span className="font-bold">{getActionType(action)}</span>
-            <span className="text-[#9299AA] text-sm/5">
-              {shortenHash(hash)}
-            </span>
+            <span className="text-[#9299AA] text-sm/5">{shortenHash(hash)}</span>
           </p>
         );
       }
