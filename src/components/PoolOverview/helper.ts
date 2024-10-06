@@ -17,7 +17,7 @@ export type Timeseries = {
 export enum GraphOptions {
   volume = "volume",
   tvl = "tvl",
-  // crossbook = "crossbook",
+  fees = "fees",
   counterpart = "counterpart"
 }
 

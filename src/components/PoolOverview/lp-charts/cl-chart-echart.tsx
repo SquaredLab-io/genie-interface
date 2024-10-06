@@ -83,32 +83,32 @@ const CLChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
         {
           name: "Long Payoff",
           type: "line",
-          data: chartData.chartData.map((item: any) => [item.x, item.longPayoff]),
-          color: "#0099FF",
+          data: chartData.chartData.map((item) => [item.x, item.longPayoff]),
+          color: colors.lineColorTwo,
           symbol: "none",
           lineStyle: { width: 2 }
         },
         {
           name: "Short Payoff",
           type: "line",
-          data: chartData.chartData.map((item: any) => [item.x, item.shortPayoff]),
-          color: "#FF7300",
+          data: chartData.chartData.map((item) => [item.x, item.shortPayoff]),
+          color: colors.lineColorOne,
           symbol: "none",
           lineStyle: { width: 2 }
         },
         {
           name: "CL",
           type: "line",
-          data: chartData.chartData.map((item: any) => [item.x, item.cl]),
-          color: "#604DA7",
+          data: chartData.chartData.map((item) => [item.x, item.cl]),
+          color: colors.lineColorThree,
           symbol: "none",
           lineStyle: { width: 2 }
         },
         {
           name: "Reserve",
           type: "line",
-          data: chartData.chartData.map((item: any) => [item.x, item.reserve]),
-          color: "green",
+          data: chartData.chartData.map((item) => [item.x, item.reserve]),
+          color: colors.lineColorFour,
           symbol: "none",
           lineStyle: { width: 2 }
         }
