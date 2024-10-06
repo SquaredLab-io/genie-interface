@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef, useState, useMemo } from "react";
-import { createChart, IChartApi, ISeriesApi, CrosshairMode } from "lightweight-charts";
+import { createChart, IChartApi, ISeriesApi } from "lightweight-charts";
 import { Address } from "viem";
 import { useMonthlyFundingFee } from "@lib/hooks/useMonthlyFundingFee";
 import { getFeesTimeseries } from "../helper";
@@ -69,12 +69,11 @@ const FeeChart = ({ poolAddr }: { poolAddr: Address }) => {
 
   return (
     <div className="relative h-[calc(100%-20px)]">
-      {isLoadingChart ||
-        (isFetching && (
-          <div className="absolute inset-0 flex items-center justify-center bg-primary-gray bg-opacity-50 z-10">
-            <LoadingLogo size={80} />
-          </div>
-        ))}
+      {(isLoadingChart || isFetching) && (
+        <div className="absolute inset-0 flex items-center justify-center bg-primary-gray bg-opacity-50 z-10">
+          <LoadingLogo size={80} />
+        </div>
+      )}
       <div className="size-full" ref={chartContainerRef} />
     </div>
   );
