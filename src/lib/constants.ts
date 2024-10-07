@@ -58,10 +58,19 @@ export const TOKENS: {
   [key: string]: `0x${string}`;
 } = {
   WETH: getAddress("0x08EF999e4383FE62660022b73D145201bD5023d4"),
-  ETH: getAddress("0x0000000000000000000000000000000000000000")
+  ETH: getAddress("0x0000000000000000000000000000000000000000"),
+  USDT: getAddress("0x32383fcE66D9D9311EF2bABc284a30a7112c27BF")
 };
 
-export const SUPPORTED_TOKENS = [
+interface Token {
+  token: string;
+  name: string;
+  address: `0x${string}`;
+  logo: string;
+  decimals: number;
+}
+
+export const SUPPORTED_TOKENS: Token[] = [
   {
     token: "WETH",
     name: "Wrapped Ether",
@@ -75,5 +84,12 @@ export const SUPPORTED_TOKENS = [
     address: TOKENS.ETH,
     logo: "/tokens/eth.svg",
     decimals: 18
+  },
+  {
+    token: "USDT",
+    name: "Tether USD",
+    address: TOKENS.USDT, // Fixed typo: changed 'adderss' to 'address'
+    logo: "/tokens/usdt.svg",
+    decimals: 6
   }
 ];
