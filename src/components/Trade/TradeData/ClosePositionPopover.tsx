@@ -59,7 +59,7 @@ const ClosePositionPopover: FC<PropsType> = memo(
     const { potentia } = usePotentiaSdk();
 
     const { setClosePopoverDisabled } = useTradeStore();
-    const { selectedPool, poolsToPower } = usePoolsStore();
+    const { selectedPool, poolMap } = usePoolsStore();
     const { close_event } = notificationId;
 
     const balance = new BigNumber(position?.tokenSize ?? "0");
@@ -251,7 +251,7 @@ const ClosePositionPopover: FC<PropsType> = memo(
                 <p className="inline-flex items-center gap-[2px]">
                   <span className="w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm">
                     {selectedPool()?.underlying}
-                    <sup>{poolsToPower?.[position.pool]}</sup>
+                    <sup>{poolMap?.[position.pool].power}</sup>
                   </span>
                   <span className="opacity-60">{isLong ? "L" : "S"}</span>
                 </p>
