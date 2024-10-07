@@ -6,7 +6,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { WagmiProvider } from "wagmi";
 import { config } from "@lib/wagmi";
-import { RainbowKitProvider, Theme } from "@rainbow-me/rainbowkit";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { baseSepolia } from "viem/chains";
 import { theme } from "../ConnectWallet/theme";
 import { getQueryClient } from "@lib/utils/query/get-query-client";
