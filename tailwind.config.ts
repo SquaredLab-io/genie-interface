@@ -59,6 +59,7 @@ const config = {
         "light-gray": "#ADB1B8",
         "negative-red": "#CF1800",
         "positive-green": "#44BD22",
+        "primary-green": "#27AE60",
         "primary-blue": "#01A1FF",
         "secondary-blue": "#0099FF",
         "tertiary-blue": "#0496EC",

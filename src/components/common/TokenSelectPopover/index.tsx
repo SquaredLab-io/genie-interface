@@ -41,7 +41,7 @@ export default function TokenSelectPopover({ size, children }: PropsType) {
       </PopoverTrigger>
       <PopoverContent
         className={cn(
-          "bg-primary-gray w-full",
+          "w-full border border-secondary-gray",
           isCompact ? "max-w-fit" : "max-w-[640px]"
         )}
         align="end"
