@@ -1,7 +1,7 @@
 "use client";
 
 // Library Imports
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Address } from "viem";
@@ -49,11 +49,13 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
   const { selectedPool } = usePoolsStore();
 
   // selecting selected pool's token as the deault token option in faucet
-  const [selectedToken, setSelectedToken] = useState(
-    SUPPORTED_TOKENS.find((token) => {
-      return token.address === selectedPool()?.underlyingAddress;
-    }) ?? SUPPORTED_TOKENS[0]
-  );
+  const selectedToken = useMemo(() => {
+    return (
+      SUPPORTED_TOKENS.find((token) => {
+        return token.address === selectedPool()?.underlyingAddress;
+      }) ?? SUPPORTED_TOKENS[0]
+    );
+  }, [selectedPool()]);
 
   const { refetch: refetchBalance } = useTokenBalance({
     token: selectedPool()?.underlyingAddress as Address,
@@ -98,10 +100,7 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
     const apiUrl = "/api/airdrop";
 
     // Req body for token and ETH
-    const requests = [
-      { userWallet: userAddr, tokenAddr: tokenAddr }
-      // { userWallet: userAddr, tokenAddr: "0x0000000000000000000000000000000000000000" }
-    ];
+    const requests = [{ userWallet: userAddr, tokenAddr: tokenAddr }];
 
     setTxStatus("loading");
     setError(undefined);

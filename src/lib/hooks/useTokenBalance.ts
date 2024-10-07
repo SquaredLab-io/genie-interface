@@ -60,7 +60,7 @@ const useTokenBalance = ({
     enabled: isConnected && !!token && !paused,
     refetchInterval: 20000,
     staleTime: 5000,
-    gcTime: 30000,
+    gcTime: 20000,
     refetchOnReconnect: true,
     retry: 4
   });
