@@ -36,7 +36,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
   const [tableHeight, setTableHeight] = useState<number>(235);
   const tabListRef = useRef<HTMLDivElement>(null);
 
-  const { selectedPool, poolsToPower } = usePoolsStore();
+  const { selectedPool, poolMap } = usePoolsStore();
   const { isConnected } = useAccount();
 
   // All Transactions -- LP, Open Long/Short, Close Long/Short
@@ -50,6 +50,8 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
     () => getClosedTransactions(tradeHistory),
     [tradeHistory]
   );
+
+  useEffect(() => console.log("Open_Positions", openPositions), [openPositions]);
 
   useEffect(() => {
     const updateHeight = () => {
@@ -81,10 +83,10 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
         </div>
       ),
       cell: ({ row }) => {
-        const assets = selectedPool()
-          ?.pool.split(" / ")
-          .map((asset) => asset.trim());
-        const poolAddr = row.original.pool;
+        const { pool } = row.original;
+        const poolData = poolMap?.[pool];
+        const assets = [poolData?.underlying, "USDC"];
+
         return (
           <div className="whitespace-nowrap flex flex-row gap-2 text-left font-medium pl-[18px] py-6">
             <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-2">
@@ -94,7 +96,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
                   className="z-0 flex overflow-hidden ring-1 ring-white rounded-full bg-neutral-800"
                 >
                   <Image
-                    src={`/tokens/${asset.toLowerCase()}.svg`}
+                    src={`/tokens/${asset?.toLowerCase()}.svg`}
                     alt={`${asset} icon`}
                     width={26}
                     height={26}
@@ -115,7 +117,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
                   ))}
                 </p>
                 <p className="font-medium text-xs/3 bg-[#49AFE9] py-1 px-[10px] rounded-md">
-                  p = {poolsToPower?.[poolAddr]}
+                  p = {poolData?.power}
                 </p>
               </div>
               <div className="font-normal text-sm/5 text-[#9299AA]">
@@ -154,6 +156,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
       header: () => <span>Size</span>,
       cell: ({ row }) => {
         const { tokenSize, underlyingPrice, side, pool } = row.original;
+        const poolData = poolMap?.[pool];
 
         const { tokenPrices, isFetching } = useTokenPrice({
           poolAddress: pool
@@ -163,14 +166,14 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
           : undefined;
 
         const size = formatLimit(
-          getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals!).toString(),
+          getDecimalAdjusted(tokenSize, poolData?.decimals).toString(),
           0.01
         );
         const sizeInDollars = formatLimit(
           (
             parseFloat(underlyingPrice) *
             (tradePrice ?? 0) *
-            getDecimalAdjusted(tokenSize, selectedPool()?.underlyingDecimals)
+            getDecimalAdjusted(tokenSize, poolData?.decimals)
           ).toString(),
           0.001
         );
@@ -321,11 +324,11 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
       accessorKey: "size",
       header: () => <span>Size</span>,
       cell: ({ row }) => {
-        const { action, oraclePrice, underlying, size } = row.original;
+        const { action, oraclePrice, underlying, size, pool } = row.original;
+        const poolData = poolMap?.[pool];
+
         const tokenSize = formatLimit(
-          formatNumber(
-            getDecimalAdjusted(size.toString(), selectedPool()?.underlyingDecimals!)
-          ),
+          formatNumber(getDecimalAdjusted(size.toString(), poolData?.decimals)),
           0.001
         );
         const tokenPrice = formatOraclePrice(oraclePrice, underlying.decimals);
