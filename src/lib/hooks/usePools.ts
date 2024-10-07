@@ -3,6 +3,12 @@ import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { usePoolsStore } from "@store/poolsStore";
 
+export interface PoolMapping {
+  power: number;
+  underlying: string;
+  decimals: number;
+}
+
 interface ReturnType {
   pools: PoolInfo[] | undefined;
   isFetching: boolean;
@@ -12,14 +18,20 @@ interface ReturnType {
   status: "error" | "success" | "pending";
 }
 
-function createPoolToPowerMapping(pools: PoolInfo[] | undefined): Record<string, number> | undefined {
+function createPoolMapping(
+  pools: PoolInfo[] | undefined
+): Record<string, PoolMapping> | undefined {
   if (!pools) return undefined;
   return pools.reduce(
     (mapping, pool) => {
-      mapping[pool.poolAddr] = pool.power;
+      mapping[pool.poolAddr] = {
+        power: pool.power,
+        underlying: pool.underlying,
+        decimals: pool.underlyingDecimals
+      };
       return mapping;
     },
-    {} as Record<string, number>
+    {} as Record<string, PoolMapping>
   );
 }
 
@@ -27,13 +39,13 @@ export function usePools(paused = false): ReturnType {
   const { potentia } = usePotentiaSdk();
 
   // Using this poolsData for global instance
-  const { updatePoolsData, updatePoolsToPower } = usePoolsStore();
+  const { updatePoolsData, updatePoolMap } = usePoolsStore();
 
   const getPools = async () => {
     try {
       const data = await potentia?.getPools();
       updatePoolsData(data);
-      updatePoolsToPower(createPoolToPowerMapping(data));
+      updatePoolMap(createPoolMapping(data));
       return data;
     } catch (error) {
       console.error("Failed to fetch pools.");

@@ -1,23 +1,23 @@
 import { create } from "zustand";
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
+import { PoolMapping } from "@lib/hooks/usePools";
 
 interface iPools {
   poolsData: PoolInfo[];
-  poolsToPower: Record<string, number> | undefined;
+  poolMap: Record<string, PoolMapping> | undefined;
   selectedPool: () => PoolInfo | undefined;
   isFetchingPools: boolean;
   updatePoolsData: (value: PoolInfo[] | undefined) => void;
-  updatePoolsToPower: (value: Record<string, number> | undefined) => void;
+  updatePoolMap: (value: Record<string, PoolMapping> | undefined) => void;
   updateSelectedPool: (value: PoolInfo) => void;
   updateIsFetchingPools: (value: boolean) => void;
 }
 
 export const usePoolsStore = create<iPools>((set, get) => ({
   poolsData: [],
-  poolsToPower: undefined,
+  poolMap: undefined,
   selectedPool: () => {
     const state = get();
-    // default last pool in array
     return state.poolsData?.[state.poolsData.length - 1];
   },
   isFetchingPools: false,
@@ -26,9 +26,9 @@ export const usePoolsStore = create<iPools>((set, get) => ({
     set(() => ({
       poolsData: pools
     })),
-  updatePoolsToPower: (newObj) =>
+  updatePoolMap: (newMap) =>
     set(() => ({
-      poolsToPower: newObj
+      poolMap: newMap
     })),
   updateSelectedPool: (newPool) => {
     set(() => ({
