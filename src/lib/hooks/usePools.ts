@@ -7,6 +7,7 @@ export interface PoolMapping {
   power: number;
   underlying: string;
   decimals: number;
+  poolAddr: string;
 }
 
 interface ReturnType {
@@ -27,7 +28,8 @@ function createPoolMapping(
       mapping[pool.poolAddr] = {
         power: pool.power,
         underlying: pool.underlying,
-        decimals: pool.underlyingDecimals
+        decimals: pool.underlyingDecimals,
+        poolAddr: pool.poolAddr
       };
       return mapping;
     },
