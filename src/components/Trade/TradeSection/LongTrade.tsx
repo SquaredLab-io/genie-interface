@@ -396,9 +396,7 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
           isOutputFetching
             ? "..."
             : !isNaN(parseFloat(quantity)) && isConnected
-              ? formatNumber(
-                  getDecimalAdjusted(output, selectedPool()?.underlyingDecimals)
-                )
+              ? formatNumber(getDecimalAdjusted(output, 18))
               : "N/A"
         } ${selectedPool()?.underlying}`}
       />
@@ -410,4 +408,4 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
 
 LongTrade.displayName = "LongTrade";
 
-export default memo(LongTrade);
+export default LongTrade;

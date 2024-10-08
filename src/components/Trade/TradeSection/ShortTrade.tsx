@@ -42,7 +42,7 @@ interface PropsType {
   potentia?: PotentiaSdk;
 }
 
-const ShortTrade: FC<PropsType> = ({ potentia }) => {
+const ShortTrade: FC<PropsType> = memo(({ potentia }) => {
   const { selectedPool } = usePoolsStore((state) => state);
 
   const { short_event } = notificationId;
@@ -417,6 +417,8 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
       <TradeInfo />
     </div>
   );
-};
+});
 
-export default memo(ShortTrade);
+ShortTrade.displayName = "ShortTrade";
+
+export default ShortTrade;

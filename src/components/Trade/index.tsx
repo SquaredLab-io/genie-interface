@@ -41,7 +41,7 @@ const Trade = () => {
         src="/static/datafeeds/udf/dist/bundle.js"
         strategy="lazyOnload"
         onReady={() => {
-          console.log("Chart script is ready!");
+          // console.log("Chart script is ready!");
           setIsScriptReady(true);
         }}
       />
