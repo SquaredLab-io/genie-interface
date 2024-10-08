@@ -43,277 +43,277 @@ interface PropsType {
   children: ReactNode;
   position: OpenPositionInfo;
   isLong: boolean;
-  random?: number;
 }
 
-const ClosePositionPopover: FC<PropsType> = memo(
-  ({ children, position, isLong, random }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [quantity, setQuantity] = useState("");
-    const [inputAmount, setInputAmount] = useState("");
-    const [sliderValue, setSliderValue] = useState(0);
+const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [quantity, setQuantity] = useState("");
+  const [inputAmount, setInputAmount] = useState("");
+  const [sliderValue, setSliderValue] = useState(0);
 
-    const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
-    const [isHandlerLoading, setIsHandlerLoading] = useState(false);
+  const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
+  const [isHandlerLoading, setIsHandlerLoading] = useState(false);
 
-    const { potentia } = usePotentiaSdk();
+  const { potentia } = usePotentiaSdk();
 
-    const { setClosePopoverDisabled } = useTradeStore();
-    const { selectedPool, poolMap } = usePoolsStore();
-    const { close_event } = notificationId;
+  const { setClosePopoverDisabled } = useTradeStore();
+  const { selectedPool, poolMap } = usePoolsStore();
+  const { close_event } = notificationId;
 
-    const balance = new BigNumber(position?.tokenSize ?? "0");
+  const balance = new BigNumber(position?.tokenSize ?? "0");
 
-    const isValidQuantity = !isNaN(parseFloat(quantity));
+  const isValidQuantity = !isNaN(parseFloat(quantity));
 
-    // All current positions
-    const { refetch: refetchOpenOrders } = useOpenOrders({
-      poolAddress: selectedPool()?.poolAddr as Address,
-      paused: true
+  // All current positions
+  const { refetch: refetchOpenOrders } = useOpenOrders({
+    poolAddress: selectedPool()?.poolAddr as Address,
+    paused: true
+  });
+  // Closed orders History
+  const { refetch: refetchTxHistory } = useTxHistory(true);
+
+  // Get the Estimate Underlying Output
+  const { output, isFetching: isOutputFetching } = useUnderlyingEstimateOut({
+    poolAddress: selectedPool()?.poolAddr as Address,
+    amount: quantity,
+    isLong
+  });
+
+  const { refetch: refetchBalance } = useTokenBalance({
+    token: selectedPool()?.underlyingAddress! as Address,
+    decimals: selectedPool()?.underlyingDecimals!,
+    symbol: selectedPool()?.underlying!
+  });
+
+  /**
+   * Handler for closePosition from SDK
+   */
+  async function closePositionHandlerSdk() {
+    const amount = getDecimalDeadjusted(quantity, selectedPool()?.underlyingDecimals);
+    // const amount = BigInt(quantity).toString();
+    setIsHandlerLoading(true);
+    notification.loading({
+      id: close_event.loading_init,
+      title: "Close Position Initiated",
+      description: "Please accept the transaction."
     });
-    // Closed orders History
-    const { refetch: refetchTxHistory } = useTxHistory(true);
+    try {
+      const hash = await potentia?.poolWrite.closePosition(
+        position?.pool!,
+        amount,
+        isLong
+      );
+      setTxHash(hash as Address);
 
-    // Get the Estimate Underlying Output
-    const { output, isFetching: isOutputFetching } = useUnderlyingEstimateOut({
-      poolAddress: selectedPool()?.poolAddr as Address,
-      amount: quantity,
-      isLong
-    });
-
-    const { refetch: refetchBalance } = useTokenBalance({
-      token: selectedPool()?.underlyingAddress! as Address,
-      decimals: selectedPool()?.underlyingDecimals!,
-      symbol: selectedPool()?.underlying!
-    });
-
-    /**
-     * Handler for closePosition from SDK
-     */
-    async function closePositionHandlerSdk() {
-      const amount = getDecimalDeadjusted(quantity, 18);
-      // const amount = BigInt(quantity).toString();
-      setIsHandlerLoading(true);
-      notification.loading({
-        id: close_event.loading_init,
-        title: "Close Position Initiated",
-        description: "Please accept the transaction."
+      // dismissing loading status and toast
+      toast.dismiss(close_event.loading_init);
+      setIsHandlerLoading(false);
+    } catch (error) {
+      // dismiss loading toast onError
+      toast.dismiss(close_event.loading_init);
+      notification.error({
+        id: close_event.default,
+        title: "Close Position Failed",
+        description: "Unable to initiate position closure. Try again"
       });
-      try {
-        const hash = await potentia?.poolWrite.closePosition(
-          position?.pool!,
-          amount,
-          isLong
-        );
-        setTxHash(hash as Address);
-
-        // dismissing loading status and toast
-        toast.dismiss(close_event.loading_init);
-        setIsHandlerLoading(false);
-      } catch (error) {
-        // dismiss loading toast onError
-        toast.dismiss(close_event.loading_init);
-        notification.error({
-          id: close_event.default,
-          title: "Close Position Failed",
-          description: "Unable to initiate position closure. Try again"
-        });
-        setIsHandlerLoading(false);
-        console.error("closePosition Error", error);
-      } finally {
-        toast.dismiss(close_event.loading_init);
-        setIsHandlerLoading(false);
-      }
+      setIsHandlerLoading(false);
+      console.error("closePosition Error", error);
+    } finally {
+      toast.dismiss(close_event.loading_init);
+      setIsHandlerLoading(false);
     }
+  }
 
-    // Memoized function to handle transaction status updates and notifications
-    const handleTransactionStatus = useCallback(
-      (status: "loading" | "success" | "error", errorMessage?: string) => {
-        switch (status) {
-          case "loading":
-            notification.loading({
-              id: close_event.loading,
-              title: "Closing Position",
-              description: "This may take ~30 seconds."
-            });
-            break;
-          case "success":
-            toast.dismiss(close_event.loading);
-            notification.success({
-              id: close_event.success,
-              title: "Position Closed Successfully",
-              description: "Your position has been closed."
-            });
-            refetchOpenOrders();
-            refetchTxHistory();
-            refetchBalance();
-            break;
-          case "error":
-            toast.dismiss(close_event.loading);
-            notification.error({
-              id: close_event.error,
-              title: "Transaction Failed",
-              description: "Closing position failed. Please try again."
-              // description: errorMessage || "An error occurred"
-            });
-            break;
-        }
-      },
-      [refetchOpenOrders, refetchTxHistory, refetchBalance]
-    );
-
-    // wait for closePosition transaction
-    const { isSuccess, isLoading, isPending, isError, error, status } =
-      useWaitForTransactionReceipt({
-        hash: txHash,
-        confirmations: CONFIRMATION
-      });
-
-    useEffect(() => {
-      if (isLoading && isPending) {
-        handleTransactionStatus("loading");
-      } else if (status === "success") {
-        handleTransactionStatus("success");
-      } else if (status === "error") {
-        handleTransactionStatus("error", error?.message);
+  // Memoized function to handle transaction status updates and notifications
+  const handleTransactionStatus = useCallback(
+    (status: "loading" | "success" | "error", errorMessage?: string) => {
+      switch (status) {
+        case "loading":
+          notification.loading({
+            id: close_event.loading,
+            title: "Closing Position",
+            description: "This may take ~30 seconds."
+          });
+          break;
+        case "success":
+          toast.dismiss(close_event.loading);
+          notification.success({
+            id: close_event.success,
+            title: "Position Closed Successfully",
+            description: "Your position has been closed."
+          });
+          refetchOpenOrders();
+          refetchTxHistory();
+          refetchBalance();
+          break;
+        case "error":
+          toast.dismiss(close_event.loading);
+          notification.error({
+            id: close_event.error,
+            title: "Transaction Failed",
+            description: "Closing position failed. Please try again."
+            // description: errorMessage || "An error occurred"
+          });
+          break;
       }
-    }, [status, isLoading, isPending, error, handleTransactionStatus]);
+    },
+    [refetchOpenOrders, refetchTxHistory, refetchBalance]
+  );
 
-    // Handler that updates Quantity and keep SliderValue in sync
-    function inputHandler(event: ChangeEvent<HTMLInputElement>) {
-      const input = event.target.value;
-      setQuantity(input);
-      setInputAmount(input);
-      if (balance) {
-        const value = isValidQuantity
-          ? (parseFloat(input) / getDecimalAdjusted(balance.toFixed(0), 18)) * 100
-          : 0;
-        setSliderValue(value);
-      }
+  // wait for closePosition transaction
+  const { isSuccess, isLoading, isPending, isError, error, status } =
+    useWaitForTransactionReceipt({
+      hash: txHash,
+      confirmations: CONFIRMATION
+    });
+
+  useEffect(() => {
+    if (isLoading && isPending) {
+      handleTransactionStatus("loading");
+    } else if (status === "success") {
+      handleTransactionStatus("success");
+    } else if (status === "error") {
+      handleTransactionStatus("error", error?.message);
     }
+  }, [status, isLoading, isPending, error, handleTransactionStatus]);
 
-    // Handler that updates SliderValue and keep Quantity in sync
-    function sliderHandler(value: number) {
+  // Handler that updates Quantity and keep SliderValue in sync
+  function inputHandler(event: ChangeEvent<HTMLInputElement>) {
+    const input = event.target.value;
+    setQuantity(input);
+    setInputAmount(input);
+    if (balance) {
+      const value = isValidQuantity
+        ? (parseFloat(input) /
+            getDecimalAdjusted(balance.toFixed(0), selectedPool()?.underlyingDecimals)) *
+          100
+        : 0;
       setSliderValue(value);
-      if (balance) {
-        const amount = _getDecimalAdjusted(
-          balance.multipliedBy(BigNumber(value)).dividedBy(BigNumber(100)).toFixed(0),
-          18
-        );
-        setQuantity(amount);
-        setInputAmount(parseFloat(amount).toFixed(2));
-      }
     }
+  }
 
-    const isPopoverClosingDisabled = isHandlerLoading || isLoading;
-    useEffect(() => {
-      if (isHandlerLoading || isLoading || isOpen) {
-        setClosePopoverDisabled(true);
-      } else {
-        setClosePopoverDisabled(false);
-      }
-    }, [isHandlerLoading, isLoading, isOpen]);
+  // Handler that updates SliderValue and keep Quantity in sync
+  function sliderHandler(value: number) {
+    setSliderValue(value);
+    if (balance) {
+      const amount = _getDecimalAdjusted(
+        balance.multipliedBy(BigNumber(value)).dividedBy(BigNumber(100)).toFixed(0),
+        selectedPool()?.underlyingDecimals
+      );
+      setQuantity(amount);
+      setInputAmount(parseFloat(amount).toFixed(2));
+    }
+  }
 
-    const handleOpenChange = useCallback((open: boolean) => {
-      setIsOpen(open);
-    }, []);
+  const isPopoverClosingDisabled = isHandlerLoading || isLoading;
+  useEffect(() => {
+    if (isHandlerLoading || isLoading || isOpen) {
+      setClosePopoverDisabled(true);
+    } else {
+      setClosePopoverDisabled(false);
+    }
+  }, [isHandlerLoading, isLoading, isOpen]);
 
-    return (
-      <Popover
-        open={isPopoverClosingDisabled ? true : isOpen}
-        onOpenChange={handleOpenChange}
-        modal={true}
+  const handleOpenChange = useCallback((open: boolean) => {
+    setIsOpen(open);
+  }, []);
+
+  return (
+    <Popover
+      open={isPopoverClosingDisabled ? true : isOpen}
+      onOpenChange={handleOpenChange}
+      modal={true}
+    >
+      <PopoverTrigger asChild className="min-w-fit z-50">
+        {children}
+      </PopoverTrigger>
+      <PopoverContent
+        side="top"
+        className="bg-primary-gray border border-secondary-gray rounded-base p-0"
       >
-        <PopoverTrigger asChild className="min-w-fit z-50">
-          {children}
-        </PopoverTrigger>
-        <PopoverContent
-          side="top"
-          className="bg-primary-gray border border-secondary-gray rounded-base p-0"
-        >
-          {/* Title */}
-          <h1 className="text-center font-sans-ibm-plex font-medium text-sm/5 mt-[14px] mb-2">
-            Close Long Position
-          </h1>
-          {/* Closing Amount Container - Input, Token */}
-          <div className="flex flex-col gap-2 text-left text-xs/4 font-medium text-[#9299AA] py-4 px-2">
-            <label htmlFor="quantity">Quantity</label>
-            <div className="flex flex-col items-start w-full border-spacing-0 border border-secondary-gray rounded-[4px] py-2 pl-3 pr-4 mb-1">
-              <div className="inline-flex justify-between items-center w-full">
-                <input
-                  type="number"
-                  value={inputAmount}
-                  placeholder="0"
-                  onChange={inputHandler}
-                  id="quantity"
-                  className="bg-transparent p-2 w-full placeholder:text-[#6D6D6D] text-white font-semibold text-sm/6 focus:outline-none"
-                />
-                <p className="inline-flex items-center gap-[2px]">
-                  <span className="w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm">
-                    {selectedPool()?.underlying}
-                    <sup>{poolMap?.[position.pool].power}</sup>
-                  </span>
-                  <span className="opacity-60">{isLong ? "L" : "S"}</span>
-                </p>
-              </div>
-              <span>
-                Balance: {formatNumber(getDecimalAdjusted(balance.toFixed(0), 18))}
-              </span>
-            </div>
-            <SliderBar
-              value={sliderValue}
-              setValue={sliderHandler}
-              min={0}
-              max={100}
-              indices={[0, 25, 50, 75, 100]}
-              isPerc={true}
-            />
-          </div>
-          <Separator />
-          <div className="flex flex-col gap-3 p-2">
-            <div className="w-full px-4 mt-1 inline-flex items-center justify-between font-medium text-xs/4">
-              <span>Payout</span>
+        {/* Title */}
+        <h1 className="text-center font-sans-ibm-plex font-medium text-sm/5 mt-[14px] mb-2">
+          Close Long Position
+        </h1>
+        {/* Closing Amount Container - Input, Token */}
+        <div className="flex flex-col gap-2 text-left text-xs/4 font-medium text-[#9299AA] py-4 px-2">
+          <label htmlFor="quantity">Quantity</label>
+          <div className="flex flex-col items-start w-full border-spacing-0 border border-secondary-gray rounded-[4px] py-2 pl-3 pr-4 mb-1">
+            <div className="inline-flex justify-between items-center w-full">
+              <input
+                type="number"
+                value={inputAmount}
+                placeholder="0"
+                onChange={inputHandler}
+                id="quantity"
+                className="bg-transparent p-2 w-full placeholder:text-[#6D6D6D] text-white font-semibold text-sm/6 focus:outline-none"
+              />
               <p className="inline-flex items-center gap-[2px]">
-                <span>
-                  {isOutputFetching
-                    ? "..."
-                    : isValidQuantity
-                      ? formatNumber(
-                          getDecimalAdjusted(output, selectedPool()?.underlyingDecimals)
-                        )
-                      : "N/A"}{" "}
+                <span className="w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm">
                   {selectedPool()?.underlying}
+                  <sup>{poolMap?.[position.pool].power}</sup>
                 </span>
-                <DropDownIcon className="w-3" />
+                <span className="opacity-60">{isLong ? "L" : "S"}</span>
               </p>
             </div>
-            {/* CTA -- Close Position */}
-            <button
-              className={cn(
-                "w-full py-2 uppercase text-[#CF1800] bg-[#39150F] hover:bg-[#491a12] font-sans-ibm-plex font-medium text-sm/6 transition-colors",
-                "disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed"
+            <span>
+              Balance:{" "}
+              {formatNumber(
+                getDecimalAdjusted(balance.toFixed(0), selectedPool()?.underlyingDecimals)
               )}
-              onClick={closePositionHandlerSdk}
-              disabled={
-                !isValidPositiveNumber(quantity) ||
-                isPopoverClosingDisabled ||
-                !balance ||
-                !selectedPool()
-              }
-            >
-              {isPopoverClosingDisabled && !isError ? (
-                <SpinnerIcon className="size-[16px] mx-auto" />
-              ) : (
-                <span>CLOSE POSITION</span>
-              )}
-            </button>
+            </span>
           </div>
-        </PopoverContent>
-      </Popover>
-    );
-  }
-);
-
-ClosePositionPopover.displayName = "ClosePositionPopover";
+          <SliderBar
+            value={sliderValue}
+            setValue={sliderHandler}
+            min={0}
+            max={100}
+            indices={[0, 25, 50, 75, 100]}
+            isPerc={true}
+          />
+        </div>
+        <Separator />
+        <div className="flex flex-col gap-3 p-2">
+          <div className="w-full px-4 mt-1 inline-flex items-center justify-between font-medium text-xs/4">
+            <span>Payout</span>
+            <p className="inline-flex items-center gap-[2px]">
+              <span>
+                {isOutputFetching
+                  ? "..."
+                  : isValidQuantity
+                    ? formatNumber(
+                        getDecimalAdjusted(output, selectedPool()?.underlyingDecimals)
+                      )
+                    : "N/A"}{" "}
+                {selectedPool()?.underlying}
+              </span>
+              <DropDownIcon className="w-3" />
+            </p>
+          </div>
+          {/* CTA -- Close Position */}
+          <button
+            className={cn(
+              "w-full py-2 uppercase text-[#CF1800] bg-[#39150F] hover:bg-[#491a12] font-sans-ibm-plex font-medium text-sm/6 transition-colors",
+              "disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed"
+            )}
+            onClick={closePositionHandlerSdk}
+            disabled={
+              !isValidPositiveNumber(quantity) ||
+              isPopoverClosingDisabled ||
+              !balance ||
+              !selectedPool()
+            }
+          >
+            {isPopoverClosingDisabled && !isError ? (
+              <SpinnerIcon className="size-[16px] mx-auto" />
+            ) : (
+              <span>CLOSE POSITION</span>
+            )}
+          </button>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+};
 
 export default memo(ClosePositionPopover);
