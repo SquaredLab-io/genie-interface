@@ -323,7 +323,9 @@ const ShortTrade: FC<PropsType> = ({ potentia }) => {
           <span>...</span>
         ) : (
           <span className="font-medium">
-            {formatNumber(getDecimalAdjusted(shortPosition, 18))}
+            {formatNumber(
+              getDecimalAdjusted(shortPosition, selectedPool()?.underlyingDecimals)
+            )}
           </span>
         )}
       </p>
