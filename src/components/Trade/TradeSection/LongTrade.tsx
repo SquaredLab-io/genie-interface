@@ -311,7 +311,9 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
         ) : (
           <p className="flex flex-col items-start">
             <span className="font-medium">
-              {formatNumber(getDecimalAdjusted(longPosition, 18))}
+              {formatNumber(
+                getDecimalAdjusted(longPosition, selectedPool()?.underlyingDecimals)
+              )}
             </span>
           </p>
         )}
