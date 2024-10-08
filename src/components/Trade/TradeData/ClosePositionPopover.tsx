@@ -74,7 +74,7 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
 
   // Get the Estimate Underlying Output
   const { output, isFetching: isOutputFetching } = useUnderlyingEstimateOut({
-    poolAddress: selectedPool()?.poolAddr as Address,
+    poolAddress: poolMap?.[position.pool].poolAddr as Address,
     amount: quantity,
     isLong
   });
@@ -89,7 +89,7 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
    * Handler for closePosition from SDK
    */
   async function closePositionHandlerSdk() {
-    const amount = getDecimalDeadjusted(quantity, selectedPool()?.underlyingDecimals);
+    const amount = getDecimalDeadjusted(quantity, poolMap?.[position.pool].decimals);
     // const amount = BigInt(quantity).toString();
     setIsHandlerLoading(true);
     notification.loading({
@@ -185,7 +185,7 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
     if (balance) {
       const value = isValidQuantity
         ? (parseFloat(input) /
-            getDecimalAdjusted(balance.toFixed(0), selectedPool()?.underlyingDecimals)) *
+            getDecimalAdjusted(balance.toFixed(0), poolMap?.[position.pool].decimals)) *
           100
         : 0;
       setSliderValue(value);
@@ -198,7 +198,7 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
     if (balance) {
       const amount = _getDecimalAdjusted(
         balance.multipliedBy(BigNumber(value)).dividedBy(BigNumber(100)).toFixed(0),
-        selectedPool()?.underlyingDecimals
+        poolMap?.[position.pool].decimals
       );
       setQuantity(amount);
       setInputAmount(parseFloat(amount).toFixed(2));
@@ -259,7 +259,7 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
             <span>
               Balance:{" "}
               {formatNumber(
-                getDecimalAdjusted(balance.toFixed(0), selectedPool()?.underlyingDecimals)
+                getDecimalAdjusted(balance.toFixed(0), poolMap?.[position.pool].decimals)
               )}
             </span>
           </div>
@@ -282,10 +282,10 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
                   ? "..."
                   : isValidQuantity
                     ? formatNumber(
-                        getDecimalAdjusted(output, selectedPool()?.underlyingDecimals)
+                        getDecimalAdjusted(output, poolMap?.[position.pool].decimals)
                       )
                     : "N/A"}{" "}
-                {selectedPool()?.underlying}
+                {poolMap?.[position.pool].underlying}
               </span>
               <DropDownIcon className="w-3" />
             </p>
