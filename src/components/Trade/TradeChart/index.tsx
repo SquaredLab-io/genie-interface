@@ -84,7 +84,7 @@ const TradeChart = ({ potentia }: PropsType) => {
       tvWidgetRef.current = tvWidget;
 
       tvWidget.onChartReady(() => {
-        console.log("Chart is ready");
+        // console.log("Chart is ready");
         injectCustomCSS(tvWidget);
 
         tvWidget.subscribe("onAutoSaveNeeded", () => {

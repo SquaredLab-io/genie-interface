@@ -66,7 +66,7 @@ const MarketData = () => {
         <Marker
           label={"Day Change"}
           value={
-            marketData ? `${formatNumber(marketData.price_change_percentage_24h)}%` : "-"
+            marketData ? `${marketData.price_change_percentage_24h.toFixed(5)}%` : "-"
           }
           fetching={isMarketDataLoading}
           showIndicator={true}
