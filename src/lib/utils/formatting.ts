@@ -124,24 +124,24 @@ export function getDecimalDeadjusted(
   value: string | undefined,
   decimals: number | undefined
 ): string {
-  if (!isValidPositiveNumber(value) || !value) return "0";
-  return new BigNumber(value).multipliedBy(10 ** (decimals ?? 18)).toFixed(0);
+  if (!isValidPositiveNumber(value) || !value || !decimals) return "0";
+  return new BigNumber(value).multipliedBy(10 ** decimals).toFixed(0);
 }
 
 export function getDecimalAdjusted(
   value: string | undefined,
   decimals: number | undefined
 ): number {
-  if (!value) return 0;
-  return parseFloat(value) / 10 ** (decimals ?? 18);
+  if (!value || !decimals) return 0;
+  return parseFloat(value) / 10 ** decimals;
 }
 
 export function _getDecimalAdjusted(
   value: string | undefined,
   decimals: number | undefined
 ): string {
-  if (!value) return "0";
-  return formatUnits(BigInt(value), decimals ?? 18);
+  if (!value || !decimals) return "0";
+  return formatUnits(BigInt(value), decimals);
 }
 
 // eg. used in Trade Flow
@@ -149,7 +149,8 @@ export function formatOraclePrice(
   price: bigint | undefined,
   tokenDecimals: number | undefined
 ): number {
-  return parseInt((price ?? 0).toString()) / 10 ** (tokenDecimals ?? 18);
+  if (!tokenDecimals) return 0;
+  return parseInt((price ?? 0).toString()) / 10 ** tokenDecimals;
 }
 
 export function formatTimestamp(timestamp: string): {

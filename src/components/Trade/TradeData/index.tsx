@@ -51,8 +51,6 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
     [tradeHistory]
   );
 
-  useEffect(() => console.log("Open_Positions", openPositions), [openPositions]);
-
   useEffect(() => {
     const updateHeight = () => {
       if (containerRef.current && tabListRef.current) {
