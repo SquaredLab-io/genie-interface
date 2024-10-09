@@ -5,19 +5,22 @@ import { ArrowUpRight, Trophy } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover";
 import { Separator } from "@components/ui/separator";
 
-const PointsPopover: FC<PropsWithChildren> = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false);
+interface PointsPopoverProps extends PropsWithChildren {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+}
 
-  const handleOpenChange = useCallback((open: boolean) => {
-    setIsOpen(open);
-  }, []);
-
+const PointsPopover: FC<PointsPopoverProps> = ({ children, isOpen, onOpenChange }) => {
   return (
-    <Popover open={isOpen} onOpenChange={handleOpenChange} modal={true}>
+    <Popover open={isOpen} onOpenChange={onOpenChange} modal={true}>
       <PopoverTrigger asChild className="min-w-fit z-50">
         {children}
       </PopoverTrigger>
-      <PopoverContent side="top" className="bg-[#071A26] border-none rounded-base p-0">
+      <PopoverContent
+        side="top"
+        className="bg-[#071A26] border-none rounded-base p-0"
+        onMouseLeave={() => onOpenChange(false)}
+      >
         <h1 className="py-4 pl-4 w-full font-medium text-base/5">Your Gpoints</h1>
         <Separator />
         <div className="px-4 pt-3 pb-4 flex flex-col gap-6">
@@ -44,14 +47,28 @@ const PointsPopover: FC<PropsWithChildren> = ({ children }) => {
             </div>
           </div>
           <div className="flex flex-col gap-y-2 w-full">
-            <Link href="/" target="_blank" className="inline-flex items-center">
-              <span className="font-light text-xs/4 text-[#ADB2AB]">How it works</span>
-              <ArrowUpRight size={12} className="ml-1" stroke="#ADB2AB" />
+            <Link
+              href="/"
+              target="_blank"
+              className="inline-flex items-center group max-w-fit"
+            >
+              <span className="font-light text-xs/4 text-[#ADB2AB] group-hover:text-white transition-colors duration-200">
+                How it works
+              </span>
+              <ArrowUpRight
+                size={12}
+                className="ml-1 text-[#ADB2AB] group-hover:text-white"
+              />
             </Link>
-            <Link href="/leaderboard" onClick={() => setIsOpen(false)}>
-              <button className="w-full border-[0.5px] inline-flex items-center justify-center gap-x-1 border-[#D9D9D9] hover:bg-[#D9D9D9]/5 transition-colors duration-300 py-3">
-                <Trophy size={16} stroke="#C1C1C1" />
-                <span className="font-normal text-sm/6 text-[#C1C1C1]">Leaderboard</span>
+            <Link href="/leaderboard" onClick={() => onOpenChange(false)}>
+              <button className="group w-full py-3 border-[0.5px] inline-flex items-center justify-center gap-x-1 border-[#D9D9D9] hover:bg-[#E6E6E6] transition-colors duration-200 ease-in-out">
+                <Trophy
+                  size={16}
+                  className="text-[#C1C1C1] group-hover:text-black transition-colors duration-200"
+                />
+                <span className="font-normal text-sm/6 text-[#C1C1C1] group-hover:text-black transition-colors duration-200">
+                  Leaderboard
+                </span>
               </button>
             </Link>
           </div>

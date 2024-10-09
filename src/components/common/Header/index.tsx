@@ -17,6 +17,8 @@ const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isFaucetOpen, setIsFaucetOpen] = useState<boolean>(false);
 
+  const [isPointsPopoverOpen, setIsPointsPopoverOpen] = useState(false);
+
   const { isConnected } = useAccount();
 
   return (
@@ -73,8 +75,15 @@ const Header = () => {
       </nav>
       <div className="hidden lg:inline-flex gap-6">
         {isConnected && (
-          <PointsPopover>
-            <button className="inline-flex items-center gap-x-1 text-sm max-w-fit px-2 -mx-2 select-none hover:scale-105 active:scale-95 transition-transform duration-200">
+          <PointsPopover
+            isOpen={isPointsPopoverOpen}
+            onOpenChange={setIsPointsPopoverOpen}
+          >
+            <button
+              className="inline-flex items-center gap-x-1 text-sm max-w-fit px-2 -mx-2 select-none hover:scale-105 active:scale-95 transition-transform duration-200"
+              onMouseEnter={() => setIsPointsPopoverOpen(true)}
+              // onMouseLeave={() => setIsPointsPopoverOpen(false)}
+            >
               <Image
                 src="/icons/PointsIcon.svg"
                 alt="Genie Points | GPoints"
@@ -82,9 +91,9 @@ const Header = () => {
                 width={24}
               />
               <span className="font-normal leading-5 ml-1">25 Gpoints</span>
-              <span className="font-medium leading-4 font-sans-ibm-plex text-primary-green bg-primary-green/10 py-0.5 px-1 rounded-base">
+              {/* <span className="font-medium leading-4 font-sans-ibm-plex text-primary-green bg-primary-green/10 py-0.5 px-1 rounded-base">
                 1.5x
-              </span>
+              </span> */}
             </button>
           </PointsPopover>
         )}
