@@ -368,7 +368,7 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
       accessorKey: "fee",
       header: () => <span>30D Funding</span>,
       cell: ({ row }) => {
-        const { underlyingDecimals, oraclePrice, poolAddr } = row.original;
+        const { oraclePrice, poolAddr } = row.original;
         const { fundingFeeData, isFetching: isFetchingFees } = useMonthlyFundingFee(
           poolAddr as Address
         );
@@ -376,7 +376,7 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
         const feeLimit = formatLimit(
           (fundingFeeData
             ? fundingFeeData.feePerToken *
-              formatOraclePrice(BigInt(oraclePrice), underlyingDecimals)
+              formatOraclePrice(BigInt(oraclePrice))
             : 0
           ).toString(),
           0.0001

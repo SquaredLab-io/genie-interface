@@ -33,6 +33,16 @@ export function useCurrentLpPosition({
         poolAddress as Address, // poolAddress
         address as Address // user
       );
+      if (!result?.userCurrentLpPoss.items.length) {
+        return {
+          pool: poolAddress,
+          user: address,
+          staked: "0",
+          counterLpAmt: "0",
+          lpTokenPriceUnderlying: "0",
+          oraclePrice: "0"
+        };
+      }
       return result?.userCurrentLpPoss.items[0];
     } catch (error) {
       console.error("Error -- fetching current Lp position", error);
