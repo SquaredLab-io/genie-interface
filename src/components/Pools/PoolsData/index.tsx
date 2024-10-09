@@ -27,6 +27,7 @@ import TransactionsTable from "./TransactionsTable";
 import { useFilteredTxs } from "@lib/hooks/useFilteredTxs";
 import CreateTokenModal from "../create-token-modal";
 import { useMyPools } from "@lib/hooks/useMyPools";
+import clsx from "clsx";
 
 const PoolsData = () => {
   const { pools, isFetching } = usePools();
@@ -61,8 +62,11 @@ const PoolsData = () => {
   const userColumns = userPoolsColumnDef();
   const txColumns = transactionsColumnDef();
 
-  const activeTabStyle =
-    "py-2 px-4 data-[state=active]:border data-[state=active]:border-[#00A0FC] rounded-lg data-[state=active]:bg-[#0A344D]";
+  const activeTabStyle = clsx(
+    "py-2 px-4 rounded-lg border border-primary-gray",
+    "data-[state=active]:border-tab-blue data-[state=active]:bg-[#0A344D]",
+    "transition-colors duration-300 ease-linear"
+  );
 
   return (
     <div className="py-10">
