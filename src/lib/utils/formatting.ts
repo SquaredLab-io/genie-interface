@@ -115,8 +115,8 @@ export function getDollarQuote(
 ): string {
   return formatNumber(
     getDecimalAdjusted(baseAmount, decimals) *
-      formatOraclePrice(BigInt(oraclePrice), decimals),
-    true
+      formatOraclePrice(BigInt(oraclePrice), 18),
+    true // convert to dollar denotion
   );
 }
 
