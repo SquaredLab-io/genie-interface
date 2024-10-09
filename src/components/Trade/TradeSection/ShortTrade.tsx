@@ -407,9 +407,7 @@ const ShortTrade: FC<PropsType> = memo(({ potentia }) => {
           isOutputFetching
             ? "..."
             : !isNaN(parseFloat(quantity)) && isConnected
-              ? formatNumber(
-                  getDecimalAdjusted(output, selectedPool()?.underlyingDecimals)
-                )
+              ? formatNumber(getDecimalAdjusted(output, 18))
               : "N/A"
         } ${selectedPool()?.underlying}`}
       />
