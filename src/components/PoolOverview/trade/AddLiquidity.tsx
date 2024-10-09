@@ -145,8 +145,8 @@ const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
       console.error("Error while Adding liquidity", error);
       notification.error({
         id: addLiq_event.error,
-        title: "Open Position Failed",
-        description: "Unable to open position. Please try again."
+        title: "Add Liquidity Failed",
+        description: "Unable to initiate liquidity supply. Please try again."
       });
     }
   }
