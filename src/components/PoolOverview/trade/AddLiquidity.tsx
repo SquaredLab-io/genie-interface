@@ -87,20 +87,22 @@ const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
     amount: getDecimalDeadjusted(amount, underlyingDecimals)
   });
 
-  // get current position of LP
+  // get connected user's current LP Position
   const {
     data: lpPosition,
     isFetching: isLpPositionFetching,
     refetch: refetchLpPosition
   } = lpTokenBalance;
-  const lpBalance =
-    parseFloat(lpPosition?.counterLpAmt ?? "0") / 10 ** underlyingDecimals;
-  const decimalAdjustedOraclePrice = formatOraclePrice(
-    BigInt(lpPosition?.oraclePrice ?? "0"),
-    underlyingDecimals
-  );
-  const lpPriceInDollars =
-    decimalAdjustedOraclePrice * parseFloat(lpPosition?.lpTokenPriceUnderlying ?? "0");
+
+  // Connected user's LP Token balance
+  const lpBalance = getDecimalAdjusted(lpPosition?.counterLpAmt, 18);
+
+  const oraclePrice = lpPosition ? formatOraclePrice(BigInt(lpPosition.oraclePrice)) : 0;
+
+  // TODO: Is it correct?
+  const lpPriceInDollars = lpPosition
+    ? oraclePrice * parseFloat(lpPosition.lpTokenPriceUnderlying)
+    : 0;
 
   /**
    * This handler method approves signers underlying tokens to be spent on Potentia Protocol
@@ -130,7 +132,7 @@ const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
    * Handler for Addliquidity Function
    */
   async function addLiquidityHandlerSdk() {
-    const _amount = parseFloat(amount) * 10 ** 18;
+    const _amount = parseFloat(amount) * 10 ** underlyingDecimals;
     try {
       const hash = await potentia?.poolWrite.addLiquidity(
         overviewPool.poolAddr,
@@ -140,7 +142,12 @@ const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
         setTxHash(hash as Address);
       }
     } catch (error) {
-      console.error("Error while Adding liquidity");
+      console.error("Error while Adding liquidity", error);
+      notification.error({
+        id: addLiq_event.error,
+        title: "Open Position Failed",
+        description: "Unable to open position. Please try again."
+      });
     }
   }
 
@@ -165,7 +172,7 @@ const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
       notification.loading({
         id: addLiq_event.approve_loading,
         title: "Approving Token",
-        description: "This may take ~30 seconds."
+        description: "This may take ~20 seconds."
       });
     } else if (isApproveError) {
       toast.dismiss(addLiq_event.approve_loading);
@@ -196,7 +203,7 @@ const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
       notification.loading({
         id: addLiq_event.loading,
         title: "Adding Liquidity",
-        description: "This may take ~30 seconds."
+        description: "This may take ~20 seconds."
       });
     } else if (isError) {
       toast.dismiss(addLiq_event.loading);
@@ -310,7 +317,7 @@ const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
                 ? "..."
                 : lpPriceInDollars && lpTokens && lpTokens !== "0"
                   ? getCorrectFormattedValue(
-                      lpPriceInDollars * getDecimalAdjusted(lpTokens, underlyingDecimals),
+                      lpPriceInDollars * getDecimalAdjusted(lpTokens, 18),
                       true
                     )
                   : "$0"}
@@ -322,9 +329,7 @@ const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
               {isLpTokenFetching
                 ? "..."
                 : !!lpTokens && lpTokens !== "0"
-                  ? getCorrectFormattedValue(
-                      getDecimalAdjusted(lpTokens, underlyingDecimals)
-                    )
+                  ? getCorrectFormattedValue(getDecimalAdjusted(lpTokens, 18))
                   : "-"}
             </span>
           </div>
