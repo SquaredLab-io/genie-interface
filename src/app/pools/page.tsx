@@ -1,10 +1,12 @@
 "use client";
 
+// Library Imports
+import { useMemo } from "react";
+import { useWindowSize } from "usehooks-ts";
+// Component Imports
 import MobileInfoScreen from "@components/common/MobileInfoScreen";
 import Hero from "@components/Pools/Hero";
 import PoolsData from "@components/Pools/PoolsData";
-import { useMemo } from "react";
-import { useWindowSize } from "usehooks-ts";
 
 export default function Pools() {
   const { width } = useWindowSize();

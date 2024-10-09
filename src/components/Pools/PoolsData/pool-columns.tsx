@@ -112,12 +112,9 @@ export function allPoolsColumnDef(
       accessorKey: "tvl",
       header: () => <span className="pl-[18px] pt-6">TVL</span>,
       cell: ({ row }) => {
-        const { tvl, oraclePrice, underlyingDecimals } = row.original;
-        return (
-          <span className="pl-[18px]">
-            {getDollarQuote(tvl, oraclePrice, underlyingDecimals)}
-          </span>
-        );
+        const { tvl, oraclePrice, underlying } = row.original;
+        // tvl and oraclePrice comes in 18 decimals for all
+        return <span className="pl-[18px]">{getDollarQuote(tvl, oraclePrice, 18)}</span>;
       }
     },
     {
@@ -125,16 +122,16 @@ export function allPoolsColumnDef(
       accessorKey: "volume",
       header: () => <span className="pl-[18px] pt-6">30D Volume</span>,
       cell: ({ row }) => {
-        const { underlyingDecimals, vol, oraclePrice } = row.original;
+        const { vol, oraclePrice, underlyingDecimals } = row.original;
         const growth = parseFloat("0");
         return (
           <div className="pl-[18px] inline-flex gap-1">
             <span>{getDollarQuote(vol, oraclePrice, underlyingDecimals)}</span>
-            <span
+            {/* <span
               className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
             >
               {growth}%
-            </span>
+            </span> */}
           </div>
         );
       }
@@ -149,11 +146,11 @@ export function allPoolsColumnDef(
         return (
           <div className="pl-10 inline-flex gap-1">
             <span>{getDollarQuote(fee, oraclePrice, underlyingDecimals)}</span>
-            <span
+            {/* <span
               className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
             >
               {growth}%
-            </span>
+            </span> */}
           </div>
         );
       }
