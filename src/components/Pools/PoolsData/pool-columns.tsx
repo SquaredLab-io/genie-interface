@@ -1,7 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
+import { Address } from "viem";
+import { createChart, CrosshairMode, IChartApi, ISeriesApi } from "lightweight-charts";
 import {
   _getDecimalAdjusted,
   formatLimit,
@@ -19,12 +22,8 @@ import { BASE_SEPOLIA } from "@lib/constants";
 import { calculatePoolAge } from "@lib/utils/calculatePoolAge";
 import PoolMenu from "./PoolMenu";
 import { getActionType, getPoolTokens } from "@lib/utils/pools";
-import { createChart, CrosshairMode, IChartApi, ISeriesApi } from "lightweight-charts";
-import { useEffect, useMemo, useRef, useState } from "react";
-import LoadingLogo from "@components/icons/loading-logo";
 import { getFeesTimeseries } from "@components/PoolOverview/helper";
 import { useMonthlyFundingFee } from "@lib/hooks/useMonthlyFundingFee";
-import { Address } from "viem";
 import { useLpStore } from "@store/lpStore";
 import { LpTradeOptions } from "@lib/types/enums";
 
@@ -375,8 +374,7 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
 
         const feeLimit = formatLimit(
           (fundingFeeData
-            ? fundingFeeData.feePerToken *
-              formatOraclePrice(BigInt(oraclePrice))
+            ? fundingFeeData.feePerToken * formatOraclePrice(BigInt(oraclePrice))
             : 0
           ).toString(),
           0.0001
@@ -516,7 +514,7 @@ export function transactionsColumnDef(): ColumnDef<Tx>[] {
       header: () => <span className="pt-6">LP Amount</span>,
       cell: ({ row }) => {
         const { lp, underlying } = row.original;
-        return <span>{formatNumber(getDecimalAdjusted(lp, underlying.decimals))}</span>;
+        return <span>{formatNumber(getDecimalAdjusted(lp, 18))}</span>;
       }
     },
     {
