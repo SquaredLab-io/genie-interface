@@ -40,16 +40,3 @@ export default function Home() {
 
   return render;
 }
-
-/*
-   else if (status === "error") {
-     return (
-       <main className="page-center flex flex-col items-center justify-center">
-         <h2 className="text-4xl tracking-wide mb-10">Something went wrong!</h2>
-         <Button onClick={() => router.refresh()} variant={"secondary"}>
-           Try again
-         </Button>
-       </main>
-     );
-   }
- */
