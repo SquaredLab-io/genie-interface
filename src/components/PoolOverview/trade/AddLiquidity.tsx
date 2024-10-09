@@ -6,6 +6,7 @@ import { useAccount, useWaitForTransactionReceipt } from "wagmi";
 import { WethABi } from "@lib/abis";
 import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import toUnits, {
+  formatNumber,
   formatOraclePrice,
   getCorrectFormattedValue,
   getDecimalAdjusted,
@@ -246,11 +247,12 @@ const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
               {isPriceFetching && !price && !isValidPositiveNumber(amount)
                 ? "..."
                 : parseFloat(amount) > 0
-                  ? getCorrectFormattedValue(
+                  ? formatNumber(
                       price * parseFloat(amount !== "" ? amount : "0"),
-                      true
+                      true,
+                      3
                     )
-                  : "$0"}
+                  : "$0.000"}
             </span>
           </p>
           <div className="inline-flex-between">
@@ -316,11 +318,12 @@ const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
               {isLpPositionFetching || isLpTokenFetching
                 ? "..."
                 : lpPriceInDollars && lpTokens && lpTokens !== "0"
-                  ? getCorrectFormattedValue(
+                  ? formatNumber(
                       lpPriceInDollars * getDecimalAdjusted(lpTokens, 18),
-                      true
+                      true,
+                      3
                     )
-                  : "$0"}
+                  : "$0.000"}
             </span>
           </p>
           <div className="inline-flex-between">

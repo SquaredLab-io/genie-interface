@@ -12,6 +12,7 @@ import { cn } from "@lib/utils";
 import ButtonCTA from "@components/common/button-cta";
 import toUnits, {
   _getDecimalAdjusted,
+  formatNumber,
   formatOraclePrice,
   getCorrectFormattedValue,
   getDecimalAdjusted,
@@ -168,11 +169,8 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
               {isLpPositionFetching
                 ? "..."
                 : lpPriceInDollars && parseFloat(amount) > 0
-                  ? getCorrectFormattedValue(
-                      lpPriceInDollars * parseFloat(amount || "0"),
-                      true
-                    )
-                  : "$0"}
+                  ? formatNumber(lpPriceInDollars * parseFloat(amount || "0"), true, 3)
+                  : "$0.000"}
             </span>
           </p>
           <div className="inline-flex-between">
@@ -225,11 +223,12 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
               {!oraclePrice && !isValidPositiveNumber(amount)
                 ? "..."
                 : parseFloat(amount) > 0
-                  ? getCorrectFormattedValue(
+                  ? formatNumber(
                       oraclePrice * getDecimalAdjusted(lpUnderlying, underlyingDecimals),
-                      true
+                      true,
+                      3
                     )
-                  : "$0"}
+                  : "$0.000"}
             </span>
           </p>
           <div className="inline-flex-between">
