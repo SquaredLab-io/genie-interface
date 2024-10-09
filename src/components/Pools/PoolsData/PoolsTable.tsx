@@ -38,7 +38,7 @@ const PoolsTable = <TData, TValue>({
             {headerGroup.headers.map((header) => (
               <TableHead
                 key={header.id}
-                className="font-bold text-sm/[18px] text-[#5F7183]"
+                className="font-bold text-sm/[18px] text-header-gray"
               >
                 {header.isPlaceholder
                   ? null
