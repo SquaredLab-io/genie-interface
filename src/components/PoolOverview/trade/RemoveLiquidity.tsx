@@ -71,20 +71,20 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
     refetch: refetchLpPosition
   } = lpTokenBalance;
 
-  const lpBalance = useMemo(() => {
-    if (!lpPosition) return 0;
-    return parseFloat(lpPosition.counterLpAmt) / 10 ** overviewPool.underlyingDecimals;
-  }, [lpPosition]);
+  const lpBalance = lpPosition ? getDecimalAdjusted(lpPosition.counterLpAmt, 18) : 0;
 
-  const decimalAdjustedOraclePrice = formatOraclePrice(
-    BigInt(lpPosition?.oraclePrice ?? "0"),
-    underlyingDecimals
-  );
-  const lpPriceInDollars =
-    decimalAdjustedOraclePrice * parseFloat(lpPosition?.lpTokenPriceUnderlying ?? "0");
+  const decimalAdjustedOraclePrice = lpPosition
+    ? formatOraclePrice(BigInt(lpPosition?.oraclePrice))
+    : 0;
+
+  const lpPriceInDollars = lpPosition
+    ? decimalAdjustedOraclePrice * parseFloat(lpPosition.lpTokenPriceUnderlying)
+    : 0;
+
+  const oraclePrice = lpPosition ? formatOraclePrice(BigInt(lpPosition.oraclePrice)) : 0;
 
   // getting underlying token's price
-  const { price, isMarketDataLoading: isPriceFetching } = useCurrencyPrice(underlying);
+  // const { price, isMarketDataLoading: isPriceFetching } = useCurrencyPrice(underlying);
 
   /**
    * Handler for RemoveLiquidity Function
@@ -125,7 +125,7 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
       notification.loading({
         id: removeLiq_event.loading,
         title: "Removing Liquidity",
-        description: "This may take ~30 seconds."
+        description: "This may take ~20 seconds."
       });
     } else if (isError) {
       toast.dismiss(removeLiq_event.loading);
@@ -222,11 +222,11 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
           <p className="w-full inline-flex justify-between font-medium text-xs/3 text-[#5F7183]">
             <span>You Receive</span>
             <span>
-              {isPriceFetching && !price && !isValidPositiveNumber(amount)
+              {!oraclePrice && !isValidPositiveNumber(amount)
                 ? "..."
                 : parseFloat(amount) > 0
                   ? getCorrectFormattedValue(
-                      price * parseFloat(amount !== "" ? amount : "0"),
+                      oraclePrice * getDecimalAdjusted(lpUnderlying, underlyingDecimals),
                       true
                     )
                   : "$0"}

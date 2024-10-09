@@ -329,7 +329,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
           formatNumber(getDecimalAdjusted(size.toString(), poolData?.decimals)),
           0.001
         );
-        const tokenPrice = formatOraclePrice(oraclePrice, underlying.decimals);
+        const tokenPrice = formatOraclePrice(oraclePrice);
         if (action === "CL" || action === "CS")
           return (
             <p className="flex flex-col items-start">

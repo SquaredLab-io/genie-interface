@@ -59,7 +59,7 @@ export function toDollarUnits(
   num: number | undefined,
   decimals: 0 | 1 | 2 | 3 = 2
 ): string {
-  if (!num || isNaN(num)) return "$0".padEnd(decimals + 2, "0");
+  if (!num || isNaN(num)) return "$0.00";
 
   const absNum = Math.abs(num);
   const isPositive = num > 0;
@@ -114,8 +114,7 @@ export function getDollarQuote(
   decimals: number
 ): string {
   return formatNumber(
-    getDecimalAdjusted(baseAmount, decimals) *
-      formatOraclePrice(BigInt(oraclePrice), 18),
+    getDecimalAdjusted(baseAmount, decimals) * formatOraclePrice(BigInt(oraclePrice)),
     true // convert to dollar denotion
   );
 }
@@ -144,13 +143,9 @@ export function _getDecimalAdjusted(
   return formatUnits(BigInt(value), decimals);
 }
 
-// eg. used in Trade Flow
-export function formatOraclePrice(
-  price: bigint | undefined,
-  tokenDecimals: number | undefined
-): number {
-  if (!tokenDecimals) return 0;
-  return parseInt((price ?? 0).toString()) / 10 ** tokenDecimals;
+export function formatOraclePrice(price: bigint | undefined): number {
+  if (!price) return 0;
+  return parseInt(price.toString()) / 10 ** 18;
 }
 
 export function formatTimestamp(timestamp: string): {

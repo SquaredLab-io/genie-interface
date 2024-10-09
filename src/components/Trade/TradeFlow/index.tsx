@@ -48,14 +48,8 @@ const TradeFlow = () => {
           <TableBody>
             {tradeHistory.length > 0 ? (
               tradeHistory.map((tHistory, index) => {
-                const dollarPrice = formatOraclePrice(
-                  tHistory.oraclePrice,
-                  selectedPool()?.underlyingDecimals
-                );
-                const size = formatOraclePrice(
-                  tHistory.size,
-                  selectedPool()?.underlyingDecimals
-                );
+                const dollarPrice = formatOraclePrice(tHistory.oraclePrice);
+                const size = formatOraclePrice(tHistory.size);
                 return (
                   <TableRow
                     key={`${tHistory.size}_${index}`}
