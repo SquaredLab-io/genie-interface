@@ -55,7 +55,15 @@
   }
 }
 
-@layer components {}
+@layer components {
+  .graph-tab {
+    @apply p-2 rounded-none bg-primary-gray data-[state=active]:bg-white data-[state=active]:text-black;
+  }
+
+  .active-tab-pools {
+    @apply py-2 px-4 data-[state=active]:border data-[state=active]:border-[#00A0FC] rounded-lg data-[state=active]:bg-[#0A344D];
+  }
+}
 
 /* Scroll bar */
 *::-webkit-scrollbar {

@@ -1,6 +1,6 @@
+import { SearchIcon } from "lucide-react";
 import { Input } from "@components/ui/input";
 import { cn } from "@lib/utils";
-import { SearchIcon } from "lucide-react";
 
 interface PropsType {
   term: string;

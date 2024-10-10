@@ -1,38 +1,36 @@
-import { cn } from "@lib/utils";
+import { Address } from "viem";
+import { PoolInfo } from "@squaredlab-io/sdk";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
+import { useDailyData } from "@lib/hooks/useDailyData";
 import { GraphOptions } from "../helper";
 import TVLChart from "./tvl-chart";
 import VolumeChart from "./volume-chart";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
-import { PoolInfo } from "@squaredlab-io/sdk";
-import { useDailyData } from "@lib/hooks/useDailyData";
-import { Address } from "viem";
 import CLChart from "./cl-chart-echart";
 import FeesChart from "./fees-chart";
-// import CLChart from "./cl-chart";
 
 const LPChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const { dailyData, isFetching: isFetchingDailyData } = useDailyData({
     poolAddress: overviewPool?.poolAddr as Address
   });
 
-  const graphTabStyle = cn(
-    "p-2 rounded-none bg-primary-gray", // base state
-    "data-[state=active]:bg-white data-[state=active]:text-black" // active state
-  );
+  // const graphTabStyle = cn(
+  //   "p-2 rounded-none bg-primary-gray", // base state
+  //   "data-[state=active]:bg-white data-[state=active]:text-black" // active state
+  // );
 
   return (
     <Tabs defaultValue={GraphOptions.volume} className="size-full">
       <TabsList className="inline-flex justify-start font-medium text-sm/6 w-full">
-        <TabsTrigger value={GraphOptions.volume} className={graphTabStyle}>
+        <TabsTrigger value={GraphOptions.volume} className="graph-tab">
           Volume
         </TabsTrigger>
-        <TabsTrigger value={GraphOptions.tvl} className={graphTabStyle}>
+        <TabsTrigger value={GraphOptions.tvl} className="graph-tab">
           TVL
         </TabsTrigger>
-        <TabsTrigger value={GraphOptions.fees} className={graphTabStyle}>
+        <TabsTrigger value={GraphOptions.fees} className="graph-tab">
           Fees Yield
         </TabsTrigger>
-        <TabsTrigger value={GraphOptions.counterpart} className={graphTabStyle}>
+        <TabsTrigger value={GraphOptions.counterpart} className="graph-tab">
           Counterpart Liquidity
         </TabsTrigger>
       </TabsList>

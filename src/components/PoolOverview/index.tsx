@@ -1,5 +1,7 @@
 "use client";
 
+import { useMemo } from "react";
+import { Address } from "viem";
 // Trade
 import AddLiquidity from "./trade/AddLiquidity";
 import RemoveLiquidity from "./trade/RemoveLiquidity";
@@ -13,10 +15,8 @@ import PoolHeader from "./pool-header";
 import LPChart from "./lp-charts";
 import PoolOverviewModal from "./pool-overview-modal";
 import { useLpStore } from "@store/lpStore";
-import { useMemo } from "react";
 import { getPoolTokens } from "@lib/utils/pools";
 import { useCurrentLpPosition } from "@lib/hooks/useCurrentLpPosition";
-import { Address } from "viem";
 
 const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const { lpTradeOption, setLpTradeOption } = useLpStore();
