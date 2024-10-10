@@ -2,7 +2,7 @@ import { PoolInfo } from "@squaredlab-io/sdk";
 import { makeMarketDataApiRequest } from "@lib/apis";
 import { getTokenSymbol, POOL_ID_MAP } from "@lib/utils/pools";
 
-interface PoolOverviewData {
+export interface PoolOverviewData {
   current_price: number;
   price_change_percentage_24h: number;
   total_volume: number;
