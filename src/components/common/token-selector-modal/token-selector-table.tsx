@@ -1,11 +1,4 @@
 import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable
-} from "@tanstack/react-table";
-import Link from "next/link";
-import {
   Table,
   TableBody,
   TableCell,
@@ -13,26 +6,38 @@ import {
   TableHeader,
   TableRow
 } from "@components/ui/table";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable
+} from "@tanstack/react-table";
+import { PoolInfo } from "@squaredlab-io/sdk";
 import { ConstructedPoolsDataResponse } from "@lib/hooks/useFilteredPoolOverview";
+import { usePoolsStore } from "@store/poolsStore";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   loading: boolean;
   setOpen: (value: boolean) => void;
+  pools: PoolInfo[];
 }
 
-const PoolOverviewTable = <TData, TValue>({
+const TokenSelectorTable = <TData, TValue>({
   columns,
   data,
   loading,
-  setOpen
+  setOpen,
+  pools
 }: PropsType<TData, TValue>) => {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel()
   });
+
+  const { updateSelectedPool } = usePoolsStore();
 
   return (
     <Table>
@@ -57,21 +62,20 @@ const PoolOverviewTable = <TData, TValue>({
       <TableBody>
         {table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => {
-            const { underlying_symbol, power } =
-              row.original as ConstructedPoolsDataResponse;
+            const { poolAddr } = row.original as ConstructedPoolsDataResponse;
             return (
               <TableRow
                 key={row.id}
-                className="hover:bg-[#19242C] transition-colors duration-200"
+                className="hover:bg-[#19242C] transition-colors duration-200 cursor-pointer"
                 onClick={() => {
+                  const selectedPool = pools.find((p) => p.poolAddr === poolAddr)!;
+                  updateSelectedPool(selectedPool);
                   setOpen(false);
                 }}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id} className="text-right">
-                    <Link href={`/pool/${underlying_symbol}?power=${power}`}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </Link>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
               </TableRow>
@@ -89,4 +93,4 @@ const PoolOverviewTable = <TData, TValue>({
   );
 };
 
-export default PoolOverviewTable;
+export default TokenSelectorTable;
