@@ -28,15 +28,15 @@ const CLChartDataPoints = memo(
   ({ chartData }: { chartData: CLChartData | undefined }) => {
     return (
       <div className="absolute right-10 2xl:right-14 -top-10 py-3 hidden xl:inline-flex items-center justify-evenly max-w-fit gap-x-7 2xl:gap-x-10 opacity-80 font-normal text-sm/[22px]">
-        <p className="inline-flex items-center gap-x-3">
+        <p className="inline-flex items-center gap-x-2">
           <Image src="/icons/AlphaIcon.svg" alt="Alpha" height={14} width={16} priority />
           <span>= {chartData ? chartData.alpha.toFixed(4) : "-"}</span>
         </p>
-        <p className="inline-flex items-center gap-x-3">
+        <p className="inline-flex items-center gap-x-2">
           <Image src="/icons/BetaIcon.svg" alt="Alpha" height={21} width={11} priority />
           <span>= {chartData ? chartData.beta.toFixed(4) : "-"}</span>
         </p>
-        <p className="inline-flex items-center gap-x-3">
+        <p className="inline-flex items-center gap-x-2">
           <span>Reference points</span>
           <span>= {chartData ? chartData.priceRef.toFixed(4) : "-"}</span>
         </p>
@@ -201,7 +201,7 @@ const CLChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
 
   return (
     <div className="relative h-[calc(100%-20px)]">
-      {!!address && <CLChartDataPoints chartData={chartData} />}
+      <CLChartDataPoints chartData={chartData} />
       <div className="size-full" ref={chartContainerRef} />
     </div>
   );

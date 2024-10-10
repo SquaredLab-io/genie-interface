@@ -74,3 +74,4 @@ const PoolOverview = ({ overviewPool }: { overviewPool: PoolInfo }) => {
 };
 
 export default PoolOverview;
+ 
