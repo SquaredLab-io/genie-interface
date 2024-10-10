@@ -3,7 +3,7 @@
 // Library Imports
 import { useState } from "react";
 import { TabsList } from "@radix-ui/react-tabs";
-import { PlusIcon, Table } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 // Component Imports
 import { Tabs, TabsContent, TabsTrigger } from "@components/ui/tabs";
 import PoolsTable from "./PoolsTable";

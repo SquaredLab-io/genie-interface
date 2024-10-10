@@ -1,13 +1,14 @@
-import { cn } from "@lib/utils";
+import { memo } from "react";
 import { Info } from "lucide-react";
+import { cn } from "@lib/utils";
 
-export default function InfoBox({
+const InfoBox = ({
   isError = false,
   message = "The tokens in your wallet are being converted automatically by Genie for a small fee."
 }: {
   isError?: boolean;
   message?: string;
-}) {
+}) => {
   return (
     <div
       className={cn(
@@ -20,3 +21,5 @@ export default function InfoBox({
     </div>
   );
 }
+
+export default memo(InfoBox);
