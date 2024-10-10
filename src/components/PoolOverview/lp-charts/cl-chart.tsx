@@ -23,6 +23,9 @@ const chartConfig = {
   }
 };
 
+/**
+ * Important: Deprecated Component
+ */
 const CLChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const { potentia } = usePotentiaSdk();
 
