@@ -35,7 +35,7 @@ const PoolOverviewTable = <TData, TValue>({
   });
 
   return (
-    <Table className="mt-4">
+    <Table>
       <TableHeader className="font-sans-ibm-plex">
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
@@ -54,7 +54,8 @@ const PoolOverviewTable = <TData, TValue>({
           </TableRow>
         ))}
       </TableHeader>
-      <TableBody className="divide-y divide-[#292B31]">
+      <TableBody>
+        {/* className="divide-y divide-[#292B31]" */}
         {table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => {
             const { underlying_symbol, power } =

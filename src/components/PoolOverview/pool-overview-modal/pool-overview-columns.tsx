@@ -13,7 +13,7 @@ export function poolOverviewColumnDef(): ColumnDef<ConstructedPoolsDataResponse>
       id: "pools",
       accessorKey: "pools",
       header: () => (
-        <div className="pl-[18px] text-left">
+        <div className="pl-6 text-left">
           <span>Pools</span>
         </div>
       ),
@@ -21,38 +21,34 @@ export function poolOverviewColumnDef(): ColumnDef<ConstructedPoolsDataResponse>
         const { power, pool } = row.original;
         const assets = useMemo(() => getPoolTokens(pool), [pool]);
         return (
-          <div className="whitespace-nowrap flex flex-row gap-2 text-left font-medium pl-[18px] py-6">
+          <div className="whitespace-nowrap flex flex-row gap-1 text-left font-sans-ibm-plex font-medium pl-6 py-2">
             <div className="hidden sm:flex flex-row items-center max-w-fit -space-x-2">
               {assets.map((asset) => (
                 <div
                   key={asset}
-                  className="z-0 flex overflow-hidden ring-1 ring-white rounded-full bg-neutral-800"
+                  className="z-0 flex overflow-hidden rounded-full bg-secondary-gray"
                 >
                   <Image
                     src={`/tokens/${asset.toLowerCase()}.svg`}
                     alt={asset}
-                    width={26}
-                    height={26}
+                    width={24}
+                    height={24}
                   />
                 </div>
               ))}
             </div>
-            <div className="flex flex-row gap-1 items-center text-left">
-              <div className="inline-flex gap-2">
-                <p className="font-bold text-sm/5">
-                  {assets.map((asset, index) => (
-                    <>
-                      <span key={index}>{asset}</span>
-                      {assets.length !== index + 1 && (
-                        <span className="text-[#9299AA] mx-1">-</span>
-                      )}
-                    </>
-                  ))}
-                </p>
-                <p className="font-medium text-xs/3 bg-[#49AFE9] py-1 px-[10px] rounded-md">
-                  p = {power}
-                </p>
-              </div>
+            <div className="inline-flex items-center gap-2">
+              <p className="font-normal text-xs/4">
+                {assets.map((asset, index) => (
+                  <>
+                    <span key={index}>{asset}</span>
+                    {assets.length !== index + 1 && <span>-</span>}
+                  </>
+                ))}
+              </p>
+              <p className="font-medium text-[8px]/[14px] bg-[#49AFE9] py-px px-[4.5px] rounded-sm">
+                p = {power}
+              </p>
             </div>
           </div>
         );
@@ -65,7 +61,7 @@ export function poolOverviewColumnDef(): ColumnDef<ConstructedPoolsDataResponse>
       cell: ({ row }) => {
         const { current_price } = row.original;
         return (
-          <span className="pr-[18px] block py-6">
+          <span className="pr-[18px] block py-2 font-normal text-xs/4">
             {formatNumber(current_price, true)}
           </span>
         );
@@ -78,10 +74,10 @@ export function poolOverviewColumnDef(): ColumnDef<ConstructedPoolsDataResponse>
       cell: ({ row }) => {
         const { price_change_percentage_24h } = row.original;
         return (
-          <div className="block py-6 h-full">
+          <div className="block py-2 h-full">
             <span
               className={cn(
-                "my-6 mr-[18px] rounded-md py-1.5 px-2",
+                "my-6 mr-[18px] rounded-base py-[4.5px] px-3 font-normal text-xs/4",
                 price_change_percentage_24h > 0
                   ? "text-positive-green bg-positive-green/5"
                   : "text-negative-red bg-negative-red/10"
@@ -96,11 +92,11 @@ export function poolOverviewColumnDef(): ColumnDef<ConstructedPoolsDataResponse>
     {
       id: "24hrVol",
       accessorKey: "24hrVol",
-      header: () => <span className="pr-[18px] pt-6 pb-2">24h Volume</span>,
+      header: () => <span className="pr-6 pt-6 pb-2">24h Volume</span>,
       cell: ({ row }) => {
         const { total_volume } = row.original;
         return (
-          <div className="pr-[18px] gap-1 block py-6">
+          <div className="pr-6 gap-1 block py-2 font-normal text-xs/4">
             <span>{formatNumber(total_volume, true)}</span>
             {/* <span
               className={cn(growth > 0 ? "text-positive-green" : "text-negative-red")}
