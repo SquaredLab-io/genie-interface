@@ -70,15 +70,13 @@ const PoolOverviewModal: FC<PropsType> = ({ children, open, setOpen }) => {
       onOpenChange={setOpen}
       trigger={children}
       closable={true}
-      className="bg-primary-gray min-w-[40rem] rounded-lg"
+      className="bg-primary-gray min-w-[40rem] rounded-lg pt-2 pb-4"
     >
-      <div className="pt-2 pb-6 pl-4 mr-20">
+      <div className="pb-4 pl-5 mr-20">
         <SearchInput term={term} setTerm={setTerm} placeholder="Search markets" />
       </div>
       <Separator />
-      <h1 className="inline-flex font-medium text-[15px]/[18px] pt-4 pl-4 w-full">
-        Pools
-      </h1>
+      <h1 className="inline-flex font-medium text-sm/5 pt-6 pl-4 pb-3 w-full">Pools</h1>
       <PoolOverviewTable
         columns={poolOverviewColumns}
         data={filteredPoolsOverview}

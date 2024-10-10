@@ -56,8 +56,8 @@ const Modal: React.FC<Props> = ({
         </DialogHeader>
         {children}
         {closable && (
-          <Close className="absolute right-4 top-4 rounded-lg disabled:pointer-events-none ring-1 ring-[#272A2F] ring-offset-[#272A2F] focus:outline-none p-3 bg-transparent">
-            <X className="w-5 h-5 text-[#555555]" />
+          <Close className="absolute right-5 top-4 rounded-lg disabled:pointer-events-none ring-1 ring-[#272A2F] ring-offset-[#272A2F] focus:outline-none p-[13.5px] bg-transparent">
+            <X className="w-3 h-3 text-[#555555]" aria-label="Close Modal" />
             <span className="sr-only">Close</span>
           </Close>
         )}
