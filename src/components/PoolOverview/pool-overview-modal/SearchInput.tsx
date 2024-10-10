@@ -18,8 +18,8 @@ export default function SearchInput({
   return (
     <div className={cn("relative", className)}>
       <SearchIcon
-        size="16"
-        className="absolute top-0 bottom-0 my-auto left-4 text-[#5F7183]"
+        size="12"
+        className="absolute top-0 bottom-0 my-auto left-4 text-[#9299AA]"
       />
       <Input
         type="search"
@@ -30,7 +30,7 @@ export default function SearchInput({
           setTerm(e.target.value);
         }}
         placeholder={placeholder}
-        className="bg-[#10232F] pl-12 border py-3 font-normal text-[15px]/[18px] border-[#1F2D3F] placeholder:text-[#5F7183]"
+        className="bg-[#10232F] pl-10 border py-2 font-normal text-xs/6 border-[#1F2D3F] placeholder:text-[#9299AA]"
       />
     </div>
   );
