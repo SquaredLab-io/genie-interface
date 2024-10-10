@@ -7,19 +7,20 @@ import TVLChart from "./tvl-chart";
 import VolumeChart from "./volume-chart";
 import CLChart from "./cl-chart-echart";
 import FeesChart from "./fees-chart";
+import { useLpStore } from "@store/lpStore";
 
 const LPChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
   const { dailyData, isFetching: isFetchingDailyData } = useDailyData({
     poolAddress: overviewPool?.poolAddr as Address
   });
-
-  // const graphTabStyle = cn(
-  //   "p-2 rounded-none bg-primary-gray", // base state
-  //   "data-[state=active]:bg-white data-[state=active]:text-black" // active state
-  // );
+  const { lpGraphOption, setLpGraphOption } = useLpStore();
 
   return (
-    <Tabs defaultValue={GraphOptions.volume} className="size-full">
+    <Tabs
+      defaultValue={lpGraphOption}
+      onValueChange={(value) => setLpGraphOption(value as GraphOptions)}
+      className="size-full"
+    >
       <TabsList className="inline-flex justify-start font-medium text-sm/6 w-full">
         <TabsTrigger value={GraphOptions.volume} className="graph-tab">
           Volume
