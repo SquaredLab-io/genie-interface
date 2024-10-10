@@ -7,7 +7,7 @@ import { cn } from "@lib/utils";
 import { getPoolTokens } from "@lib/utils/pools";
 import { ConstructedPoolsDataResponse } from "@lib/hooks/useFilteredPoolOverview";
 
-export function poolOverviewColumnDef(): ColumnDef<ConstructedPoolsDataResponse>[] {
+export function poolsColumnDef(): ColumnDef<ConstructedPoolsDataResponse>[] {
   return [
     {
       id: "pools",
