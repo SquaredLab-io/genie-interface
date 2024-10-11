@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import _ from "lodash";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import notification from "@components/common/notification";
 
@@ -25,31 +26,42 @@ const usePTokenEstimateOut = ({
 
   const { potentia } = usePotentiaSdk();
 
-  const estimatePositionPTokenOut = async () => {
-    setIsFetching(true);
-    try {
-      const data = await potentia?.ponderClient.estimatePositionPTokenOut(
-        poolAddress!, // pool address
-        amount!, // underlying amount in bignumber
-        isLong
-      );
-      setOutput(data);
-      setIsFetching(false);
-    } catch (error) {
-      setIsFetching(false);
-      console.error("Failed to estimate pToken output");
-      notification.error({
-        id: "error-output-pToken",
-        title: "Failed to estimate pToken output"
-      });
-    }
-  };
+  const estimatePositionPTokenOut = _.debounce(
+    async (poolAddr: `0x${string}`, amt: string, long: boolean) => {
+      setIsFetching(true);
+      try {
+        const data = await potentia?.ponderClient.estimatePositionPTokenOut(
+          poolAddr, // pool address
+          amt, // underlying amount in bignumber
+          long
+        );
+        setOutput(data);
+        // setIsFetching(false);
+      } catch (error) {
+        // setIsFetching(false);
+        console.error("Failed to estimate pToken output");
+        notification.error({
+          id: "error-output-pToken",
+          title: "Failed to estimate pToken output"
+        });
+      } finally {
+        setIsFetching(false);
+      }
+    },
+    500
+  );
 
   useEffect(() => {
     if (!paused && !!potentia && !!poolAddress && !!amount) {
-      estimatePositionPTokenOut();
+      estimatePositionPTokenOut(poolAddress, amount, isLong);
+    } else {
+      console.log("Skipping estimate due to missing or paused data");
     }
-  }, [amount]);
+
+    return () => {
+      estimatePositionPTokenOut.cancel();
+    };
+  }, [amount, paused, potentia, poolAddress, isLong]);
 
   return {
     output,
