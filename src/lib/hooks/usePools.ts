@@ -29,7 +29,6 @@ export function usePools(paused = false): ReturnType {
   const getPools = async () => {
     try {
       const data = await potentia?.getPools();
-      // console.log('fetched pools', data);
       const pools = getSupportedPools(data);
       updatePoolsData(pools);
       updatePoolMap(createPoolMapping(data));
