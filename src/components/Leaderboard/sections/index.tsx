@@ -9,6 +9,8 @@ import Stats from "./stats";
 
 const Sections = () => {
   const [currentTab, setCurrentTab] = useState(LeaderboardOptions.stats);
+  // Referral Feature. Postponed.
+  // const { openReferralModal, setOpenReferralModal } = useModalStore();
   return (
     <div className="py-10">
       <Tabs value={currentTab} onValueChange={setCurrentTab as (value: string) => void}>
@@ -29,8 +31,7 @@ const Sections = () => {
           </TabsList>
           {/* <button
             className="inline-flex items-center py-2 px-3 gap-1 text-[#49AFE9] hover:bg-[#0A344D] transition-colors font-medium text-sm/5 rounded-lg font-sans-ibm-plex disabled:cursor-not-allowed disabled:opacity-80"
-            // onClick={() => setOpenCreateTokenModal(true)}
-            // disabled={true}
+            onClick={() => setOpenReferralModal(true)}
           >
             <PlusIcon size={16} /> Refer Friends
           </button> */}
@@ -42,6 +43,7 @@ const Sections = () => {
           <Stats />
         </TabsContent>
       </Tabs>
+      {/* {openReferralModal && <ReferralModal />} */}
     </div>
   );
 };
