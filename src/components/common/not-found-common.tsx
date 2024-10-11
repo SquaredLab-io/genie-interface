@@ -36,6 +36,7 @@ export default function NotFoundCommon({ title, subText, callback }: Props) {
           alt="not found - error 404"
           width={202}
           height={160}
+          priority
         />
       </div>
     </main>

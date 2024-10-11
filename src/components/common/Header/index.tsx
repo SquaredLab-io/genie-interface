@@ -11,15 +11,16 @@ import ConnectWallet from "../ConnectWallet";
 import FaucetModal from "@components/common/Header/faucet-modal";
 import PointsPopover from "./points-popover";
 import { useAccount } from "wagmi";
+import { useUserPoints } from "@lib/hooks/useUserPoints";
 
 const Header = () => {
   const pathname = usePathname();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isFaucetOpen, setIsFaucetOpen] = useState<boolean>(false);
-
   const [isPointsPopoverOpen, setIsPointsPopoverOpen] = useState(false);
 
   const { isConnected } = useAccount();
+  const { userPoints, isFetching, isPending, refetch } = useUserPoints();
 
   return (
     <header className="flex flex-row flex-grow py-4 px-5 justify-between font-sans-ibm-plex max-w-full">
@@ -76,6 +77,7 @@ const Header = () => {
       <div className="hidden lg:inline-flex gap-6">
         {isConnected && (
           <PointsPopover
+            points={{ userPoints, isFetching, isPending, refetch }}
             isOpen={isPointsPopoverOpen}
             onOpenChange={setIsPointsPopoverOpen}
           >
@@ -90,7 +92,9 @@ const Header = () => {
                 height={24}
                 width={24}
               />
-              <span className="font-normal leading-5 ml-1">25 Gpoints</span>
+              <span className="font-normal leading-5 ml-1">
+                {isFetching || !userPoints ? "..." : userPoints?.points} Gpoints
+              </span>
               {/* <span className="font-medium leading-4 font-sans-ibm-plex text-primary-green bg-primary-green/10 py-0.5 px-1 rounded-base">
                 1.5x
               </span> */}
