@@ -3,7 +3,7 @@ import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { useModalStore } from "@store/poolsStore";
 
 const TokenSelector = ({ selectedPool }: { selectedPool: PoolInfo | undefined }) => {
-  const { openTokenSelectorModal, setOpenTokenSelectorModal } = useModalStore();
+  const { setOpenTokenSelectorModal } = useModalStore();
   return (
     <button
       className="group flex flex-row justify-normal items-center text-left py-3 px-5 gap-2 min-w-fit"

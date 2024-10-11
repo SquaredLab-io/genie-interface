@@ -1,5 +1,5 @@
 import LeaderboardTable from "./table";
-import { leaderboard_data, LeaderboardData } from "../helper";
+import { leaderboard_data } from "../helper";
 import { leaderboardColumns } from "./columns";
 
 const LeaderboardList = () => {
