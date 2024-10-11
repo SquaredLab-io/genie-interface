@@ -3,7 +3,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { cn } from "@lib/utils";
 import { Separator } from "@components/ui/separator";
-import { useFilteredPools } from "../../../lib/hooks/useFilteredPools";
+import { useFilteredPools } from "@lib/hooks/useFilteredPools";
 import SearchInput from "./SearchInput";
 import PoolsList from "./PoolsList";
 import { PopoverSizes } from "@lib/types/common";
