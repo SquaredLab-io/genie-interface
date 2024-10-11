@@ -1,7 +1,7 @@
 import { useAccount, useWalletClient } from "wagmi";
 import { QueryObserverResult, RefetchOptions, useQuery } from "@tanstack/react-query";
 import { AllPositions } from "@squaredlab-io/sdk/src/interfaces/index.interface";
-import notification from "@components/common/notification";
+// import notification from "@components/common/notification";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { REFETCH_INTERVAL } from "@lib/constants";
 import { useTradeStore } from "@store/tradeStore";
