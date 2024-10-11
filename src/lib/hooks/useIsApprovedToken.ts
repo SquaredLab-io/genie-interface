@@ -20,7 +20,7 @@ interface PropsType {
  * @param poolAddress Contract address of the poolAddress
  * @param tokenBalance Balance of the token
  * @param input Input value
- * @returns Object containing data, isLoading, isError, and isSuccess
+ * @returns data, isLoading, isError, isSuccess
  */
 const useIsApprovedToken = ({
   input,
