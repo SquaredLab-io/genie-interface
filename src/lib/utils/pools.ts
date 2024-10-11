@@ -1,3 +1,16 @@
+import { PoolInfo } from "@squaredlab-io/sdk";
+
+export const UNSUPPORTED_POOLS = [
+  // "0x08EF999e4383FE62660022b73D145201bD5023d4", // WETH^2
+  // "0x9cdAA94733a682013Ff8AfD72BA59FB63619C98d" // WETH^8
+  "0x4488107701B77Db056f20b314002aFd1B513605C" // USDT^4
+];
+
+export const getSupportedPools = (pools: PoolInfo[] | undefined) => {
+  if (!pools || pools.length === 0) return pools;
+  return pools.filter((pool) => !UNSUPPORTED_POOLS.includes(pool.poolAddr));
+};
+
 export const getTokenSymbol = (symbol: string | undefined): string => {
   if (!symbol) return "";
   switch (symbol) {

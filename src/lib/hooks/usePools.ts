@@ -2,6 +2,7 @@ import { QueryObserverResult, RefetchOptions, useQuery } from "@tanstack/react-q
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { usePoolsStore } from "@store/poolsStore";
+import { getSupportedPools } from "@lib/utils/pools";
 
 export interface PoolMapping {
   power: number;
@@ -46,9 +47,10 @@ export function usePools(paused = false): ReturnType {
   const getPools = async () => {
     try {
       const data = await potentia?.getPools();
-      updatePoolsData(data);
+      const pools = getSupportedPools(data);
+      updatePoolsData(pools);
       updatePoolMap(createPoolMapping(data));
-      return data;
+      return pools;
     } catch (error) {
       console.error("Failed to fetch pools.");
     }
