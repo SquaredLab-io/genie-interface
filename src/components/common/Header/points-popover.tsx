@@ -1,16 +1,24 @@
-import { FC, memo, PropsWithChildren, ReactNode, useCallback, useState } from "react";
+import { FC, memo, PropsWithChildren } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Trophy } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover";
 import { Separator } from "@components/ui/separator";
+import { UserPointsType } from "@lib/hooks/useUserPoints";
 
 interface PointsPopoverProps extends PropsWithChildren {
+  points: UserPointsType;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-const PointsPopover: FC<PointsPopoverProps> = ({ children, isOpen, onOpenChange }) => {
+const PointsPopover: FC<PointsPopoverProps> = ({
+  children,
+  points,
+  isOpen,
+  onOpenChange
+}) => {
+  const { userPoints, isFetching, isPending } = points;
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange} modal={true}>
       <PopoverTrigger asChild className="min-w-fit z-50">
@@ -35,11 +43,11 @@ const PointsPopover: FC<PointsPopoverProps> = ({ children, isOpen, onOpenChange 
                 />
                 <span>Points</span>
               </p>
-              <span>4214</span>
+              <span>{isFetching ? "-" : userPoints?.points}</span>
             </div>
             <div className="flex flex-col items-start gap-2">
               <span className="font-light text-[13px]/4 text-[#ADB2AB]">Rank</span>
-              <span>47434</span>
+              <span>{isFetching ? "-" : userPoints?.rank}</span>
             </div>
             <div className="flex flex-col items-start gap-2">
               <span className="font-light text-[13px]/4 text-[#ADB2AB]">Multiplier</span>

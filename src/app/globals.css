@@ -63,6 +63,10 @@
   .active-tab-pools {
     @apply py-2 px-4 data-[state=active]:border data-[state=active]:border-[#00A0FC] rounded-lg data-[state=active]:bg-[#0A344D];
   }
+
+  .active-tab-leaderboard {
+    @apply py-2 px-6 rounded-lg border border-primary-gray data-[state=active]:border-tab-blue data-[state=active]:bg-[#0A344D] transition-colors duration-300 ease-linear;
+  }
 }
 
 /* Scroll bar */
