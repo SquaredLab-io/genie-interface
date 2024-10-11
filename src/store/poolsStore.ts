@@ -55,6 +55,8 @@ interface iPoolModalStore {
   setOpenSelectPoolOverviewModal: (value: boolean) => void;
   openTokenSelectorModal: boolean;
   setOpenTokenSelectorModal: (value: boolean) => void;
+  openReferralModal: boolean;
+  setOpenReferralModal: (value: boolean) => void;
 }
 
 export const useModalStore = create<iPoolModalStore>((set, get) => ({
@@ -92,6 +94,12 @@ export const useModalStore = create<iPoolModalStore>((set, get) => ({
   setOpenTokenSelectorModal: (value: boolean) => {
     set(() => ({
       openTokenSelectorModal: value
+    }));
+  },
+  openReferralModal: false,
+  setOpenReferralModal: (value: boolean) => {
+    set(() => ({
+      openReferralModal: value
     }));
   }
 }));
