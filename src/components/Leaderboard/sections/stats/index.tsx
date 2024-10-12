@@ -1,10 +1,9 @@
-import { formatNumber, getDecimalAdjusted } from "@lib/utils/formatting";
 import StatsCard from "./stats-card";
 import { UserPointsType, useUserPoints } from "@lib/hooks/useUserPoints";
+import { formatTradeValue } from "../helper";
 
 const Stats = () => {
   const points = useUserPoints();
-
   return (
     <div className="py-4 flex flex-col gap-y-14">
       <GpointsAndReferals points={points} />
@@ -47,11 +46,6 @@ const GpointsAndReferals = ({ points }: { points: UserPointsType }) => {
 
 const UserActivity = ({ points }: { points: UserPointsType }) => {
   const { userPoints, isFetching, isPending } = points;
-
-  const formatValue = (loading: boolean, value: string | undefined): string => {
-    return loading ? "..." : value ? formatNumber(parseFloat(value), true) : "NA";
-  };
-
   return (
     <div className="flex flex-col gap-y-10 mt-10">
       <div className="flex flex-col gap-y-2 items-start">
@@ -66,23 +60,23 @@ const UserActivity = ({ points }: { points: UserPointsType }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         <StatsCard
           label="Total Volume Traded"
-          value={formatValue(isFetching || isPending, userPoints?.volume)}
+          value={formatTradeValue(isFetching || isPending, userPoints?.volume)}
           icon="/icons/VolumeIcon.svg"
         />
         <StatsCard
           label="Total Profit/loss"
-          value={formatValue(isFetching || isPending, userPoints?.profit)}
+          value={formatTradeValue(isFetching || isPending, userPoints?.profit)}
           icon="/icons/PnlIcon.svg"
         />
         <StatsCard label="Avg Trade Size" value={"-"} icon="/icons/TradeSizeIcon.svg" />
         <StatsCard
           label="Best Trade"
-          value={formatValue(isFetching || isPending, "1860.2345")}
+          value={formatTradeValue(isFetching || isPending, "1860.2345")}
           icon="/icons/CheckCircleIcon.svg"
         />
         <StatsCard
           label="Worst Trade"
-          value={formatValue(isFetching || isPending, "-1860.2345")}
+          value={formatTradeValue(isFetching || isPending, "-1860.2345")}
           icon="/icons/WorstIcon.svg"
         />
       </div>
