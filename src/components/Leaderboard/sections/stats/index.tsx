@@ -15,8 +15,8 @@ const Stats = () => {
 };
 
 const GpointsAndReferals = ({ points }: { points: UserPointsType }) => {
-  const { userPoints, isFetching } = points;
-
+  const { userPoints, isFetching, isPending } = points;
+  const loading = isPending || isFetching;
   return (
     <div className="flex flex-col gap-y-10 mt-10">
       <div className="flex flex-col gap-y-2 items-start">
@@ -31,12 +31,12 @@ const GpointsAndReferals = ({ points }: { points: UserPointsType }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         <StatsCard
           label="Total Gpoints"
-          value={isFetching ? "..." : userPoints?.points.toString()!}
+          value={loading ? "..." : userPoints ? userPoints.points.toString()! : "NA"}
           icon="/icons/PointsIcon.svg"
         />
         <StatsCard
           label="Your Rank"
-          value={isFetching ? "..." : userPoints?.rank.toString()!}
+          value={loading ? "..." : userPoints ? userPoints.rank.toString()! : "NA"}
           icon="/icons/RankIcon.svg"
         />
         {/* <StatsCard label="Total Referrals" value="2" icon="/icons/ReferralIcon.svg" /> */}
@@ -46,7 +46,11 @@ const GpointsAndReferals = ({ points }: { points: UserPointsType }) => {
 };
 
 const UserActivity = ({ points }: { points: UserPointsType }) => {
-  const { userPoints, isFetching } = points;
+  const { userPoints, isFetching, isPending } = points;
+
+  const formatValue = (loading: boolean, value: string | undefined): string => {
+    return loading ? "..." : value ? formatNumber(parseFloat(value), true) : "NA";
+  };
 
   return (
     <div className="flex flex-col gap-y-10 mt-10">
@@ -62,27 +66,25 @@ const UserActivity = ({ points }: { points: UserPointsType }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         <StatsCard
           label="Total Volume Traded"
-          value={
-            isFetching ? "..." : formatNumber(getDecimalAdjusted(userPoints?.volume, 18))
-          }
+          value={formatValue(isFetching || isPending, userPoints?.volume)}
           icon="/icons/VolumeIcon.svg"
         />
         <StatsCard
           label="Total Profit/loss"
-          value={
-            isFetching
-              ? "..."
-              : formatNumber(getDecimalAdjusted(userPoints?.profit.toString(), 18))
-          }
+          value={formatValue(isFetching || isPending, userPoints?.profit)}
           icon="/icons/PnlIcon.svg"
         />
+        <StatsCard label="Avg Trade Size" value={"-"} icon="/icons/TradeSizeIcon.svg" />
         <StatsCard
-          label="Avg Trade Size"
-          value="$66,533"
-          icon="/icons/TradeSizeIcon.svg"
+          label="Best Trade"
+          value={formatValue(isFetching || isPending, "1860.2345")}
+          icon="/icons/CheckCircleIcon.svg"
         />
-        <StatsCard label="Best Trade" value="+$1,860" icon="/icons/CheckCircleIcon.svg" />
-        <StatsCard label="Worst Trade" value="-$1,860" icon="/icons/WorstIcon.svg" />
+        <StatsCard
+          label="Worst Trade"
+          value={formatValue(isFetching || isPending, "-1860.2345")}
+          icon="/icons/WorstIcon.svg"
+        />
       </div>
     </div>
   );
