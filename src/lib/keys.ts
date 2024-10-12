@@ -14,3 +14,5 @@ export const BASE_SEPOLIA_RPC = process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC as stri
 
 // APP
 export const NODE_ENV = process.env.NODE_ENV;
+export const isProduction = process.env.NEXT_PUBLIC_ENV === "production";
+export const isStaging = process.env.NEXT_PUBLIC_ENV === "staging";
