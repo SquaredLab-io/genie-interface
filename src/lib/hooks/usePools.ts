@@ -2,7 +2,7 @@ import { QueryObserverResult, RefetchOptions, useQuery } from "@tanstack/react-q
 import { PoolInfo } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { usePoolsStore } from "@store/poolsStore";
-import { getSupportedPools } from "@lib/utils/pools";
+import { createPoolMapping, getSupportedPools } from "@lib/utils/pools";
 
 export interface PoolMapping {
   power: number;
@@ -18,24 +18,6 @@ interface ReturnType {
     options?: RefetchOptions
   ) => Promise<QueryObserverResult<PoolInfo[] | undefined, Error>>;
   status: "error" | "success" | "pending";
-}
-
-function createPoolMapping(
-  pools: PoolInfo[] | undefined
-): Record<string, PoolMapping> | undefined {
-  if (!pools) return undefined;
-  return pools.reduce(
-    (mapping, pool) => {
-      mapping[pool.poolAddr] = {
-        power: pool.power,
-        underlying: pool.underlying,
-        decimals: pool.underlyingDecimals,
-        poolAddr: pool.poolAddr
-      };
-      return mapping;
-    },
-    {} as Record<string, PoolMapping>
-  );
 }
 
 export function usePools(paused = false): ReturnType {
