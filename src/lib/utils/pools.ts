@@ -38,6 +38,24 @@ export function createPoolMapping(
   );
 }
 
+export function createPoolMapping(
+  pools: PoolInfo[] | undefined
+): Record<string, PoolMapping> | undefined {
+  if (!pools) return undefined;
+  return pools.reduce(
+    (mapping, pool) => {
+      mapping[pool.poolAddr] = {
+        power: pool.power,
+        underlying: pool.underlying,
+        decimals: pool.underlyingDecimals,
+        poolAddr: pool.poolAddr
+      };
+      return mapping;
+    },
+    {} as Record<string, PoolMapping>
+  );
+}
+
 export const getTokenSymbol = (symbol: string | undefined): string => {
   if (!symbol) return "";
   switch (symbol) {
