@@ -1,8 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { LeaderboardData } from "../helper";
 import { shortenHash } from "@lib/utils/formatting";
+import { UserPoint } from "@squaredlab-io/sdk";
+import { formatTradeValue } from "../helper";
 
-export const leaderboardColumns: ColumnDef<LeaderboardData>[] = [
+export const leaderboardColumns: ColumnDef<UserPoint>[] = [
   {
     id: "rank",
     accessorKey: "rank",
@@ -12,11 +13,11 @@ export const leaderboardColumns: ColumnDef<LeaderboardData>[] = [
       </div>
     ),
     cell: ({ row }) => {
-      const { rank, address } = row.original;
+      const { id } = row.original;
       return (
         <div className="whitespace-nowrap flex flex-col gap-y-1 text-left text-sm font-bold/5 pl-6 py-3">
-          <p className="text-[#00A3FF]">Your Rank: {rank}</p>
-          <p className="font-normal text-[#9299AA]">{shortenHash(address)}</p>
+          <p className="text-[#00A3FF]">Your Rank: {row.index + 1}</p>
+          <p className="font-normal text-[#9299AA]">{shortenHash(id)}</p>
         </div>
       );
     }
@@ -30,8 +31,8 @@ export const leaderboardColumns: ColumnDef<LeaderboardData>[] = [
       </div>
     ),
     cell: ({ row }) => {
-      const { tradingVolume } = row.original;
-      return <span className="text-center">{tradingVolume}</span>;
+      const { volume } = row.original;
+      return <span className="text-center">{formatTradeValue(false, volume)}</span>;
     }
   },
   {
@@ -43,8 +44,8 @@ export const leaderboardColumns: ColumnDef<LeaderboardData>[] = [
       </div>
     ),
     cell: ({ row }) => {
-      const { pnl } = row.original;
-      return <span>{pnl}</span>;
+      const { profit } = row.original;
+      return <span>{formatTradeValue(false, profit)}</span>;
     }
   },
   {
@@ -52,13 +53,13 @@ export const leaderboardColumns: ColumnDef<LeaderboardData>[] = [
     accessorKey: "points",
     header: () => (
       <div className="pb-4 pr-4 w-full text-right">
-        <span className="">Points</span>
+        <span>Points</span>
       </div>
     ),
     cell: ({ row }) => {
       const { points } = row.original;
       const growth = parseFloat("0");
-      return <div className="w-full text-right pr-6 pl-6 text-[#00A3FF]">{points}</div>;
+      return <div className="w-full text-right pr-6 pl-6 text-[#00A3FF]">{points} Gpoints</div>;
     }
   }
 ];
