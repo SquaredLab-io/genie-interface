@@ -11,23 +11,9 @@ export function formatNumber(
   isDollar: boolean = false,
   decimals: 0 | 1 | 2 | 3 = 2
 ) {
-  let minValue: number;
-  switch (decimals) {
-    case 0:
-      minValue = 0;
-    case 1:
-      minValue = -1e-1;
-    case 2:
-      minValue = -1e-2;
-    case 3:
-      minValue = -1e-3;
-    default:
-      minValue = -1e-2;
-  }
-
-  if (num === 0) return isDollar ? "$0.00" : "0.00";
-  else if (num > minValue && num < Math.abs(minValue)) {
-    return isDollar ? `$${num.toExponential(0)}` : num.toExponential(0);
+  if (num === 0 || Math.abs(num) < Math.pow(10, -decimals)) {
+    const zeroes = "0".repeat(decimals);
+    return isDollar ? `$0.${zeroes}` : `0.${zeroes}`;
   }
   // Otherwise, format to exactly three decimal places
   return isDollar ? toDollarUnits(num, decimals) : toUnits(num, decimals);
