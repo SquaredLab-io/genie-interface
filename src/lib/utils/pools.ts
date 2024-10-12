@@ -1,5 +1,5 @@
 import { PoolMapping } from "@lib/hooks/usePools";
-import { NODE_ENV } from "@lib/keys";
+import { isStaging } from "@lib/keys";
 import { PoolInfo } from "@squaredlab-io/sdk";
 
 export const SUPPORTED_POOLS = [
@@ -10,7 +10,7 @@ export const SUPPORTED_POOLS = [
 export const getSupportedPools = (pools: PoolInfo[] | undefined) => {
   if (!pools || pools.length === 0) return pools;
 
-  if (NODE_ENV === "development") {
+  if (isStaging) {
     return pools; // Return all pools in Staging
   }
   return pools.filter((pool) => SUPPORTED_POOLS.includes(pool.poolAddr));
