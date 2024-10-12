@@ -3,7 +3,6 @@ import { QueryObserverResult, RefetchOptions, useQuery } from "@tanstack/react-q
 import { UserPointRank } from "@squaredlab-io/sdk/src/interfaces/ponder.interface";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { REFETCH_INTERVAL } from "@lib/constants";
-import { useTradeStore } from "@store/tradeStore";
 
 interface PropsType {
   paused?: boolean;
@@ -26,9 +25,7 @@ export function useUserPoints({ paused = false }: PropsType = {}): UserPointsTyp
   const getUserPoints = async () => {
     if (!address) return undefined;
     try {
-      const userPoints = await potentia?.ponderClient.getUserPoints(address);
-      console.log("userPoints", userPoints);
-      return userPoints;
+      return await potentia?.ponderClient.getUserPoints(address);
     } catch (error) {
       console.error("Failed to fetch user points\n", error);
     }
