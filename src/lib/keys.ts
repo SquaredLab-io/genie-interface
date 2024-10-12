@@ -11,3 +11,6 @@ export const COINGECKO_API_KEY = process.env.NEXT_PUBLIC_COINGECKO_KEY as string
 export const SQL_CHANNEL_URL = process.env.NEXT_PUBLIC_SQL_CHANNEL as string;
 export const PONDER_URL = process.env.NEXT_PUBLIC_PONDER as string;
 export const BASE_SEPOLIA_RPC = process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC as string;
+
+// APP
+export const NODE_ENV = process.env.NODE_ENV;
