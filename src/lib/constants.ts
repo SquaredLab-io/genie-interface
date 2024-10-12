@@ -59,7 +59,8 @@ export const TOKENS: {
 } = {
   WETH: getAddress("0x08EF999e4383FE62660022b73D145201bD5023d4"),
   ETH: getAddress("0x0000000000000000000000000000000000000000"),
-  // USDT: getAddress("0x32383fcE66D9D9311EF2bABc284a30a7112c27BF")
+  USDT: getAddress("0x32383fcE66D9D9311EF2bABc284a30a7112c27BF"),
+  BTC: getAddress("0xc80f6CbE6271cc601b858c1521483E50AE19b36e")
 };
 
 interface Token {
@@ -84,12 +85,19 @@ export const SUPPORTED_TOKENS: Token[] = [
     address: TOKENS.ETH,
     logo: "/tokens/eth.svg",
     decimals: 18
+  },
+  {
+    token: "USDT",
+    name: "Tether USD",
+    address: TOKENS.USDT,
+    logo: "/tokens/usdt.svg",
+    decimals: 6
+  },
+  {
+    token: "BTC",
+    name: "Bitcoin",
+    address: TOKENS.BTC,
+    logo: "/tokens/btc.svg",
+    decimals: 18
   }
-  // {
-  //   token: "USDT",
-  //   name: "Tether USD",
-  //   address: TOKENS.USDT,
-  //   logo: "/tokens/usdt.svg",
-  //   decimals: 6
-  // }
 ];
