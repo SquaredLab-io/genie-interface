@@ -1,15 +1,33 @@
+import { PoolMapping } from "@lib/hooks/usePools";
 import { PoolInfo } from "@squaredlab-io/sdk";
 
-export const UNSUPPORTED_POOLS = [
-  // "0x08EF999e4383FE62660022b73D145201bD5023d4", // WETH^2
-  // "0x9cdAA94733a682013Ff8AfD72BA59FB63619C98d" // WETH^8
-  "0x4488107701B77Db056f20b314002aFd1B513605C" // USDT^4
+export const SUPPORTED_POOLS = [
+  "0x050Ac74c2Fe33D932ef30f7c481e8d9d029568D4", // WETH^2
+  "0x9cdAA94733a682013Ff8AfD72BA59FB63619C98d" // WETH^8
 ];
 
 export const getSupportedPools = (pools: PoolInfo[] | undefined) => {
   if (!pools || pools.length === 0) return pools;
-  return pools.filter((pool) => !UNSUPPORTED_POOLS.includes(pool.poolAddr));
+  return pools.filter((pool) => SUPPORTED_POOLS.includes(pool.poolAddr));
 };
+
+export function createPoolMapping(
+  pools: PoolInfo[] | undefined
+): Record<string, PoolMapping> | undefined {
+  if (!pools) return undefined;
+  return pools.reduce(
+    (mapping, pool) => {
+      mapping[pool.poolAddr] = {
+        power: pool.power,
+        underlying: pool.underlying,
+        decimals: pool.underlyingDecimals,
+        poolAddr: pool.poolAddr
+      };
+      return mapping;
+    },
+    {} as Record<string, PoolMapping>
+  );
+}
 
 export const getTokenSymbol = (symbol: string | undefined): string => {
   if (!symbol) return "";
