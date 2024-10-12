@@ -24,7 +24,7 @@
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
     "@rainbow-me/rainbowkit": "^2.1.2",
-    "@squaredlab-io/sdk": "^1.1.69",
+    "@squaredlab-io/sdk": "^1.1.71",
     "@tanstack/react-query": "^5.45.1",
     "@tanstack/react-query-devtools": "^5.51.24",
     "@tanstack/react-table": "^8.17.3",

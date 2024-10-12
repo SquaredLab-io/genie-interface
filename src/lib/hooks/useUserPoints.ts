@@ -23,8 +23,6 @@ export function useUserPoints({ paused = false }: PropsType = {}): UserPointsTyp
   const { status } = useWalletClient();
   const { potentia } = usePotentiaSdk();
 
-  const { closePopoverDisabled } = useTradeStore();
-
   const getUserPoints = async () => {
     if (!address) return undefined;
     try {
