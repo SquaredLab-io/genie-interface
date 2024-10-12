@@ -1,15 +1,16 @@
 import LeaderboardTable from "./table";
-import { leaderboard_data } from "../helper";
 import { leaderboardColumns } from "./columns";
+import { useLeaderboard } from "@lib/hooks/useLeaderboard";
 
 const LeaderboardList = () => {
+  const { ranks, isFetching, isPending } = useLeaderboard();
   return (
     <div className="py-4">
       <Heading />
       <LeaderboardTable
-        data={leaderboard_data}
+        data={ranks ?? []}
         columns={leaderboardColumns}
-        loading={false}
+        loading={isFetching || isPending}
       />
     </div>
   );
