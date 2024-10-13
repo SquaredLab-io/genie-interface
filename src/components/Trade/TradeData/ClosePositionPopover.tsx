@@ -38,6 +38,7 @@ import useUnderlyingEstimateOut from "@lib/hooks/useUnderlyingEstimateOut";
 import { useTxHistory } from "@lib/hooks/useTxHistory";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
 import { useTradeStore } from "@store/tradeStore";
+import { useUserPoints } from "@lib/hooks/useUserPoints";
 
 interface PropsType {
   children: ReactNode;
@@ -71,6 +72,8 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
   });
   // Closed orders History
   const { refetch: refetchTxHistory } = useTxHistory(true);
+  // User Points
+  const { refetch: refetchUserPoints } = useUserPoints();
 
   // Get the Estimate Underlying Output
   const { output, isFetching: isOutputFetching } = useUnderlyingEstimateOut({
@@ -145,6 +148,7 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
           refetchOpenOrders();
           refetchTxHistory();
           refetchBalance();
+          refetchUserPoints();
           break;
         case "error":
           toast.dismiss(close_event.loading);
