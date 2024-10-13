@@ -93,7 +93,12 @@ const Header = () => {
                 width={24}
               />
               <span className="font-normal leading-5 ml-1">
-                {isFetching || !userPoints ? "..." : userPoints?.points} Gpoints
+                {isFetching || isPending
+                  ? "..."
+                  : !userPoints
+                    ? "NA"
+                    : userPoints?.points}{" "}
+                Gpoints
               </span>
               {/* <span className="font-medium leading-4 font-sans-ibm-plex text-primary-green bg-primary-green/10 py-0.5 px-1 rounded-base">
                 1.5x
