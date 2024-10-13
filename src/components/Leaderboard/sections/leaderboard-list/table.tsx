@@ -6,6 +6,7 @@ import {
   TableHeader,
   TableRow
 } from "@components/ui/table";
+import { cn } from "@lib/utils";
 import {
   ColumnDef,
   flexRender,
@@ -17,12 +18,14 @@ interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   loading: boolean;
+  isRank?: boolean;
 }
 
 const LeaderboardTable = <TData, TValue>({
   columns,
   data,
-  loading
+  loading,
+  isRank = false
 }: PropsType<TData, TValue>) => {
   const table = useReactTable({
     data,
@@ -31,9 +34,9 @@ const LeaderboardTable = <TData, TValue>({
   });
 
   return (
-    <div className="w-full overflow-auto">
+    <div className="w-full overflow-auto mb-1">
       <Table>
-        <TableHeader className="font-sans-ibm-plex">
+        <TableHeader className={cn("font-sans-ibm-plex", !isRank && "hidden")}>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (

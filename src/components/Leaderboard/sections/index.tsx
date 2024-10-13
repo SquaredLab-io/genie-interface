@@ -1,19 +1,22 @@
 "use client";
 
-import { useState } from "react";
 import { TabsList } from "@radix-ui/react-tabs";
 import { Tabs, TabsContent, TabsTrigger } from "@components/ui/tabs";
 import { LeaderboardOptions } from "./helper";
-import LeaderboardList from "./leaderboard-list";
 import Stats from "./stats";
+import LeaderboardList from "./leaderboard-list";
+import { useLeaderStore } from "@store/leaderboardStore";
 
 const Sections = () => {
-  const [currentTab, setCurrentTab] = useState(LeaderboardOptions.stats);
+  const { leaderboardTab, setLeaderboardTab } = useLeaderStore();
   // Referral Feature. Postponed.
   // const { openReferralModal, setOpenReferralModal } = useModalStore();
   return (
     <div className="py-10">
-      <Tabs value={currentTab} onValueChange={setCurrentTab as (value: string) => void}>
+      <Tabs
+        value={leaderboardTab}
+        onValueChange={setLeaderboardTab as (value: string) => void}
+      >
         <div className="inline-flex items-center justify-between w-full font-medium text-sm/5 py-4 border-t border-b border-secondary-gray ">
           <TabsList className="inline-flex gap-x-3">
             <TabsTrigger
