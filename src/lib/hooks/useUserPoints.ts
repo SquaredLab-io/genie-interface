@@ -23,9 +23,8 @@ export function useUserPoints({ paused = false }: PropsType = {}): UserPointsTyp
   const { potentia } = usePotentiaSdk();
 
   const getUserPoints = async () => {
-    if (!address) return undefined;
     try {
-      return await potentia?.ponderClient.getUserPoints(address);
+      return await potentia?.ponderClient.getUserPoints(address!);
     } catch (error) {
       console.error("Failed to fetch user points\n", error);
     }
