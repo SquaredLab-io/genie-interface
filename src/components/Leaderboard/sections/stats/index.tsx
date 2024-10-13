@@ -71,12 +71,14 @@ const UserActivity = ({ points }: { points: UserPointsType }) => {
         <StatsCard label="Avg Trade Size" value={"-"} icon="/icons/TradeSizeIcon.svg" />
         <StatsCard
           label="Best Trade"
-          value={formatTradeValue(isFetching || isPending, "1860.2345")}
+          value={"-"}
+          // value={formatTradeValue(isFetching || isPending, "1860.2345")}
           icon="/icons/CheckCircleIcon.svg"
         />
         <StatsCard
           label="Worst Trade"
-          value={formatTradeValue(isFetching || isPending, "-1860.2345")}
+          value={"-"}
+          // value={formatTradeValue(isFetching || isPending, "-1860.2345")}
           icon="/icons/WorstIcon.svg"
         />
       </div>

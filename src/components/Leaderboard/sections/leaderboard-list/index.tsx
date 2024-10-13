@@ -1,12 +1,25 @@
 import LeaderboardTable from "./table";
-import { leaderboardColumns } from "./columns";
+import { leaderboardColumns, rankColumns } from "./columns";
 import { useLeaderboard } from "@lib/hooks/useLeaderboard";
+import { useUserPoints } from "@lib/hooks/useUserPoints";
 
 const LeaderboardList = () => {
   const { ranks, isFetching, isPending } = useLeaderboard();
+  const {
+    userPoints,
+    isFetching: isPointsFetching,
+    isPending: isUserPending
+  } = useUserPoints();
+
   return (
-    <div className="py-4">
+    <div className="py-4 w-full flex flex-col gap-10">
       <Heading />
+      <LeaderboardTable
+        data={userPoints ? [userPoints] : []}
+        columns={rankColumns}
+        loading={isPointsFetching || isUserPending}
+        isRank={true}
+      />
       <LeaderboardTable
         data={ranks ?? []}
         columns={leaderboardColumns}
@@ -17,7 +30,7 @@ const LeaderboardList = () => {
 };
 
 const Heading = () => (
-  <div className="flex flex-col gap-y-2 items-start py-10">
+  <div className="flex flex-col gap-y-2 items-start pt-10">
     <h1 className="font-medium text-2xl/9">
       <span className="heading-gradient">Genie</span> Ranking
     </h1>
