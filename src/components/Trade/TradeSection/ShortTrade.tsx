@@ -37,6 +37,7 @@ import useApproveToken from "@lib/hooks/useApproveToken";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
 import usePTokenEstimateOut from "@lib/hooks/usePTokenEstimateOut";
 import BigNumber from "bignumber.js";
+import { useUserPoints } from "@lib/hooks/useUserPoints";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -91,6 +92,8 @@ const ShortTrade: FC<PropsType> = memo(({ potentia }) => {
   const { price, isMarketDataLoading } = useCurrencyPrice(selectedPool()?.underlying);
 
   const { refetch: refetchTradeHistory } = useTradeHistory(true);
+
+  const { refetch: refetchUserPoints } = useUserPoints();
 
   // Check approved tokens amount
   const {
@@ -292,6 +295,7 @@ const ShortTrade: FC<PropsType> = memo(({ potentia }) => {
       refetchOpenOrders();
       refetchTradeHistory();
       refetchIsApproved();
+      refetchUserPoints();
 
       defaultInputs();
 
