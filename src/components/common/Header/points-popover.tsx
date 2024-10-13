@@ -19,6 +19,7 @@ const PointsPopover: FC<PointsPopoverProps> = ({
   onOpenChange
 }) => {
   const { userPoints, isFetching, isPending } = points;
+  const loading = isFetching || isPending;
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange} modal={true}>
       <PopoverTrigger asChild className="min-w-fit z-50">
@@ -43,11 +44,11 @@ const PointsPopover: FC<PointsPopoverProps> = ({
                 />
                 <span>Points</span>
               </p>
-              <span>{isFetching ? "-" : userPoints?.points}</span>
+              <span>{loading ? "..." : !userPoints ? "NA" : userPoints.points}</span>
             </div>
             <div className="flex flex-col items-start gap-2">
               <span className="font-light text-[13px]/4 text-[#ADB2AB]">Rank</span>
-              <span>{isFetching ? "-" : userPoints?.rank}</span>
+              <span>{loading ? "..." : !userPoints ? "NA" : userPoints.rank}</span>
             </div>
             <div className="flex flex-col items-start gap-2">
               <span className="font-light text-[13px]/4 text-[#ADB2AB]">Multiplier</span>
