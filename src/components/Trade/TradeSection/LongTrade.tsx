@@ -36,6 +36,7 @@ import useIsApprovedToken from "@lib/hooks/useIsApprovedToken";
 import useApproveToken from "@lib/hooks/useApproveToken";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
 import usePTokenEstimateOut from "@lib/hooks/usePTokenEstimateOut";
+import { useUserPoints } from "@lib/hooks/useUserPoints";
 
 interface PropsType {
   potentia?: PotentiaSdk;
@@ -65,6 +66,8 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
   });
 
   const balance = userBalance?.value;
+
+  const { refetch: refetchUserPoints } = useUserPoints();
 
   // Both hooks paused, Refetch method to be used on Successful tx
   const {
@@ -281,6 +284,7 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
       refetchBalance();
       refetchOpenOrders();
       refetchTradeHistory();
+      refetchUserPoints();
 
       defaultInputs();
 
