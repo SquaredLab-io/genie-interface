@@ -46,10 +46,10 @@ const useUnderlyingEstimateOut = ({
     } catch (error) {
       setIsFetching(false);
       console.error("Failed to estimate underlying output");
-      notification.error({
-        id: "error-output-underlying",
-        title: "Failed to estimate underlying output"
-      });
+      // notification.error({
+      //   id: "error-output-underlying",
+      //   title: "Failed to estimate underlying output"
+      // });
     }
   };
 
