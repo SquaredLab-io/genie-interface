@@ -53,7 +53,7 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
   const { long_event } = notificationId;
 
   // Contract Hooks
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
 
   const {
     data: userBalance,
@@ -67,7 +67,7 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
 
   const balance = userBalance?.value;
 
-  const { refetch: refetchUserPoints } = useUserPoints();
+  const { refetch: refetchUserPoints } = useUserPoints({ address });
 
   // Both hooks paused, Refetch method to be used on Successful tx
   const {

@@ -5,13 +5,13 @@ import { useUserPoints } from "@lib/hooks/useUserPoints";
 import { useAccount } from "wagmi";
 
 const LeaderboardList = () => {
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
   const { ranks, isFetching, isPending } = useLeaderboard();
   const {
     userPoints,
     isFetching: isPointsFetching,
     isPending: isUserPending
-  } = useUserPoints();
+  } = useUserPoints({ address });
 
   return (
     <div className="py-4 w-full flex flex-col gap-10">
