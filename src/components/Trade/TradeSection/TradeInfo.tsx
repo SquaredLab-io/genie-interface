@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useTokenPrice } from "@lib/hooks/useTokenPrice";
 import { cn } from "@lib/utils";
 import { formatNumber } from "@lib/utils/formatting";
@@ -35,7 +36,7 @@ export function Marker({
   );
 }
 
-export default function TradeInfo() {
+const TradeInfo = () => {
   const { selectedPool } = usePoolsStore();
 
   const { tokenPrices, isFetching: isFetchingPrice } = useTokenPrice({
@@ -60,4 +61,6 @@ export default function TradeInfo() {
       />
     </div>
   );
-}
+};
+
+export default memo(TradeInfo);

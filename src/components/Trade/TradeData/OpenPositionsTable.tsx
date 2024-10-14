@@ -60,7 +60,7 @@ const OpenPositionsTable = <TData, TValue>({
         </TableHeader>
         <TableBody className="font-normal text-sm/4">
           {!isConnected ? (
-            <TableRow className="border">
+            <TableRow>
               <TableCell colSpan={columns.length} className="size-36 text-center w-full">
                 <div className="flex flex-col items-center w-full text-center gap-5">
                   <span className="font-normal text-base/7 text-[#B5B5B5]">
@@ -71,7 +71,7 @@ const OpenPositionsTable = <TData, TValue>({
             </TableRow>
           ) : table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} className="hover:bg-[#101F29] -z-10">
+              <TableRow key={row.id} className="-z-10">
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
