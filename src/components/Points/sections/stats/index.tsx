@@ -1,14 +1,29 @@
 import StatsCard from "./stats-card";
 import { UserPointsType, useUserPoints } from "@lib/hooks/useUserPoints";
 import { formatTradeValue } from "../helper";
+import { useAccount } from "wagmi";
+import ConnectWallet from "@components/common/ConnectWallet";
 
 const Stats = () => {
+  const { isConnected } = useAccount();
   const points = useUserPoints();
+
+  if (!isConnected) {
+    return (
+      <div className="flex flex-col items-center w-full text-center gap-5 py-20">
+        <span className="font-normal text-base/7 text-[#B5B5B5]">
+          Connect Wallet to view your Genie Stats.
+        </span>
+        <ConnectWallet />
+      </div>
+    );
+  }
+
   return (
     <div className="py-4 flex flex-col gap-y-14">
       <GpointsAndReferals points={points} />
       <UserActivity points={points} />
-      <RewardHistory />
+      {/* <RewardHistory /> */}
     </div>
   );
 };
@@ -68,7 +83,7 @@ const UserActivity = ({ points }: { points: UserPointsType }) => {
           value={formatTradeValue(isFetching || isPending, userPoints?.profit)}
           icon="/icons/PnlIcon.svg"
         />
-        <StatsCard label="Avg Trade Size" value={"-"} icon="/icons/TradeSizeIcon.svg" />
+        {/* <StatsCard label="Avg Trade Size" value={"-"} icon="/icons/TradeSizeIcon.svg" />
         <StatsCard
           label="Best Trade"
           value={"-"}
@@ -80,12 +95,13 @@ const UserActivity = ({ points }: { points: UserPointsType }) => {
           value={"-"}
           // value={formatTradeValue(isFetching || isPending, "-1860.2345")}
           icon="/icons/WorstIcon.svg"
-        />
+        /> */}
       </div>
     </div>
   );
 };
 
+// No Data
 const RewardHistory = () => (
   <div className="flex flex-col gap-y-10 mt-10">
     <div className="flex flex-col gap-y-2 items-start">

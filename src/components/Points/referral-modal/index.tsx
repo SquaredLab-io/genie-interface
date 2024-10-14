@@ -1,8 +1,8 @@
 import { FC, ReactNode } from "react";
-import Modal from "@components/common/Modal";
-import { useModalStore } from "@store/poolsStore";
 import Image from "next/image";
 import { useAccount } from "wagmi";
+import Modal from "@components/common/Modal";
+import { useModalStore } from "@store/poolsStore";
 import { shortenHash } from "@lib/utils/formatting";
 
 interface PropsType {
