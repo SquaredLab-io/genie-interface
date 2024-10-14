@@ -8,8 +8,10 @@ import Image from "next/image";
 
 const PointsNavigation = () => {
   const [isPointsPopoverOpen, setIsPointsPopoverOpen] = useState(false);
-  const { isConnected } = useAccount();
-  const { userPoints, isFetching, isPending, refetch } = useUserPoints();
+  const { isConnected, address } = useAccount();
+  const { userPoints, isFetching, isPending, refetch } = useUserPoints({
+    address
+  });
 
   return isConnected ? (
     <PointsPopover

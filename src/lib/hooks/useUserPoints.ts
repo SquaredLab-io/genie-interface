@@ -1,10 +1,12 @@
-import { useAccount, useWalletClient } from "wagmi";
+import { useWalletClient } from "wagmi";
+import { Address } from "viem";
 import { QueryObserverResult, RefetchOptions, useQuery } from "@tanstack/react-query";
 import { UserPointRank } from "@squaredlab-io/sdk/src/interfaces/ponder.interface";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { REFETCH_INTERVAL } from "@lib/constants";
 
 interface PropsType {
+  address: Address | undefined;
   paused?: boolean;
 }
 
@@ -17,8 +19,7 @@ export interface UserPointsType {
   ) => Promise<QueryObserverResult<UserPointRank | undefined, Error>>;
 }
 
-export function useUserPoints({ paused = false }: PropsType = {}): UserPointsType {
-  const { address } = useAccount();
+export function useUserPoints({ address, paused = false }: PropsType): UserPointsType {
   const { status } = useWalletClient();
   const { potentia } = usePotentiaSdk();
 
