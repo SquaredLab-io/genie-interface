@@ -8,9 +8,6 @@ import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import { TradeOptions } from "@lib/types/enums";
 import { useTradeStore } from "@store/tradeStore";
 
-const tabsStyle =
-  "w-1/2 py-2 text-center font-medium text-sm/5 border-t border-secondary-gray bg-[#121F27] data-[state=active]:bg-primary-gray";
-
 const Trade = () => {
   const { potentia } = usePotentiaSdk();
   const { tradeType, setTradeType } = useTradeStore();
@@ -24,7 +21,7 @@ const Trade = () => {
             value={TradeOptions.long}
             className={cn(
               "data-[state=active]:border-[#07AD3B] text-[#07AD3B]",
-              tabsStyle
+              "active-tab-trade"
             )}
           >
             Long
@@ -33,7 +30,7 @@ const Trade = () => {
             value={TradeOptions.short}
             className={cn(
               "data-[state=active]:border-[#FF3318] text-[#FF3318]",
-              tabsStyle
+              "active-tab-trade"
             )}
           >
             Short

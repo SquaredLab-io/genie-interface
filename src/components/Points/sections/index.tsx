@@ -29,7 +29,7 @@ const Sections = () => {
         value={currentTab as string}
         onValueChange={updateTab as (value: string) => void}
       >
-        <div className="inline-flex items-center justify-between w-full font-medium text-sm/5 py-4 border-t border-b border-secondary-gray ">
+        <div className="inline-flex items-center justify-between w-full font-medium text-sm/5 py-4 border-t border-b border-secondary-gray">
           <TabsList className="inline-flex gap-x-3">
             <TabsTrigger
               value={LeaderboardOptions.leaderboard}

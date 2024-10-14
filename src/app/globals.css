@@ -26,6 +26,7 @@
 
   tbody > tr {
     border-bottom: 8px solid transparent;
+    /* margin-bottom: 8px; */
   }
 
   tbody > tr > td:first-child {
@@ -80,6 +81,10 @@
 
   .active-tab-leaderboard {
     @apply py-2 px-6 rounded-lg border border-primary-gray data-[state=active]:border-tab-blue data-[state=active]:bg-[#0A344D] transition-colors duration-300 ease-linear;
+  }
+
+  .active-tab-trade {
+    @apply w-1/2 py-2 text-center font-medium text-sm/5 border-t border-secondary-gray bg-[#121F27] data-[state=active]:bg-primary-gray data-[state=active]:cursor-default data-[state=active]:pointer-events-none;
   }
 }
 

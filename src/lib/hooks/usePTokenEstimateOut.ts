@@ -40,10 +40,10 @@ const usePTokenEstimateOut = ({
       } catch (error) {
         // setIsFetching(false);
         console.error("Failed to estimate pToken output");
-        notification.error({
-          id: "error-output-pToken",
-          title: "Failed to estimate pToken output"
-        });
+        // notification.error({
+        //   id: "error-output-pToken",
+        //   title: "Failed to estimate pToken output"
+        // });
       } finally {
         setIsFetching(false);
       }
