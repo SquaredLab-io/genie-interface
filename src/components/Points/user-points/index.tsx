@@ -1,31 +1,19 @@
-import { useAccount } from "wagmi";
-import StatsCard from "./stats-card";
+import { Address } from "viem";
 import { UserPointsType, useUserPoints } from "@lib/hooks/useUserPoints";
-import { formatTradeValue } from "../helper";
-import ConnectWallet from "@components/common/ConnectWallet";
+import StatsCard from "../sections/stats/stats-card";
+import { formatTradeValue } from "../sections/helper";
 
-const Stats = () => {
-  const { isConnected, address } = useAccount();
+interface Props {
+  address: Address | undefined;
+}
 
-  const points = useUserPoints({
-    address
-  });
-
-  if (!isConnected) {
-    return (
-      <div className="flex flex-col items-center w-full text-center gap-5 py-20">
-        <span className="font-normal text-base/7 text-[#B5B5B5]">
-          Connect Wallet to view your Genie Stats.
-        </span>
-        <ConnectWallet />
-      </div>
-    );
-  }
+const UserPoints = ({ address }: Props) => {
+  const points = useUserPoints({ address });
 
   return (
     <div className="py-4 flex flex-col gap-y-14">
       <GpointsAndReferals points={points} />
-      <UserActivity points={points} />
+      <UserActivity points={points} />  
       {/* <RewardHistory /> */}
     </div>
   );
@@ -124,4 +112,4 @@ const RewardHistory = () => (
   </div>
 );
 
-export default Stats;
+export default UserPoints;

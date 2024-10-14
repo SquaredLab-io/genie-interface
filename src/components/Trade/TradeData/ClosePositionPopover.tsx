@@ -11,7 +11,7 @@ import {
 import { Address } from "viem";
 import { toast } from "sonner";
 import BigNumber from "bignumber.js";
-import { useWaitForTransactionReceipt } from "wagmi";
+import { useAccount, useWaitForTransactionReceipt } from "wagmi";
 import { OpenPositionInfo } from "@squaredlab-io/sdk";
 // Component Imports
 import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover";
@@ -52,6 +52,8 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
   const [inputAmount, setInputAmount] = useState("");
   const [sliderValue, setSliderValue] = useState(0);
 
+  const { address } = useAccount();
+
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
   const [isHandlerLoading, setIsHandlerLoading] = useState(false);
 
@@ -73,7 +75,7 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
   // Closed orders History
   const { refetch: refetchTxHistory } = useTxHistory(true);
   // User Points
-  const { refetch: refetchUserPoints } = useUserPoints();
+  const { refetch: refetchUserPoints } = useUserPoints({ address });
 
   // Get the Estimate Underlying Output
   const { output, isFetching: isOutputFetching } = useUnderlyingEstimateOut({

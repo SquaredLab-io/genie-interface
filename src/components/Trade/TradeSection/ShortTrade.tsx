@@ -54,7 +54,7 @@ const ShortTrade: FC<PropsType> = memo(({ potentia }) => {
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
 
   // Contract Hooks
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
 
   const {
     data: userBalance,
@@ -93,7 +93,7 @@ const ShortTrade: FC<PropsType> = memo(({ potentia }) => {
 
   const { refetch: refetchTradeHistory } = useTradeHistory(true);
 
-  const { refetch: refetchUserPoints } = useUserPoints();
+  const { refetch: refetchUserPoints } = useUserPoints({ address });
 
   // Check approved tokens amount
   const {
