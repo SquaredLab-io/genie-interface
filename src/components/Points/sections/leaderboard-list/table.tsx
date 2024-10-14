@@ -13,6 +13,7 @@ import {
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
+import { useAccount } from "wagmi";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -33,10 +34,14 @@ const LeaderboardTable = <TData, TValue>({
     getCoreRowModel: getCoreRowModel()
   });
 
+  const { isConnected } = useAccount();
+
   return (
     <div className="w-full overflow-auto mb-1">
       <Table>
-        <TableHeader className={cn("font-sans-ibm-plex", !isRank && "hidden")}>
+        <TableHeader
+          className={cn("font-sans-ibm-plex", !isRank && isConnected && "hidden")}
+        >
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
