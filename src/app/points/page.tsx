@@ -1,5 +1,5 @@
-import Hero from "@components/Leaderboard/hero";
-import Sections from "@components/Leaderboard/sections";
+import Hero from "@components/Points/hero";
+import Sections from "@components/Points/sections";
 
 export default function Leaderboard() {
   return (
