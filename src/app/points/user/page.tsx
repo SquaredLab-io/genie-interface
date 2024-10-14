@@ -12,6 +12,11 @@ export default function UserStats() {
   return (
     <main className="pl-[88px] pr-[84px] pt-16 pb-10 overflow-hidden">
       <Hero address={userAddr as Address} />
+      <div className="py-4 mt-10 border-t border-b border-secondary-gray">
+        <button className="py-2 px-6 max-w-fit rounded-lg border border-tab-blue bg-[#0A344D] shadow-sm">
+          <span className="font-medium text-sm/5">Your Stats</span>
+        </button>
+      </div>
       <UserPoints address={userAddr as Address} />
     </main>
   );
