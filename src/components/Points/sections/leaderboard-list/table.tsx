@@ -7,12 +7,15 @@ import {
   TableRow
 } from "@components/ui/table";
 import { cn } from "@lib/utils";
+import { UserPoint, UserPointRank } from "@squaredlab-io/sdk";
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
+import { useAccount } from "wagmi";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -33,10 +36,15 @@ const LeaderboardTable = <TData, TValue>({
     getCoreRowModel: getCoreRowModel()
   });
 
+  const { isConnected } = useAccount();
+  const router = useRouter();
+
   return (
     <div className="w-full overflow-auto mb-1">
       <Table>
-        <TableHeader className={cn("font-sans-ibm-plex", !isRank && "hidden")}>
+        <TableHeader
+          className={cn("font-sans-ibm-plex", !isRank && isConnected && "hidden")}
+        >
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
@@ -54,18 +62,24 @@ const LeaderboardTable = <TData, TValue>({
         </TableHeader>
         <TableBody className="rounded-lg">
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                className="bg-[#0F212B] hover:bg-[#0F212B] rounded-xl"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="font-bold text-center">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
+            table.getRowModel().rows.map((row) => {
+              const { id } = row.original as UserPoint | UserPointRank;
+              return (
+                <TableRow
+                  key={row.id}
+                  className="bg-[#0F212B] hover:bg-[#142F41] rounded-xl transition-colors duration-200 ease-linear cursor-pointer"
+                  onClick={() => {
+                    router.push(`/points/user?address=${id}`);
+                  }}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="font-bold text-center">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              );
+            })
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-72 text-center">

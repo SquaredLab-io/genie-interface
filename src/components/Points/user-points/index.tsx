@@ -1,14 +1,20 @@
-import StatsCard from "./stats-card";
+import { Address } from "viem";
 import { UserPointsType, useUserPoints } from "@lib/hooks/useUserPoints";
-import { formatTradeValue } from "../helper";
+import StatsCard from "../sections/stats/stats-card";
+import { formatTradeValue } from "../sections/helper";
 
-const Stats = () => {
-  const points = useUserPoints();
+interface Props {
+  address: Address | undefined;
+}
+
+const UserPoints = ({ address }: Props) => {
+  const points = useUserPoints({ address });
+
   return (
     <div className="py-4 flex flex-col gap-y-14">
       <GpointsAndReferals points={points} />
-      <UserActivity points={points} />
-      <RewardHistory />
+      <UserActivity points={points} />  
+      {/* <RewardHistory /> */}
     </div>
   );
 };
@@ -68,7 +74,7 @@ const UserActivity = ({ points }: { points: UserPointsType }) => {
           value={formatTradeValue(isFetching || isPending, userPoints?.profit)}
           icon="/icons/PnlIcon.svg"
         />
-        <StatsCard label="Avg Trade Size" value={"-"} icon="/icons/TradeSizeIcon.svg" />
+        {/* <StatsCard label="Avg Trade Size" value={"-"} icon="/icons/TradeSizeIcon.svg" />
         <StatsCard
           label="Best Trade"
           value={"-"}
@@ -80,12 +86,13 @@ const UserActivity = ({ points }: { points: UserPointsType }) => {
           value={"-"}
           // value={formatTradeValue(isFetching || isPending, "-1860.2345")}
           icon="/icons/WorstIcon.svg"
-        />
+        /> */}
       </div>
     </div>
   );
 };
 
+// No Data
 const RewardHistory = () => (
   <div className="flex flex-col gap-y-10 mt-10">
     <div className="flex flex-col gap-y-2 items-start">
@@ -105,4 +112,4 @@ const RewardHistory = () => (
   </div>
 );
 
-export default Stats;
+export default UserPoints;

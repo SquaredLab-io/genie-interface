@@ -5,6 +5,7 @@ import { ArrowUpRight, Trophy } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover";
 import { Separator } from "@components/ui/separator";
 import { UserPointsType } from "@lib/hooks/useUserPoints";
+import { LeaderboardOptions } from "@components/Points/sections/helper";
 
 interface PointsPopoverProps extends PropsWithChildren {
   points: UserPointsType;
@@ -69,7 +70,16 @@ const PointsPopover: FC<PointsPopoverProps> = ({
                 className="ml-1 text-[#ADB2AB] group-hover:text-white"
               />
             </Link>
-            <Link href="/leaderboard" onClick={() => onOpenChange(false)}>
+            <Link
+              href={{
+                pathname: "/points",
+                query: {
+                  show: LeaderboardOptions.leaderboard
+                }
+              }}
+              as={`/points?show=${LeaderboardOptions.leaderboard}`}
+              onClick={() => onOpenChange(false)}
+            >
               <button className="group w-full py-3 border-[0.5px] inline-flex items-center justify-center gap-x-1 border-[#D9D9D9] hover:bg-[#E6E6E6] transition-colors duration-200 ease-in-out">
                 <Trophy
                   size={16}
