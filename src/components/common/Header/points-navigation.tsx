@@ -1,7 +1,7 @@
 "use client";
 
 import { useUserPoints } from "@lib/hooks/useUserPoints";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 import PointsPopover from "./points-popover";
 import Image from "next/image";
@@ -12,6 +12,13 @@ const PointsNavigation = () => {
   const { userPoints, isFetching, isPending, refetch } = useUserPoints({
     address
   });
+
+  const displayPoints = useMemo(() => {
+    if (!userPoints && (isFetching || isPending)) {
+      return "...";
+    }
+    return userPoints?.points ?? "NA";
+  }, [userPoints, isFetching, isPending]);
 
   return isConnected ? (
     <PointsPopover
@@ -30,10 +37,7 @@ const PointsNavigation = () => {
           height={24}
           width={24}
         />
-        <span className="font-normal leading-5 ml-1">
-          {isFetching || isPending ? "..." : !userPoints ? "NA" : userPoints?.points}{" "}
-          Gpoints
-        </span>
+        <span className="font-normal leading-5 ml-1">{displayPoints} Gpoints</span>
         {/* <span className="font-medium leading-4 font-sans-ibm-plex text-primary-green bg-primary-green/10 py-0.5 px-1 rounded-base">
                 1.5x
               </span> */}
