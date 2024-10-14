@@ -2,8 +2,10 @@ import LeaderboardTable from "./table";
 import { leaderboardColumns, rankColumns } from "./columns";
 import { useLeaderboard } from "@lib/hooks/useLeaderboard";
 import { useUserPoints } from "@lib/hooks/useUserPoints";
+import { useAccount } from "wagmi";
 
 const LeaderboardList = () => {
+  const { isConnected } = useAccount();
   const { ranks, isFetching, isPending } = useLeaderboard();
   const {
     userPoints,
@@ -14,12 +16,14 @@ const LeaderboardList = () => {
   return (
     <div className="py-4 w-full flex flex-col gap-10">
       <Heading />
-      <LeaderboardTable
-        data={userPoints ? [userPoints] : []}
-        columns={rankColumns}
-        loading={isPointsFetching || isUserPending}
-        isRank={true}
-      />
+      {isConnected && (
+        <LeaderboardTable
+          data={userPoints ? [userPoints] : []}
+          columns={rankColumns}
+          loading={isPointsFetching || isUserPending}
+          isRank={true}
+        />
+      )}
       <LeaderboardTable
         data={ranks ?? []}
         columns={leaderboardColumns}

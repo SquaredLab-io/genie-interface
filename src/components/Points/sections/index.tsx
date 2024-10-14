@@ -1,21 +1,33 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { TabsList } from "@radix-ui/react-tabs";
 import { Tabs, TabsContent, TabsTrigger } from "@components/ui/tabs";
 import { LeaderboardOptions } from "./helper";
 import Stats from "./stats";
 import LeaderboardList from "./leaderboard-list";
-import { useLeaderStore } from "@store/leaderboardStore";
 
 const Sections = () => {
-  const { leaderboardTab, setLeaderboardTab } = useLeaderStore();
-  // Referral Feature. Postponed.
-  // const { openReferralModal, setOpenReferralModal } = useModalStore();
+  const router = useRouter();
+  const queryParams = useSearchParams();
+  const currentTab = queryParams.get("show") ?? undefined;
+
+  function updateTab(value: LeaderboardOptions) {
+    router.push(`/points?show=${value}`);
+  }
+
+  useEffect(() => {
+    if (!currentTab) {
+      router.push("/points?show=leaderboard");
+    }
+  }, [currentTab]);
+
   return (
     <div className="py-10">
       <Tabs
-        value={leaderboardTab}
-        onValueChange={setLeaderboardTab as (value: string) => void}
+        value={currentTab as string}
+        onValueChange={updateTab as (value: string) => void}
       >
         <div className="inline-flex items-center justify-between w-full font-medium text-sm/5 py-4 border-t border-b border-secondary-gray ">
           <TabsList className="inline-flex gap-x-3">
