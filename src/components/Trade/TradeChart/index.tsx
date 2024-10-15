@@ -8,6 +8,7 @@ import {
   Timezone,
   getPotentiaDataFeed
 } from "@squaredlab-io/sdk/src";
+import debounce from "lodash/debounce";
 import {
   ChartingLibraryWidgetOptions,
   IChartingLibraryWidget,
@@ -39,6 +40,18 @@ const TradeChart = ({ potentia }: PropsType) => {
     }
     return "";
   }, [selectedPool, tradeType]);
+
+  const updateSymbol = useCallback(
+    debounce((newSymbol: string) => {
+      if (!tvWidgetRef.current || !dataFeed) return;
+      tvWidgetRef.current.setSymbol(
+        newSymbol,
+        widgetProps.interval as ResolutionString,
+        () => {}
+      );
+    }, 300),
+    [dataFeed]
+  );
 
   useEffect(() => {
     async function initDatafeed() {
@@ -80,7 +93,15 @@ const TradeChart = ({ potentia }: PropsType) => {
         symbol_search_request_delay: widgetProps.symbol_search_request_delay,
         auto_save_delay: widgetProps.auto_save_delay,
         toolbar_bg: widgetProps.toolbar_bg,
-        overrides: widgetProps.overrides
+        overrides: {
+          ...widgetProps.overrides,
+          "paneProperties.backgroundType": "solid",
+          "paneProperties.background": "#0C1820",
+          "scalesProperties.backgroundColor": "#0C1820"
+        },
+        loading_screen: {
+          backgroundColor: "#0C1820"
+        }
       };
 
       const tvWidget = new widget(widgetOptions);
@@ -99,12 +120,8 @@ const TradeChart = ({ potentia }: PropsType) => {
     if (!tvWidgetRef.current) {
       initChart();
     } else {
-      // Update existing chart
-      tvWidgetRef.current.setSymbol(
-        getSymbol(),
-        widgetProps.interval as ResolutionString,
-        () => {}
-      );
+      // Update existing chart's symbol
+      updateSymbol(getSymbol());
     }
 
     // Cleanup function
@@ -114,7 +131,7 @@ const TradeChart = ({ potentia }: PropsType) => {
         tvWidgetRef.current = null;
       }
     };
-  }, [dataFeed, selectedPool, tradeType, getSymbol]);
+  }, [dataFeed, selectedPool, tradeType, getSymbol, updateSymbol]);
 
   function injectCustomCSS(tvWidget: IChartingLibraryWidget) {
     tvWidget.addCustomCSSFile(
