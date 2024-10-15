@@ -67,6 +67,9 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
 
   const isValidQuantity = !isNaN(parseFloat(quantity));
 
+  // Getting the speicifc pool data from Mapping
+  const poolData = poolMap?.[position.pool]!;
+
   // All current positions
   const { refetch: refetchOpenOrders } = useOpenOrders({
     poolAddress: selectedPool()?.poolAddr as Address,
@@ -79,7 +82,7 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
 
   // Get the Estimate Underlying Output
   const { output, isFetching: isOutputFetching } = useUnderlyingEstimateOut({
-    poolAddress: poolMap?.[position.pool].poolAddr as Address,
+    poolAddress: poolData.poolAddr as Address,
     amount: quantity,
     isLong
   });
@@ -94,7 +97,7 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
    * Handler for closePosition from SDK
    */
   async function closePositionHandlerSdk() {
-    const amount = getDecimalDeadjusted(quantity, poolMap?.[position.pool].decimals);
+    const amount = getDecimalDeadjusted(quantity, poolData.decimals);
     // const amount = BigInt(quantity).toString();
     setIsHandlerLoading(true);
     notification.loading({
@@ -191,7 +194,7 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
     if (balance) {
       const value = isValidQuantity
         ? (parseFloat(input) /
-            getDecimalAdjusted(balance.toFixed(0), poolMap?.[position.pool].decimals)) *
+            getDecimalAdjusted(balance.toFixed(0), poolData.decimals)) *
           100
         : 0;
       setSliderValue(value);
@@ -204,7 +207,7 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
     if (balance) {
       const amount = _getDecimalAdjusted(
         balance.multipliedBy(BigNumber(value)).dividedBy(BigNumber(100)).toFixed(0),
-        poolMap?.[position.pool].decimals
+        poolData.decimals
       );
       setQuantity(amount);
       setInputAmount(parseFloat(amount).toFixed(2));
@@ -256,17 +259,15 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
               />
               <p className="inline-flex items-center gap-[2px]">
                 <span className="w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm">
-                  {selectedPool()?.underlying}
-                  <sup>{poolMap?.[position.pool].power}</sup>
+                  {poolData.underlying}
+                  <sup>{poolData.power}</sup>
                 </span>
                 <span className="opacity-60">{isLong ? "L" : "S"}</span>
               </p>
             </div>
             <span>
               Balance:{" "}
-              {formatNumber(
-                getDecimalAdjusted(balance.toFixed(0), poolMap?.[position.pool].decimals)
-              )}
+              {formatNumber(getDecimalAdjusted(balance.toFixed(0), poolData.decimals))}
             </span>
           </div>
           <SliderBar
@@ -287,11 +288,9 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
                 {isOutputFetching
                   ? "..."
                   : isValidQuantity
-                    ? formatNumber(
-                        getDecimalAdjusted(output, poolMap?.[position.pool].decimals)
-                      )
+                    ? formatNumber(getDecimalAdjusted(output, poolData.decimals))
                     : "N/A"}{" "}
-                {poolMap?.[position.pool].underlying}
+                {poolData.underlying}
               </span>
               <DropDownIcon className="w-3" />
             </p>
