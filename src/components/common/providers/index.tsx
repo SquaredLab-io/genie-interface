@@ -14,17 +14,13 @@ import getUrqlClient from "@lib/utils/urql/get-urql-client";
 import "@rainbow-me/rainbowkit/styles.css";
 
 const Providers: React.FC<PropsWithChildren> = ({ children }) => {
-  const [client, ssr] = useMemo(() => getUrqlClient(), []);
+  const [client, ssr] = getUrqlClient();
   const queryClient = getQueryClient();
 
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider
-          initialChain={baseSepolia}
-          modalSize="compact"
-          theme={theme}
-        >
+        <RainbowKitProvider initialChain={baseSepolia} modalSize="compact" theme={theme}>
           <UrqlProvider client={client} ssr={ssr}>
             {children}
           </UrqlProvider>
