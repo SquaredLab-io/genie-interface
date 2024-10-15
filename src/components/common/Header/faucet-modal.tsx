@@ -65,7 +65,9 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
 
   // tx states
   const [txStatus, setTxStatus] = useState<TransactionStatus>("idle");
+  const [faucetStatus, setFaucetStatus] = useState<TransactionStatus>("idle");
   const [error, setError] = useState<string | undefined>();
+  const [fError, setFError] = useState<string | undefined>();
 
   // addToken() adds token into the connected wallet
   async function addToken() {
@@ -96,31 +98,76 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
     }
   }
 
-  async function callFaucetAirdrop(userAddr: Address, tokenAddr: Address) {
-    const apiUrl = "/api/airdrop";
+  async function checkFaucetAirdrop(id: string) {
+    const checkAirdropUrl = "/api/checkAirdrop";
 
-    // Req body for token and ETH
-    const requests = [{ userWallet: userAddr, tokenAddr: tokenAddr }];
+    // Request body for checking Faucet status
+    const req = {
+      id
+    };
+
+    setFaucetStatus("loading");
+    setFError(undefined);
+
+    try {
+      const response = await axios.post(checkAirdropUrl, req);
+      console.log("Airdrop status response", response);
+      if (response.status === 200) {
+        setFaucetStatus("success");
+        toast.dismiss(faucet_event.status_loading);
+
+        if ((response.data.status as boolean) === true) {
+          notification.success({
+            id: faucet_event.status_success,
+            title: "Test tokens and ETH transferred successfully"
+          });
+          refetchBalance();
+          addToken();
+        } else {
+          notification.info({
+            id: faucet_event.status_success,
+            title: `Faucet request is in Queue`,
+            description: "Your Tokens will be added"
+          });
+          addToken();
+        }
+      } else {
+        throw new Error(`Airdrop status check failed: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Faucet Airdrop error:", error);
+      if (error instanceof AxiosError) {
+        setFError(error.response?.data?.error || error.message);
+      } else {
+        setFError(error instanceof Error ? error.message : String(error));
+      }
+      setFaucetStatus("error");
+    }
+  }
+
+  async function callFaucetAirdrop(userAddr: Address) {
+    const airdropUrl = "/api/airdrop";
+
+    // Request body for all tokens
+    const req = { userWallet: userAddr };
 
     setTxStatus("loading");
     setError(undefined);
 
     try {
-      const responses = await Promise.all(requests.map((req) => axios.post(apiUrl, req)));
-
-      // Check if all requests were successful
-      if (responses.every((res) => res.status === 200)) {
+      const response = await axios.post(airdropUrl, req);
+      console.log("Airdrop response", response);
+      if (response.status === 200) {
         setTxStatus("success");
-        refetchBalance();
-        addToken();
+        // refetchBalance();
+        // addToken();
+        const respId = response.data.id as string;
+        await checkFaucetAirdrop(respId);
       } else {
-        const failedResponses = responses.filter((res) => res.status !== 200);
-        throw new Error(
-          `Airdrop request failed: ${failedResponses.map((res) => res.status).join(",")}`
-        );
+        throw new Error(`Airdrop request failed: ${response.status}`);
       }
     } catch (error) {
-      console.error("Faucet airdrop error:", error);
+      console.error("Faucet airdrop call error:", error);
       if (error instanceof AxiosError) {
         setError(error.response?.data?.error || error.message);
       } else {
@@ -140,13 +187,39 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
         break;
       case "success":
         toast.dismiss(faucet_event.loading);
-        notification.success({
-          id: "facuet-tx-success",
-          title: "Test tokens and ETH transferred successfully"
-        });
+        // notification.success({
+        //   id: "facuet-tx-success",
+        //   title: "Faucet request sent successfully"
+        // });
         break;
       case "error":
         toast.dismiss(faucet_event.loading);
+        notification.error({
+          id: faucet_event.error,
+          title: "Faucet request failed",
+          description: error || "An unknown error occurred"
+        });
+        break;
+    }
+  }, [txStatus, error]);
+
+  useEffect(() => {
+    switch (faucetStatus) {
+      case "loading":
+        notification.loading({
+          id: faucet_event.status_loading,
+          title: "Faucet tokens request in Queue..."
+        });
+        break;
+      // case "success":
+      //   toast.dismiss(faucet_event.loading);
+      //   notification.success({
+      //     id: "facuet-tx-success",
+      //     title: "Test tokens and ETH transferred successfully"
+      //   });
+      //   break;
+      case "error":
+        toast.dismiss(faucet_event.status_error);
         notification.error({
           id: faucet_event.error,
           title: "Faucet transaction failed",
@@ -154,7 +227,7 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
         });
         break;
     }
-  }, [txStatus, error]);
+  }, [faucetStatus, fError]);
 
   return (
     <Modal
@@ -274,7 +347,7 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
           disabled={txStatus === "loading" || !isConnected || !address}
           className="w-full rounded-[4px] font-sans-ibm-plex"
           onClick={() => {
-            callFaucetAirdrop(address!, selectedToken.address);
+            callFaucetAirdrop(address!);
           }}
         >
           {/* {isTxLoading || isLoading ? ( */}
