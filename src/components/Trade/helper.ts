@@ -32,7 +32,10 @@ export const notificationId = {
     default: "faucet",
     loading: "faucet_loading",
     error: "faucet_error",
-    success: "faucet_success"
+    success: "faucet_success",
+    status_loading: "faucet_status_loading",
+    status_error: "faucet_status_error",
+    status_success: "faucet_status_success",
   },
   addLiq_event: {
     default: "addLiq",
