@@ -310,6 +310,7 @@ const ShortTrade: FC<PropsType> = memo(({ potentia }) => {
 
   // Condition to disable Inputting values
   const disabledInput = !userBalance || userBalance?.formatted === "0" || !isConnected;
+  const minimumCheck = !minQuantityCheck && parseFloat(quantity) !== 0 && quantity !== "";
 
   return (
     <div className="flex flex-col font-normal text-xs/[14px] gap-2 py-6 px-4 2xl:py-[24px] 2xl:px-[16px]">
@@ -343,8 +344,8 @@ const ShortTrade: FC<PropsType> = memo(({ potentia }) => {
         {/* Input Box: Token Input and Selection */}
         <div
           className={cn(
-            "inline-flex w-full justify-between items-center border py-[8px] px-[12px] bg-transparent",
-            balanceExceedError ? "border-[#FF615C]" : "border-[#1F2D3F]"
+            "inline-flex w-full justify-between items-center ring-1 py-[8px] px-[12px] bg-transparent",
+            balanceExceedError || minimumCheck ? "ring-[#FF615C]" : "ring-[#1F2D3F]"
           )}
         >
           <div className="flex flex-col gap-1 items-start w-full max-w-full">
@@ -372,6 +373,11 @@ const ShortTrade: FC<PropsType> = memo(({ potentia }) => {
         </div>
         {balanceExceedError && (
           <p className="font-normal text-xs/[14px] text-[#FF615C]">Insufficient Funds</p>
+        )}
+        {minimumCheck && (
+          <p className="font-normal text-xs/[14px] text-[#FF615C]">
+            Minimum 0.001 {selectedPool()?.underlying} required
+          </p>
         )}
       </form>
       {/* Slider Component */}
