@@ -322,8 +322,8 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
       accessorKey: "size",
       header: () => <span>Size</span>,
       cell: ({ row }) => {
-        const { action, oraclePrice, underlying, size, pool } = row.original;
-        const poolData = poolMap?.[pool];
+        const { action, oraclePrice, underlying, size, poolAddress } = row.original;
+        const poolData = poolMap?.[poolAddress];
 
         const tokenSize = formatLimit(
           formatNumber(getDecimalAdjusted(size.toString(), poolData?.decimals)),

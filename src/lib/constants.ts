@@ -35,7 +35,7 @@ export const navigation: {
   href: string;
   target: string;
 }[] = [
-  { name: "Trades", href: "/", target: "" },
+  { name: "Trade", href: "/", target: "" },
   { name: "Pools", href: "/pools", target: "" }
 ];
 
