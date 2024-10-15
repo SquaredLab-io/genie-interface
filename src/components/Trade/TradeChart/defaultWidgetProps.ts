@@ -7,9 +7,6 @@ import {
 export const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
   interval: "60" as ResolutionString,
   timeframe: "1D",
-  // time_scale: {
-  //   min_bar_spacing: 10
-  // },
   library_path: "/static/charting_library/",
   timezone: "Etc/UTC",
   locale: "en",
@@ -22,7 +19,19 @@ export const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
   symbol_search_request_delay: 0,
   auto_save_delay: 5,
   theme: "dark",
-  toolbar_bg: "#0C1820"
+  toolbar_bg: "#0C1820",
+  disabled_features: [
+    "use_localstorage_for_settings",
+    "header_symbol_search",
+    "symbol_search_hot_key",
+    "symbol_info"
+  ],
+  enabled_features: ["study_templates", "timezone_menu"],
+  overrides: {
+    "paneProperties.background": "#0C1820",
+    "paneProperties.backgroundType": "solid"
+  },
+  debug: false
   // favorites: {
   //   intervals: ["1S", "1", "1D"] as ResolutionString[],
   //   chartTypes: ["Area", "Candles"]
