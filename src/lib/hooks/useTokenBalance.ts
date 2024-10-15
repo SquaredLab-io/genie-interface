@@ -58,10 +58,11 @@ const useTokenBalance = ({
     queryKey: ["tokenBalance", chainId, address, token],
     queryFn: getBalance,
     enabled: isConnected && !!token && !paused,
-    refetchInterval: 20000,
+    refetchInterval: 10000,
     staleTime: 5000,
-    gcTime: 20000,
+    gcTime: 10000,
     refetchOnReconnect: true,
+    refetchOnMount: true,
     retry: 4
   });
 
