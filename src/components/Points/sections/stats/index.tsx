@@ -38,10 +38,12 @@ const GpointsAndReferals = ({ points }: { points: UserPointsType }) => {
     <div className="flex flex-col gap-y-10 mt-10">
       <div className="flex flex-col gap-y-2 items-start">
         <h1 className="font-medium text-2xl/9">
-          <span className="heading-gradient">Gpoints</span> And Referals
+          <span className="heading-gradient">Gpoints</span>
+          {/* And Referals */}
         </h1>
         <p className="font-normal text-base/[22px] text-[#98B0C1]">
-          Use Genie And Invite Friends To Earn GPoints
+          Use Genie To Earn GPoints
+          {/* Use Genie And Invite Friends To Earn GPoints */}
         </p>
       </div>
       {/* Gpoints and Referals Cards */}
