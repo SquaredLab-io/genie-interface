@@ -71,7 +71,7 @@ const PoolsData = () => {
   return (
     <div className="py-10">
       <Tabs value={currentTab} onValueChange={setCurrentTab as (value: string) => void}>
-        <div className="inline-flex items-center justify-between w-full font-medium text-sm/5 py-4 border-t border-b border-secondary-gray">
+        <div className="inline-flex items-center justify-between w-full font-medium text-sm/5 py-4 border-t border-b border-secondary-gray mb-6">
           <TabsList className="inline-flex">
             <TabsTrigger value={TableOptions.all} className={cn(activeTabStyle)}>
               All Pools

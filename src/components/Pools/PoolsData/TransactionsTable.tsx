@@ -45,7 +45,7 @@ const TransactionsTable = <TData, TValue>({
 
   return (
     <Table>
-      <TableHeader className="font-sans-ibm-plex">
+      <TableHeader className="font-sans-ibm-plex pt-6">
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map((header) => {

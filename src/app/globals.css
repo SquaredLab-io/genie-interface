@@ -24,17 +24,17 @@
     --chart-5: 340 75% 55%;
   }
 
-  tbody > tr {
+  tbody > tr.leaderboard {
     border-bottom: 8px solid transparent;
     /* margin-bottom: 8px; */
   }
 
-  tbody > tr > td:first-child {
+  tbody > tr.leaderboard > td:first-child {
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
   }
 
-  tbody > tr > td:last-child {
+  tbody > tr.leaderboard > td:last-child {
     border-top-right-radius: 12px;
     border-bottom-right-radius: 12px;
   }
