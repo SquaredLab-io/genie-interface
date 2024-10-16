@@ -47,7 +47,7 @@ export function allPoolsColumnDef(
       id: "assets",
       accessorKey: "assets",
       header: () => (
-        <div className="pl-[18px] pt-6">
+        <div className="pl-[18px]">
           <span>Asset</span>
         </div>
       ),
@@ -109,7 +109,7 @@ export function allPoolsColumnDef(
     {
       id: "tvl",
       accessorKey: "tvl",
-      header: () => <span className="pl-[18px] pt-6">TVL</span>,
+      header: () => <span className="pl-[18px]">TVL</span>,
       cell: ({ row }) => {
         const { tvl, oraclePrice, underlying } = row.original;
         // tvl and oraclePrice comes in 18 decimals for all
@@ -119,7 +119,7 @@ export function allPoolsColumnDef(
     {
       id: "volume",
       accessorKey: "volume",
-      header: () => <span className="pl-[18px] pt-6">30D Volume</span>,
+      header: () => <span className="pl-[18px]">30D Volume</span>,
       cell: ({ row }) => {
         const { vol, oraclePrice, underlyingDecimals } = row.original;
         const growth = parseFloat("0");
@@ -203,7 +203,7 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
     {
       accessorKey: "assets",
       header: () => (
-        <div className="pl-[18px] pt-6">
+        <div className="pl-[18px]">
           <span>Asset</span>
         </div>
       ),
@@ -443,11 +443,7 @@ export function transactionsColumnDef(): ColumnDef<Tx>[] {
     {
       id: "assets",
       accessorKey: "assets",
-      header: () => (
-        <div className="pl-[18px] pt-6">
-          <span>Asset</span>
-        </div>
-      ),
+      header: () => <span className="pl-[18px]">Asset</span>,
       cell: ({ row }) => {
         const { underlying, power } = row.original;
         const underlyingTokens = [underlying.symbol, "USDC"];
@@ -497,7 +493,7 @@ export function transactionsColumnDef(): ColumnDef<Tx>[] {
     {
       id: "txn",
       accessorKey: "hash",
-      header: () => <span className="pt-6">Txn</span>,
+      header: () => <span>Txn</span>,
       cell: ({ row }) => {
         const { hash, action } = row.original;
         return (
@@ -511,7 +507,7 @@ export function transactionsColumnDef(): ColumnDef<Tx>[] {
     {
       id: "lp",
       accessorKey: "lp",
-      header: () => <span className="pt-6">LP Amount</span>,
+      header: () => <span>LP Amount</span>,
       cell: ({ row }) => {
         const { lp, underlying } = row.original;
         return <span>{formatNumber(getDecimalAdjusted(lp, 18))}</span>;

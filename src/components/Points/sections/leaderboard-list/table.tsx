@@ -67,7 +67,7 @@ const LeaderboardTable = <TData, TValue>({
               return (
                 <TableRow
                   key={row.id}
-                  className="bg-[#0F212B] hover:bg-[#142F41] rounded-xl transition-colors duration-200 ease-linear cursor-pointer"
+                  className="bg-[#0F212B] hover:bg-[#142F41] rounded-xl transition-colors duration-200 ease-linear cursor-pointer leaderboard"
                   onClick={() => {
                     router.push(`/points/user?address=${id}`);
                   }}
