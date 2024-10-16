@@ -4,7 +4,11 @@ import { PoolInfo } from "@squaredlab-io/sdk";
 
 export const SUPPORTED_POOLS = [
   "0x050Ac74c2Fe33D932ef30f7c481e8d9d029568D4", // WETH^2
-  "0x9cdAA94733a682013Ff8AfD72BA59FB63619C98d" // WETH^8
+  "0x9cdAA94733a682013Ff8AfD72BA59FB63619C98d", // WETH^8
+  "0x878642cfd3aDDE6954Bea080b00b38bcA97EFdD8", // BTC^16
+  "0x3c87B1D867e5F7f4b48e871Fa17408FC7Cf4bd34", // BTC^8
+  "0x717db364b86Ba0186e73227135E135271740393a", // BTC^2
+  "0xcfc68D9A8893ee80652C77e73d9395e0dfc98e93" // BTC^4
 ];
 
 export const getSupportedPools = (pools: PoolInfo[] | undefined) => {
