@@ -57,7 +57,7 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
     retry: 4,
     refetchOnReconnect: !closePopoverDisabled,
     refetchOnMount: !closePopoverDisabled,
-    refetchOnWindowFocus: !closePopoverDisabled
+    refetchOnWindowFocus: false
   });
 
   return {
