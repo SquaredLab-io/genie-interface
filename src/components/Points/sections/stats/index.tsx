@@ -5,7 +5,7 @@ import { formatTradeValue } from "../helper";
 import ConnectWallet from "@components/common/ConnectWallet";
 import { RewardHistoryType, useRewardHistory } from "@lib/hooks/useRewardHistory";
 
-const Stats = () => {
+export const Stats = () => {
   const { isConnected, address } = useAccount();
 
   const points = useUserPoints({
@@ -13,7 +13,7 @@ const Stats = () => {
   });
   const rewards = useRewardHistory({ address });
 
-  if (!isConnected) {
+if (!isConnected) {
     return (
       <div className="flex flex-col items-center w-full text-center gap-5 py-20">
         <span className="font-normal text-base/7 text-[#B5B5B5]">
@@ -33,7 +33,7 @@ const Stats = () => {
   );
 };
 
-const GpointsAndReferals = ({ points }: { points: UserPointsType }) => {
+export const GpointsAndReferals = ({ points }: { points: UserPointsType }) => {
   const { userPointsData, isFetching, isPending } = points;
   const userRank = userPointsData?.userPoints;
   const loading = isPending || isFetching;
@@ -67,7 +67,7 @@ const GpointsAndReferals = ({ points }: { points: UserPointsType }) => {
   );
 };
 
-const UserActivity = ({
+export const UserActivity = ({
   points,
   rewards
 }: {
@@ -99,7 +99,18 @@ const UserActivity = ({
         <StatsCard
           label="Total Profit/loss"
           value={formatTradeValue(isFetching || isPending, userRank?.profit)}
-          icon="/icons/PnlIcon.svg"
+          icon={
+            parseFloat(userRank?.profit ?? "0") >= 0
+              ? "/icons/PnlPositiveIcon.svg"
+              : "/icons/PnlNegativeIcon.svg"
+          }
+          textStyle={
+            isFetching || isPending || !userRank
+              ? "text-white"
+              : parseFloat(userRank.profit) > 0
+                ? "text-positive-points"
+                : "text-negative-points"
+          }
         />
         <StatsCard
           label="Avg Trade Size"
@@ -116,6 +127,7 @@ const UserActivity = ({
             (rewardHistory?.max ?? 0).toString()
           )}
           icon="/icons/CheckCircleIcon.svg"
+          textStyle="text-positive-points"
         />
         <StatsCard
           label="Worst Trade"
@@ -124,6 +136,7 @@ const UserActivity = ({
             (rewardHistory?.min ?? 0).toString()
           )}
           icon="/icons/WorstIcon.svg"
+          textStyle="text-negative-points"
         />
       </div>
     </div>
@@ -131,7 +144,7 @@ const UserActivity = ({
 };
 
 // No Data
-const RewardHistory = () => (
+export const RewardHistory = () => (
   <div className="flex flex-col gap-y-10 mt-10">
     <div className="flex flex-col gap-y-2 items-start">
       <h1 className="font-medium text-2xl/9">
