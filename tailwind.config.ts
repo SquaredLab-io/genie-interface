@@ -67,7 +67,7 @@ const config = {
         "tab-blue": "#00A0FC",
         "primary-cyan": "#00CCFF",
         "off-white": "#C9C9C9",
-        "error-red": "#FF0000"
+        "error-red": "#FF615C"
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",

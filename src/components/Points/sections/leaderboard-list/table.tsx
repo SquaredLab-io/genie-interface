@@ -41,7 +41,7 @@ const LeaderboardTable = <TData, TValue>({
 
   return (
     <div className="w-full overflow-auto mb-1">
-      <Table>
+      <Table className="leaderboard">
         <TableHeader
           className={cn("font-sans-ibm-plex", !isRank && isConnected && "hidden")}
         >
