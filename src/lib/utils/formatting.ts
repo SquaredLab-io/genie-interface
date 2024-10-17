@@ -157,6 +157,17 @@ export function formatTimestamp(timestamp: string): {
   return { date, time };
 }
 
+export function timestampToDate(timestamp: number): string {
+  const dateObj = new Date(timestamp * 1000);
+
+  // Format date
+  const day = String(dateObj.getDate()).padStart(2, "0");
+  const month = String(dateObj.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
+  const year = dateObj.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}
+
 /**
  * To deprecate
  */

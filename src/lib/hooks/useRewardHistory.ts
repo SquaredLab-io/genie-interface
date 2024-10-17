@@ -27,10 +27,10 @@ export function useRewardHistory({
   const { potentia } = usePotentiaSdk();
 
   const getRewardHistory = async () => {
-    if (!potentia?.ponderClient || !address) return undefined;
-
     try {
-      return await potentia.ponderClient.getRewardHistory(address);
+      const _rew = await potentia?.ponderClient.getRewardHistory(address!);
+      console.log('_rew', _rew);
+      return _rew;
     } catch (error) {
       console.error("Failed to fetch reward history\n", error);
     }
