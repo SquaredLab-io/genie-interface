@@ -19,8 +19,10 @@ const PointsPopover: FC<PointsPopoverProps> = ({
   isOpen,
   onOpenChange
 }) => {
-  const { userPoints, isFetching, isPending } = points;
+  const { userPointsData, isFetching, isPending } = points;
+  const userPoints = userPointsData?.userPoints;
   const loading = isFetching || isPending;
+
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange} modal={true}>
       <PopoverTrigger asChild className="min-w-fit z-50">

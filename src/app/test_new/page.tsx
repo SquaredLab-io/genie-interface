@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useAccount } from "wagmi";
 import { useIsClient, useWindowSize } from "usehooks-ts";
 import _useTokenBalance from "@lib/hooks/useTokenBalance";
@@ -8,7 +9,6 @@ import { usePoolsStore } from "@store/poolsStore";
 import { _getDecimalAdjusted } from "@lib/utils/formatting";
 import MobileInfoScreen from "@components/common/MobileInfoScreen";
 import Loading from "@app/loading";
-import { useMemo } from "react";
 
 export default function TestNew() {
   const { width } = useWindowSize();

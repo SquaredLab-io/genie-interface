@@ -1,17 +1,19 @@
 "use client";
 
-import { useUserPoints } from "@lib/hooks/useUserPoints";
-import { useMemo, useState } from "react";
-import { useAccount } from "wagmi";
-import PointsPopover from "./points-popover";
+import { memo, useMemo, useState } from "react";
 import Image from "next/image";
+import { useAccount } from "wagmi";
+import { useUserPoints } from "@lib/hooks/useUserPoints";
+import PointsPopover from "./points-popover";
 
 const PointsNavigation = () => {
   const [isPointsPopoverOpen, setIsPointsPopoverOpen] = useState(false);
   const { isConnected, address } = useAccount();
-  const { userPoints, isFetching, isPending, refetch } = useUserPoints({
+  const { userPointsData, isFetching, isPending, refetch } = useUserPoints({
     address
   });
+
+  const userPoints = userPointsData?.userPoints;
 
   const displayPoints = useMemo(() => {
     if (!userPoints && (isFetching || isPending)) {
@@ -22,7 +24,7 @@ const PointsNavigation = () => {
 
   return isConnected ? (
     <PointsPopover
-      points={{ userPoints, isFetching, isPending, refetch }}
+      points={{ userPointsData, isFetching, isPending, refetch }}
       isOpen={isPointsPopoverOpen}
       onOpenChange={setIsPointsPopoverOpen}
     >
@@ -48,4 +50,4 @@ const PointsNavigation = () => {
   );
 };
 
-export default PointsNavigation;
+export default memo(PointsNavigation);
