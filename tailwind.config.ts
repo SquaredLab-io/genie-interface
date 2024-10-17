@@ -60,6 +60,8 @@ const config = {
         "header-gray": "#5F7183",
         "negative-red": "#CF1800",
         "positive-green": "#44BD22",
+        "positive-points": "#32CD32",
+        "negative-points": "#FF3318",
         "primary-green": "#27AE60",
         "primary-blue": "#01A1FF",
         "secondary-blue": "#0099FF",
