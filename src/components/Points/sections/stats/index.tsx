@@ -4,6 +4,8 @@ import { UserPointsType, useUserPoints } from "@lib/hooks/useUserPoints";
 import { formatTradeValue } from "../helper";
 import ConnectWallet from "@components/common/ConnectWallet";
 import { RewardHistoryType, useRewardHistory } from "@lib/hooks/useRewardHistory";
+import RewardsTable from "./rewards-table";
+import { rewardsColumns } from "./columns";
 
 export const Stats = () => {
   const { isConnected, address } = useAccount();
@@ -13,7 +15,7 @@ export const Stats = () => {
   });
   const rewards = useRewardHistory({ address });
 
-if (!isConnected) {
+  if (!isConnected) {
     return (
       <div className="flex flex-col items-center w-full text-center gap-5 py-20">
         <span className="font-normal text-base/7 text-[#B5B5B5]">
@@ -28,7 +30,7 @@ if (!isConnected) {
     <div className="py-4 flex flex-col gap-y-14">
       <GpointsAndReferals points={points} />
       <UserActivity points={points} rewards={rewards} />
-      {/* <RewardHistory /> */}
+      <RewardHistory rewards={rewards} />
     </div>
   );
 };
@@ -53,12 +55,12 @@ export const GpointsAndReferals = ({ points }: { points: UserPointsType }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         <StatsCard
           label="Total Gpoints"
-          value={loading ? "..." : userRank ? userRank.points.toString()! : "NA"}
+          value={loading ? "..." : userRank ? userRank.points.toString() : "NA"}
           icon="/icons/PointsIcon.svg"
         />
         <StatsCard
           label="Your Rank"
-          value={loading ? "..." : userRank ? userRank.rank.toString()! : "NA"}
+          value={loading ? "..." : userRank ? userRank.rank.toString() : "NA"}
           icon="/icons/RankIcon.svg"
         />
         {/* <StatsCard label="Total Referrals" value="2" icon="/icons/ReferralIcon.svg" /> */}
@@ -69,10 +71,12 @@ export const GpointsAndReferals = ({ points }: { points: UserPointsType }) => {
 
 export const UserActivity = ({
   points,
-  rewards
+  rewards,
+  isUser = false
 }: {
   points: UserPointsType;
   rewards: RewardHistoryType;
+  isUser?: boolean;
 }) => {
   const { userPointsData, isFetching, isPending } = points;
   const { rewardHistory, isFetching: isRFetching, isPending: isRPending } = rewards;
@@ -83,10 +87,10 @@ export const UserActivity = ({
     <div className="flex flex-col gap-y-10 mt-10">
       <div className="flex flex-col gap-y-2 items-start">
         <h1 className="font-medium text-2xl/9">
-          <span className="heading-gradient">Your</span> Activity
+          {!isUser && <span className="heading-gradient">Your</span>} Activity
         </h1>
         <p className="font-normal text-base/[22px] text-[#98B0C1]">
-          Your adventures on Genie are summarised here
+          {!isUser && "Your"} adventures on Genie are summarised here
         </p>
       </div>
       {/* Gpoints and Referals Cards */}
@@ -143,24 +147,32 @@ export const UserActivity = ({
   );
 };
 
-// No Data
-export const RewardHistory = () => (
-  <div className="flex flex-col gap-y-10 mt-10">
-    <div className="flex flex-col gap-y-2 items-start">
-      <h1 className="font-medium text-2xl/9">
-        <span className="heading-gradient">Reward</span> History
-      </h1>
-      <p className="font-normal text-base/[22px] text-[#98B0C1]">
-        The real reason you earn the Gpoints
-      </p>
+export const RewardHistory = ({
+  rewards,
+  isUser = false
+}: {
+  rewards: RewardHistoryType;
+  isUser?: boolean;
+}) => {
+  const { rewardHistory, isFetching, isPending } = rewards;
+
+  return (
+    <div className="w-full mt-10">
+      <div className="flex flex-col gap-y-2 items-start">
+        <h1 className="font-medium text-2xl/9">
+          {!isUser && <span className="heading-gradient">Reward</span>} History
+        </h1>
+        <p className="font-normal text-base/[22px] text-[#98B0C1]">
+          The real reason you earn the Gpoints
+        </p>
+      </div>
+      <RewardsTable
+        data={rewardHistory?.rewardHistory ?? []}
+        columns={rewardsColumns}
+        loading={isFetching || isPending}
+      />
     </div>
-    {/* Gpoints and Referals Cards */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-      <StatsCard label="Total Gpoints" value="-" icon="/icons/PointsIcon.svg" />
-      <StatsCard label="Your Rank" value="-" icon="/icons/RankIcon.svg" />
-      <StatsCard label="Total Referrals" value="-" icon="/icons/ReferralIcon.svg" />
-    </div>
-  </div>
-);
+  );
+};
 
 export default Stats;
