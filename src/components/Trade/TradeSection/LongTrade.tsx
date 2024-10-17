@@ -336,7 +336,7 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
         <div
           className={cn(
             "inline-flex w-full justify-between items-center ring-1 py-[8px] px-[12px] bg-transparent",
-            balanceExceedError || minimumCheck ? "ring-[#FF615C]" : "ring-[#1F2D3F]"
+            balanceExceedError || minimumCheck ? "ring-error-red" : "ring-secondary-gray"
           )}
         >
           <div className="flex flex-col gap-1 items-start w-full max-w-full">
