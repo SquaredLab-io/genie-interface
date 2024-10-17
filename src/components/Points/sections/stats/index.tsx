@@ -3,6 +3,7 @@ import StatsCard from "./stats-card";
 import { UserPointsType, useUserPoints } from "@lib/hooks/useUserPoints";
 import { formatTradeValue } from "../helper";
 import ConnectWallet from "@components/common/ConnectWallet";
+import { RewardHistoryType, useRewardHistory } from "@lib/hooks/useRewardHistory";
 
 const Stats = () => {
   const { isConnected, address } = useAccount();
@@ -10,6 +11,7 @@ const Stats = () => {
   const points = useUserPoints({
     address
   });
+  const rewards = useRewardHistory({ address });
 
   if (!isConnected) {
     return (
@@ -25,14 +27,15 @@ const Stats = () => {
   return (
     <div className="py-4 flex flex-col gap-y-14">
       <GpointsAndReferals points={points} />
-      <UserActivity points={points} />
+      <UserActivity points={points} rewards={rewards} />
       {/* <RewardHistory /> */}
     </div>
   );
 };
 
 const GpointsAndReferals = ({ points }: { points: UserPointsType }) => {
-  const { userPoints, isFetching, isPending } = points;
+  const { userPointsData, isFetching, isPending } = points;
+  const userRank = userPointsData?.userPoints;
   const loading = isPending || isFetching;
   return (
     <div className="flex flex-col gap-y-10 mt-10">
@@ -50,12 +53,12 @@ const GpointsAndReferals = ({ points }: { points: UserPointsType }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         <StatsCard
           label="Total Gpoints"
-          value={loading ? "..." : userPoints ? userPoints.points.toString()! : "NA"}
+          value={loading ? "..." : userRank ? userRank.points.toString()! : "NA"}
           icon="/icons/PointsIcon.svg"
         />
         <StatsCard
           label="Your Rank"
-          value={loading ? "..." : userPoints ? userPoints.rank.toString()! : "NA"}
+          value={loading ? "..." : userRank ? userRank.rank.toString()! : "NA"}
           icon="/icons/RankIcon.svg"
         />
         {/* <StatsCard label="Total Referrals" value="2" icon="/icons/ReferralIcon.svg" /> */}
@@ -64,8 +67,18 @@ const GpointsAndReferals = ({ points }: { points: UserPointsType }) => {
   );
 };
 
-const UserActivity = ({ points }: { points: UserPointsType }) => {
-  const { userPoints, isFetching, isPending } = points;
+const UserActivity = ({
+  points,
+  rewards
+}: {
+  points: UserPointsType;
+  rewards: RewardHistoryType;
+}) => {
+  const { userPointsData, isFetching, isPending } = points;
+  const { rewardHistory, isFetching: isRFetching, isPending: isRPending } = rewards;
+
+  const userRank = userPointsData?.userPoints;
+  const avgTradeSize = userPointsData?.avgTradeSize;
   return (
     <div className="flex flex-col gap-y-10 mt-10">
       <div className="flex flex-col gap-y-2 items-start">
@@ -80,27 +93,38 @@ const UserActivity = ({ points }: { points: UserPointsType }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         <StatsCard
           label="Total Volume Traded"
-          value={formatTradeValue(isFetching || isPending, userPoints?.volume)}
+          value={formatTradeValue(isFetching || isPending, userRank?.volume)}
           icon="/icons/VolumeIcon.svg"
         />
         <StatsCard
           label="Total Profit/loss"
-          value={formatTradeValue(isFetching || isPending, userPoints?.profit)}
+          value={formatTradeValue(isFetching || isPending, userRank?.profit)}
           icon="/icons/PnlIcon.svg"
         />
-        {/* <StatsCard label="Avg Trade Size" value={"-"} icon="/icons/TradeSizeIcon.svg" />
+        <StatsCard
+          label="Avg Trade Size"
+          value={formatTradeValue(
+            isFetching || isPending,
+            (avgTradeSize ?? 0)?.toString()
+          )}
+          icon="/icons/TradeSizeIcon.svg"
+        />
         <StatsCard
           label="Best Trade"
-          value={"-"}
-          // value={formatTradeValue(isFetching || isPending, "1860.2345")}
+          value={formatTradeValue(
+            isRFetching || isRPending,
+            (rewardHistory?.max ?? 0).toString()
+          )}
           icon="/icons/CheckCircleIcon.svg"
         />
         <StatsCard
           label="Worst Trade"
-          value={"-"}
-          // value={formatTradeValue(isFetching || isPending, "-1860.2345")}
+          value={formatTradeValue(
+            isRFetching || isRPending,
+            (rewardHistory?.min ?? 0).toString()
+          )}
           icon="/icons/WorstIcon.svg"
-        /> */}
+        />
       </div>
     </div>
   );
