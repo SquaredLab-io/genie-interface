@@ -8,10 +8,11 @@ const LeaderboardList = () => {
   const { isConnected, address } = useAccount();
   const { ranks, isFetching, isPending } = useLeaderboard();
   const {
-    userPoints,
+    userPointsData,
     isFetching: isPointsFetching,
     isPending: isUserPending
   } = useUserPoints({ address });
+  const userPoints = userPointsData?.userPoints;
 
   return (
     <div className="py-4 w-full flex flex-col gap-10">
