@@ -1,7 +1,10 @@
 import { useWalletClient } from "wagmi";
 import { Address } from "viem";
 import { QueryObserverResult, RefetchOptions, useQuery } from "@tanstack/react-query";
-import { UserPointRank } from "@squaredlab-io/sdk/src/interfaces/ponder.interface";
+import {
+  RewardHistoryReturnType,
+  UserPointRank
+} from "@squaredlab-io/sdk/src/interfaces/ponder.interface";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { REFETCH_INTERVAL } from "@lib/constants";
 
@@ -10,43 +13,54 @@ interface PropsType {
   paused?: boolean;
 }
 
-export interface UserPointsType {
+export interface UserPointsData {
   userPoints: UserPointRank | undefined;
+  avgTradeSize: number | undefined;
+}
+
+export interface UserPointsType {
+  userPointsData: UserPointsData | undefined;
   isFetching: boolean;
   isPending: boolean;
   refetch: (
     options?: RefetchOptions
-  ) => Promise<QueryObserverResult<UserPointRank | undefined, Error>>;
+  ) => Promise<QueryObserverResult<UserPointsData | undefined, Error>>;
 }
 
 export function useUserPoints({ address, paused = false }: PropsType): UserPointsType {
   const { status } = useWalletClient();
   const { potentia } = usePotentiaSdk();
 
-  const getUserPoints = async () => {
+  const getUserPointsData = async () => {
+    if (!potentia?.ponderClient || !address) return undefined;
+
     try {
-      return await potentia?.ponderClient.getUserPoints(address!);
+      const [userPoints, avgTradeSize] = await Promise.all([
+        potentia.ponderClient.getUserPoints(address),
+        potentia.ponderClient.getTradeSizes(address)
+      ]);
+      return {
+        userPoints,
+        avgTradeSize
+      };
     } catch (error) {
-      console.error("Failed to fetch user points\n", error);
+      console.error("Failed to fetch user points data\n", error);
     }
   };
 
-  const { data, isFetching, isPending, refetch, isError, error } = useQuery({
-    queryKey: ["userPoints", address], // userpoints are only unique based on addresses
-    queryFn: getUserPoints,
+  const { data, isFetching, isPending, refetch } = useQuery({
+    queryKey: ["userPointsData", address],
+    queryFn: getUserPointsData,
     refetchInterval: REFETCH_INTERVAL,
     enabled:
       !paused && potentia !== undefined && address !== undefined && status === "success",
     staleTime: 10000,
     gcTime: 30000,
-    retry: 4,
-    refetchOnReconnect: true,
-    refetchOnMount: true,
-    refetchOnWindowFocus: false
+    retry: 4
   });
 
   return {
-    userPoints: data,
+    userPointsData: data,
     isFetching,
     isPending,
     refetch

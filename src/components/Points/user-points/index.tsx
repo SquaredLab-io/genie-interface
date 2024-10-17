@@ -2,6 +2,7 @@ import { Address } from "viem";
 import { UserPointsType, useUserPoints } from "@lib/hooks/useUserPoints";
 import StatsCard from "../sections/stats/stats-card";
 import { formatTradeValue } from "../sections/helper";
+import { RewardHistoryType, useRewardHistory } from "@lib/hooks/useRewardHistory";
 
 interface Props {
   address: Address | undefined;
@@ -9,18 +10,20 @@ interface Props {
 
 const UserPoints = ({ address }: Props) => {
   const points = useUserPoints({ address });
+  const rewards = useRewardHistory({ address });
 
   return (
     <div className="py-4 flex flex-col gap-y-14">
       <GpointsAndReferals points={points} />
-      <UserActivity points={points} />
+      <UserActivity points={points} rewards={rewards} />
       {/* <RewardHistory /> */}
     </div>
   );
 };
 
 const GpointsAndReferals = ({ points }: { points: UserPointsType }) => {
-  const { userPoints, isFetching, isPending } = points;
+  const { userPointsData, isFetching, isPending } = points;
+  const userPoints = userPointsData?.userPoints;
   const loading = isPending || isFetching;
   return (
     <div className="flex flex-col gap-y-10 mt-10">
@@ -52,8 +55,18 @@ const GpointsAndReferals = ({ points }: { points: UserPointsType }) => {
   );
 };
 
-const UserActivity = ({ points }: { points: UserPointsType }) => {
-  const { userPoints, isFetching, isPending } = points;
+const UserActivity = ({
+  points,
+  rewards
+}: {
+  points: UserPointsType;
+  rewards: RewardHistoryType;
+}) => {
+  const { userPointsData, isFetching, isPending } = points;
+  const { rewardHistory, isFetching: isRFetching, isPending: isRPending } = rewards;
+
+  const userPoints = userPointsData?.userPoints;
+  const avgTradeSize = userPointsData?.avgTradeSize;
   return (
     <div className="flex flex-col gap-y-10 mt-10">
       <div className="flex flex-col gap-y-2 items-start">
@@ -74,19 +87,30 @@ const UserActivity = ({ points }: { points: UserPointsType }) => {
           value={formatTradeValue(isFetching || isPending, userPoints?.profit)}
           icon="/icons/PnlIcon.svg"
         />
-        {/* <StatsCard label="Avg Trade Size" value={"-"} icon="/icons/TradeSizeIcon.svg" />
+        <StatsCard
+          label="Avg Trade Size"
+          value={formatTradeValue(
+            isFetching || isPending,
+            (avgTradeSize ?? 0)?.toString()
+          )}
+          icon="/icons/TradeSizeIcon.svg"
+        />
         <StatsCard
           label="Best Trade"
-          value={"-"}
-          // value={formatTradeValue(isFetching || isPending, "1860.2345")}
+          value={formatTradeValue(
+            isRFetching || isRPending,
+            (rewardHistory?.max ?? 0).toString()
+          )}
           icon="/icons/CheckCircleIcon.svg"
         />
         <StatsCard
           label="Worst Trade"
-          value={"-"}
-          // value={formatTradeValue(isFetching || isPending, "-1860.2345")}
+          value={formatTradeValue(
+            isRFetching || isRPending,
+            (rewardHistory?.min ?? 0).toString()
+          )}
           icon="/icons/WorstIcon.svg"
-        /> */}
+        />
       </div>
     </div>
   );
