@@ -57,11 +57,9 @@ const UserActivity = ({ points }: { points: UserPointsType }) => {
   return (
     <div className="flex flex-col gap-y-10 mt-10">
       <div className="flex flex-col gap-y-2 items-start">
-        <h1 className="font-medium text-2xl/9">
-          <span className="heading-gradient">Your</span> Activity
-        </h1>
+        <h1 className="font-medium text-2xl/9">Activity</h1>
         <p className="font-normal text-base/[22px] text-[#98B0C1]">
-          Your adventures on Genie are summarised here
+          Adventures on Genie are summarised here
         </p>
       </div>
       {/* Gpoints and Referals Cards */}

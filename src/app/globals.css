@@ -24,6 +24,11 @@
     --chart-5: 340 75% 55%;
   }
 
+  table.leaderboard {
+    border-collapse: separate;
+    border-spacing: 0 0.7em;
+  }
+
   tbody > tr.leaderboard {
     border-bottom: 8px solid transparent;
     /* margin-bottom: 8px; */
