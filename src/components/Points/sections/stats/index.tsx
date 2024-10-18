@@ -158,7 +158,7 @@ export const RewardHistory = ({
 
   return (
     <div className="w-full mt-10">
-      <div className="flex flex-col gap-y-2 items-start">
+      <div className="flex flex-col gap-y-2 items-start mb-10">
         <h1 className="font-medium text-2xl/9">
           {!isUser && <span className="heading-gradient">Reward</span>} History
         </h1>
