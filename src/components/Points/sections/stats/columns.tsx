@@ -45,7 +45,11 @@ export const rewardsColumns: ColumnDef<UserPointHistory>[] = [
     ),
     cell: ({ row }) => {
       const { points } = row.original;
-      return <span className="text-[#00A3FF]">{points} Gpoints</span>;
+      return (
+        <span className="text-[#00A3FF]">
+          {points} {points > 1 ? "Gpoints" : "Gpoint"}
+        </span>
+      );
     }
   },
   {
