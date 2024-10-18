@@ -31,10 +31,8 @@ const RewardsTable = <TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel()
   });
-
-  const { isConnected } = useAccount();
   return (
-    <div className="w-full overflow-auto mb-1">
+    <div className="w-full overflow-auto">
       <Table className="leaderboard">
         <TableHeader className={"font-sans-ibm-plex"}>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -52,12 +50,12 @@ const RewardsTable = <TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody className="rounded-lg">
+        <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => {
               const { id } = row.original as UserPoint | UserPointRank;
               return (
-                <TableRow key={row.id} className="bg-[#142F41] rounded-xl leaderboard">
+                <TableRow key={row.id} className="bg-[#142F41] leaderboard">
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="font-bold text-center">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
