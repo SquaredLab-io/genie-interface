@@ -24,7 +24,9 @@ export const rewardsColumns: ColumnDef<UserPointHistory>[] = [
             width={45}
           />
           <div className="flex flex-col gap-y-1 text-left text-sm/5 font-bold pl-6 py-3">
-            <p className="text-white opacity-95">Earned {points} Gpoint</p>
+            <p className="text-white opacity-95">
+              Earned {points} {points > 1 ? "Gpoints" : "Gpoint"}
+            </p>
             <p className="font-normal text-[#9299AA]">
               {isLong ? "Closed Long" : "Closed Short"} Position
             </p>
