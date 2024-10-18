@@ -1,19 +1,22 @@
 import { memo, useEffect, useRef, useState, useMemo } from "react";
 import { createChart, IChartApi, ISeriesApi } from "lightweight-charts";
-import { Address } from "viem";
-import { useMonthlyFundingFee } from "@lib/hooks/useMonthlyFundingFee";
+import { FeeCumulativeSumData } from "@lib/hooks/useMonthlyFundingFee";
 import { getFeesTimeseries } from "../helper";
 import LoadingLogo from "@components/icons/loading-logo";
 import { chartOptionsConfig, colors } from "./configs";
 
-const FeeChart = ({ poolAddr }: { poolAddr: Address }) => {
+const FeeChart = ({
+  cumulativeSumData,
+  isFetching
+}: {
+  cumulativeSumData: FeeCumulativeSumData;
+  isFetching: boolean;
+}) => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<"Line"> | null>(null);
 
   const [isLoadingChart, setIsLoadingChart] = useState(false);
-
-  const { cumulativeSumData, isFetching } = useMonthlyFundingFee(poolAddr);
 
   // Reversed as we need series in ascending order
   const timeseries = useMemo(

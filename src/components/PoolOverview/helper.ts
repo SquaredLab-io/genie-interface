@@ -2,6 +2,21 @@ import { FeeCumulativeSumData } from "@lib/hooks/useMonthlyFundingFee";
 import { getDecimalAdjusted } from "@lib/utils/formatting";
 import { DailyInfo } from "@squaredlab-io/sdk/";
 
+export interface CLChartData {
+  chartData: {
+    x: number;
+    longPayoff: number;
+    shortPayoff: number;
+    cl: number;
+    reserve: number;
+  }[];
+  reserve: number;
+  alpha: number;
+  beta: number;
+  k: number;
+  priceRef: number;
+}
+
 export type LPTimeseries = {
   time: string;
   value: number;
