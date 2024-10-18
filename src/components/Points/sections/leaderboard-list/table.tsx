@@ -60,14 +60,14 @@ const LeaderboardTable = <TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody className="rounded-lg">
+        <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => {
               const { id } = row.original as UserPoint | UserPointRank;
               return (
                 <TableRow
                   key={row.id}
-                  className="bg-[#0F212B] hover:bg-[#142F41] rounded-xl transition-colors duration-200 ease-linear cursor-pointer leaderboard"
+                  className="bg-[#0F212B] hover:bg-[#142F41] transition-colors duration-200 ease-linear cursor-pointer leaderboard"
                   onClick={() => {
                     router.push(`/points/user?address=${id}`);
                   }}

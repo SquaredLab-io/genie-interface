@@ -55,7 +55,10 @@ const RewardsTable = <TData, TValue>({
             table.getRowModel().rows.map((row) => {
               const { id } = row.original as UserPoint | UserPointRank;
               return (
-                <TableRow key={row.id} className="bg-[#142F41] leaderboard">
+                <TableRow
+                  key={row.id}
+                  className=" bg-[#14252E] hover:bg-[#142F41] transition-colors duration-200 ease-linear leaderboard"
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="font-bold text-center">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
