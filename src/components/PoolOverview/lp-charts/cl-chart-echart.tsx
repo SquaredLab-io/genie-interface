@@ -1,28 +1,10 @@
-import React, { useEffect, useRef, useState, memo } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 import Image from "next/image";
-import { useQuery } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
-import { Address } from "viem";
 import * as echarts from "echarts";
-import { PoolInfo } from "@squaredlab-io/sdk";
-import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
 import LoadingLogo from "@components/icons/loading-logo";
 import { colors } from "./configs";
-
-interface CLChartData {
-  chartData: {
-    x: number;
-    longPayoff: number;
-    shortPayoff: number;
-    cl: number;
-    reserve: number;
-  }[];
-  reserve: number;
-  alpha: number;
-  beta: number;
-  k: number;
-  priceRef: number;
-}
+import { CLChartData } from "../helper";
 
 const CLChartDataPoints = memo(
   ({ chartData }: { chartData: CLChartData | undefined }) => {
@@ -46,27 +28,17 @@ const CLChartDataPoints = memo(
 );
 CLChartDataPoints.displayName = "CLChartDataPoints";
 
-const CLChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
+const CLChart = ({
+  chartData,
+  isFetching
+}: {
+  chartData: CLChartData | undefined;
+  isFetching: boolean;
+}) => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<echarts.ECharts | null>(null);
-  const { potentia } = usePotentiaSdk();
   const [isLoadingChart, setIsLoadingChart] = useState(false);
   const { address } = useAccount();
-
-  const { data: chartData, isFetching } = useQuery({
-    queryKey: ["clChart", overviewPool.poolAddr],
-    queryFn: async () => {
-      try {
-        return await potentia?.getCLChartData(overviewPool.poolAddr as Address);
-      } catch (error) {
-        console.error("error while fetching clchart data", error);
-      }
-    },
-    enabled: !!potentia && !!overviewPool,
-    staleTime: 0,
-    gcTime: 0,
-    retry: 4
-  });
 
   useEffect(() => {
     if (!chartContainerRef.current || !chartData) return;
