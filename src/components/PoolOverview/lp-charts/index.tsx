@@ -2,17 +2,49 @@ import { Address } from "viem";
 import { PoolInfo } from "@squaredlab-io/sdk";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { useDailyData } from "@lib/hooks/useDailyData";
-import { GraphOptions } from "../helper";
+import { CLChartData, GraphOptions } from "../helper";
 import TVLChart from "./tvl-chart";
 import VolumeChart from "./volume-chart";
 import CLChart from "./cl-chart-echart";
 import FeesChart from "./fees-chart";
 import { useLpStore } from "@store/lpStore";
+import { useQuery } from "@tanstack/react-query";
+import { usePotentiaSdk } from "@lib/hooks/usePotentiaSdk";
+import { useMonthlyFundingFee } from "@lib/hooks/useMonthlyFundingFee";
 
 const LPChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
+  const { potentia } = usePotentiaSdk();
+
+  // TVL and Vol Chart data
   const { dailyData, isFetching: isFetchingDailyData } = useDailyData({
     poolAddress: overviewPool?.poolAddr as Address
   });
+
+  // Fees Chart data
+  const { cumulativeSumData, isFetching: isFeesFetching } = useMonthlyFundingFee(
+    overviewPool.poolAddr as Address
+  );
+
+  // Counterpart Liquidity Chart data
+  const { data: clChartData, isFetching: isCLFetching } = useQuery({
+    queryKey: ["clChart", overviewPool.poolAddr],
+    queryFn: async () => {
+      try {
+        return (await potentia?.getCLChartData(
+          overviewPool.poolAddr as Address,
+          5,
+          1000
+        )) satisfies CLChartData | undefined;
+      } catch (error) {
+        console.error("error while fetching clchart data", error);
+      }
+    },
+    enabled: !!potentia && !!overviewPool,
+    staleTime: 0,
+    gcTime: 0,
+    retry: 4
+  });
+
   const { lpGraphOption, setLpGraphOption } = useLpStore();
 
   return (
@@ -42,10 +74,10 @@ const LPChart = ({ overviewPool }: { overviewPool: PoolInfo }) => {
         <TVLChart dailyData={dailyData} loading={isFetchingDailyData} />
       </TabsContent>
       <TabsContent value={GraphOptions.fees} className="h-[calc(100%-36px)]">
-        <FeesChart poolAddr={overviewPool.poolAddr as Address} />
+        <FeesChart cumulativeSumData={cumulativeSumData} isFetching={isFeesFetching} />
       </TabsContent>
       <TabsContent value={GraphOptions.counterpart} className="h-[calc(100%-40px)]">
-        <CLChart overviewPool={overviewPool} />
+        <CLChart chartData={clChartData} isFetching={isCLFetching} />
       </TabsContent>
     </Tabs>
   );
