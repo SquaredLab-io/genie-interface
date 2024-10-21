@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { usePotentiaSdk } from "./usePotentiaSdk";
-import notification from "@components/common/notification";
+import _ from "lodash";
 
 interface PropsType {
   poolAddress: `0x${string}` | undefined;
@@ -20,38 +20,39 @@ const useLpTokenReceiveEstimate = ({
 }: PropsType) => {
   const [output, setOutput] = useState<string | undefined>(undefined);
   const [isFetching, setIsFetching] = useState<boolean>(false);
-  
+
   const { potentia } = usePotentiaSdk();
 
-  const estimateLPTokenOut = async () => {
+  const estimateLPTokenOut = _.debounce(async (poolAddr: `0x${string}`, amt: string) => {
     setIsFetching(true);
     try {
       const data = await potentia?.ponderClient.estimateLiqLPOut(
-        poolAddress!, // pool address
-        amount!, // underlying amount in bignumber
+        poolAddr, // pool address
+        amt // underlying amount in bignumber
       );
       setOutput(data);
-      setIsFetching(false);
     } catch (error) {
-      setIsFetching(false);
       console.error("Failed to estimate LpToken output");
-      // notification.error({
-      //   id: "error-output-LpToken",
-      //   title: "Failed to estimate LpToken output"
-      // });
+    } finally {
+      setIsFetching(false);
     }
-  };
+  }, 500);
 
   useEffect(() => {
     if (!paused && !!potentia && !!poolAddress && !!amount) {
-        estimateLPTokenOut();
+      estimateLPTokenOut(poolAddress, amount);
+    } else {
+      console.log("Skipping estimate due to missing or paused data");
     }
+
+    return () => {
+      estimateLPTokenOut.cancel();
+    };
   }, [amount]);
 
   return {
     output,
     isFetching
-    // refetch:
   } satisfies ReturnType;
 };
 
