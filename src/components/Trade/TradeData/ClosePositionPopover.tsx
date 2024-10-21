@@ -306,11 +306,13 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
               !isValidPositiveNumber(quantity) ||
               isPopoverClosingDisabled ||
               !balance ||
-              !selectedPool()
+              !output ||
+              !selectedPool() ||
+              isOutputFetching
             }
           >
-            {isPopoverClosingDisabled && !isError ? (
-              <SpinnerIcon className="size-[16px] mx-auto" />
+            {(isPopoverClosingDisabled || isOutputFetching) && !isError ? (
+              <SpinnerIcon className="size-5 mx-auto" />
             ) : (
               <span>CLOSE POSITION</span>
             )}

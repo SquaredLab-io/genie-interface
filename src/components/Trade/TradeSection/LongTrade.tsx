@@ -388,15 +388,17 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
         disabled={
           !isConnected ||
           !userBalance ||
+          !output ||
           isApproveLoading ||
           isApprovePending ||
           isLoading ||
+          isOutputFetching ||
           balanceExceedError ||
           !minQuantityCheck ||
           isApprovedLoading
         } // conditions to Long Button
         onClick={() => (isApprovedSuccess ? openLongPositionHandler() : approveHandler())}
-        isLoading={isApproveLoading || isLoading || isApprovedLoading}
+        isLoading={isApproveLoading || isApprovedLoading || isLoading || isOutputFetching}
       >
         <span>OPEN</span>
       </ButtonCTA>
