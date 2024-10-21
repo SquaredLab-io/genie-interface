@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
+import _ from "lodash";
 import { usePotentiaSdk } from "./usePotentiaSdk";
-import notification from "@components/common/notification";
 
 interface PropsType {
   poolAddress: `0x${string}` | undefined;
@@ -13,47 +13,41 @@ interface ReturnType {
   isFetching: boolean;
 }
 
-const useLpUnderlyingReceived = ({
-  poolAddress,
-  amount,
-  paused = false
-}: PropsType) => {
+const useLpUnderlyingReceived = ({ poolAddress, amount, paused = false }: PropsType) => {
   const [output, setOutput] = useState<string | undefined>(undefined);
   const [isFetching, setIsFetching] = useState<boolean>(false);
-  
+
   const { potentia } = usePotentiaSdk();
 
-  const estimatePositionUnderlyingOut = async () => {
-    // console.log("estimatePositionUnderlyingOut args", {
-    //   pool: poolAddress!,
-    //   amount: amount!,
-    // });
+  const estimatePositionUnderlyingOut = _.debounce(
+    async (poolAddr: `0x${string}`, amt: string) => {
+      const _amount = (parseFloat(amt) * 10 ** 18).toString();
+      setIsFetching(true);
 
-    const _amount = (parseFloat(amount ?? "0") * 10 ** 18).toString();
-    setIsFetching(true);
-
-    try {
-      const data = await potentia?.ponderClient.estimateLiqUnderlyingOut(
-        poolAddress!,
-        _amount,
-      );
-      setOutput(data);
-      setIsFetching(false);
-    } catch (error) {
-      setIsFetching(false);
-      console.error("Failed to estimate underlying output");
-      // notification.error({
-      //   id: "error-output-underlying",
-      //   title: "Failed to estimate underlying output"
-      // });
-    }
-  };
+      try {
+        const data = await potentia?.ponderClient.estimateLiqUnderlyingOut(
+          poolAddr,
+          _amount
+        );
+        setOutput(data);
+      } catch (error) {
+        console.error("Failed to estimate underlying output");
+      } finally {
+        setIsFetching(false);
+      }
+    },
+    500
+  );
 
   useEffect(() => {
     if (!paused && !!potentia && !!poolAddress && !!amount) {
-      estimatePositionUnderlyingOut();
+      estimatePositionUnderlyingOut(poolAddress, amount);
     }
-  }, [amount]);
+
+    return () => {
+      estimatePositionUnderlyingOut.cancel();
+    };
+  }, [amount, paused, potentia, poolAddress]);
 
   return {
     output,

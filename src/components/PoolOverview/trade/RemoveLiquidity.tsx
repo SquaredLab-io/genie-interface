@@ -23,7 +23,6 @@ import notification from "@components/common/notification";
 import InfoBox from "../info-box";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
 import useLpUnderlyingReceived from "@lib/hooks/useLpUnderlyingReceived";
-import { useCurrencyPrice } from "@lib/hooks/useCurrencyPrice";
 import { ReturnTxHistory } from "@lib/hooks/useCurrentLpPosition";
 import { notificationId } from "@components/Trade/helper";
 import { toast } from "sonner";
