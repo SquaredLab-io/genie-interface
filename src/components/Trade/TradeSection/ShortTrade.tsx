@@ -396,10 +396,12 @@ const ShortTrade: FC<PropsType> = memo(({ potentia }) => {
         disabled={
           !isConnected ||
           !userBalance ||
+          !output ||
           isApproveLoading ||
           isApproveLoading ||
           isApprovePending ||
           isLoading ||
+          isOutputFetching ||
           !minQuantityCheck ||
           balanceExceedError ||
           isApprovedLoading
@@ -407,7 +409,7 @@ const ShortTrade: FC<PropsType> = memo(({ potentia }) => {
         onClick={() =>
           isApprovedSuccess ? openShortPositionHandler() : approveHandler()
         }
-        isLoading={isApproveLoading || isLoading}
+        isLoading={isApproveLoading || isApprovedLoading || isLoading || isOutputFetching}
       >
         <span>OPEN</span>
       </ButtonCTA>
