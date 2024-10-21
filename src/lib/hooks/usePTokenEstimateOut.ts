@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import _ from "lodash";
 import { usePotentiaSdk } from "./usePotentiaSdk";
-import notification from "@components/common/notification";
 
 interface PropsType {
   poolAddress: `0x${string}` | undefined;
@@ -36,14 +35,8 @@ const usePTokenEstimateOut = ({
           long
         );
         setOutput(data);
-        // setIsFetching(false);
       } catch (error) {
-        // setIsFetching(false);
         console.error("Failed to estimate pToken output");
-        // notification.error({
-        //   id: "error-output-pToken",
-        //   title: "Failed to estimate pToken output"
-        // });
       } finally {
         setIsFetching(false);
       }
