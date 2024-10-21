@@ -276,9 +276,11 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
           disabled={
             !isConnected ||
             !userBalance ||
+            !lpUnderlying ||
             balanceExceedError ||
             !lpPosition ||
             isLoading ||
+            isLpUnderlyingFetching ||
             !isValidPositiveNumber(amount)
           }
           onClick={() => {
@@ -288,7 +290,7 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
               openConnectModal?.();
             }
           }}
-          isLoading={isLoading}
+          isLoading={isLoading || isLpUnderlyingFetching}
         >
           {isConnected ? <span>Remove Liquidity</span> : <span>Connect Wallet</span>}
         </ButtonCTA>

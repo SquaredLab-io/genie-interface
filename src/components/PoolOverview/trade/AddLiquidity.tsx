@@ -359,15 +359,19 @@ const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
           disabled={
             !isConnected ||
             !userBalance ||
+            !lpTokens ||
             balanceExceedError ||
             isApprovedLoading ||
             isApproveLoading ||
             isApprovePending ||
             isLoading ||
+            isLpTokenFetching ||
             (isApproveSuccess && isPending) ||
             !isValidPositiveNumber(amount)
           }
-          isLoading={isApprovedLoading || isApproveLoading || isLoading}
+          isLoading={
+            isApprovedLoading || isApproveLoading || isLoading || isLpTokenFetching
+          }
           onClick={() => {
             if (isConnected) {
               if (!isApprovedSuccess) {
