@@ -15,6 +15,7 @@ import {
 import { PoolInfo } from "@squaredlab-io/sdk";
 import { ConstructedPoolsDataResponse } from "@lib/hooks/useFilteredPoolOverview";
 import { usePoolsStore } from "@store/poolsStore";
+import { useRouter } from "next/navigation";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -36,6 +37,7 @@ const TokenSelectorTable = <TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel()
   });
+  const router = useRouter();
 
   const { updateSelectedPool } = usePoolsStore();
 
@@ -69,7 +71,9 @@ const TokenSelectorTable = <TData, TValue>({
                 className="hover:bg-[#19242C] transition-colors duration-200 cursor-pointer"
                 onClick={() => {
                   const selectedPool = pools.find((p) => p.poolAddr === poolAddr)!;
-                  updateSelectedPool(selectedPool);
+                  router.push(
+                    `/trade/${selectedPool?.underlying}-${selectedPool?.power}`
+                  );
                   setOpen(false);
                 }}
               >

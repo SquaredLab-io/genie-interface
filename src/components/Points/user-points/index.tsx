@@ -13,7 +13,7 @@ const UserPoints = ({ address }: Props) => {
 
   return (
     <div className="py-4 flex flex-col gap-y-14">
-      <GpointsAndReferals points={points} />
+      <GpointsAndReferals points={points} isUser />
       <UserActivity points={points} rewards={rewards} isUser />
       <RewardHistory rewards={rewards} />
     </div>

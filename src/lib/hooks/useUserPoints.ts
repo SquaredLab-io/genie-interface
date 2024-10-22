@@ -1,10 +1,7 @@
 import { useWalletClient } from "wagmi";
 import { Address } from "viem";
 import { QueryObserverResult, RefetchOptions, useQuery } from "@tanstack/react-query";
-import {
-  RewardHistoryReturnType,
-  UserPointRank
-} from "@squaredlab-io/sdk/src/interfaces/ponder.interface";
+import { UserPointRank } from "@squaredlab-io/sdk/src/interfaces/ponder.interface";
 import { usePotentiaSdk } from "./usePotentiaSdk";
 import { REFETCH_INTERVAL } from "@lib/constants";
 
