@@ -16,9 +16,12 @@ interface iPools {
 export const usePoolsStore = create<iPools>((set, get) => ({
   poolsData: [],
   poolMap: undefined,
+  // selectedPool: () => {
+  //   const state = get();
+  //   return state.poolsData?.[state.poolsData.length - 1];
+  // },
   selectedPool: () => {
-    const state = get();
-    return state.poolsData?.[state.poolsData.length - 1];
+    return undefined;
   },
   isFetchingPools: false,
   // actions
