@@ -35,7 +35,13 @@ export const Stats = () => {
   );
 };
 
-export const GpointsAndReferals = ({ points }: { points: UserPointsType }) => {
+export const GpointsAndReferals = ({
+  points,
+  isUser = false
+}: {
+  points: UserPointsType;
+  isUser?: boolean;
+}) => {
   const { userPointsData, isFetching, isPending } = points;
   const userRank = userPointsData?.userPoints;
   const loading = isPending || isFetching;
@@ -59,7 +65,7 @@ export const GpointsAndReferals = ({ points }: { points: UserPointsType }) => {
           icon="/icons/PointsIcon.svg"
         />
         <StatsCard
-          label="Your Rank"
+          label={isUser ? "Rank" : "Your Rank"}
           value={loading ? "..." : userRank ? userRank.rank.toString() : "NA"}
           icon="/icons/RankIcon.svg"
         />
