@@ -33,17 +33,17 @@ export function useCurrentLpPosition({
         poolAddress as Address, // poolAddress
         address as Address // user
       );
-      if (!result?.userCurrentLpPoss.items.length) {
+      if (!result || result.userCurrentLpPoss.items.length === 0) {
         return {
-          pool: poolAddress,
-          user: address,
+          pool: poolAddress as string,
+          user: address as string,
           staked: "0",
           counterLpAmt: "0",
           lpTokenPriceUnderlying: "0",
           oraclePrice: "0"
-        };
+        } satisfies UserCurrentLpPosition;
       }
-      return result?.userCurrentLpPoss.items[0];
+      return result.userCurrentLpPoss.items[0];
     } catch (error) {
       console.error("Error -- fetching current Lp position", error);
     }
@@ -53,9 +53,9 @@ export function useCurrentLpPosition({
     queryKey: ["userCurrentLpPosition", poolAddress, address],
     queryFn: getLpPosition,
     enabled: !paused && !!poolAddress && !!potentia && !!address,
-    staleTime: 20000,
-    refetchOnReconnect: true,
-    retry: 3
+    staleTime: 5000,
+    gcTime: 30000,
+    retry: 4
   });
 
   return { data, isFetching, refetch };

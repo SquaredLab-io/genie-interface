@@ -18,8 +18,8 @@ export const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
   autosize: true,
   symbol_search_request_delay: 0,
   auto_save_delay: 5,
-  theme: "dark",
-  toolbar_bg: "#0C1820",
+  theme: "dark", // or "light"
+  toolbar_bg: "#0C1820", // Remove this line if present
   disabled_features: [
     "use_localstorage_for_settings",
     "header_symbol_search",
@@ -30,6 +30,9 @@ export const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
   overrides: {
     "paneProperties.background": "#0C1820",
     "paneProperties.backgroundType": "solid"
+  },
+  loading_screen: {
+    backgroundColor: "#0C1820"
   },
   debug: false
   // favorites: {

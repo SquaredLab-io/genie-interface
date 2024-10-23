@@ -93,15 +93,8 @@ const TradeChart = ({ potentia }: PropsType) => {
         symbol_search_request_delay: widgetProps.symbol_search_request_delay,
         auto_save_delay: widgetProps.auto_save_delay,
         toolbar_bg: widgetProps.toolbar_bg,
-        overrides: {
-          ...widgetProps.overrides,
-          "paneProperties.backgroundType": "solid",
-          "paneProperties.background": "#0C1820",
-          "scalesProperties.backgroundColor": "#0C1820"
-        },
-        loading_screen: {
-          backgroundColor: "#0C1820"
-        }
+        overrides: widgetProps.overrides,
+        loading_screen: widgetProps.loading_screen
       };
 
       const tvWidget = new widget(widgetOptions);
@@ -142,6 +135,9 @@ const TradeChart = ({ potentia }: PropsType) => {
           }
           .centerElement-kfvcmk8t {
             display: none !important;
+          }
+          html.theme-dark {
+            --tv-color-pane-background: #0C1820;
           }
         `)
     );
