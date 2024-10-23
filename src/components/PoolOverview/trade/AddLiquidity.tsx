@@ -247,12 +247,13 @@ const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
               {isPriceFetching && !price && !isValidPositiveNumber(amount)
                 ? "..."
                 : parseFloat(amount) > 0
-                  ? formatNumber(
+                  ? "~" +
+                    formatNumber(
                       price * parseFloat(amount !== "" ? amount : "0"),
                       true,
                       3
                     )
-                  : "$0.000"}
+                  : "~$0.000"}
             </span>
           </p>
           <div className="inline-flex-between">
@@ -318,12 +319,13 @@ const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
               {isLpPositionFetching || isLpTokenFetching
                 ? "..."
                 : lpPriceInDollars && lpTokens && lpTokens !== "0"
-                  ? formatNumber(
+                  ? "~" +
+                    formatNumber(
                       lpPriceInDollars * getDecimalAdjusted(lpTokens, 18),
                       true,
                       3
                     )
-                  : "$0.000"}
+                  : "~$0.000"}
             </span>
           </p>
           <div className="inline-flex-between">
