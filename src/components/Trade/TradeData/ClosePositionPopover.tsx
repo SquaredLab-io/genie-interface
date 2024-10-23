@@ -6,6 +6,7 @@ import {
   ReactNode,
   useCallback,
   useEffect,
+  useMemo,
   useState
 } from "react";
 import { Address } from "viem";
@@ -39,6 +40,7 @@ import { useTxHistory } from "@lib/hooks/useTxHistory";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
 import { useTradeStore } from "@store/tradeStore";
 import { useUserPoints } from "@lib/hooks/useUserPoints";
+import { z } from "zod";
 
 interface PropsType {
   children: ReactNode;
@@ -186,6 +188,15 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
     }
   }, [status, isLoading, isPending, error, handleTransactionStatus]);
 
+  // condition to check if input is more than available balance
+  const balanceExceedError = useMemo(() => {
+    const balanceCheck = z
+      .number()
+      .gt(parseFloat(_getDecimalAdjusted(balance.toFixed(), poolData.decimals)))
+      .safeParse(parseFloat(quantity)).success;
+    return balanceCheck;
+  }, [balance, quantity]);
+
   // Handler that updates Quantity and keep SliderValue in sync
   function inputHandler(event: ChangeEvent<HTMLInputElement>) {
     const input = event.target.value;
@@ -247,7 +258,12 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
         {/* Closing Amount Container - Input, Token */}
         <div className="flex flex-col gap-2 text-left text-xs/4 font-medium text-[#9299AA] py-4 px-2">
           <label htmlFor="quantity">Quantity</label>
-          <div className="flex flex-col items-start w-full border-spacing-0 border border-secondary-gray rounded-[4px] py-2 pl-3 pr-4 mb-1">
+          <div
+            className={cn(
+              "flex flex-col items-start w-full border-spacing-0 border rounded-[4px] py-2 pl-3 pr-4 mb-1",
+              balanceExceedError ? "border-error-red" : "border-secondary-gray"
+            )}
+          >
             <div className="inline-flex justify-between items-center w-full">
               <input
                 type="number"
@@ -265,7 +281,7 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
                 <span className="opacity-60">{isLong ? "L" : "S"}</span>
               </p>
             </div>
-            <span>
+            <span className={cn(balanceExceedError && "text-error-red")}>
               Balance:{" "}
               {formatNumber(getDecimalAdjusted(balance.toFixed(0), poolData.decimals))}
             </span>
@@ -304,6 +320,7 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
             onClick={closePositionHandlerSdk}
             disabled={
               !isValidPositiveNumber(quantity) ||
+              balanceExceedError ||
               isPopoverClosingDisabled ||
               !balance ||
               !output ||
