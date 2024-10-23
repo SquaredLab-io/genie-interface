@@ -12,14 +12,16 @@ const InfoBox = ({
   return (
     <div
       className={cn(
-        "flex flex-row items-center justify-between mt-2 bg-[#00456D14] bg-opacity-10 py-4 px-6 gap-4 rounded-[4px] border w-full",
-        isError ? "border-error-red" : "border-[#01A1FF]"
+        "flex flex-row items-center justify-between mt-3 py-4 px-6 gap-4 rounded-[4px] border w-full",
+        isError
+          ? "border-error-red bg-[#6D070014]/10"
+          : "border-[#01A1FF] bg-[#00456D14]/10"
       )}
     >
       <Info size={22} color={!isError ? "#01A1FF" : "#FF0000"} />
       <p className="font-normal text-left w-full text-sm/[18px] max-w-72">{message}</p>
     </div>
   );
-}
+};
 
 export default memo(InfoBox);

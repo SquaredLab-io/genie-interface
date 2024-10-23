@@ -168,8 +168,9 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
               {isLpPositionFetching
                 ? "..."
                 : lpPriceInDollars && parseFloat(amount) > 0
-                  ? formatNumber(lpPriceInDollars * parseFloat(amount || "0"), true, 3)
-                  : "$0.000"}
+                  ? "~" +
+                    formatNumber(lpPriceInDollars * parseFloat(amount || "0"), true, 3)
+                  : "~$0.000"}
             </span>
           </p>
           <div className="inline-flex-between">
@@ -222,12 +223,13 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
               {!oraclePrice && !isValidPositiveNumber(amount)
                 ? "..."
                 : parseFloat(amount) > 0
-                  ? formatNumber(
+                  ? "~" +
+                    formatNumber(
                       oraclePrice * getDecimalAdjusted(lpUnderlying, underlyingDecimals),
                       true,
                       3
                     )
-                  : "$0.000"}
+                  : "~$0.000"}
             </span>
           </p>
           <div className="inline-flex-between">
@@ -264,7 +266,7 @@ const RemoveLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
             isError={balanceExceedError}
             message={
               balanceExceedError
-                ? "Insufficient funds. Please deposit more tokens to add the required liquidity."
+                ? "It appears you are attempting to withdraw more Liquidity Pool (LP) Tokens than you currently hold in your account."
                 : undefined
             }
           />
