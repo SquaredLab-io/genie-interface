@@ -2,7 +2,6 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
-// import dynamic from "next/dynamic";
 import { useWindowSize } from "usehooks-ts";
 import { usePools } from "@lib/hooks/usePools";
 import MobileInfoScreen from "@components/common/MobileInfoScreen";
@@ -11,15 +10,13 @@ import Loading from "@app/loading";
 import { usePoolsStore } from "@store/poolsStore";
 import Trade from "@components/Trade";
 
-// const Trade = dynamic(() => import("@components/Trade").then((mod) => mod.default));
-
 /**
  * Trade Interface - Currently set as the Homepage of Genie
  */
 export default function TradePage() {
   const { width } = useWindowSize();
   const { pools, isFetching, status } = usePools();
-  const { selectedPool, updateSelectedPool } = usePoolsStore();
+  const { updateSelectedPool } = usePoolsStore();
 
   const { pool } = useParams();
   const poolSymbol = Array.isArray(pool) ? pool[0] : pool;

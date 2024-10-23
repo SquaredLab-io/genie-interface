@@ -1,6 +1,5 @@
 import { QueryStatus, useQuery } from "@tanstack/react-query";
 import { usePotentiaSdk } from "./usePotentiaSdk";
-import notification from "@components/common/notification";
 import { REFETCH_INTERVAL } from "@lib/constants";
 import { FundingInfo } from "@squaredlab-io/sdk";
 
@@ -41,11 +40,6 @@ export function useTokenPrice({ poolAddress, paused = false }: PropsType): Retur
       return tokenprice;
     } catch (error) {
       console.error("Failed to fetch Token Prices\n", error);
-      // notification.error({
-      //   id: "token-price",
-      //   title: "Failed to fetch Token Prices",
-      //   description: `${error}`
-      // });
     }
   };
 
