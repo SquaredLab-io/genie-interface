@@ -59,7 +59,7 @@
   }
 
   .page-center {
-    @apply flex flex-col h-[calc(100vh-80px)] lg:h-[calc(100vh-74px)] max-w-full; /* adjustment_height(header_height) */
+    @apply flex flex-col h-[calc(100vh-80px)] lg:h-[calc(100vh-74px)] max-w-full;
   }
 
   .flex-col-center {
@@ -90,6 +90,10 @@
 
   .active-tab-trade {
     @apply w-1/2 py-2 text-center font-medium text-sm/5 border-t border-secondary-gray bg-[#121F27] data-[state=active]:bg-primary-gray data-[state=active]:cursor-default data-[state=active]:pointer-events-none;
+  }
+
+  .pool-menu-button {
+    @apply inline-flex gap-2 items-center w-full disabled:cursor-not-allowed disabled:opacity-80;
   }
 }
 
