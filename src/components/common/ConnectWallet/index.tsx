@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  _getDecimalAdjusted,
-  formatNumber,
-  getDecimalAdjusted
-} from "@lib/utils/formatting";
-import { getAccountBalance } from "@lib/utils/getAccountBalance";
+import { _getDecimalAdjusted, getDecimalAdjusted } from "@lib/utils/formatting";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
 import { useMemo } from "react";

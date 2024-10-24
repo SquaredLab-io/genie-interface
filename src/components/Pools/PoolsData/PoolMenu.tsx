@@ -6,7 +6,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  // DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@components/ui/dropdown-menu";
 import { useModalStore } from "@store/poolsStore";
@@ -32,7 +31,7 @@ const PoolMenu = ({
         {/* <DropdownMenuSeparator /> */}
         <DropdownMenuItem className="p-0 mb-4 focus:bg-[#0D1921]">
           <Link
-            className="inline-flex gap-2 items-center w-full"
+            className="pool-menu-button"
             href={{
               pathname: `/pool/${underlying}`,
               query: { power: power }
@@ -42,21 +41,39 @@ const PoolMenu = ({
               setLpTradeOption(LpTradeOptions.withdraw);
             }}
           >
-            <Image src="/icons/MinusIcon.svg" width={14} height={14} alt="add icon" />
+            <Image
+              src="/icons/MinusIcon.svg"
+              width={14}
+              height={14}
+              alt="Withdraw Liquidity"
+            />
             <span>Withdraw</span>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem className="p-0 focus:bg-[#0D1921]">
+        <DropdownMenuItem className="p-0 mb-4 focus:bg-[#0D1921]">
           <button
-            className="inline-flex gap-2 items-center w-full disabled:cursor-not-allowed disabled:opacity-80"
+            className="pool-menu-button"
             onClick={() => {
               setOpenManageModal(true);
             }}
             disabled={true}
           >
-            <Image src="/icons/TradeIcon.svg" width={16} height={16} alt="trade icon" />
+            <Image src="/icons/TradeIcon.svg" width={16} height={16} alt="Manage Pool" />
             <span>Manage Pool</span>
           </button>
+        </DropdownMenuItem>
+        <DropdownMenuItem className="p-0 focus:bg-[#0D1921]">
+          <Link
+            className="pool-menu-button"
+            href={{
+              pathname: `/pool/burn`,
+              query: { power }
+            }}
+            as={`/pool/burn/${underlying}?power=${power}`}
+          >
+            <Image src="/icons/FireIcon.svg" width={16} height={16} alt="Burn NFT" />
+            <span className="text-[#FF615C]">Burn NFT</span>
+          </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

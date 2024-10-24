@@ -83,7 +83,7 @@ export function allPoolsColumnDef(
                     </>
                   ))}
                 </p>
-                <p className="font-medium text-xs/3 bg-[#49AFE9] py-1 px-[10px] rounded-md">
+                <p className="font-medium text-xs/3 bg-genie-blue py-1 px-[10px] rounded-md">
                   p = {power}
                 </p>
               </div>
@@ -239,7 +239,7 @@ export function userPoolsColumnDef(): ColumnDef<PoolInfo>[] {
                     </>
                   ))}
                 </p>
-                <p className="font-medium text-xs/3 bg-[#49AFE9] py-1 px-[10px] rounded-md">
+                <p className="font-medium text-xs/3 bg-genie-blue py-1 px-[10px] rounded-md">
                   p = {power}
                 </p>
               </div>
@@ -476,7 +476,7 @@ export function transactionsColumnDef(): ColumnDef<Tx>[] {
                     </>
                   ))}
                 </p>
-                <p className="font-medium text-xs/3 bg-[#49AFE9] py-1 px-[10px] rounded-md">
+                <p className="font-medium text-xs/3 bg-genie-blue py-1 px-[10px] rounded-md">
                   p = {_getDecimalAdjusted(power.toString(), 18)}
                 </p>
               </div>

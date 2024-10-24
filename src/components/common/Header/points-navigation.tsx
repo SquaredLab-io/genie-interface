@@ -22,7 +22,9 @@ const PointsNavigation = () => {
     return userPoints?.points ?? "NA";
   }, [userPoints, isFetching, isPending]);
 
-  return isConnected ? (
+  if (!isConnected) return <></>;
+
+  return (
     <PointsPopover
       points={{ userPointsData, isFetching, isPending, refetch }}
       isOpen={isPointsPopoverOpen}
@@ -45,8 +47,6 @@ const PointsNavigation = () => {
               </span> */}
       </button>
     </PointsPopover>
-  ) : (
-    <></>
   );
 };
 

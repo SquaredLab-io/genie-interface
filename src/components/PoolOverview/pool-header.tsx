@@ -34,7 +34,7 @@ const PoolHeader = ({ assets, power }: { assets: string[]; power: number }) => {
           <span className="text-[#9299AA] mx-2">/</span>
           {assets[1]}
         </p>
-        <p className="font-medium text-xs/3 bg-[#49AFE9] pt-[4.5px] pb-[5.5px] px-3 rounded-md">
+        <p className="font-medium text-xs/3 bg-genie-blue pt-[4.5px] pb-[5.5px] px-3 rounded-md">
           p = {power}
         </p>
         <DropDownIcon className="ml-2" />

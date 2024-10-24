@@ -46,7 +46,7 @@ export function poolsColumnDef(): ColumnDef<ConstructedPoolsDataResponse>[] {
                   </>
                 ))}
               </p>
-              <p className="font-medium text-[8px]/[14px] bg-[#49AFE9] py-px px-[4.5px] rounded-sm">
+              <p className="font-medium text-[8px]/[14px] bg-genie-blue py-px px-[4.5px] rounded-sm">
                 p = {power}
               </p>
             </div>

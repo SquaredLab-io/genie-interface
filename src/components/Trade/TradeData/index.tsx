@@ -114,7 +114,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
                     </>
                   ))}
                 </p>
-                <p className="font-medium text-xs/3 bg-[#49AFE9] py-1 px-[10px] rounded-md">
+                <p className="font-medium text-xs/3 bg-genie-blue py-1 px-[10px] rounded-md">
                   p = {poolData?.power}
                 </p>
               </div>
@@ -283,7 +283,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
                     </>
                   ))}
                 </p>
-                <p className="font-medium text-xs/3 bg-[#49AFE9] py-1 px-[10px] rounded-md">
+                <p className="font-medium text-xs/3 bg-genie-blue py-1 px-[10px] rounded-md">
                   p = {_power}
                 </p>
               </div>
