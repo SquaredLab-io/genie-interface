@@ -14,6 +14,7 @@ import { Separator } from "@components/ui/separator";
 import ButtonCTA from "@components/common/button-cta";
 import { CreatePoolFormSchema, formSchema } from "./createPoolformSchema";
 import { cn } from "@lib/utils";
+import ExponentialSliderBar from "@components/common/slider-bar/exponential-slider-bar";
 
 interface BoxInfo {
   title: string;
@@ -32,7 +33,7 @@ const BoxInfo = ({ title, description, children }: BoxInfo) => (
 );
 
 export default function CreatePoolForm() {
-  const VAULT_ADDRESS = "0x428084313F9dCc38e9d0cB51dBBe466c8300a35c";
+  // const VAULT_ADDRESS = "0x428084313F9dCc38e9d0cB51dBBe466c8300a35c";
 
   const form = useForm<CreatePoolFormSchema>({
     resolver: zodResolver(formSchema),
@@ -122,16 +123,12 @@ export default function CreatePoolForm() {
               render={({ field, formState: { errors } }) => (
                 <FormItem>
                   <FormControl>
-                    <SliderBar
+                    <ExponentialSliderBar
                       {...field}
                       value={field.value}
                       setValue={(value) => field.onChange(value)}
-                      min={2}
-                      max={32}
-                      // step={0.001}
-                      step={1}
                       className="mt-5"
-                      indices={[2, 7, 12, 17, 22, 27, 32]}
+                      indices={[2, 4, 8, 16, 32]}
                     />
                   </FormControl>
                   <FormMessage className="text-[#FF3318] text-sm/5 -mt-2 mb-3" />
