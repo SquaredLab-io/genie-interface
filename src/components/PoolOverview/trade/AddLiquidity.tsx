@@ -88,6 +88,9 @@ const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
     amount: getDecimalDeadjusted(amount, underlyingDecimals)
   });
 
+  // getting underlying token's price from coingecko api
+  const { price, isMarketDataLoading: isPriceFetching } = useCurrencyPrice(underlying);
+
   // get connected user's current LP Position
   const {
     data: lpPosition,
@@ -98,12 +101,15 @@ const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
   // Connected user's LP Token balance
   const lpBalance = getDecimalAdjusted(lpPosition?.counterLpAmt, 18);
 
-  const oraclePrice = lpPosition ? formatOraclePrice(BigInt(lpPosition.oraclePrice)) : 0;
+  // const oraclePrice = lpPosition ? formatOraclePrice(BigInt(lpPosition.oraclePrice)) : 0;
 
-  // TODO: Is it correct?
+  // TODO: Change it back to oraclePrice after it's available in SDK
   const lpPriceInDollars = lpPosition
-    ? oraclePrice * parseFloat(lpPosition.lpTokenPriceUnderlying)
+    ? price * parseFloat(lpPosition.lpTokenPriceUnderlying)
     : 0;
+  // const lpPriceInDollars = lpPosition
+  //   ? oraclePrice * parseFloat(lpPosition.lpTokenPriceUnderlying)
+  //   : 0;
 
   /**
    * This handler method approves signers underlying tokens to be spent on Potentia Protocol
@@ -158,9 +164,6 @@ const AddLiquidity = ({ overviewPool, lpTokenBalance }: PropsType) => {
       hash: txHash,
       confirmations: CONFIRMATION
     });
-
-  // getting underlying token's price
-  const { price, isMarketDataLoading: isPriceFetching } = useCurrencyPrice(underlying);
 
   const balanceExceedError = useMemo(
     () => !!userBalance?.value && parseFloat(amount) > parseFloat(userBalance?.formatted),

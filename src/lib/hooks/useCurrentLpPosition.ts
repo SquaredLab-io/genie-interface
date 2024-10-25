@@ -34,12 +34,14 @@ export function useCurrentLpPosition({
         address as Address // user
       );
       if (!result || result.userCurrentLpPoss.items.length === 0) {
+        // Fetching LPTokenPrice only when the LP data is not available
+        const lpPrice = await potentia?.ponderClient.getLPTokenPrice(poolAddress!);
         return {
           pool: poolAddress as string,
           user: address as string,
           staked: "0",
           counterLpAmt: "0",
-          lpTokenPriceUnderlying: "0",
+          lpTokenPriceUnderlying: (lpPrice ?? 0)?.toString(),
           oraclePrice: "0"
         } satisfies UserCurrentLpPosition;
       }
