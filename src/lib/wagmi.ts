@@ -15,7 +15,7 @@ coinbaseWallet.preference = "smartWalletOnly";
 export const config = getDefaultConfig({
   chains: [baseSepolia],
   transports: {
-    [baseSepolia.id]: http(BASE_SEPOLIA_RPC)
+    [baseSepolia.id]: http("/api/baseRpc") // Proxy for Base RPC
   },
   wallets: [
     {
@@ -29,7 +29,7 @@ export const config = getDefaultConfig({
   // APP INFO
   appName: meta.APP_NAME,
   appDescription: meta.DESCRIPTION,
-  appUrl: meta.URL,
+  appUrl: meta.APP_URL,
   appIcon: meta.LOGO
 });
 
