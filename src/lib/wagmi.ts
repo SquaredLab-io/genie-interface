@@ -29,7 +29,7 @@ export const config = getDefaultConfig({
   // APP INFO
   appName: meta.APP_NAME,
   appDescription: meta.DESCRIPTION,
-  appUrl: meta.URL,
+  appUrl: meta.APP_URL,
   appIcon: meta.LOGO
 });
 
