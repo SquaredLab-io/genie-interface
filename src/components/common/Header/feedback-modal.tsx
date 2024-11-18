@@ -51,7 +51,7 @@ const FeedbackModal = ({
 
     const payload = { type: selectedFeedback, text: feedback };
     try {
-      const response = await axios.post("/api/feedback", payload, {
+      await axios.post("/api/feedback", payload, {
         headers: {
           "Content-Type": "application/json"
         }

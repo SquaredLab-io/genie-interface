@@ -1,4 +1,4 @@
-import { BASE_SEPOLIA_RPC, WALLET_CONNECT_PROJECT_ID } from "@lib/keys";
+import { WALLET_CONNECT_PROJECT_ID } from "@lib/keys";
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { http } from "wagmi";
 import { baseSepolia } from "wagmi/chains";
