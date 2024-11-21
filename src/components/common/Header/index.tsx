@@ -25,7 +25,7 @@ const Header = () => {
       >
         {/* Brand Logo */}
         <Link href="/" className="-m-1.5 p-1.5 max-w-fit">
-          <span className="sr-only">Genie | SquaredLabs</span>
+          <span className="sr-only">Genie DEX</span>
           <Image
             src="/images/logo-wide-color.svg"
             alt={`${meta.APP_NAME} logo`}

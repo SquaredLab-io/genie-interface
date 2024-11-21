@@ -10,19 +10,19 @@ import { toast } from "sonner";
 import axios, { AxiosError } from "axios";
 // Component Imports
 import Modal from "@components/common/Modal";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@components/ui/select";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue
+// } from "@components/ui/select";
 import ButtonCTA from "@components/common/button-cta";
 import SpinnerIcon from "@components/icons/SpinnerIcon";
 import { DialogDescription, DialogHeader, DialogTitle } from "@components/ui/dialog";
 import { notificationId } from "@components/Trade/helper";
 // Hook, Helper Imports
-import { meta, SUPPORTED_NETWORKS, SUPPORTED_TOKENS, TOKENS } from "@lib/constants";
+import { meta, SUPPORTED_NETWORKS, SUPPORTED_TOKENS } from "@lib/constants";
 import notification from "../notification";
 import { shortenHash } from "@lib/utils/formatting";
 import useTokenBalance from "@lib/hooks/useTokenBalance";
@@ -237,9 +237,11 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
       className="p-5 w-full max-w-[337px] sm:rounded-lg"
     >
       <DialogHeader className="mb-[26px]">
-        <DialogTitle className="text-[22px]/[27px]">Get Test Tokens</DialogTitle>
-        <DialogDescription className="text-sm/[19px] text-[#CACACC]">
-          Click the button below to receive your test net tokens. Need more?{" "}
+        <DialogTitle className="text-[22px]/[27px] font-medium text-left">
+          Get Test Tokens
+        </DialogTitle>
+        <DialogDescription className="text-sm/[19px] text-[#CACACC] text-left">
+          Click the button below to receive your testnet tokens. Need more?{" "}
           <Link
             href={meta.DISCORD}
             className="text-primary-blue hover:underline underline-offset-2"
@@ -252,44 +254,55 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
       <div className="flex flex-col items-start text-left gap-y-5 font-medium text-base/[14px]">
         {/* NETWORK SELECTOR */}
         <div className="space-y-3 w-full">
-          <label>Select Network</label>
-          <Select
+          <label className="opacity-80">Select Network</label>
+          {/* <Select
             value={selectedNetwork.NAME}
             onValueChange={(value) => {
               const network = SUPPORTED_NETWORKS.find((n) => n.NAME === value)!;
               setSelectedNetwork(network);
             }}
-          >
-            <SelectTrigger className="border border-secondary-gray uppercase rounded-[4px] px-4 pt-2 pb-1">
-              <SelectValue
-                placeholder={
-                  <p className="inline-flex items-center justify-start gap-x-2 uppercase">
-                    <Image
-                      src={selectedNetwork.LOGO}
-                      alt={selectedNetwork.NAME}
-                      height="24"
-                      width="24"
-                    />
-                    <span>{selectedNetwork.NAME}</span>
-                  </p>
-                }
+          > */}
+          <div className="border border-secondary-gray uppercase rounded-[4px] px-4 py-4 lg:py-2 font-normal text-sm">
+            <p className="inline-flex items-center justify-start gap-x-2 uppercase">
+              <Image
+                src={selectedNetwork.LOGO}
+                alt={selectedNetwork.NAME}
+                height="24"
+                width="24"
               />
-            </SelectTrigger>
-            <SelectContent>
-              {SUPPORTED_NETWORKS.map((network) => (
-                <SelectItem
-                  value={network.NAME}
-                  key={network.NAME}
-                  className="pt-2 pb-1 pl-[9.5px] pr-[9.5px]"
-                >
-                  <p className="inline-flex items-center justify-start gap-x-2 uppercase">
-                    <Image src={network.LOGO} alt={network.NAME} height="24" width="24" />
-                    {network.NAME}
-                  </p>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+              <span>{selectedNetwork.NAME}</span>
+            </p>
+          </div>
+          {/* <SelectTrigger className="border border-secondary-gray uppercase rounded-[4px] px-4 py-4 lg:pt-2 lg:pb-1">
+            <SelectValue
+              placeholder={
+                <p className="inline-flex items-center justify-start gap-x-2 uppercase">
+                  <Image
+                    src={selectedNetwork.LOGO}
+                    alt={selectedNetwork.NAME}
+                    height="24"
+                    width="24"
+                  />
+                  <span>{selectedNetwork.NAME}</span>
+                </p>
+              }
+            />
+          </SelectTrigger>
+          <SelectContent>
+            {SUPPORTED_NETWORKS.map((network) => (
+              <SelectItem
+                value={network.NAME}
+                key={network.NAME}
+                className="pt-2 pb-1 pl-[9.5px] pr-[9.5px]"
+              >
+                <p className="inline-flex items-center justify-start gap-x-2 uppercase">
+                  <Image src={network.LOGO} alt={network.NAME} height="24" width="24" />
+                  {network.NAME}
+                </p>
+              </SelectItem>
+            ))}
+          </SelectContent> */}
+          {/* </Select> */}
         </div>
         {/* TOKEN SELECTOR */}
         {/* <div className="space-y-3 w-full">
@@ -345,7 +358,7 @@ const FaucetModal = ({ open, setOpen, trigger }: PropsType) => {
         {/* CTA */}
         <ButtonCTA
           disabled={txStatus === "loading" || !isConnected || !address}
-          className="w-full rounded-[4px] font-sans-ibm-plex"
+          className="w-full rounded-[4px] font-sans-ibm-plex font-medium text-sm/[22px]"
           onClick={() => {
             callFaucetAirdrop(address!);
           }}
