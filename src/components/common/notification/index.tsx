@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { toast } from "sonner";
-import { Loader, XIcon } from "lucide-react";
+import { XIcon } from "lucide-react";
 import Spinner from "@components/icons/Spinner";
 
 interface ArgsType {
