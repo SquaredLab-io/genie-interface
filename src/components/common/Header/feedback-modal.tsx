@@ -75,10 +75,10 @@ const FeedbackModal = ({
       open={open}
       onOpenChange={setOpen}
       trigger={trigger}
-      className="max-w-fit p-6 rounded-[20px]"
+      className="max-w-fit p-0 lg:p-6 rounded-[20px]"
       footer={
-        <div className="inline-flex items-center justify-between w-full mt-5 text-xs/6">
-          <p>
+        <div className="inline-flex items-center justify-between w-full mt-3 lg:mt-5 text-xs/6">
+          <p className="hidden lg:block">
             You can also email us at{" "}
             <a
               className="text-primary-blue"
@@ -88,9 +88,9 @@ const FeedbackModal = ({
               {meta.SUPPORT_MAIL}
             </a>
           </p>
-          <div className="inline-flex justify-end gap-5 font-medium text-xs/6">
+          <div className="inline-flex justify-end gap-3 lg:gap-5 font-medium text-xs/6 min-w-full lg:min-w-fit">
             <Link href={meta.DISCORD} target="_blank">
-              <button className="inline-flex items-center gap-1 px-[14px] h-[31px] hover:bg-white/5 text-white border border-secondary-gray rounded-base leading-6 whitespace-nowrap">
+              <button className="inline-flex items-center gap-1 px-3 lg:px-[14px] h-[38px] lg:h-[31px] hover:bg-white/5 text-white border border-secondary-gray rounded-base leading-6 whitespace-nowrap">
                 <Image
                   src="/icons/discord-logo.svg"
                   alt="discord-logo"
@@ -101,7 +101,7 @@ const FeedbackModal = ({
               </button>
             </Link>
             <button
-              className="px-7 h-[31px] bg-white text-black border border-white rounded-base leading-6 whitespace-nowrap"
+              className="px-3 lg:px-7 h-[38px] lg:h-[31px] bg-white text-black border border-white rounded-base leading-6 whitespace-nowrap"
               type="button"
               onClick={(e) => {
                 e.preventDefault();
@@ -116,12 +116,12 @@ const FeedbackModal = ({
       }
     >
       <DialogHeader>
-        <DialogTitle className="font-normal text-lg/6">
+        <DialogTitle className="font-normal text-lg/6 text-left">
           Contact Genie DEX team
         </DialogTitle>
       </DialogHeader>
       <form onSubmit={handleSubmit}>
-        <div className="flex flex-row gap-3 mt-4 mb-5">
+        <div className="flex flex-row gap-3 mt-4 mb-3 lg:mb-5">
           {/* Feedback type option selector */}
           {options.map((option) => (
             <button
@@ -144,7 +144,7 @@ const FeedbackModal = ({
             setFeedback(event.target.value);
           }}
           value={feedback}
-          className="min-w-[954px] h-[228px] border border-secondary-gray max-w-[694px]"
+          className="min-w-full lg:min-w-[954px] h-[228px] border border-secondary-gray max-w-[694px]"
         />
       </form>
       {status === "success" && (
