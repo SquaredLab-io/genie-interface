@@ -10,6 +10,7 @@ import FeedbackModal from "./feedback-modal";
 import ConnectWallet from "../ConnectWallet";
 import FaucetModal from "@components/common/Header/faucet-modal";
 import PointsNavigation from "./points-navigation";
+import MobileNavigation from "./mobile-navigation";
 
 const Header = () => {
   const pathname = usePathname();
@@ -18,12 +19,15 @@ const Header = () => {
 
   return (
     <header className="flex flex-row flex-grow py-4 px-5 justify-between font-sans-ibm-plex max-w-full">
-      <nav className="flex justify-start items-center gap-12" aria-label="Global">
+      <nav
+        className="flex justify-between lg:justify-start items-center gap-12 w-full lg:max-w-fit"
+        aria-label="Global"
+      >
         {/* Brand Logo */}
         <Link href="/" className="-m-1.5 p-1.5 max-w-fit">
           <span className="sr-only">Genie | SquaredLabs</span>
           <Image
-            src="/images/logo-wide.svg"
+            src="/images/logo-wide-color.svg"
             alt={`${meta.APP_NAME} logo`}
             width={116.37}
             height={42.46}
@@ -66,6 +70,13 @@ const Header = () => {
           >
             Faucet
           </button>
+        </div>
+        <div className="lg:hidden max-w-fit">
+          <MobileNavigation
+            items={navigation}
+            setIsModalOpen={setIsModalOpen}
+            setIsFaucetOpen={setIsFaucetOpen}
+          />
         </div>
       </nav>
       <div className="hidden lg:inline-flex gap-6">
