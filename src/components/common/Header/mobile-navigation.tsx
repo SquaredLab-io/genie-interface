@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, FC, SetStateAction } from "react";
+import { Dispatch, FC, SetStateAction, useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -33,8 +33,9 @@ const MobileNavigation: FC<MobileNavigationProps> = ({
   setIsFaucetOpen,
   className
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="max-w-fit">
           <Image
@@ -45,12 +46,12 @@ const MobileNavigation: FC<MobileNavigationProps> = ({
           />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right">
+      <SheetContent side="right" className={className}>
         <SheetHeader>
           <SheetTitle>
             {/* Brand Logo */}
             <Link href="/" className="max-w-fit float-right mt-1">
-              <span className="sr-only">Genie | SquaredLabs</span>
+              <span className="sr-only">Genie DEX</span>
               <Image
                 src="/images/logo-wide-color.svg"
                 alt={`${meta.APP_NAME} logo`}
@@ -68,6 +69,9 @@ const MobileNavigation: FC<MobileNavigationProps> = ({
               href={item.href}
               target={item.target}
               className="text-lg/6 font-semibold transition-colors hover:text-primary text-right"
+              onClick={() => {
+                setIsOpen(false);
+              }}
             >
               {item.name}
             </Link>
@@ -78,6 +82,7 @@ const MobileNavigation: FC<MobileNavigationProps> = ({
             )}
             onClick={() => {
               setIsModalOpen(true);
+              setIsOpen(false);
             }}
           >
             Feedback & Support
@@ -88,6 +93,7 @@ const MobileNavigation: FC<MobileNavigationProps> = ({
             )}
             onClick={() => {
               setIsFaucetOpen(true);
+              setIsOpen(false);
             }}
           >
             Faucet
