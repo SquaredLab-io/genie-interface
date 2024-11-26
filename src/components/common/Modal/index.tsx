@@ -20,11 +20,6 @@ import {
 import { Close } from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { useMediaQuery } from "usehooks-ts";
-import { cn } from "@lib/utils";
-import { FormLabel } from "@components/ui/form";
-import { Button } from "@components/ui/button";
-import { Input } from "@components/ui/input";
-import { Label } from "@components/ui/label";
 
 interface Props {
   children: React.ReactNode;
@@ -87,9 +82,7 @@ const Modal: React.FC<Props> = ({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerTrigger asChild>
-        <Button variant="outline">{trigger}</Button>
-      </DrawerTrigger>
+      <DrawerTrigger asChild>{trigger}</DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>{title}</DrawerTitle>
