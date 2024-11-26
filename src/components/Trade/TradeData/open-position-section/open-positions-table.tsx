@@ -1,3 +1,12 @@
+import { useAccount } from "wagmi";
+import { useMemo } from "react";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable
+} from "@tanstack/react-table";
+import NextImage from "@components/common/NextImage";
 import {
   Table,
   TableBody,
@@ -6,15 +15,6 @@ import {
   TableHeader,
   TableRow
 } from "@components/ui/table";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable
-} from "@tanstack/react-table";
-import NextImage from "@components/common/NextImage";
-import { useAccount } from "wagmi";
-import { useMemo } from "react";
 
 interface PropsType<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

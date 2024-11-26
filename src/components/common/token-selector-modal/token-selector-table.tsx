@@ -39,8 +39,6 @@ const TokenSelectorTable = <TData, TValue>({
   });
   const router = useRouter();
 
-  const { updateSelectedPool } = usePoolsStore();
-
   return (
     <Table>
       <TableHeader className="font-sans-ibm-plex">

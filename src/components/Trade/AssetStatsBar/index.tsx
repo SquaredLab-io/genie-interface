@@ -9,9 +9,9 @@ import { usePoolsStore } from "@store/poolsStore";
 const AssetStatsBar: FC = () => {
   const { selectedPool } = usePoolsStore();
   return (
-    <div className="flex flex-row items-center flex-auto w-full border-b border-secondary-gray">
+    <div className="flex flex-col lg:flex-row items-start lg:items-center justify-center lg:justify-start flex-auto w-full border-b border-secondary-gray">
       <TokenSelector selectedPool={selectedPool()} />
-      <Separator orientation="vertical" />
+      <Separator orientation="vertical" className="hidden lg:block" />
       <PricesBar selectedPool={selectedPool()} />
     </div>
   );

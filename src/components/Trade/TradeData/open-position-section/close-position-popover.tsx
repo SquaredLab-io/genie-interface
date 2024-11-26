@@ -33,7 +33,7 @@ import {
 } from "@lib/utils/formatting";
 import { CONFIRMATION } from "@lib/constants";
 import { isValidPositiveNumber } from "@lib/utils/checkVadility";
-import { notificationId } from "../helper";
+import { notificationId } from "../../helper";
 import { useOpenOrders } from "@lib/hooks/useOpenOrders";
 import useUnderlyingEstimateOut from "@lib/hooks/useUnderlyingEstimateOut";
 import { useTxHistory } from "@lib/hooks/useTxHistory";

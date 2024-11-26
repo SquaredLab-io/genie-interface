@@ -6,7 +6,7 @@ const TokenSelector = ({ selectedPool }: { selectedPool: PoolInfo | undefined })
   const { setOpenTokenSelectorModal } = useModalStore();
   return (
     <button
-      className="group flex flex-row justify-normal items-center text-left py-3 px-5 gap-2 min-w-fit"
+      className="group flex flex-row justify-normal items-center text-left py-3 px-3 lg:px-5 gap-2 min-w-fit"
       onClick={() => setOpenTokenSelectorModal(true)}
     >
       {/* Tokens Images */}
@@ -19,11 +19,11 @@ const TokenSelector = ({ selectedPool }: { selectedPool: PoolInfo | undefined })
         />
       </div>
       {/* Tokens Symbols */}
-      <div className="inline-flex items-center gap-1">
+      <div className="inline-flex items-center gap-2">
         <span className="text-base/5 font-medium text-nowrap">
           {selectedPool?.pool.split(" / ").join("")}
         </span>
-        <span className="text-nowrap font-normal text-2xs/[14px] rounded-sm py-px px-[4.5px] text-white bg-text-grad bg-gradient-blue">
+        <span className="text-nowrap font-normal text-xs/[14px] rounded-sm py-[2px] px-1 opacity-90 bg-gradient-cyan">
           p = {selectedPool?.power}
         </span>
       </div>

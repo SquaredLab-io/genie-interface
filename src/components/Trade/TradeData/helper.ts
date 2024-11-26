@@ -4,16 +4,19 @@ import {
   Tx
 } from "@squaredlab-io/sdk/src/interfaces/index.interface";
 
-export function getOpenTransactions(openOrders: AllPositions | undefined): OpenPositionInfo[] {
+export function getOpenTransactions(
+  openOrders: AllPositions | undefined
+): OpenPositionInfo[] {
   if (!openOrders) return [];
   const longPos = openOrders.longPositions;
   const shortPos = openOrders.shortPositions;
-  
+
   const data = [...longPos, ...shortPos];
   return data.filter((pos) => parseFloat(pos.tokenSize) !== 0);
 }
 
 export function getClosedTransactions(transactions?: Tx[]): Tx[] {
+  console.log("closed txs", transactions);
   if (!transactions) return new Array<Tx>();
   return transactions
     .filter((tx) => tx.action === "CL" || tx.action === "CS")
