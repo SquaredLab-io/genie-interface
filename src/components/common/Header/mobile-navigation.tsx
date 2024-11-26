@@ -37,7 +37,7 @@ const MobileNavigation: FC<MobileNavigationProps> = ({
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="max-w-fit">
+        <Button variant="ghost" size="icon">
           <Image
             src="/icons/DoubleHamMenuIcon.svg"
             alt="Navigation Menu button"

@@ -11,7 +11,7 @@ import Image from "next/image";
 import { useMemo } from "react";
 import { useAccount, useBalance } from "wagmi";
 
-const ConnectWallet = () => {
+const ConnectWallet = ({ isBalance = true }: { isBalance?: boolean }) => {
   const { address, isConnected } = useAccount();
   const { data, isLoading, isSuccess } = useBalance({
     address
@@ -42,7 +42,7 @@ const ConnectWallet = () => {
 
   return (
     <>
-      {isConnected && <NativeBalance />}
+      {isConnected && isBalance && <NativeBalance />}
       <ConnectButton label="Connect Wallet" showBalance={false} />
     </>
   );

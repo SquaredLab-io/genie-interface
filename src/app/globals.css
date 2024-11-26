@@ -50,6 +50,14 @@
     @apply bg-gradient-to-r from-primary-cyan to-primary-blue;
   }
 
+  .bg-gradient-cyan {
+    background: linear-gradient(
+      284.37deg,
+      rgba(0, 153, 255, 0.4) 0%,
+      rgba(0, 204, 255, 0.4) 100%
+    );
+  }
+
   .bg-gradient-white {
     @apply bg-gradient-to-r from-white to-off-white;
   }

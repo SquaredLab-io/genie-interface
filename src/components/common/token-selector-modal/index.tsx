@@ -1,6 +1,7 @@
 // Library Imports
-import { FC, memo, ReactNode, useState } from "react";
+import { FC, memo, ReactNode, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useMediaQuery } from "usehooks-ts";
 // Component Imports
 import Modal from "@components/common/Modal";
 import { Separator } from "@components/ui/separator";
@@ -10,8 +11,11 @@ import SearchInput from "@components/PoolOverview/pool-overview-modal/SearchInpu
 import { usePools } from "@lib/hooks/usePools";
 import { REFETCH_INTERVAL } from "@lib/constants";
 import getPoolsMarketData from "@lib/utils/getPoolsData";
-import { FetchPoolsDataResponse, useFilteredPoolOverview } from "@lib/hooks/useFilteredPoolOverview";
-import { poolsColumnDef } from "./poolsColumnDef";
+import {
+  FetchPoolsDataResponse,
+  useFilteredPoolOverview
+} from "@lib/hooks/useFilteredPoolOverview";
+import { poolsColumnDef, poolsMobileColumnDef } from "./poolsColumnDef";
 
 interface PropsType {
   children?: ReactNode | undefined;
@@ -23,7 +27,11 @@ const TokenSelectorModal: FC<PropsType> = ({ children, open, setOpen }) => {
   const [term, setTerm] = useState("");
   const { pools, isFetching } = usePools();
 
-  const poolsColumns = poolsColumnDef();
+  const isMobile = useMediaQuery("(max-width: 640px)"); // tailwind `sm`
+
+  const poolsColumns = useMemo(() => {
+    return isMobile ? poolsMobileColumnDef() : poolsColumnDef();
+  }, [isMobile]);
 
   // get pools_market_data
   const { data: poolOverviewData, isLoading: isPoolOverviewDataLoading } = useQuery<

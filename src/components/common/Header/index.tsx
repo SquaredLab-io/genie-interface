@@ -11,16 +11,18 @@ import ConnectWallet from "../ConnectWallet";
 import FaucetModal from "@components/common/Header/faucet-modal";
 import PointsNavigation from "./points-navigation";
 import MobileNavigation from "./mobile-navigation";
+import { useMediaQuery } from "usehooks-ts";
 
 const Header = () => {
   const pathname = usePathname();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isFaucetOpen, setIsFaucetOpen] = useState<boolean>(false);
+  const isDesktop = useMediaQuery("(min-width: 640px)"); // tailwind `sm`
 
   return (
-    <header className="flex flex-row flex-grow py-4 px-5 justify-between font-sans-ibm-plex max-w-full">
+    <header className="flex flex-row flex-grow pt-3 pb-5 md:py-4 px-3 md:px-5 justify-between font-sans-ibm-plex max-w-full">
       <nav
-        className="flex justify-between lg:justify-start items-center gap-12 w-full lg:max-w-fit"
+        className="flex justify-between lg:justify-start items-center gap-12 max-w-fit"
         aria-label="Global"
       >
         {/* Brand Logo */}
@@ -34,7 +36,7 @@ const Header = () => {
             priority
           />
         </Link>
-        <div className="hidden lg:flex gap-x-6 lg:gap-x-11 font-medium text-[14px]/[22px] 2xl:text-[14px]/[22px] 3xl:text-[15.75px] uppercase">
+        <div className="hidden lg:flex gap-x-6 lg:gap-x-8 xl:gap-x-11 font-medium text-[14px]/[22px] 2xl:text-[14px]/[22px] 3xl:text-[15.75px] uppercase">
           {navigation.map((item) => (
             <Link
               key={item.name}
@@ -71,17 +73,18 @@ const Header = () => {
             Faucet
           </button>
         </div>
-        <div className="lg:hidden max-w-fit">
+      </nav>
+      <div className="inline-flex gap-3 sm:gap-6 max-w-fit">
+        {/* only show points in desktop */}
+        {isDesktop && <PointsNavigation />}
+        <ConnectWallet isBalance={isDesktop} />
+        <div className="lg:hidden">
           <MobileNavigation
             items={navigation}
             setIsModalOpen={setIsModalOpen}
             setIsFaucetOpen={setIsFaucetOpen}
           />
         </div>
-      </nav>
-      <div className="hidden lg:inline-flex gap-6">
-        <PointsNavigation />
-        <ConnectWallet />
       </div>
       {isFaucetOpen && <FaucetModal open={isFaucetOpen} setOpen={setIsFaucetOpen} />}
       {isModalOpen && <FeedbackModal open={isModalOpen} setOpen={setIsModalOpen} />}

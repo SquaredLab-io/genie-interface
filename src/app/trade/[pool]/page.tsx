@@ -4,7 +4,6 @@ import { useParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useWindowSize } from "usehooks-ts";
 import { usePools } from "@lib/hooks/usePools";
-import MobileInfoScreen from "@components/common/MobileInfoScreen";
 import NotFoundCommon from "@components/common/not-found-common";
 import Loading from "@app/loading";
 import { usePoolsStore } from "@store/poolsStore";
@@ -39,38 +38,30 @@ export default function TradePage() {
     }
   }, [currentPool]);
 
-  const TradeInterface = () => {
-    if (isFetching || status === "pending" || width === 0) return <Loading />;
-    // If there's an error fetching pools
-    else if (status === "error") {
-      return (
-        <NotFoundCommon
-          title="404 Pools not found"
-          subText="Sorry, but unable to find any pools"
-        />
-      );
-    }
-
-    // Not fetching pools anymore, but didn't find the pool for overview
-    else if (status === "success" && !currentPool) {
-      return (
-        <NotFoundCommon
-          title={`404 ${underlying.toUpperCase()} Pool not found`}
-          subText="Sorry, but the pool you were looking for could not be found"
-        />
-      );
-    }
-
+  if (isFetching || status === "pending" || width === 0) return <Loading />;
+  // If there's an error fetching pools
+  else if (status === "error") {
     return (
-      <main className="page-center">
-        <Trade />
-      </main>
+      <NotFoundCommon
+        title="404 Pools not found"
+        subText="Sorry, but unable to find any pools"
+      />
     );
-  };
+  }
 
-  const render = useMemo(() => {
-    return width <= 1024 ? MobileInfoScreen : <TradeInterface />;
-  }, [width, isFetching, currentPool, status, pools]);
+  // Not fetching pools anymore, but didn't find the pool for overview
+  else if (status === "success" && !currentPool) {
+    return (
+      <NotFoundCommon
+        title={`404 ${underlying.toUpperCase()} Pool not found`}
+        subText="Sorry, but the pool you were looking for could not be found"
+      />
+    );
+  }
 
-  return render;
+  return (
+    <main className="page-center">
+      <Trade />
+    </main>
+  );
 }

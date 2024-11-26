@@ -31,7 +31,6 @@ const PointsNavigation = () => {
       <button
         className="inline-flex items-center gap-x-1 text-sm max-w-fit px-2 -mx-2 select-none hover:scale-105 active:scale-95 transition-transform duration-200"
         onMouseEnter={() => setIsPointsPopoverOpen(true)}
-        // onMouseLeave={() => setIsPointsPopoverOpen(false)}
       >
         <Image
           src="/icons/PointsIcon.svg"
@@ -40,9 +39,6 @@ const PointsNavigation = () => {
           width={24}
         />
         <span className="font-normal leading-5 ml-1">{displayPoints} Gpoints</span>
-        {/* <span className="font-medium leading-4 font-sans-ibm-plex text-primary-green bg-primary-green/10 py-0.5 px-1 rounded-base">
-                1.5x
-              </span> */}
       </button>
     </PointsPopover>
   ) : (
