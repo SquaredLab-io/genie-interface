@@ -33,7 +33,7 @@ const Trade = () => {
         {/* top box */}
         <div className="flex-auto flex flex-row min-w-full">
           {/* left section -- (flexible) */}
-          <div className="flex flex-col flex-auto max-w-[calc(100vw-346px)] border-r border-t border-secondary-gray">
+          <div className="flex flex-col flex-auto max-w-full lg:max-w-[calc(100vw-346px)] border-r border-t border-secondary-gray">
             <AssetStatsBar />
             <div className="grid grid-cols-[1fr_1fr_1fr_1fr] w-full h-full">
               {isScriptReady && potentia ? (
@@ -41,12 +41,12 @@ const Trade = () => {
               ) : (
                 <ChartLoader />
               )}
-              {/* <TradeFlow /> */}
             </div>
+            {/* <TradeFlow /> */}
           </div>
 
           {/* right section -- (fixed width) */}
-          <div className="flex flex-auto flex-grow min-w-[346px] w-[346px] max-w-[346px]">
+          <div className="hidden lg:flex flex-auto flex-grow min-w-[346px] w-[346px] max-w-[346px]">
             <TradeSection />
           </div>
         </div>
@@ -61,7 +61,7 @@ const Trade = () => {
             <TradeData containerRef={tradeDataContainerRef} />
           </div>
           {/* right section -- (fixed width) */}
-          <div className="flex flex-initial min-w-[346px] w-[346px] max-w-[346px]">
+          <div className="hidden lg:flex flex-initial min-w-[346px] w-[346px] max-w-[346px]">
             <MarketData />
           </div>
         </div>
