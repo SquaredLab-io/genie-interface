@@ -13,6 +13,9 @@ import {
 } from "@lib/utils/formatting";
 import { cn } from "@lib/utils";
 import { usePoolsStore } from "@store/poolsStore";
+import { useMemo } from "react";
+import { useMediaQuery } from "usehooks-ts";
+import TradeHistoryCards from "./trade-history-cards";
 
 const TradeHistorySection = ({
   closedPositions,
@@ -21,6 +24,7 @@ const TradeHistorySection = ({
   closedPositions: Tx[];
   isTradeLoading: boolean;
 }) => {
+  const isDesktop = useMediaQuery("(min-width: 768px)"); // tailwind `md`
   const { poolMap } = usePoolsStore();
 
   const transactionsColumns: ColumnDef<Tx>[] = [
@@ -148,13 +152,17 @@ const TradeHistorySection = ({
     }
   ];
 
-  return (
-    <TradeHistoryTable
-      columns={transactionsColumns}
-      data={closedPositions}
-      isLoading={isTradeLoading}
-    />
-  );
+  return useMemo(() => {
+    return isDesktop ? (
+      <TradeHistoryTable
+        columns={transactionsColumns}
+        data={closedPositions}
+        isLoading={isTradeLoading}
+      />
+    ) : (
+      <TradeHistoryCards data={closedPositions} isLoading={isTradeLoading} />
+    );
+  }, [isDesktop, closedPositions, isTradeLoading]);
 };
 
 export default TradeHistorySection;

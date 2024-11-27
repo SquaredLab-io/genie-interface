@@ -105,14 +105,35 @@ const HistoryCard = ({ tx }: { tx: Tx }) => {
             </span>
           </p>
         </div>
-        {/* PNL */}
+        {/* Time */}
         <div className="flex flex-col items-start gap-2">
-          <h4 className="font-bold text-sm/[18px] text-[#5F7183]">P&L</h4>
-          <p className="flex flex-col items-start gap-[2px] max-w-fit">
+          <h4 className="font-bold text-sm/[18px] text-[#5F7183]">Time</h4>
+          <p className="flex flex-col items-start max-w-fit">
             <span>{date}</span>
             <span className="font-normal text-xs/4 text-[#9299AA]">{time}</span>
           </p>
         </div>
+        {/* PNL */}
+        <div className="flex flex-col items-start gap-2">
+          <h4 className="font-bold text-sm/[18px] text-[#5F7183]">P&L</h4>
+          <span className="font-normal text-xs/4 text-[#9299AA]">-</span>
+        </div>
+        {/* 30 days volume */}
+        {/* <div className="flex flex-col items-start gap-2">
+          <h4 className="font-bold text-sm/[18px] text-[#5F7183]">30D Volume</h4>
+          <p className="flex flex-col items-start gap-[2px] max-w-fit">
+            <span>{date}</span>
+            <span className="font-normal text-xs/4 text-[#9299AA]">{time}</span>
+          </p>
+        </div> */}
+        {/* 30 days fees */}
+        {/* <div className="flex flex-col items-start gap-2">
+          <h4 className="font-bold text-sm/[18px] text-[#5F7183]">30D Fees</h4>
+          <p className="flex flex-col items-start gap-[2px] max-w-fit">
+            <span>{date}</span>
+            <span className="font-normal text-xs/4 text-[#9299AA]">{time}</span>
+          </p>
+        </div> */}
       </div>
     </div>
   );
