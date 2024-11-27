@@ -23,7 +23,7 @@ interface ReturnType {
  * @param paused Pause the auto fetching
  * @returns openOrders, isFetching, getOpenOrders
  */
-export function useOpenOrders({ paused = false }: PropsType): ReturnType {
+export function useOpenOrders({ paused = false }: PropsType = {}): ReturnType {
   // wallet info hooks
   const { address } = useAccount();
   const { status } = useWalletClient();

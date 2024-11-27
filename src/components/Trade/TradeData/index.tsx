@@ -26,9 +26,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
 
   // All Transactions -- LP, Open Long/Short, Close Long/Short
   const { data: tradeHistory, isFetching: isTradeLoading } = useTxHistory();
-  const { openOrders, isFetching: loadingOpenOrders } = useOpenOrders({
-    poolAddress: selectedPool()?.poolAddr!
-  });
+  const { openOrders, isFetching: loadingOpenOrders } = useOpenOrders();
 
   const openPositions = useMemo(() => getOpenTransactions(openOrders), [openOrders]);
 
@@ -62,7 +60,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
     "data-[state=active]:bg-white data-[state=active]:text-black uppercase py-2 px-4";
 
   return (
-    <div className="w-full font-medium text-xs leading-4 h-[276px]">
+    <div className="w-full font-medium text-xs leading-4 lg:h-[276px]">
       {/* Tab Row */}
       <Tabs defaultValue={Tab.position}>
         <TabsList
@@ -82,7 +80,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
         <TabsContent
           value={Tab.position}
           style={{ maxHeight: `${tableHeight}px` }}
-          className="min-h-[235px] overflow-y-auto trade-history"
+          className="min-h-[calc(100vh-454px)] lg:min-h-[235px]  overflow-y-auto trade-history"
         >
           <OpenPositionSection
             openPositions={openPositions}
@@ -93,7 +91,7 @@ const TradeData = ({ containerRef }: { containerRef: RefObject<HTMLDivElement> }
         <TabsContent
           value={Tab.history}
           style={{ maxHeight: `${tableHeight}px` }}
-          className="min-h-[235px] overflow-y-scroll trade-history"
+          className="min-h-[calc(100vh-454px)] lg:min-h-[235px]  overflow-y-auto trade-history"
         >
           <TradeHistorySection
             closedPositions={closedPositions}

@@ -35,7 +35,7 @@ const Trade = () => {
           {/* left section -- (flexible) */}
           <div className="flex flex-col flex-auto max-w-full lg:max-w-[calc(100vw-346px)] border-r border-t border-secondary-gray">
             <AssetStatsBar />
-            <div className="grid grid-cols-[1fr_1fr_1fr_1fr] w-full h-full">
+            <div className="grid grid-cols-[1fr_1fr_1fr_1fr] w-full h-full min-h-96">
               {isScriptReady && potentia ? (
                 <TradeChart potentia={potentia} />
               ) : (

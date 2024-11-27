@@ -147,7 +147,3 @@ const TradeChart = ({ potentia }: PropsType) => {
 };
 
 export default memo(TradeChart);
-
-/**
- * return <div ref={chartContainerRef} className="col-span-4 xl:col-span-3" />;
- */
