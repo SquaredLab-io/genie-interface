@@ -1,21 +1,12 @@
+import AppDrawer from "@components/common/AppDrawer.tsx";
 // Library Imports
-import {
-  ChangeEvent,
-  FC,
-  memo,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { Address } from "viem";
 import { toast } from "sonner";
 import BigNumber from "bignumber.js";
 import { useAccount, useWaitForTransactionReceipt } from "wagmi";
 import { OpenPositionInfo } from "@squaredlab-io/sdk";
 // Component Imports
-import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover";
 import { Separator } from "@components/ui/separator";
 import DropDownIcon from "@components/icons/DropDownIcon";
 import SliderBar from "@components/common/slider-bar";
@@ -41,15 +32,18 @@ import useTokenBalance from "@lib/hooks/useTokenBalance";
 import { useTradeStore } from "@store/tradeStore";
 import { useUserPoints } from "@lib/hooks/useUserPoints";
 import { z } from "zod";
+import Image from "next/image";
 
 interface PropsType {
-  children: ReactNode;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  // children: React.ReactNode;
   position: OpenPositionInfo;
   isLong: boolean;
+  className?: string;
 }
 
-const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const ClosePositionDrawer = ({ open, onOpenChange, position, isLong }: PropsType) => {
   const [quantity, setQuantity] = useState("");
   const [inputAmount, setInputAmount] = useState("");
   const [sliderValue, setSliderValue] = useState(0);
@@ -101,11 +95,11 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
     const amount = getDecimalDeadjusted(quantity, poolData.decimals);
     // const amount = BigInt(quantity).toString();
     setIsHandlerLoading(true);
-    notification.loading({
-      id: close_event.loading_init,
-      title: "Close Position Initiated",
-      description: "Please accept the transaction."
-    });
+    // notification.loading({
+    //   id: close_event.loading_init,
+    //   title: "Close Position Initiated",
+    //   description: "Please accept the transaction."
+    // });
     try {
       const hash = await potentia?.poolWrite.closePosition(
         position?.pool!,
@@ -137,20 +131,20 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
   const handleTransactionStatus = useCallback(
     (status: "loading" | "success" | "error", errorMessage?: string) => {
       switch (status) {
-        case "loading":
-          notification.loading({
-            id: close_event.loading,
-            title: "Closing Position",
-            description: "This may take ~30 seconds."
-          });
-          break;
+        // case "loading":
+        //   notification.loading({
+        //     id: close_event.loading,
+        //     title: "Closing Position",
+        //     description: "This may take ~30 seconds."
+        //   });
+        //   break;
         case "success":
-          toast.dismiss(close_event.loading);
-          notification.success({
-            id: close_event.success,
-            title: "Position Closed Successfully",
-            description: "Your position has been closed."
-          });
+          // toast.dismiss(close_event.loading);
+          // notification.success({
+          //   id: close_event.success,
+          //   title: "Position Closed Successfully",
+          //   description: "Your position has been closed."
+          // });
           refetchOpenOrders();
           refetchTxHistory();
           refetchBalance();
@@ -162,7 +156,6 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
             id: close_event.error,
             title: "Transaction Failed",
             description: "Closing position failed. Please try again."
-            // description: errorMessage || "An error occurred"
           });
           break;
       }
@@ -226,116 +219,138 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
 
   const isPopoverClosingDisabled = isHandlerLoading || isLoading;
   useEffect(() => {
-    if (isHandlerLoading || isLoading || isOpen) {
+    if (isHandlerLoading || isLoading || open) {
       setClosePopoverDisabled(true);
     } else {
       setClosePopoverDisabled(false);
     }
-  }, [isHandlerLoading, isLoading, isOpen]);
+  }, [isHandlerLoading, isLoading, open]);
 
-  const handleOpenChange = useCallback((open: boolean) => {
-    setIsOpen(open);
-  }, []);
+  const TransactionLoading = () => (
+    <div className="py-60 flex flex-col items-center justify-center gap-2 text-center">
+      <SpinnerIcon stroke="#F7931A" height={44} width={44} />
+      <h3 className="text-[#F7931A] text-semibold text-base/[26px] mt-3">
+        Closing Position...
+      </h3>
+      <p className="font-normal text-sm/5 text-[#979797] max-w-64">
+        Executing your trade, this will take less than 30 seconds
+      </p>
+    </div>
+  );
+
+  const TransactionSuccess = () => (
+    <div className="py-60 flex flex-col items-center justify-center gap-2 text-center">
+      <Image
+        src="/icons/toast-success.svg"
+        height={44}
+        width={44}
+        alt="Position successfully closed"
+      />
+      <h3 className="text-[#07AD3B] text-semibold text-base/[26px] mt-3">
+        Trade Executed Successfully
+      </h3>
+      <p className="font-normal text-sm/5 text-[#979797] max-w-64">
+        Trade was executed successfully, please check the transactions
+      </p>
+    </div>
+  );
 
   return (
-    <Popover
-      open={isPopoverClosingDisabled ? true : isOpen}
-      onOpenChange={handleOpenChange}
-      modal={true}
-    >
-      <PopoverTrigger asChild className="min-w-fit z-50">
-        {children}
-      </PopoverTrigger>
-      <PopoverContent
-        side="top"
-        className="bg-primary-gray border border-secondary-gray rounded-base p-0"
-      >
-        {/* Title */}
-        <h1 className="text-center font-sans-ibm-plex font-medium text-sm/5 mt-[14px] mb-2">
-          {`Close ${isLong ? "Long" : "Short"} Position`}
-        </h1>
-        {/* Closing Amount Container - Input, Token */}
-        <div className="flex flex-col gap-2 text-left text-xs/4 font-medium text-[#9299AA] py-4 px-2">
-          <label htmlFor="quantity">Quantity</label>
-          <div
-            className={cn(
-              "flex flex-col items-start w-full border-spacing-0 border rounded-[4px] py-2 pl-3 pr-4 mb-1",
-              balanceExceedError ? "border-error-red" : "border-secondary-gray"
-            )}
-          >
-            <div className="inline-flex justify-between items-center w-full">
-              <input
-                type="number"
-                value={inputAmount}
-                placeholder="0"
-                onChange={inputHandler}
-                id="quantity"
-                className="bg-transparent p-2 w-full placeholder:text-[#6D6D6D] text-white font-semibold text-sm/6 focus:outline-none"
-              />
+    <AppDrawer open={open} onOpenChange={onOpenChange} className="pt-5 pb-8 text-left">
+      {isLoading && isPending ? (
+        <TransactionLoading />
+      ) : isSuccess ? (
+        <TransactionSuccess />
+      ) : (
+        <>
+          {/* Title */}
+          <h1 className="text-left font-sans-ibm-plex font-medium text-base/5 mb-[18px] px-3">
+            {`Close ${isLong ? "Long" : "Short"} Position`}
+          </h1>
+          {/* Closing Amount Container - Input, Token */}
+          <div className="flex flex-col gap-2 text-left text-xs/[14px] font-normal text-[#9299AA] pb-5 px-3">
+            <label htmlFor="quantity">Quantity</label>
+            <div
+              className={cn(
+                "flex flex-col items-start w-full border-spacing-0 border rounded-[4px] p-3 mb-1",
+                balanceExceedError ? "border-error-red" : "border-secondary-gray"
+              )}
+            >
+              <div className="inline-flex justify-between items-center w-full text-base/5 font-normal">
+                <input
+                  type="number"
+                  value={inputAmount}
+                  placeholder="0"
+                  onChange={inputHandler}
+                  id="quantity"
+                  className="bg-transparent p-2 w-full placeholder:text-[#6D6D6D] text-white focus:outline-none"
+                />
+                <p className="inline-flex items-center gap-[2px]">
+                  <span className="w-fit text-[#6D6D6D] items-center justify-between rounded-md">
+                    {poolData.underlying}
+                    <sup>{poolData.power}</sup>
+                  </span>
+                  <span className="opacity-60">{isLong ? "L" : "S"}</span>
+                </p>
+              </div>
+              <span className={cn(balanceExceedError && "text-error-red")}>
+                Balance:{" "}
+                {formatNumber(getDecimalAdjusted(balance.toFixed(0), poolData.decimals))}
+              </span>
+            </div>
+            <SliderBar
+              value={sliderValue}
+              setValue={sliderHandler}
+              min={0}
+              max={100}
+              indices={[0, 25, 50, 75, 100]}
+              isPerc={true}
+            />
+          </div>
+          <Separator />
+          <div className="flex flex-col gap-3 pt-2 px-3">
+            <div className="w-full px-4 mt-1 inline-flex items-center justify-between font-medium text-xs/4">
+              <span>Payout</span>
               <p className="inline-flex items-center gap-[2px]">
-                <span className="w-fit text-[#6D6D6D] items-center justify-between rounded-md text-sm">
+                <span>
+                  {isOutputFetching
+                    ? "..."
+                    : isValidQuantity
+                      ? formatNumber(getDecimalAdjusted(output, poolData.decimals))
+                      : "N/A"}{" "}
                   {poolData.underlying}
-                  <sup>{poolData.power}</sup>
                 </span>
-                <span className="opacity-60">{isLong ? "L" : "S"}</span>
+                <DropDownIcon className="w-3" />
               </p>
             </div>
-            <span className={cn(balanceExceedError && "text-error-red")}>
-              Balance:{" "}
-              {formatNumber(getDecimalAdjusted(balance.toFixed(0), poolData.decimals))}
-            </span>
+            {/* CTA -- Close Position */}
+            <button
+              className={cn(
+                "w-full py-2 uppercase text-[#CF1800] bg-[#39150F] hover:bg-[#491a12] font-sans-ibm-plex font-medium text-sm/6 transition-colors",
+                "disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed"
+              )}
+              onClick={closePositionHandlerSdk}
+              disabled={
+                !isValidPositiveNumber(quantity) ||
+                balanceExceedError ||
+                isPopoverClosingDisabled ||
+                !balance ||
+                !output ||
+                // !selectedPool() ||
+                isOutputFetching
+              }
+            >
+              {(isPopoverClosingDisabled || isOutputFetching) && !isError ? (
+                <SpinnerIcon className="size-5 mx-auto" />
+              ) : (
+                <span>CLOSE POSITION</span>
+              )}
+            </button>
           </div>
-          <SliderBar
-            value={sliderValue}
-            setValue={sliderHandler}
-            min={0}
-            max={100}
-            indices={[0, 25, 50, 75, 100]}
-            isPerc={true}
-          />
-        </div>
-        <Separator />
-        <div className="flex flex-col gap-3 p-2">
-          <div className="w-full px-4 mt-1 inline-flex items-center justify-between font-medium text-xs/4">
-            <span>Payout</span>
-            <p className="inline-flex items-center gap-[2px]">
-              <span>
-                {isOutputFetching
-                  ? "..."
-                  : isValidQuantity
-                    ? formatNumber(getDecimalAdjusted(output, poolData.decimals))
-                    : "N/A"}{" "}
-                {poolData.underlying}
-              </span>
-              <DropDownIcon className="w-3" />
-            </p>
-          </div>
-          {/* CTA -- Close Position */}
-          <button
-            className={cn(
-              "w-full py-2 uppercase text-[#CF1800] bg-[#39150F] hover:bg-[#491a12] font-sans-ibm-plex font-medium text-sm/6 transition-colors",
-              "disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed"
-            )}
-            onClick={closePositionHandlerSdk}
-            disabled={
-              !isValidPositiveNumber(quantity) ||
-              balanceExceedError ||
-              isPopoverClosingDisabled ||
-              !balance ||
-              !output ||
-              isOutputFetching
-            }
-          >
-            {(isPopoverClosingDisabled || isOutputFetching) && !isError ? (
-              <SpinnerIcon className="size-5 mx-auto" />
-            ) : (
-              <span>CLOSE POSITION</span>
-            )}
-          </button>
-        </div>
-      </PopoverContent>
-    </Popover>
+        </>
+      )}
+    </AppDrawer>
   );
 };
 
-export default memo(ClosePositionPopover);
+export default ClosePositionDrawer;

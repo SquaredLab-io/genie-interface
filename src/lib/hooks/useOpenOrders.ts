@@ -7,7 +7,6 @@ import { REFETCH_INTERVAL } from "@lib/constants";
 import { useTradeStore } from "@store/tradeStore";
 
 interface PropsType {
-  poolAddress: string;
   paused?: boolean;
 }
 
@@ -21,11 +20,10 @@ interface ReturnType {
 
 /**
  *
- * @param poolAddress
  * @param paused Pause the auto fetching
  * @returns openOrders, isFetching, getOpenOrders
  */
-export function useOpenOrders({ poolAddress, paused = false }: PropsType): ReturnType {
+export function useOpenOrders({ paused = false }: PropsType): ReturnType {
   // wallet info hooks
   const { address } = useAccount();
   const { status } = useWalletClient();
@@ -47,11 +45,7 @@ export function useOpenOrders({ poolAddress, paused = false }: PropsType): Retur
     queryFn: getOpenOrders,
     refetchInterval: closePopoverDisabled ? false : REFETCH_INTERVAL,
     enabled:
-      !paused &&
-      !!poolAddress &&
-      potentia !== undefined &&
-      address !== undefined &&
-      status === "success",
+      !paused && potentia !== undefined && address !== undefined && status === "success",
     staleTime: 0, // data is treated stale immediatly after fetching
     gcTime: 0, // cache is moved to grabage collector immediatly after it's not in use
     retry: 4,

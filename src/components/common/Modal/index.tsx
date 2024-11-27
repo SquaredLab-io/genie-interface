@@ -7,19 +7,10 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@components/ui/dialog";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger
-} from "@/components/ui/drawer";
 import { Close } from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { useMediaQuery } from "usehooks-ts";
+import AppDrawer from "../AppDrawer.tsx";
 
 interface Props {
   children: React.ReactNode;
@@ -81,17 +72,16 @@ const Modal: React.FC<Props> = ({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerTrigger asChild>{trigger}</DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>{title}</DrawerTitle>
-          <DrawerDescription>{description}</DrawerDescription>
-        </DrawerHeader>
-        {children}
-        {footer && <DrawerFooter className="pt-2">{footer}</DrawerFooter>}
-      </DrawerContent>
-    </Drawer>
+    <AppDrawer
+      open={open}
+      onOpenChange={onOpenChange}
+      trigger={trigger}
+      title={title}
+      description={description}
+      footer={footer}
+    >
+      {children}
+    </AppDrawer>
   );
 };
 

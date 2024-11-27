@@ -29,6 +29,7 @@ export function createPoolMapping(
       mapping[pool.poolAddr] = {
         power: pool.power,
         underlying: pool.underlying,
+        underlyingAddress: pool.underlyingAddress,
         decimals: pool.underlyingDecimals,
         poolAddr: pool.poolAddr
       };
