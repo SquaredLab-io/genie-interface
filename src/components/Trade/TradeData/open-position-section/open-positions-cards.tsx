@@ -7,6 +7,8 @@ import { useTokenPrice } from "@lib/hooks/useTokenPrice";
 import { cn } from "@lib/utils";
 import { formatLimit, formatNumber, getDecimalAdjusted } from "@lib/utils/formatting";
 import { usePoolsStore } from "@store/poolsStore";
+import ClosePositionDrawer from "./close-position-drawer";
+import { useState } from "react";
 
 interface PropsType {
   data: OpenPositionInfo[];
@@ -14,6 +16,7 @@ interface PropsType {
 }
 
 const PositionCard = ({ data }: { data: OpenPositionInfo }) => {
+  const [isClosePosOpen, setIsClosePosOpen] = useState(false);
   const { poolMap } = usePoolsStore();
 
   const { pool, side, tokenSize, underlyingPrice, PAndLAmtInDollars, PAndLPercent } =
@@ -46,6 +49,8 @@ const PositionCard = ({ data }: { data: OpenPositionInfo }) => {
   const pAndLAmt = formatLimit(PAndLAmtInDollars, 0.01);
   const pAndLPercent = formatLimit(PAndLPercent, 0.01);
 
+  const isLong = data.side === "Long";
+
   return (
     <div className="p-3 flex flex-col gap-5 border border-secondary-gray rounded-lg">
       {/* Title */}
@@ -69,12 +74,12 @@ const PositionCard = ({ data }: { data: OpenPositionInfo }) => {
           <div className="inline-flex gap-2">
             <p className="font-bold text-sm/5">
               {assets?.map((asset, index) => (
-                <>
-                  <span key={index}>{asset}</span>
+                <span key={asset}>
+                  {asset}
                   {assets.length !== index + 1 && (
                     <span className="text-[#9299AA] mx-1">/</span>
                   )}
-                </>
+                </span>
               ))}
             </p>
             <p className="text-nowrap font-normal text-xs/[14px] bg-gradient-cyan py-[2px] px-1 rounded-sm opacity-90">
@@ -146,19 +151,27 @@ const PositionCard = ({ data }: { data: OpenPositionInfo }) => {
       </div>
       <ClosePositionButton
         onClickFn={() => {
-          console.log("close button clicked");
+          setIsClosePosOpen(true);
         }}
       />
+      {isClosePosOpen && (
+        <ClosePositionDrawer
+          open={isClosePosOpen}
+          onOpenChange={setIsClosePosOpen}
+          position={data}
+          isLong={isLong}
+        />
+      )}
     </div>
   );
 };
 
-const ClosePositionButton = ({ onClickFn }: { onClickFn: () => void }) => {
+const ClosePositionButton = ({ onClickFn }: { onClickFn?: () => void }) => {
   return (
     <button
       onClick={onClickFn}
       className={cn(
-        "w-full py-2 uppercase text-[#CF1800] bg-[#39150F] hover:bg-[#491a12] font-sans-ibm-plex font-medium text-sm/6 transition-colors rounded-base",
+        "w-full py-2 uppercase text-[#CF1800] bg-[#39150F] active:bg-[#64251B] font-sans-ibm-plex font-medium text-sm/6 transition-colors rounded-base",
         "disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed"
       )}
     >
@@ -169,6 +182,7 @@ const ClosePositionButton = ({ onClickFn }: { onClickFn: () => void }) => {
 
 const OpenPositionsCards = ({ data, isLoading }: PropsType) => {
   const { isConnected } = useAccount();
+  // const [isClosePosOpen, setIsClosePosOpen] = useState(false);
 
   if (!isConnected) {
     return (
@@ -200,7 +214,7 @@ const OpenPositionsCards = ({ data, isLoading }: PropsType) => {
       )}
     >
       {data.map((position) => (
-        <PositionCard key={position.pool} data={position} />
+        <PositionCard key={`${position.pool}_${position.side}`} data={position} />
       ))}
     </div>
   );

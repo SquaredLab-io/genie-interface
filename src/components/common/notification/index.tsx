@@ -23,7 +23,7 @@ const success = ({
       <div className="relative inline-flex items-start gap-3 min-w-[345px] py-5 px-3 bg-[#00081438] font-normal text-sm/4 rounded-sm">
         <Image
           src="/icons/toast-success.svg"
-          alt="toast success"
+          alt="Success Notification"
           height={24}
           width={24}
         />
@@ -50,7 +50,7 @@ const info = ({ id, title, description, closable = true, duration = 5000 }: Args
   return toast.custom(
     (t) => (
       <div className="relative inline-flex items-start gap-3 font-normal text-sm/4 py-5 px-3 bg-[#161A1C17]/5 w-full">
-        <Image src="/icons/toast-info.svg" alt="toast success" height={24} width={24} />
+        <Image src="/icons/toast-info.svg" alt="Information" height={24} width={24} />
         <div className="flex flex-col gap-2">
           <h2 className="text-[#F7931A]">{title}</h2>
           <p className="text-white">{description}</p>
@@ -109,7 +109,7 @@ const error = ({
   return toast.custom(
     (t) => (
       <div className="relative inline-flex items-start gap-3 font-normal text-sm/4 py-5 px-3 w-full">
-        <Image src="/icons/toast-error.svg" alt="toast success" height={24} width={24} />
+        <Image src="/icons/toast-error.svg" alt="Execution Error" height={24} width={24} />
         <div className="flex flex-col gap-2">
           <h2 className="text-[#FB3836]">{title}</h2>
           <p className="text-white">{description}</p>

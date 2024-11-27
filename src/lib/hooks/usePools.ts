@@ -7,6 +7,7 @@ import { createPoolMapping, getSupportedPools } from "@lib/utils/pools";
 export interface PoolMapping {
   power: number;
   underlying: string;
+  underlyingAddress: string;
   decimals: number;
   poolAddr: string;
 }
