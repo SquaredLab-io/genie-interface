@@ -66,13 +66,12 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
   );
 
   return (
-    <div className="flex flex-row items-center justify-start gap-6 2xl:gap-5 3xl:gap-8 h-full w-full py-3 px-3 lg:px-2 xl:px-6 font-normal text-xs/4 overflow-x-auto z-50 border-t lg:border-none border-secondary-gray">
-      <div className="inline-flex items-center gap-6 2xl:gap-5 3xl:gap-8">
-        <p className="flex flex-col items-start justify-center gap-1 -mb-1 h-full">
+    <div className="flex flex-row items-center justify-start gap-6 2xl:gap-5 3xl:gap-8 h-full w-full px-3 lg:px-2 xl:px-6 font-normal text-xs/4 overflow-x-auto z-50 border-t lg:border-none border-secondary-gray">
+      <div className="inline-flex items-center py-3 gap-6 2xl:gap-5 3xl:gap-8">
+        <p className="flex flex-col items-start justify-center gap-2 lg:gap-1 -mb-2 h-full">
           <span className="font-bold text-lg/[8px] text-white">
             {isMarketDataLoading && price === 0 ? "loading..." : (price ?? "-")}
           </span>
-          {/* TODO: Calculate and replace original price's 24h change  */}
           <span
             className={
               !!marketData?.price_change_percentage_24h &&
@@ -98,7 +97,7 @@ const PricesBar = ({ selectedPool }: PricesBarProps) => {
         />
       </div>
       <Separator orientation="vertical" />
-      <div className="inline-flex gap-6 2xl:gap-5 3xl:gap-8">
+      <div className="inline-flex gap-6 py-3 2xl:gap-5 3xl:gap-8">
         <Marker
           label="Long Price"
           value={formatNumber(parseFloat(tokenPrices?.lastLongP!))}

@@ -61,13 +61,16 @@ const TokenSelectorModal: FC<PropsType> = ({ children, open, setOpen }) => {
       onOpenChange={setOpen}
       trigger={children}
       closable={true}
-      className="bg-primary-gray min-w-[40rem] rounded-lg pt-2 pb-4"
+      className="bg-primary-gray min-w-[40rem] rounded-lg py-10 md:pt-2 md:pb-4"
     >
-      <div className="pb-4 pl-5 mr-20">
+      {/* <div className="pb-4 pl-5 mr-20"> */}
+      <div className="py-5 md:pt-0 md:pb-4 px-3 md:pr-0 md:pl-5 md:mr-20">
         <SearchInput term={term} setTerm={setTerm} placeholder="Search markets" />
       </div>
       <Separator />
-      <h1 className="inline-flex font-medium text-sm/5 pt-6 pl-4 pb-3 w-full">Pools</h1>
+      <h1 className="inline-flex font-medium text-sm/5 pt-5 lg:pt-6 pl-4 pb-5 lg:pb-3 w-full">
+        Pools
+      </h1>
       <TokenSelectorTable
         columns={poolsColumns}
         data={filteredPoolsOverview}
