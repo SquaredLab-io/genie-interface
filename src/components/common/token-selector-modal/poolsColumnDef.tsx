@@ -115,7 +115,7 @@ export function poolsMobileColumnDef(): ColumnDef<ConstructedPoolsDataResponse>[
       id: "pools",
       accessorKey: "pools",
       header: () => (
-        <div className="pl-6 text-left">
+        <div className="pl-4 text-left">
           <span>Pools</span>
         </div>
       ),
@@ -123,7 +123,7 @@ export function poolsMobileColumnDef(): ColumnDef<ConstructedPoolsDataResponse>[
         const { power, pool } = row.original;
         const assets = useMemo(() => getPoolTokens(pool), [pool]);
         return (
-          <div className="whitespace-nowrap flex flex-row gap-1 text-left font-sans-ibm-plex font-medium pl-6 py-2">
+          <div className="whitespace-nowrap flex flex-row gap-1 text-left font-sans-ibm-plex font-medium pl-4 py-0">
             <div className="flex flex-row items-center max-w-fit -space-x-2">
               {assets.map((asset) => (
                 <div
@@ -159,17 +159,18 @@ export function poolsMobileColumnDef(): ColumnDef<ConstructedPoolsDataResponse>[
     {
       id: "price",
       accessorKey: "price",
-      header: () => <span className="pr-[18px] text-right pb-2">Price (24H)</span>,
+      header: () => <span className="text-right pb-2 pr-3">Price (24H)</span>,
       cell: ({ row }) => {
         const { current_price, price_change_percentage_24h } = row.original;
+        const isPositive = price_change_percentage_24h > 0;
         return (
-          <div className="flex flex-row items-center justify-end gap-2 pr-[18px] py-2 font-normal text-xs/4">
+          <div className="flex flex-row items-center justify-end gap-2 py-2 pr-2 font-normal text-xs/4">
             <span>{formatNumber(current_price, true)}</span>
-            <div className="block py-2 h-full">
+            <div className="block h-full py-1 px-[6px] rounded-base">
               <span
                 className={cn(
-                  "rounded-base py-[4.5px] px-3 font-normal text-xs/4",
-                  price_change_percentage_24h > 0
+                  "rounded-base py-1 px-[6px] font-normal text-xs/4",
+                  isPositive
                     ? "text-positive-green bg-positive-green/5"
                     : "text-negative-red bg-negative-red/10"
                 )}

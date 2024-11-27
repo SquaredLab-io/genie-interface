@@ -1,9 +1,9 @@
 import { Tx } from "@squaredlab-io/sdk";
-import TradeHistoryTable from "./trade-history-table";
 import Image from "next/image";
 import { formatUnits } from "viem";
 import { ColumnDef } from "@tanstack/react-table";
 import { BASE_SEPOLIA } from "@lib/constants";
+import TradeHistoryTable from "./trade-history-table";
 import {
   formatLimit,
   formatNumber,

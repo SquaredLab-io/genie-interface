@@ -3,9 +3,14 @@ import { useAccount } from "wagmi";
 import { Tx } from "@squaredlab-io/sdk";
 import NextImage from "@components/common/NextImage";
 import { BASE_SEPOLIA } from "@lib/constants";
-import { useTokenPrice } from "@lib/hooks/useTokenPrice";
 import { cn } from "@lib/utils";
-import { formatLimit, formatNumber, getDecimalAdjusted } from "@lib/utils/formatting";
+import {
+  formatLimit,
+  formatNumber,
+  formatOraclePrice,
+  formatTimestamp,
+  getDecimalAdjusted
+} from "@lib/utils/formatting";
 import { usePoolsStore } from "@store/poolsStore";
 
 interface PropsType {
@@ -13,22 +18,22 @@ interface PropsType {
   isLoading: boolean;
 }
 
-const HistoryCard = ({ data }: { data: Tx }) => {
+const HistoryCard = ({ tx }: { tx: Tx }) => {
   const { poolMap } = usePoolsStore();
 
-  const { action, oraclePrice, underlying, size, poolAddress } = data;
+  const { action, size, poolAddress, oraclePrice, underlying, dateTime } = tx;
   const poolData = poolMap?.[poolAddress];
   const assets = [poolData?.underlying, "USDC"];
 
   const side = action === "CL" ? "Long" : "Short";
 
-  // Size
-  const { tokenPrices, isFetching } = useTokenPrice({
-    poolAddress
-  });
-  const tradePrice = tokenPrices
-    ? parseFloat(side === "Long" ? tokenPrices.lastLongP : tokenPrices.lastShortP)
-    : undefined;
+  const tokenPrice = formatOraclePrice(oraclePrice);
+  const tokenSize = formatLimit(
+    formatNumber(getDecimalAdjusted(size.toString(), poolData?.decimals)),
+    0.001
+  );
+  const { date, time } = formatTimestamp(dateTime);
+
   return (
     <div className="p-3 flex flex-col gap-5 border border-secondary-gray rounded-lg">
       {/* Title */}
@@ -91,39 +96,21 @@ const HistoryCard = ({ data }: { data: Tx }) => {
         {/* Token Size */}
         <div className="flex flex-col items-start gap-2">
           <h4 className="font-bold text-sm/[18px] text-[#5F7183]">Size</h4>
-          <p className="flex flex-col items-start gap-[2px]">
-            <span className="font-normal text-sm/4">{formatNumber(size.value)}</span>
-            <span className="text-[#9299AA] font-normal text-xs/4">
-              {isFetching && !sizeInDollars
-                ? "..."
-                : formatNumber(sizeInDollars.value, true)}
+          <p className="flex flex-col items-start">
+            <span>
+              {tokenSize.value} {underlying.symbol}
+            </span>
+            <span className="text-[#9299AA] text-xs">
+              {formatNumber(tokenPrice * tokenSize.value, true)}
             </span>
           </p>
         </div>
         {/* PNL */}
         <div className="flex flex-col items-start gap-2">
           <h4 className="font-bold text-sm/[18px] text-[#5F7183]">P&L</h4>
-          <p className="flex flex-col gap-[2px] items-start">
-            <span
-              className={cn(
-                "font-normal text-sm/4",
-                pAndLPercent.value == 0
-                  ? "text-gray-200"
-                  : pAndLPercent.value > 0
-                    ? "text-[#0AFC5C]"
-                    : "text-[#FF3318]"
-              )}
-            >
-              {formatNumber(pAndLAmt.value, true)}
-            </span>
-            <span
-              className={cn(
-                "font-normal text-xs/4",
-                pAndLPercent.sign ? "text-[#07AE3B]" : "text-[#F23645]"
-              )}
-            >
-              {formatNumber(pAndLPercent.value)}%
-            </span>
+          <p className="flex flex-col items-start gap-[2px] max-w-fit">
+            <span>{date}</span>
+            <span className="font-normal text-xs/4 text-[#9299AA]">{time}</span>
           </p>
         </div>
       </div>
@@ -164,8 +151,8 @@ const TradeHistoryCards = ({ data, isLoading }: PropsType) => {
         isLoading && "items-center justify-center pt-10"
       )}
     >
-      {data.map((position) => (
-        <PositionCard key={position.pool} data={position} />
+      {data.map((tx) => (
+        <HistoryCard key={tx.poolAddress} tx={tx} />
       ))}
     </div>
   );
