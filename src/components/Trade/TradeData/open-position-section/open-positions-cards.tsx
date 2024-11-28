@@ -171,7 +171,7 @@ const ClosePositionButton = ({ onClickFn }: { onClickFn?: () => void }) => {
     <button
       onClick={onClickFn}
       className={cn(
-        "w-full py-2 uppercase text-[#CF1800] bg-[#39150F] active:bg-[#64251B] font-sans-ibm-plex font-medium text-sm/6 transition-colors rounded-base",
+        "w-full py-2 uppercase text-[#CF1800] bg-[#39150F] active:bg-[#64251B] font-sans-ibm-plex font-medium text-sm/6 transition-colors rounded",
         "disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed"
       )}
     >

@@ -90,7 +90,7 @@ const FeedbackModal = ({
           </p>
           <div className="inline-flex justify-end gap-3 lg:gap-5 font-medium text-xs/6 min-w-full lg:min-w-fit">
             <Link href={meta.DISCORD} target="_blank">
-              <button className="inline-flex items-center gap-1 px-3 lg:px-[14px] h-[38px] lg:h-[31px] hover:bg-white/5 text-white border border-secondary-gray rounded-base leading-6 whitespace-nowrap">
+              <button className="inline-flex items-center gap-1 px-3 lg:px-[14px] h-[38px] lg:h-[31px] hover:bg-white/5 text-white border border-secondary-gray rounded leading-6 whitespace-nowrap">
                 <Image
                   src="/icons/discord-logo.svg"
                   alt="discord-logo"
@@ -101,7 +101,7 @@ const FeedbackModal = ({
               </button>
             </Link>
             <button
-              className="px-3 lg:px-7 h-[38px] lg:h-[31px] bg-white text-black border border-white rounded-base leading-6 whitespace-nowrap"
+              className="px-3 lg:px-7 h-[38px] lg:h-[31px] bg-white text-black border border-white rounded leading-6 whitespace-nowrap"
               type="button"
               onClick={(e) => {
                 e.preventDefault();

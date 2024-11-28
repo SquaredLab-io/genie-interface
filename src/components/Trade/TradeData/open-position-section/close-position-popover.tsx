@@ -248,7 +248,7 @@ const ClosePositionPopover: FC<PropsType> = ({ children, position, isLong }) => 
       </PopoverTrigger>
       <PopoverContent
         side="top"
-        className="bg-primary-gray border border-secondary-gray rounded-base p-0"
+        className="bg-primary-gray border border-secondary-gray rounded p-0"
       >
         {/* Title */}
         <h1 className="text-center font-sans-ibm-plex font-medium text-sm/5 mt-[14px] mb-2">

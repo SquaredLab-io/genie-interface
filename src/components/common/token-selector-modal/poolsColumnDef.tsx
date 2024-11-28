@@ -77,7 +77,7 @@ export function poolsColumnDef(): ColumnDef<ConstructedPoolsDataResponse>[] {
           <div className="block py-2 h-full">
             <span
               className={cn(
-                "my-6 mr-[18px] rounded-base py-[4.5px] px-3 font-normal text-xs/4",
+                "my-6 mr-[18px] rounded py-[4.5px] px-3 font-normal text-xs/4",
                 price_change_percentage_24h > 0
                   ? "text-positive-green bg-positive-green/5"
                   : "text-negative-red bg-negative-red/10"
@@ -166,10 +166,10 @@ export function poolsMobileColumnDef(): ColumnDef<ConstructedPoolsDataResponse>[
         return (
           <div className="flex flex-row items-center justify-end gap-2 py-2 pr-2 font-normal text-xs/4">
             <span>{formatNumber(current_price, true)}</span>
-            <div className="block h-full py-1 px-[6px] rounded-base">
+            <div className="block h-full py-1 px-[6px] rounded">
               <span
                 className={cn(
-                  "rounded-base py-1 px-[6px] font-normal text-xs/4",
+                  "rounded py-1 px-[6px] font-normal text-xs/4",
                   isPositive
                     ? "text-positive-green bg-positive-green/5"
                     : "text-negative-red bg-negative-red/10"

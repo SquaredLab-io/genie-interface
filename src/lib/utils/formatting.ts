@@ -89,9 +89,9 @@ export default function toUnits(
   return formatter.format(num);
 }
 
-export function shortenHash(hash: string | undefined): string {
+export function shortenHash(hash: string | undefined, start: number = 8, end: number = 6): string {
   if (!hash) return "N/A";
-  return hash.slice(0, 8) + "..." + hash.slice(-6);
+  return hash.slice(0, start) + "..." + hash.slice(-end);
 }
 
 export function getDollarQuote(

@@ -77,7 +77,7 @@ export function poolOverviewColumnDef(): ColumnDef<ConstructedPoolsDataResponse>
           <div className="block py-2 h-full">
             <span
               className={cn(
-                "my-6 mr-[18px] rounded-base py-[4.5px] px-3 font-normal text-xs/4",
+                "my-6 mr-[18px] rounded py-[4.5px] px-3 font-normal text-xs/4",
                 price_change_percentage_24h > 0
                   ? "text-positive-green bg-positive-green/5"
                   : "text-negative-red bg-negative-red/10"
