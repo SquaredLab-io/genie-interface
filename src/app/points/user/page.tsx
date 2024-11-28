@@ -10,7 +10,7 @@ export default function UserStats() {
   const userAddr = queryParams.get("address") ?? undefined;
 
   return (
-    <main className="pl-[88px] pr-[84px] pt-16 pb-10 overflow-hidden">
+    <main className="pl-3 md:pl-[88px] pr-3 md:pr-[84px] pt-16 pb-4 md:pb-10 overflow-hidden">
       <Hero address={userAddr as Address} />
       <div className="py-4 mt-10 border-t border-b border-secondary-gray">
         <button className="py-2 px-6 max-w-fit rounded-lg border border-tab-blue bg-[#0A344D] shadow-sm">

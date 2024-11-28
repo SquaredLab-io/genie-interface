@@ -5,7 +5,9 @@ import { formatTradeValue } from "../helper";
 import ConnectWallet from "@components/common/ConnectWallet";
 import { RewardHistoryType, useRewardHistory } from "@lib/hooks/useRewardHistory";
 import RewardsTable from "./rewards-table";
-import { rewardsColumns } from "./columns";
+import { rewardsColumns, rewardsMobileColumns } from "./columns";
+import { useMemo } from "react";
+import { useMediaQuery } from "usehooks-ts";
 
 export const Stats = () => {
   const { isConnected, address } = useAccount();
@@ -27,7 +29,7 @@ export const Stats = () => {
   }
 
   return (
-    <div className="py-4 flex flex-col gap-y-14">
+    <div className="py-4 flex flex-col gap-y-12 md:gap-y-14">
       <GpointsAndReferals points={points} />
       <UserActivity points={points} rewards={rewards} />
       <RewardHistory rewards={rewards} />
@@ -46,7 +48,7 @@ export const GpointsAndReferals = ({
   const userRank = userPointsData?.userPoints;
   const loading = isPending || isFetching;
   return (
-    <div className="flex flex-col gap-y-10 mt-10">
+    <div className="flex flex-col gap-y-4 md:gap-y-10 mt-0 md:mt-10">
       <div className="flex flex-col gap-y-2 items-start">
         <h1 className="font-medium text-2xl/9">
           <span className="heading-gradient">Gpoints</span>
@@ -58,7 +60,7 @@ export const GpointsAndReferals = ({
         </p>
       </div>
       {/* Gpoints and Referals Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4">
         <StatsCard
           label="Total Gpoints"
           value={loading ? "..." : userRank ? userRank.points.toString() : "NA"}
@@ -90,7 +92,7 @@ export const UserActivity = ({
   const userRank = userPointsData?.userPoints;
   const avgTradeSize = userPointsData?.avgTradeSize;
   return (
-    <div className="flex flex-col gap-y-10 mt-10">
+    <div className="flex flex-col gap-y-4 md:gap-y-10 mt-0 md:mt-10">
       <div className="flex flex-col gap-y-2 items-start">
         <h1 className="font-medium text-2xl/9">
           {!isUser && <span className="heading-gradient">Your</span>} Activity
@@ -100,7 +102,7 @@ export const UserActivity = ({
         </p>
       </div>
       {/* Gpoints and Referals Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 md:gap-4">
         <StatsCard
           label="Total Volume Traded"
           value={formatTradeValue(isFetching || isPending, userRank?.volume)}
@@ -161,6 +163,11 @@ export const RewardHistory = ({
   isUser?: boolean;
 }) => {
   const { rewardHistory, isFetching, isPending } = rewards;
+  const isDesktop = useMediaQuery("(min-width: 768px)"); // tailwind `md`
+
+  const rewardsCols = useMemo(() => {
+    return isDesktop ? rewardsColumns : rewardsMobileColumns;
+  }, [isDesktop]);
 
   return (
     <div className="w-full mt-10">
@@ -174,7 +181,7 @@ export const RewardHistory = ({
       </div>
       <RewardsTable
         data={rewardHistory?.rewardHistory ?? []}
-        columns={rewardsColumns}
+        columns={rewardsCols}
         loading={isFetching || isPending}
       />
     </div>
