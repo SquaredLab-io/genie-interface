@@ -11,8 +11,8 @@ import { FC } from "react";
 
 interface PropsType {
   children: React.ReactNode;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   trigger?: React.ReactNode;
   title?: string | React.ReactElement;
   description?: string;
@@ -39,7 +39,6 @@ const AppDrawer: FC<PropsType> = ({
           <DrawerDescription>{description}</DrawerDescription>
         </DrawerHeader>
         {children}
-        {trigger}
         {footer && <DrawerFooter className="pt-2">{footer}</DrawerFooter>}
       </DrawerContent>
     </Drawer>

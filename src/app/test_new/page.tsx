@@ -1,16 +1,17 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useAccount } from "wagmi";
 import { useIsClient } from "usehooks-ts";
 import _useTokenBalance from "@lib/hooks/useTokenBalance";
 import { _getDecimalAdjusted } from "@lib/utils/formatting";
 import Loading from "@app/loading";
-import TradeDrawerSection from "@components/Trade/trade-drawer-section";
+import { getIconPath } from "@lib/utils";
+import Image from "next/image";
 
 export default function TestNew() {
   const isClient = useIsClient();
-  const { isConnected, isConnecting, address } = useAccount();
+  const { isConnected, isConnecting, connector, address } = useAccount();
 
   const connectionStatus = useMemo(() => {
     if (isConnecting) return "connecting...";
@@ -23,7 +24,14 @@ export default function TestNew() {
     <main className="relative page-center items-center justify-center gap-3">
       <span>user status: {connectionStatus}</span>
       {isConnected && <span>{address}</span>}
-      <TradeDrawerSection />
+      {connector && (
+        <Image
+          src={getIconPath(connector?.id)}
+          alt="wallet icon"
+          height={64}
+          width={64}
+        />
+      )}
     </main>
   );
 }
