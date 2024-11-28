@@ -15,6 +15,7 @@ import {
   useReactTable
 } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
+import { useMediaQuery } from "usehooks-ts";
 import { useAccount } from "wagmi";
 
 interface PropsType<TData, TValue> {
@@ -39,11 +40,16 @@ const LeaderboardTable = <TData, TValue>({
   const { isConnected } = useAccount();
   const router = useRouter();
 
+  const isDesktop = useMediaQuery("(min-width: 768px)"); // tailwind `md`
+
   return (
     <div className="w-full overflow-auto mb-1">
       <Table className="leaderboard">
         <TableHeader
-          className={cn("font-sans-ibm-plex", !isRank && isConnected && "hidden")}
+          className={cn(
+            "font-sans-ibm-plex",
+            ((!isRank && isConnected) || !isDesktop) && "hidden"
+          )}
         >
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
