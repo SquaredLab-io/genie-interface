@@ -50,7 +50,7 @@ const MarketData = () => {
   const { marketData, isMarketDataLoading } = useCurrencyPrice(underlying);
 
   return (
-    <div className="px-4 pb-4 w-full 2xl:px-[16px]">
+    <div className="px-3 lg:px-4 pb-4 w-full 2xl:px-[16px]">
       <h3 className="font-medium text-sm/[54px]">Underlying Market Data</h3>
       <div className="flex flex-col gap-2 font-normal text-xs/[14px]">
         <Marker

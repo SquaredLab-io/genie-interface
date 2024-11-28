@@ -99,6 +99,10 @@
   .active-tab-trade {
     @apply w-1/2 py-2 text-center font-medium text-sm/5 border-t border-secondary-gray bg-[#121F27] data-[state=active]:bg-primary-gray data-[state=active]:cursor-default data-[state=active]:pointer-events-none;
   }
+  
+  .active-tab-trade-drawer {
+    @apply w-1/2 py-3 text-center font-medium text-sm/5 border-t border-secondary-gray bg-[#121F27] data-[state=active]:bg-primary-gray data-[state=active]:cursor-default data-[state=active]:pointer-events-none;
+  }
 }
 
 /* Scroll bar */

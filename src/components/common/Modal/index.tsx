@@ -10,7 +10,7 @@ import {
 import { Close } from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { useMediaQuery } from "usehooks-ts";
-import AppDrawer from "../AppDrawer.tsx";
+import AppDrawer from "../AppDrawer";
 
 interface Props {
   children: React.ReactNode;

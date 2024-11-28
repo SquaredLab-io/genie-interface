@@ -1,6 +1,6 @@
-import AppDrawer from "@components/common/AppDrawer.tsx";
+import AppDrawer from "@components/common/AppDrawer";
 // Library Imports
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Address } from "viem";
 import { toast } from "sonner";
 import BigNumber from "bignumber.js";
@@ -32,7 +32,7 @@ import useTokenBalance from "@lib/hooks/useTokenBalance";
 import { useTradeStore } from "@store/tradeStore";
 import { useUserPoints } from "@lib/hooks/useUserPoints";
 import { z } from "zod";
-import Image from "next/image";
+import { TransactionLoading, TransactionSuccess } from "@components/Trade/trade-drawer-section/transaction-interfaces";
 
 interface PropsType {
   open: boolean;
@@ -226,39 +226,10 @@ const ClosePositionDrawer = ({ open, onOpenChange, position, isLong }: PropsType
     }
   }, [isHandlerLoading, isLoading, open]);
 
-  const TransactionLoading = () => (
-    <div className="py-60 flex flex-col items-center justify-center gap-2 text-center">
-      <SpinnerIcon stroke="#F7931A" height={44} width={44} />
-      <h3 className="text-[#F7931A] text-semibold text-base/[26px] mt-3">
-        Closing Position...
-      </h3>
-      <p className="font-normal text-sm/5 text-[#979797] max-w-64">
-        Executing your trade, this will take less than 30 seconds
-      </p>
-    </div>
-  );
-
-  const TransactionSuccess = () => (
-    <div className="py-60 flex flex-col items-center justify-center gap-2 text-center">
-      <Image
-        src="/icons/toast-success.svg"
-        height={44}
-        width={44}
-        alt="Position successfully closed"
-      />
-      <h3 className="text-[#07AD3B] text-semibold text-base/[26px] mt-3">
-        Trade Executed Successfully
-      </h3>
-      <p className="font-normal text-sm/5 text-[#979797] max-w-64">
-        Trade was executed successfully, please check the transactions
-      </p>
-    </div>
-  );
-
   return (
     <AppDrawer open={open} onOpenChange={onOpenChange} className="pt-5 pb-8 text-left">
       {isLoading && isPending ? (
-        <TransactionLoading />
+        <TransactionLoading title="Closing Position" />
       ) : isSuccess ? (
         <TransactionSuccess />
       ) : (
@@ -353,4 +324,4 @@ const ClosePositionDrawer = ({ open, onOpenChange, position, isLong }: PropsType
   );
 };
 
-export default ClosePositionDrawer;
+export default memo(ClosePositionDrawer);

@@ -73,7 +73,6 @@ const ShortTrade: FC<PropsType> = memo(({ potentia }) => {
     isFetching: isPositionFetching,
     refetch: refetchOpenOrders
   } = useOpenOrders({
-    poolAddress: selectedPool()?.poolAddr! as Address,
     paused: true
   });
   // Current Short Position tokensize

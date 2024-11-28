@@ -75,7 +75,6 @@ const LongTrade: FC<PropsType> = memo(({ potentia }) => {
     isFetching: isPositionFetching,
     refetch: refetchOpenOrders
   } = useOpenOrders({
-    poolAddress: selectedPool()?.poolAddr! as Address,
     paused: true
   });
   // Current Long Position tokensize
