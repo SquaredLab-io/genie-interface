@@ -30,7 +30,7 @@ export default function TokenSelectPopover({ size, children }: PropsType) {
   const { pools, noPools } = useFilteredPools(poolsData, term);
 
   const tabStyle = cn(
-    "px-[10px] py-1 rounded-base border border-secondary-gray hover:bg-[#15212A]",
+    "px-[10px] py-1 rounded border border-secondary-gray hover:bg-[#15212A]",
     "data-[state=active]: data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:border-white"
   );
 

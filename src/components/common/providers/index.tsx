@@ -25,7 +25,7 @@ const Providers: React.FC<PropsWithChildren> = ({ children }) => {
             {children}
           </UrqlProvider>
         </RainbowKitProvider>
-        <ReactQueryDevtools initialIsOpen={false} position="bottom" />
+        {/* <ReactQueryDevtools initialIsOpen={false} position="bottom" /> */}
       </QueryClientProvider>
     </WagmiProvider>
   );

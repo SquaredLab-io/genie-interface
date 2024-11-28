@@ -30,7 +30,7 @@ const PointsPopover: FC<PointsPopoverProps> = ({
       </PopoverTrigger>
       <PopoverContent
         side="top"
-        className="bg-[#071A26] border-none rounded-base p-0"
+        className="bg-[#071A26] border-none rounded p-0"
         onMouseLeave={() => onOpenChange(false)}
       >
         <h1 className="py-4 pl-4 w-full font-medium text-base/5">Your Gpoints</h1>
