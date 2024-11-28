@@ -9,16 +9,18 @@ interface MarkerProps {
   value: string;
   fetching?: boolean;
   showChange?: boolean;
+  className?: string;
 }
 
 export function Marker({
   label,
   value,
   fetching = false,
-  showChange = false
+  showChange = false,
+  className
 }: MarkerProps) {
   return (
-    <p className="inline-flex items-center justify-between w-full">
+    <p className={cn("inline-flex items-center justify-between w-full", className)}>
       <span className="text-[#6D6D6D]">{label}</span>
       <span
         className={cn(
@@ -44,7 +46,7 @@ const TradeInfo = () => {
   });
 
   return (
-    <div className="flex flex-col gap-2 mt-5 font-normal text-xs/[14px]">
+    <div className="flex flex-col gap-2 mt-3 lg:mt-5 font-normal text-xs/[14px]">
       <Marker label={"Fee"} value={"-"} />
       <Marker
         label={"TVL"}

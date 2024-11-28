@@ -207,12 +207,7 @@ const OpenPositionsCards = ({ data, isLoading }: PropsType) => {
     );
 
   return (
-    <div
-      className={cn(
-        "w-full flex flex-col gap-y-4 p-3",
-        isLoading && "items-center justify-center pt-10"
-      )}
-    >
+    <div className={cn("w-full flex flex-col gap-y-4 p-3")}>
       {data.map((position) => (
         <PositionCard key={`${position.pool}_${position.side}`} data={position} />
       ))}
