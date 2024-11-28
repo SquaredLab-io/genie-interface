@@ -24,7 +24,7 @@ const Sections = () => {
   }, [currentTab]);
 
   return (
-    <div className="py-10">
+    <div className="py-0 md:py-10">
       <Tabs
         value={currentTab as string}
         onValueChange={updateTab as (value: string) => void}
