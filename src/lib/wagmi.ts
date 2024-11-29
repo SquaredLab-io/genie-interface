@@ -7,7 +7,8 @@ import {
   metaMaskWallet,
   coinbaseWallet,
   walletConnectWallet,
-  rabbyWallet
+  rabbyWallet,
+  rainbowWallet
 } from "@rainbow-me/rainbowkit/wallets";
 
 coinbaseWallet.preference = "smartWalletOnly";
@@ -20,7 +21,7 @@ export const config = getDefaultConfig({
   wallets: [
     {
       groupName: "Suggested",
-      wallets: [metaMaskWallet, rabbyWallet, walletConnectWallet, coinbaseWallet]
+      wallets: [metaMaskWallet, rabbyWallet, walletConnectWallet, coinbaseWallet, rainbowWallet]
     }
   ],
   ssr: false, // default

@@ -79,6 +79,7 @@ const Modal: React.FC<Props> = ({
       title={title}
       description={description}
       footer={footer}
+      className="py-6 px-3"
     >
       {children}
     </AppDrawer>
