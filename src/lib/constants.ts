@@ -35,9 +35,9 @@ export const navigation: {
   href: string;
   target: string;
 }[] = [
-  { name: "Trade", href: "/", target: "" },
-  { name: "Pools", href: "/pools", target: "" }
-];
+    { name: "Trade", href: "/", target: "" },
+    { name: "Pools", href: "/pools", target: "" }
+  ];
 
 export const SUPPORTED_NETWORKS = [
   {
@@ -57,10 +57,11 @@ export const REFETCH_INTERVAL = 60 * 1000;
 export const TOKENS: {
   [key: string]: `0x${string}`;
 } = {
-  WETH: getAddress("0x08EF999e4383FE62660022b73D145201bD5023d4"),
+  WETH: getAddress("0x5861ec53775982bb634BEF1f58eCcf5D7C284b4E"),
   ETH: getAddress("0x0000000000000000000000000000000000000000"),
   USDT: getAddress("0x32383fcE66D9D9311EF2bABc284a30a7112c27BF"),
-  BTC: getAddress("0xc80f6CbE6271cc601b858c1521483E50AE19b36e")
+  BTC: getAddress("0xc80f6CbE6271cc601b858c1521483E50AE19b36e"),
+  WBTC: getAddress("0xbA83A68Bc775625F06C988D7085A0704C519983D")
 };
 
 interface Token {
@@ -99,5 +100,12 @@ export const SUPPORTED_TOKENS: Token[] = [
     address: TOKENS.BTC,
     logo: "/tokens/btc.svg",
     decimals: 18
+  },
+  {
+    token: "WBTC",
+    name: "Bitcoin",
+    address: TOKENS.WBTC,
+    logo: "/tokens/btc.svg",
+    decimals: 8
   }
 ];
